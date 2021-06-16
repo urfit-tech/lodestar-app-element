@@ -38,15 +38,20 @@ const StyledAccordion = styled.article<{ isActive?: boolean }>`
   }
 `
 
-const Accordion: React.FC<{ infos: { title: string; description: string }[] }> = ({ infos }) => {
+const Accordion: React.FC<{
+  list: {
+    title: string
+    description: string
+  }[]
+}> = ({ list }) => {
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
     <div>
-      {infos.map((v, i) => (
+      {list.map((v, i) => (
         <StyledAccordion isActive={activeIndex === i}>
           <StyledAccordionHeader
-            onMouseOver={() => setActiveIndex(i)}
+            onClick={() => setActiveIndex(i)}
             className="d-flex justify-content-between align-items-center"
           >
             <h3>{v.title}</h3>
