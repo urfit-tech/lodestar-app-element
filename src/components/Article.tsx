@@ -29,10 +29,6 @@ const StyledParagraph = styled.p`
 const StyledArticle = styled.article`
   display: inline-block;
   width: 100%;
-
-  @media (min-width: 768px) {
-    max-width: 328px;
-  }
 `
 
 const Article: React.FC<{ className?: string }> & {
