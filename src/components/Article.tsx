@@ -1,12 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const StyledTitle = styled.h3<{ highlight?: boolean; color?: string }>`
+const StyledTitle = styled.h3<{
+  fontSize?: number
+  highlight?: boolean
+  color?: string
+}>`
   font-family: NotoSansCJKtc;
-  font-size: 16px;
+  font-size: ${props => props.fontSize || 16}px;
   font-weight: bold;
   letter-spacing: 0.2px;
-  color: ${props => props.theme['@primary-color']};
+  color: ${props =>
+    props.color ? props.color : props.highlight ? props.theme['@primary-color'] : 'var(--gray-darker)'};
 
   ${({ highlight, color, theme }) =>
     highlight &&
