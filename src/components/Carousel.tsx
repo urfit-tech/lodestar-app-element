@@ -5,14 +5,16 @@ import Dialog from './Dialog'
 import Referrer from './Referrer'
 import Slide from './Slide'
 
-const StyledSlider = styled(Slider)`
+const StyledSlider = styled(Slider)<{ variant?: 'cover' }>`
   && {
-    position: relative;
+    ${props =>
+      props.variant === 'cover' &&
+      `
+        .slick-dots {
+          bottom: -20px;
+        }
+      `}
 
-    .slick-dots {
-      position: absolute;
-      bottom: 5%;
-    }
     li button::before {
       opacity: 1;
       font-size: 10px;
@@ -42,8 +44,6 @@ const Carousel: React.FC & {
     arrows={false}
     autoplay
     autoplaySpeed={5000}
-    // arrows
-    // dots={false}
     // draggable
     // swipeToSlide
     // slidesToShow={5}
