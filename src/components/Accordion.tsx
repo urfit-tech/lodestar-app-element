@@ -31,10 +31,10 @@ const StyledAccordion = styled.article<{ isActive?: boolean }>`
   max-height: ${props => (props.isActive ? '500px' : '64px')};
   overflow: hidden;
   background-color: var(--gray-lighter);
-  transition: max-height 1s ease-out;
+  transition: max-height 0s;
 
   &:hover {
-    transition: max-height 0.5s linear;
+    transition: max-height 1s ease-out;
   }
 `
 
