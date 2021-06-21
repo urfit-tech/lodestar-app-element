@@ -1,5 +1,5 @@
 import React from 'react'
-import Slider from 'react-slick'
+import Slider, { Settings } from 'react-slick'
 import styled from 'styled-components'
 import Dialog from './Dialog'
 import Referrer from './Referrer'
@@ -33,48 +33,12 @@ const StyledSlider = styled(Slider)<{ variant?: 'cover' }>`
   }
 `
 
-const Carousel: React.FC & {
+const Carousel: React.FC<{ variant?: 'cover' } & Settings> & {
   Dialog: typeof Dialog
   Referrer: typeof Referrer
   Slide: typeof Slide
-} = ({ children }) => (
-  <StyledSlider
-    dots
-    infinite
-    arrows={false}
-    autoplay
-    autoplaySpeed={5000}
-    // draggable
-    // swipeToSlide
-    // slidesToShow={5}
-    // slidesToScroll={1}
-    // responsive={[
-    //   {
-    //     breakpoint: 192 * 5 - 1 + 128,
-    //     settings: {
-    //       slidesToShow: 4,
-    //     },
-    //   },
-    //   {
-    //     breakpoint: 192 * 4 - 1 + 128,
-    //     settings: {
-    //       slidesToShow: 3,
-    //     },
-    //   },
-    //   {
-    //     breakpoint: 192 * 3 - 1 + 128,
-    //     settings: {
-    //       slidesToShow: 2,
-    //     },
-    //   },
-    //   {
-    //     breakpoint: 192 * 2 - 1 + 128,
-    //     settings: {
-    //       slidesToShow: 1,
-    //     },
-    //   },
-    // ]}
-  >
+} = ({ variant, children, ...props }) => (
+  <StyledSlider variant={variant} {...props}>
     {children}
   </StyledSlider>
 )
