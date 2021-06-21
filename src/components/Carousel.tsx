@@ -11,7 +11,7 @@ const StyledSlider = styled(Slider)<{ variant?: 'cover' }>`
       props.variant === 'cover' &&
       `
         .slick-dots {
-          bottom: -20px;
+          bottom: 25px;
         }
       `}
 

@@ -68,24 +68,16 @@ const Slide: React.FC<{
   srcMobile: string
   title: string
   subtitle: string
-  buttonText: string
-  link: string
-  external: boolean
-}> = ({ srcDesktop, srcMobile, title, subtitle, buttonText, link, external }) => {
+  onClick?: () => void
+  buttonText?: React.ReactElement | string
+}> = ({ srcDesktop, srcMobile, title, subtitle, buttonText, onClick }) => {
   return (
     <SliderWrapper>
       <StyledCoverBackground
         srcDesktop={srcDesktop}
         srcMobile={srcMobile}
         className={`d-flex align-items-center${buttonText ? '' : ' cursor-pointer'} cover-background`}
-        onClick={() => {
-          if (buttonText) {
-            return
-          }
-          if (!link) return
-          external ? window.open(link) : console.log(link)
-          // history.push(link)
-        }}
+        onClick={onClick}
       >
         <div className="container">
           {title && (
@@ -98,9 +90,7 @@ const Slide: React.FC<{
               {subtitle}
             </StyledCoverSubHeading>
           )}
-          {buttonText && (
-            <StyledCoverButton className="cover-button">{/* <Link to={link}>{buttonText}</Link> */}</StyledCoverButton>
-          )}
+          {buttonText && <StyledCoverButton className="cover-button">{buttonText}</StyledCoverButton>}
         </div>
       </StyledCoverBackground>
     </SliderWrapper>
