@@ -1,6 +1,16 @@
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ReactComponent as AngleRightIcon } from '../images/icons/angle-right.svg'
+import { CardProps, ParagraphProps, TitleProps } from '../types/style'
+import { generateCustomCardStyle, generateCustomParagraphStyle, generateCustomTitleStyle } from './common.style'
+
+const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
+  ${generateCustomTitleStyle}
+`
+
+const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
+  ${generateCustomParagraphStyle}
+`
 
 const StyledAction = styled.div<{ isActive: boolean }>`
   font-size: 20px;
@@ -24,7 +34,7 @@ const StyledAccordionHeader = styled.header`
   cursor: pointer;
 `
 
-const StyledAccordion = styled.article<{ isActive?: boolean }>`
+const StyledAccordion = styled.article<{ customStyle: CardProps; isActive?: boolean }>`
   margin-bottom: 1.5rem;
   border-radius: 4px;
   padding: 1.25rem;
@@ -36,6 +46,8 @@ const StyledAccordion = styled.article<{ isActive?: boolean }>`
   &:hover {
     transition: max-height 1s ease-out;
   }
+
+  ${generateCustomCardStyle}
 `
 
 const Accordion: React.FC<{
@@ -43,23 +55,28 @@ const Accordion: React.FC<{
     title: string
     description: string
   }[]
-}> = ({ list }) => {
+  customStyle: {
+    title: TitleProps
+    paragraph: ParagraphProps
+    card: CardProps
+  }
+}> = ({ list, customStyle }) => {
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
     <div>
       {list.map((v, i) => (
-        <StyledAccordion isActive={activeIndex === i}>
+        <StyledAccordion customStyle={customStyle.card} isActive={activeIndex === i}>
           <StyledAccordionHeader
             onClick={() => setActiveIndex(i)}
             className="d-flex justify-content-between align-items-center"
           >
-            <h3>{v.title}</h3>
+            <StyledTitle customStyle={customStyle.title}>{v.title}</StyledTitle>
             <StyledAction isActive={activeIndex === i}>
               <AngleRightIcon />
             </StyledAction>
           </StyledAccordionHeader>
-          <p>{v.description}</p>
+          <StyledParagraph customStyle={customStyle.paragraph}>{v.description}</StyledParagraph>
         </StyledAccordion>
       ))}
     </div>
