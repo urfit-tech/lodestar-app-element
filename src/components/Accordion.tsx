@@ -2,15 +2,7 @@ import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ReactComponent as AngleRightIcon } from '../images/icons/angle-right.svg'
 import { CardProps, ParagraphProps, TitleProps } from '../types/style'
-import { generateCustomCardStyle, generateCustomParagraphStyle, generateCustomTitleStyle } from './common.style'
-
-const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
-  ${generateCustomTitleStyle}
-`
-
-const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
-  ${generateCustomParagraphStyle}
-`
+import { generateCustomCardStyle, StyledParagraph, StyledTitle } from './common'
 
 const StyledAction = styled.div<{ isActive: boolean }>`
   font-size: 20px;

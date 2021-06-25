@@ -1,8 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ReactComponent as ArrowRightIcon } from '../images/icons/arrow-right.svg'
+import { CardProps, ParagraphProps, TitleProps } from '../types/style'
+import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph } from './common'
 
-const StyledSlideTitle = styled.div`
+const StyledSlideTitle = styled.h3<{ customStyle: TitleProps }>`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
@@ -19,9 +21,10 @@ const StyledSlideTitle = styled.div`
       fill: #ff5760;
     }
   }
+  ${generateCustomTitleStyle}
 `
 
-const StyledDialogBlock = styled.div`
+const StyledDialogBlock = styled.div<{ customStyle: CardProps }>`
   position: relative;
   margin-bottom: 60px;
   padding: 40px;
@@ -42,6 +45,7 @@ const StyledDialogBlock = styled.div`
     content: url(https://static.kolable.com/images/xuemi/dialog-pionter.svg);
     transform: translateY(99%);
   }
+  ${generateCustomCardStyle}
 `
 
 const StyledUserBlock = styled.div`
@@ -68,6 +72,11 @@ const Dialog: React.FC<{
   description?: string
   avatarSrc?: string
   name?: string
+  customStyle: {
+    title: TitleProps
+    paragraph: ParagraphProps
+    card: CardProps
+  }
 }> = ({
   title = {
     before: '行銷',
@@ -76,16 +85,17 @@ const Dialog: React.FC<{
   description = '本身非本科生，但目前有在業界從事網頁設計實習工作。對於網頁的知識和技能都是靠高中補習遙遠的記憶和零散的自學，但一直沒有融會貫通的感覺，每個功能都只是似懂非懂，搞不太清楚“為什麼要這樣做”，無法全靠自己刻出一個完整的頁面。',
   avatarSrc = 'https://static.kolable.com/images/xuemi/storyAvatar1.png',
   name = 'Letitia',
+  customStyle,
 }) => {
   return (
     <div>
-      <StyledDialogBlock>
-        <StyledSlideTitle>
+      <StyledDialogBlock customStyle={customStyle.card}>
+        <StyledSlideTitle customStyle={customStyle.title}>
           <span>{title['before']}</span>
           <ArrowRightIcon />
           <span>{title['after']}</span>
         </StyledSlideTitle>
-        <p>{description}</p>
+        <StyledParagraph customStyle={customStyle.paragraph}>{description}</StyledParagraph>
       </StyledDialogBlock>
       <StyledUserBlock>
         <img src={avatarSrc} alt="avatar" />

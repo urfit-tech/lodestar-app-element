@@ -1,5 +1,5 @@
-import { css } from 'styled-components'
-import { CardProps, ParagraphProps, TitleProps } from '../types/style'
+import styled, { css } from 'styled-components'
+import { CardProps, ParagraphProps, TitleProps } from '../../types/style'
 
 const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
   props.customStyle &&
@@ -31,4 +31,13 @@ const generateCustomCardStyle = (props: { customStyle?: CardProps }) =>
     padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
   `
 
+const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
+  ${generateCustomTitleStyle}
+`
+
+const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
+  ${generateCustomParagraphStyle}
+`
+
+export { StyledTitle, StyledParagraph }
 export { generateCustomTitleStyle, generateCustomParagraphStyle, generateCustomCardStyle }

@@ -1,27 +1,28 @@
 import React from 'react'
 import styled from 'styled-components'
+import { CardProps, ParagraphProps, TitleProps } from '../types/style'
+import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
 
-const StyleCardTitle = styled.h3<{ isDark: boolean }>`
+const StyleCardTitle = styled.h3<{ customStyle?: TitleProps; isDark: boolean }>`
   font-family: NotoSansCJKtc;
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.2px;
   color: ${props => (props.isDark ? 'white' : 'var(--gray-darker)')};
+
+  ${generateCustomTitleStyle}
 `
 
-const StyledCardContent = styled.p`
+const StyledCardContent = styled.p<{ customStyle?: ParagraphProps }>`
   font-weight: 500;
+
+  ${generateCustomParagraphStyle}
 `
 
-const StyledCard = styled.div<{
-  direction: 'row' | 'column'
-  isDark?: boolean
-  bordered?: boolean
-  shadow?: boolean
-}>`
+const StyledCard = styled.div<{ isDark?: boolean; customStyle: { direction: 'row' | 'column' } & CardProps }>`
   display: flex;
-  flex-direction: ${props => props.direction};
-  ${props => (props.direction === 'row' ? 'justify-content: center;' : '')}
+  flex-direction: ${props => props.customStyle.direction};
+  ${props => (props.customStyle.direction === 'row' ? 'justify-content: center;' : '')}
   border-radius: 4px;
   width: 100%;
   padding: 32px;
@@ -29,19 +30,17 @@ const StyledCard = styled.div<{
   user-select: none;
   background-color: ${props => (props.isDark ? `rgba(0, 0, 0, 0)` : `#ffffff`)};
 
-  ${props => (props.bordered ? `border: 1px solid white;` : '')}
-  ${props => (props.shadow ? `box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);` : ``)}
+  ${props => (props.customStyle.bordered ? `border: 1px solid white;` : '')}
+  ${props => (props.customStyle.shadow ? `box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);` : ``)}
 
   &:hover {
-    transform: scale(1.1);
+    scale: 1.1;
   }
 `
 
 const Card: React.FC<{
-  direction: 'row' | 'column'
   isDark?: boolean
-  bordered?: boolean
-  shadow?: boolean
+  customStyle: { direction: 'row' | 'column' } & CardProps
 }> & {
   Title: typeof StyleCardTitle
   Content: typeof StyledCardContent

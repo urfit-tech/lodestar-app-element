@@ -1,8 +1,8 @@
 import React from 'react'
 import Slider, { Settings } from 'react-slick'
 import styled from 'styled-components'
-import Dialog from './Dialog'
-import Referrer from './Referrer'
+import DialogCard from './DialogCard'
+import ReferrerCard from './ReferrerCard'
 import Slide from './Slide'
 
 const StyledSlider = styled(Slider)<{ variant?: 'cover' }>`
@@ -34,8 +34,8 @@ const StyledSlider = styled(Slider)<{ variant?: 'cover' }>`
 `
 
 const Carousel: React.FC<{ variant?: 'cover' } & Settings> & {
-  Dialog: typeof Dialog
-  Referrer: typeof Referrer
+  DialogCard: typeof DialogCard
+  ReferrerCard: typeof ReferrerCard
   Slide: typeof Slide
 } = ({ variant, children, ...props }) => (
   <StyledSlider variant={variant} {...props}>
@@ -43,8 +43,8 @@ const Carousel: React.FC<{ variant?: 'cover' } & Settings> & {
   </StyledSlider>
 )
 
-Carousel.Dialog = Dialog
-Carousel.Referrer = Referrer
+Carousel.DialogCard = DialogCard
+Carousel.ReferrerCard = ReferrerCard
 Carousel.Slide = Slide
 
 export default Carousel
