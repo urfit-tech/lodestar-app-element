@@ -1,35 +1,34 @@
 import React from 'react'
 import styled from 'styled-components'
+import { ParagraphProps, TitleProps } from '../types/style'
+import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
 
-const StyledTitle = styled.h3<{
-  fontSize?: number
-  highlight?: boolean
-  color?: string
-}>`
+const StyledTitle = styled.h3<{ highlight?: boolean; customStyle: TitleProps }>`
   font-family: NotoSansCJKtc;
-  font-size: ${props => props.fontSize || 16}px;
+  font-size: ${props => props.customStyle.fontSize || 16}px;
   font-weight: bold;
   letter-spacing: 0.2px;
-  color: ${props =>
-    props.color ? props.color : props.highlight ? props.theme['@primary-color'] : 'var(--gray-darker)'};
+  color: ${props => (props.highlight ? props.theme['@primary-color'] : 'var(--gray-darker)')};
 
-  ${({ highlight, color, theme }) =>
+  ${({ highlight, customStyle, theme }) =>
     highlight &&
     `
       padding-left: 8px;
-      border-left: 3px solid ${color || theme['@primary-color']};
+      border-left: 3px solid ${customStyle.color || theme['@primary-color']};
     `}
 
-  color: ${props => props.color};
+  ${generateCustomTitleStyle}
 `
 
-const StyledParagraph = styled.p`
+const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
   font-size: 16px;
   font-weight: 500;
   line-height: 1.69;
   letter-spacing: 0.2px;
   text-align: justify;
   color: var(--gray-darker);
+
+  ${generateCustomParagraphStyle}
 `
 const StyledArticle = styled.article`
   display: inline-block;

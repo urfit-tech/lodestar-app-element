@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { CardProps, ParagraphProps, TitleProps } from '../types/style'
 import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
 
@@ -35,6 +35,15 @@ const StyledCard = styled.div<{ isDark?: boolean; customStyle: { direction: 'row
 
   &:hover {
     scale: 1.1;
+  }
+
+  && {
+    ${props =>
+      props.customStyle &&
+      css`
+        margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
+        padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+      `}
   }
 `
 

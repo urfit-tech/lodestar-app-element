@@ -21,6 +21,7 @@ const StyledSlideTitle = styled.h3<{ customStyle: TitleProps }>`
       fill: #ff5760;
     }
   }
+
   ${generateCustomTitleStyle}
 `
 
@@ -45,6 +46,7 @@ const StyledDialogBlock = styled.div<{ customStyle: CardProps }>`
     content: url(https://static.kolable.com/images/xuemi/dialog-pionter.svg);
     transform: translateY(99%);
   }
+
   ${generateCustomCardStyle}
 `
 

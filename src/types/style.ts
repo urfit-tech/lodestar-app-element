@@ -1,8 +1,3 @@
-export type BackgroundProps =
-  | { backgroundColor?: never; backgroundImage?: never }
-  | { backgroundColor: string; backgroundImage?: never }
-  | { backgroundColor?: never; backgroundImage: string }
-
 export type MarginProps = {
   mt: string | number
   mb: string | number
@@ -17,14 +12,21 @@ export type PaddingProps = {
   pl: string | number
 }
 
+export type BackgroundProps = (
+  | { backgroundColor?: never; backgroundImage?: never; mode?: never }
+  | { backgroundColor: string; backgroundImage?: never; mode?: never }
+  | { backgroundColor?: never; backgroundImage: string; mode?: 'light' | 'dark' }
+) &
+  MarginProps &
+  PaddingProps
+
 export type ParagraphProps = {
   textAlign: 'left' | 'center' | 'right'
   fontSize: string | number
   fontWeight: 'lighter' | 'normal' | 'bold'
   lineHeight: string | number
-  borderWidth: string | number
   color: string
-}
+} & PaddingProps
 
 export type TitleProps = Omit<ParagraphProps, 'lineHeight'>
 
@@ -35,9 +37,7 @@ export type ButtonProps = {
   colorScheme?: string
 }
 
-export type ImageProps = {
-  borderWidth?: string | number
-} & MarginProps
+export type ImageProps = MarginProps & PaddingProps
 
 export type CardProps = {
   bordered?: boolean

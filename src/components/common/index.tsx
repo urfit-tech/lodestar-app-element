@@ -7,7 +7,7 @@ const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
     text-align: ${props.customStyle.textAlign};
     font-size: ${props.customStyle.fontSize}px;
     font-weight: ${props.customStyle.fontWeight}px;
-    border-width: ${props.customStyle.borderWidth}px;
+    padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
     color: ${props.customStyle.color};
   `
 
@@ -18,7 +18,7 @@ const generateCustomParagraphStyle = (props: { customStyle?: ParagraphProps }) =
     line-height: ${props.customStyle.lineHeight};
     font-size: ${props.customStyle.fontSize}px;
     font-weight: ${props.customStyle.fontWeight}px;
-    border-width: ${props.customStyle.borderWidth}px;
+    padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
     color: ${props.customStyle.color};
   `
 

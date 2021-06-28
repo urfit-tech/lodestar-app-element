@@ -1,14 +1,13 @@
 import styled, { css } from 'styled-components'
+import { BackgroundProps } from '../types/style'
 
-const StyledSection = styled.section<
-  { background?: null; mode?: never } | { background: string; mode?: 'light' | 'dark' }
->`
-  background-color: white;
-  background-image: ${props => props.background && `url(${props.background})`};
+const StyledSection = styled.section<BackgroundProps>`
+  position: relative;
+  padding: 64px 0;
+  background-color: ${props => (props.backgroundColor ? `url(${props.backgroundImage})` : 'white')};
+  background-image: ${props => props.backgroundImage && `url(${props.backgroundImage})`};
   background-size: cover;
   background-position: center;
-  padding: 64px 0;
-  position: relative;
 
   ${props =>
     props.mode === 'light' &&

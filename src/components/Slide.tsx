@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { ParagraphProps, TitleProps } from '../types/style'
+import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
 
 const SliderWrapper = styled.div`
   position: relative;
@@ -24,7 +26,7 @@ const StyledCoverBackground = styled.div<{ srcDesktop: string; srcMobile: string
     background-image: url(${props => props.srcDesktop});
   }
 `
-const StyledCoverHeading = styled.h2`
+const StyledCoverHeading = styled.h2<{ customStyle?: TitleProps }>`
   color: #fff;
   font-size: 28px;
   font-weight: 500;
@@ -36,9 +38,10 @@ const StyledCoverHeading = styled.h2`
     letter-spacing: 1px;
     text-align: center;
   }
+  ${generateCustomTitleStyle}
 `
 
-const StyledCoverSubHeading = styled.h3`
+const StyledParagraph = styled.p<{ customStyle?: ParagraphProps }>`
   color: #fff;
   font-size: 16px;
   font-weight: 500;
@@ -49,6 +52,8 @@ const StyledCoverSubHeading = styled.h3`
     font-size: 27px;
     text-align: center;
   }
+
+  ${generateCustomParagraphStyle}
 `
 
 const StyledCoverButton = styled.div`
@@ -70,7 +75,11 @@ const Slide: React.FC<{
   subtitle: string
   onClick?: () => void
   buttonText?: React.ReactElement | string
-}> = ({ srcDesktop, srcMobile, title, subtitle, buttonText, onClick }) => {
+  customStyle: {
+    title?: TitleProps
+    paragraph?: ParagraphProps
+  }
+}> = ({ srcDesktop, srcMobile, title, subtitle, buttonText, onClick, customStyle }) => {
   return (
     <SliderWrapper>
       <StyledCoverBackground
@@ -81,16 +90,16 @@ const Slide: React.FC<{
       >
         <div className="container">
           {title && (
-            <StyledCoverHeading as="h1" className="mb-3 cover-heading">
+            <StyledCoverHeading customStyle={customStyle.title} className="mb-3">
               {title}
             </StyledCoverHeading>
           )}
           {subtitle && (
-            <StyledCoverSubHeading as="h2" className="mb-4 cover-sub-heading">
+            <StyledParagraph customStyle={customStyle.paragraph} className="mb-4">
               {subtitle}
-            </StyledCoverSubHeading>
+            </StyledParagraph>
           )}
-          {buttonText && <StyledCoverButton className="cover-button">{buttonText}</StyledCoverButton>}
+          {buttonText && <StyledCoverButton>{buttonText}</StyledCoverButton>}
         </div>
       </StyledCoverBackground>
     </SliderWrapper>

@@ -22,7 +22,7 @@ const StyledReferrerBlock = styled.div<{ customStyle: CardProps }>`
   ${generateCustomCardStyle}
 `
 
-const StyledSubTitle = styled.h3`
+const StyledSubTitle = styled.h3<{ customStyle: TitleProps }>`
   margin-bottom: 0.75rem;
   font-size: 16px;
   text-align: center;
