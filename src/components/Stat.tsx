@@ -1,16 +1,7 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
-import { ImageProps } from '../types/style'
+import styled from 'styled-components'
 import { StyledParagraph } from './common'
-
-const StyledImage = styled.img<{ customStyle: ImageProps }>`
-  width: 40px;
-
-  ${props => css`
-    margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
-    padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
-  `}
-`
+import Image from './Image'
 
 const StyledDigit = styled.div<{ isDark: boolean }>`
   color: ${props => (props.isDark ? 'white' : props.theme['@primary-color'])};
@@ -24,12 +15,12 @@ const StyledDigit = styled.div<{ isDark: boolean }>`
 `
 
 const Stat: React.FC & {
-  Image: typeof StyledImage
+  Image: typeof Image
   Digit: typeof StyledDigit
   Content: typeof StyledParagraph
-} = ({ children }) => <div>{children}</div>
+} = ({ children }) => <div className="d-flex flex-column align-items-center">{children}</div>
 
-Stat.Image = StyledImage
+Stat.Image = Image
 Stat.Digit = StyledDigit
 Stat.Content = StyledParagraph
 

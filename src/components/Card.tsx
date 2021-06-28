@@ -2,6 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { CardProps, ParagraphProps, TitleProps } from '../types/style'
 import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
+import Image from './Image'
 
 const StyleCardTitle = styled.h3<{ customStyle?: TitleProps; isDark: boolean }>`
   font-family: NotoSansCJKtc;
@@ -37,10 +38,6 @@ const StyledCard = styled.div<{ isDark?: boolean; customStyle: { direction: 'row
   ${props => (props.customStyle.bordered ? `border: 1px solid white;` : '')}
   ${props => (props.customStyle.shadow ? `box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);` : ``)}
 
-  &:hover {
-    scale: 1.1;
-  }
-
   && {
     ${props =>
       props.customStyle &&
@@ -55,12 +52,14 @@ const Card: React.FC<{
   isDark?: boolean
   customStyle: { direction: 'row' | 'column' } & CardProps
 }> & {
+  Image: typeof Image
   Title: typeof StyleCardTitle
   Content: typeof StyledCardContent
 } = ({ children, ...props }) => {
   return <StyledCard {...props}>{children}</StyledCard>
 }
 
+Card.Image = Image
 Card.Title = StyleCardTitle
 Card.Content = StyledCardContent
 
