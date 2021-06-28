@@ -32,8 +32,8 @@ export type TitleProps = Omit<ParagraphProps, 'lineHeight'>
 
 export type ButtonProps = {
   size: 'sm' | 'md' | 'lg'
-  block: boolean
   variant?: 'text' | 'solid' | 'outline'
+  block?: boolean
   colorScheme?: string
 }
 

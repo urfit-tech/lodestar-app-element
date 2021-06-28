@@ -1,16 +1,17 @@
 import styled, { css } from 'styled-components'
 import { BackgroundProps } from '../types/style'
 
-const StyledSection = styled.section<BackgroundProps>`
+const StyledSection = styled.section<{ customStyle: BackgroundProps }>`
   position: relative;
   padding: 64px 0;
-  background-color: ${props => (props.backgroundColor ? `url(${props.backgroundImage})` : 'white')};
-  background-image: ${props => props.backgroundImage && `url(${props.backgroundImage})`};
+  background-color: ${props =>
+    props.customStyle.backgroundColor ? `url(${props.customStyle.backgroundImage})` : 'white'};
+  background-image: ${props => props.customStyle.backgroundImage && `url(${props.customStyle.backgroundImage})`};
   background-size: cover;
   background-position: center;
 
   ${props =>
-    props.mode === 'light' &&
+    props.customStyle.mode === 'light' &&
     css`
       &::after {
         content: '';
@@ -27,7 +28,7 @@ const StyledSection = styled.section<BackgroundProps>`
     `};
 
   ${props =>
-    props.mode === 'dark' &&
+    props.customStyle.mode === 'dark' &&
     css`
       color: white;
       &::after {
