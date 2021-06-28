@@ -44,6 +44,13 @@ const StyledSection = styled.section<{ customStyle: BackgroundProps }>`
         z-index: -1;
       }
     `};
+
+  && {
+    ${props => css`
+      margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
+      padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+    `}
+  }
 `
 
 export default StyledSection

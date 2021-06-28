@@ -16,11 +16,11 @@ const StyledButton = styled.span<ButtonProps>`
   color: ${props => props.color || 'white'};
   ${props =>
     props.size === 'lg'
-      ? 'padding: 12px 56px'
+      ? 'padding: 12px 56px;'
       : props.size === 'md'
-      ? 'padding: 12px 20px'
+      ? 'padding: 12px 20px;'
       : props.size === 'sm'
-      ? 'padding: 8px 16px'
+      ? 'padding: 8px 16px;'
       : ''}
   ${props => props.block && 'display: block'}
   ${props =>

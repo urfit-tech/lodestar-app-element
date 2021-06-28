@@ -32,6 +32,7 @@ const generateCustomCardStyle = (props: { customStyle?: CardProps }) =>
   `
 
 const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
+  line-height: 1;
   && {
     ${generateCustomTitleStyle}
   }

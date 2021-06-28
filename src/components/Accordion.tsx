@@ -24,13 +24,15 @@ const StyledAccordionHeader = styled.header`
   letter-spacing: 0.2px;
   color: var(--gray-darker);
   cursor: pointer;
+  line-height: 1;
 `
 
-const StyledAccordion = styled.article<{ customStyle: CardProps; isActive?: boolean }>`
+const StyledAccordion = styled.article<{ titleHeight: number; customStyle: CardProps; isActive?: boolean }>`
   margin-bottom: 1.5rem;
   border-radius: 4px;
   padding: 1.25rem;
-  max-height: ${props => (props.isActive ? '500px' : '64px')};
+  max-height: ${props =>
+    props.isActive ? '500px' : `${props.titleHeight + Number(props.customStyle.pt) + Number(props.customStyle.pb)}px`};
   overflow: hidden;
   background-color: var(--gray-lighter);
   transition: max-height 0s;
@@ -60,7 +62,11 @@ const Accordion: React.FC<{
   return (
     <div>
       {list.map((v, i) => (
-        <StyledAccordion customStyle={customStyle.card} isActive={activeIndex === i}>
+        <StyledAccordion
+          customStyle={customStyle.card}
+          titleHeight={Number(customStyle.title.fontSize) + Number(customStyle.title.pb) + Number(customStyle.title.pt)}
+          isActive={activeIndex === i}
+        >
           <StyledAccordionHeader
             onClick={() => setActiveIndex(i)}
             className="d-flex justify-content-between align-items-center"
