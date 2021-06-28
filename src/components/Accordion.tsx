@@ -39,7 +39,9 @@ const StyledAccordion = styled.article<{ customStyle: CardProps; isActive?: bool
     transition: max-height 1s ease-out;
   }
 
-  ${generateCustomCardStyle}
+  && {
+    ${generateCustomCardStyle}
+  }
 `
 
 const Accordion: React.FC<{

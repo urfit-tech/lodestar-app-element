@@ -10,13 +10,17 @@ const StyleCardTitle = styled.h3<{ customStyle?: TitleProps; isDark: boolean }>`
   letter-spacing: 0.2px;
   color: ${props => (props.isDark ? 'white' : 'var(--gray-darker)')};
 
-  ${generateCustomTitleStyle}
+  && {
+    ${generateCustomTitleStyle}
+  }
 `
 
 const StyledCardContent = styled.p<{ customStyle?: ParagraphProps }>`
   font-weight: 500;
 
-  ${generateCustomParagraphStyle}
+  && {
+    ${generateCustomParagraphStyle}
+  }
 `
 
 const StyledCard = styled.div<{ isDark?: boolean; customStyle: { direction: 'row' | 'column' } & CardProps }>`

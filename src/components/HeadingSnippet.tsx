@@ -19,7 +19,9 @@ const StyledTitle = styled.h3<{ row: boolean; customStyle: TitleProps }>`
       }
     `}
 
-  ${generateCustomTitleStyle}
+  && {
+    ${generateCustomTitleStyle}
+  }
 `
 
 const StyledContent = styled.p<{ row: boolean; customStyle: ParagraphProps }>`
@@ -39,7 +41,9 @@ const StyledContent = styled.p<{ row: boolean; customStyle: ParagraphProps }>`
       }
     `}
 
-  ${generateCustomParagraphStyle}
+  && {
+    ${generateCustomParagraphStyle}
+  }
 `
 
 const StyledSnippet = styled.div<{ row: boolean }>`

@@ -3,12 +3,12 @@ import styled, { css } from 'styled-components'
 import { ImageProps } from '../types/style'
 import { StyledParagraph } from './common'
 
-const StyledImage = styled.img<ImageProps>`
+const StyledImage = styled.img<{ customStyle: ImageProps }>`
   width: 40px;
 
   ${props => css`
-    margin: ${props.mt}px ${props.mr}px ${props.mb}px ${props.ml}px;
-    padding: ${props.pt}px ${props.pr}px ${props.pb}px ${props.pl}px;
+    margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
+    padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
   `}
 `
 

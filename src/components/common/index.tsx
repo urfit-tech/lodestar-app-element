@@ -32,11 +32,15 @@ const generateCustomCardStyle = (props: { customStyle?: CardProps }) =>
   `
 
 const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
-  ${generateCustomTitleStyle}
+  && {
+    ${generateCustomTitleStyle}
+  }
 `
 
 const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
-  ${generateCustomParagraphStyle}
+  && {
+    ${generateCustomParagraphStyle}
+  }
 `
 
 export { StyledTitle, StyledParagraph }

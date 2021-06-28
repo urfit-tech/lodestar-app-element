@@ -38,7 +38,10 @@ const StyledCoverHeading = styled.h2<{ customStyle?: TitleProps }>`
     letter-spacing: 1px;
     text-align: center;
   }
-  ${generateCustomTitleStyle}
+
+  && {
+    ${generateCustomTitleStyle}
+  }
 `
 
 const StyledParagraph = styled.p<{ customStyle?: ParagraphProps }>`
@@ -53,7 +56,9 @@ const StyledParagraph = styled.p<{ customStyle?: ParagraphProps }>`
     text-align: center;
   }
 
-  ${generateCustomParagraphStyle}
+  && {
+    ${generateCustomParagraphStyle}
+  }
 `
 
 const StyledCoverButton = styled.div`

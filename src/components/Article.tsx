@@ -17,7 +17,9 @@ const StyledTitle = styled.h3<{ highlight?: boolean; customStyle: TitleProps }>`
       border-left: 3px solid ${customStyle.color || theme['@primary-color']};
     `}
 
-  ${generateCustomTitleStyle}
+  && {
+    ${generateCustomTitleStyle}
+  }
 `
 
 const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
@@ -28,7 +30,9 @@ const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
   text-align: justify;
   color: var(--gray-darker);
 
-  ${generateCustomParagraphStyle}
+  && {
+    ${generateCustomParagraphStyle}
+  }
 `
 const StyledArticle = styled.article`
   display: inline-block;

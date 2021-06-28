@@ -19,7 +19,9 @@ const StyledReferrerBlock = styled.div<{ customStyle: CardProps }>`
   line-height: 1.57;
   letter-spacing: 0.18px;
 
-  ${generateCustomCardStyle}
+  && {
+    ${generateCustomCardStyle}
+  }
 `
 
 const StyledSubTitle = styled.h3<{ customStyle: TitleProps }>`
@@ -27,7 +29,9 @@ const StyledSubTitle = styled.h3<{ customStyle: TitleProps }>`
   font-size: 16px;
   text-align: center;
 
-  ${generateCustomTitleStyle}
+  && {
+    ${generateCustomTitleStyle}
+  }
 `
 
 const Referrer: React.FC<{

@@ -22,7 +22,9 @@ const StyledSlideTitle = styled.h3<{ customStyle: TitleProps }>`
     }
   }
 
-  ${generateCustomTitleStyle}
+  && {
+    ${generateCustomTitleStyle}
+  }
 `
 
 const StyledDialogBlock = styled.div<{ customStyle: CardProps }>`
@@ -47,7 +49,9 @@ const StyledDialogBlock = styled.div<{ customStyle: CardProps }>`
     transform: translateY(99%);
   }
 
-  ${generateCustomCardStyle}
+  && {
+    ${generateCustomCardStyle}
+  }
 `
 
 const StyledUserBlock = styled.div`
