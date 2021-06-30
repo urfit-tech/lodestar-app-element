@@ -24,7 +24,7 @@ const PodcastProgramBlock: React.VFC<{
   return (
     <>
       {podcastPrograms.map(podcastProgram => (
-        <div className="col-12 col-lg-6">
+        <div className="col-12 col-lg-6 mb-3">
           <PodcastProgramCard key={podcastProgram.id} podcastProgram={podcastProgram} />
         </div>
       ))}
