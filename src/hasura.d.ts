@@ -13,6 +13,21 @@ export interface GET_PUBLISHED_PROGRAM_COLLECTION_program_program_roles {
   member_id: string;
 }
 
+export interface GET_PUBLISHED_PROGRAM_COLLECTION_program_program_categories_category {
+  __typename: "category";
+  id: string;
+  name: string;
+}
+
+export interface GET_PUBLISHED_PROGRAM_COLLECTION_program_program_categories {
+  __typename: "program_category";
+  id: any;
+  /**
+   * An object relationship
+   */
+  category: GET_PUBLISHED_PROGRAM_COLLECTION_program_program_categories_category;
+}
+
 export interface GET_PUBLISHED_PROGRAM_COLLECTION_program_program_plans {
   __typename: "program_plan";
   id: any;
@@ -64,6 +79,10 @@ export interface GET_PUBLISHED_PROGRAM_COLLECTION_program {
    * An array relationship
    */
   program_roles: GET_PUBLISHED_PROGRAM_COLLECTION_program_program_roles[];
+  /**
+   * An array relationship
+   */
+  program_categories: GET_PUBLISHED_PROGRAM_COLLECTION_program_program_categories[];
   /**
    * An array relationship
    */
@@ -196,6 +215,7 @@ export interface GET_PUBLISHED_PODCAST_PROGRAM_COLLECTION_podcast_program {
   duration_second: any;
   list_price: any;
   sale_price: any | null;
+  sold_at: any | null;
   /**
    * An array relationship
    */
@@ -331,6 +351,7 @@ export interface GET_PUBLISHED_ACTIVITY_COLLECTION_activity {
   id: any;
   cover_url: string | null;
   title: string;
+  published_at: any | null;
   is_participants_visible: boolean;
   /**
    * An aggregated array relationship

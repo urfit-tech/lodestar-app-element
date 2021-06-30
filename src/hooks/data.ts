@@ -58,6 +58,13 @@ export const usePublishedProgramCollection = (options?: {
             id
             member_id
           }
+          program_categories {
+            id
+            category {
+              id
+              name
+            }
+          }
           program_plans(order_by: { created_at: asc }, limit: 1) {
             id
             list_price
@@ -216,6 +223,7 @@ export const usePublishedPodcastProgramCollection = (options?: { limit?: number 
           duration_second
           list_price
           sale_price
+          sold_at
           podcast_program_roles(where: { name: { _eq: "instructor" } }) {
             id
             member {
@@ -348,6 +356,7 @@ export const usePublishedActivityCollection = (options?: { limit?: number }) => 
           id
           cover_url
           title
+          published_at
           is_participants_visible
           activity_enrollments_aggregate {
             aggregate {
