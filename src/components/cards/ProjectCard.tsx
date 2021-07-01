@@ -11,7 +11,7 @@ import { ReactComponent as UserOIcon } from '../../images/icons/user-o.svg'
 import { ProjectBasicProps } from '../../types/data'
 import Card from '../Card'
 import { CustomRatioImage } from '../Image'
-import PriceLabel from '../label/priceLabel'
+import PriceLabel from '../label/PriceLabel'
 
 const StyledLabel = styled.div`
   color: ${props => props.theme['@primary-color']};

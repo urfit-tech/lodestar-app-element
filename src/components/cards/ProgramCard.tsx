@@ -8,7 +8,7 @@ import { ProgramBriefProps, ProgramPlanProps, ProgramRoleProps } from '../../typ
 import MemberAvatar from '../Avatar'
 import Card from '../Card'
 import { CustomRatioImage } from '../Image'
-import PriceLabel from '../label/priceLabel'
+import PriceLabel from '../label/PriceLabel'
 
 const StyledTitle = styled.div`
   ${MultiLineTruncationMixin}

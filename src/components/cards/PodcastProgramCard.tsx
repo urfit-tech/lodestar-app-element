@@ -8,7 +8,7 @@ import { PodcastProgramBriefProps } from '../../types/data'
 import Avatar from '../Avatar'
 import Card from '../Card'
 import { CustomRatioImage } from '../Image'
-import PriceLabel from '../label/priceLabel'
+import PriceLabel from '../label/PriceLabel'
 import Responsive, { BREAK_POINT } from '../Responsive'
 
 const StyledContentBlock = styled.div`
