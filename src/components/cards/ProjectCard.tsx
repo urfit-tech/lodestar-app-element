@@ -46,8 +46,13 @@ const ProjectCard: React.VFC<ProjectCardProps> = ({ project }) => {
       >
         <CustomRatioImage width="100%" ratio={9 / 16} src={project.previewUrl || project.coverUrl || EmptyCover} />
         <Card.ContentBlock>
-          <Card.Title>{project.title}</Card.Title>
-          <Card.Description>{project.abstract}</Card.Description>
+          <Card.Title
+            customStyle={{ fontSize: '18', textAlign: 'left', fontWeight: 'bold', color: '' }}
+            className="mb-3"
+          >
+            {project.title}
+          </Card.Title>
+          <Card.Description className="mb-3">{project.abstract}</Card.Description>
           <Card.MetaBlock className="d-flex align-items-end justify-content-between">
             <StyledCircleWrapper>
               {project.type === 'funding' && (
