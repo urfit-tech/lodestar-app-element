@@ -22,6 +22,12 @@ export type BackgroundProps = (
   MarginProps &
   PaddingProps
 
+export type LayoutProps = {
+  type?: 'flex' | 'grid'
+  mobile?: { columnAmount?: number; columnRatio?: number[] }
+  desktop?: { columnAmount?: number; columnRatio?: number[] }
+}
+
 export type ParagraphProps = {
   textAlign: 'left' | 'center' | 'right'
   fontSize: string | number

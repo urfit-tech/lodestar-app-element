@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
-import { CardProps, MarginProps, PaddingProps, ParagraphProps, TitleProps } from '../../types/style'
+import { CardProps, LayoutProps, MarginProps, PaddingProps, ParagraphProps, TitleProps } from '../../types/style'
+import { BREAK_POINT } from '../Responsive'
 
 const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
   props.customStyle &&
@@ -10,7 +11,6 @@ const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
     padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
     color: ${props.customStyle.color};
   `
-
 const generateCustomParagraphStyle = (props: { customStyle?: ParagraphProps }) =>
   props.customStyle &&
   css`
@@ -21,7 +21,6 @@ const generateCustomParagraphStyle = (props: { customStyle?: ParagraphProps }) =
     padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
     color: ${props.customStyle.color};
   `
-
 const generateCustomCardStyle = (props: { customStyle?: CardProps }) =>
   props.customStyle &&
   css`
@@ -48,13 +47,35 @@ const generateCustomPaddingStyle = (props: { customStyle?: PaddingProps }) =>
     ${props.customStyle.pr && `padding-right: ${props.customStyle.pr}px;`}
     ${props.customStyle.pl && `padding-left: ${props.customStyle.pl}px;`}
   `
-const StyledTitle = styled.h3<{ customStyle?: TitleProps }>`
+const generateCustomLayoutStyle = (props: { customStyle?: LayoutProps }) =>
+  props.customStyle &&
+  css`
+    ${props.customStyle.type && `display: ${props.customStyle.type};`}
+    ${props.customStyle.type === 'grid' &&
+    css`
+      grid-template-columns: ${props.customStyle.mobile?.columnRatio?.reduce((a, v) => (a += v + 'fr '), '') ||
+      (props.customStyle.mobile?.columnAmount &&
+        `repeat(${props.customStyle.mobile.columnAmount},${12 / props.customStyle.mobile.columnAmount})fr`) ||
+      '12fr'};
+      grid-gap: 30px;
+
+      @media (min-width: ${BREAK_POINT}px) {
+        ${css`
+          grid-template-columns: ${props.customStyle.desktop?.columnRatio?.reduce((a, v) => (a += v + 'fr '), '') ||
+          (props.customStyle.desktop?.columnAmount &&
+            `repeat(${props.customStyle.desktop.columnAmount},${12 / props.customStyle.desktop.columnAmount})fr`) ||
+          'repeat(3,4fr)'};
+        `}
+      }
+    `}
+  `
+
+const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
   line-height: 1;
   && {
     ${generateCustomTitleStyle}
   }
 `
-
 const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
   && {
     ${generateCustomParagraphStyle}
@@ -68,4 +89,5 @@ export {
   generateCustomCardStyle,
   generateCustomMarginStyle,
   generateCustomPaddingStyle,
+  generateCustomLayoutStyle,
 }

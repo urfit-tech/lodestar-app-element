@@ -44,7 +44,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = ({ program }) => {
   const periodType = program.isSubscription && program.plans.length > 0 ? program.plans[0].periodType : null
 
   return (
-    <div>
+    <>
       <InstructorPlaceHolder>
         <Link to={instructorId ? `/creators/${instructorId}?tabkey=introduction` : `/creators`}>
           <MemberAvatar memberId={instructorId || ''} withName />
@@ -81,7 +81,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = ({ program }) => {
           </Card.ContentBlock>
         </Card>
       </Link>
-    </div>
+    </>
   )
 }
 
