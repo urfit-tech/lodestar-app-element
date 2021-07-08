@@ -1,9 +1,8 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { ParagraphProps, TitleProps } from '../types/style'
-import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
 
-const StyledTitle = styled.h3<{ row: boolean; customStyle: TitleProps }>`
+const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
   font-family: NotoSansCJKtc;
   font-size: 28px;
   font-weight: bold;
@@ -11,20 +10,23 @@ const StyledTitle = styled.h3<{ row: boolean; customStyle: TitleProps }>`
   color: #ffffff;
   text-align: center;
 
-  ${props =>
-    props.row &&
-    css`
-      @media (min-width: 768px) {
-        text-align: left;
-      }
-    `}
-
   && {
-    ${generateCustomTitleStyle}
+    ${props =>
+      props.customStyle &&
+      css`
+        font-size: ${props.customStyle.fontSize}px;
+        font-weight: ${props.customStyle.fontWeight};
+        padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+        color: ${props.customStyle.color};
+
+        @media (min-width: 768px) {
+          text-align: ${props.customStyle.textAlign};
+        }
+      `}
   }
 `
 
-const StyledContent = styled.p<{ row: boolean; customStyle: ParagraphProps }>`
+const StyledContent = styled.p<{ customStyle: ParagraphProps }>`
   font-family: NotoSansCJKtc;
   font-size: 16px;
   font-weight: 500;
@@ -33,16 +35,20 @@ const StyledContent = styled.p<{ row: boolean; customStyle: ParagraphProps }>`
   margin-top: 24px;
   text-align: center;
 
-  ${props =>
-    props.row &&
-    css`
-      @media (min-width: 768px) {
-        text-align: left;
-      }
-    `}
-
   && {
-    ${generateCustomParagraphStyle}
+    ${props =>
+      props.customStyle &&
+      css`
+        line-height: ${props.customStyle.lineHeight};
+        font-size: ${props.customStyle.fontSize}px;
+        font-weight: ${props.customStyle.fontWeight};
+        padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+        color: ${props.customStyle.color};
+
+        @media (min-width: 768px) {
+          text-align: ${props.customStyle.textAlign};
+        }
+      `}
   }
 `
 

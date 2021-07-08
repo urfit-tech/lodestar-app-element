@@ -94,16 +94,18 @@ const Slide: React.FC<{
         onClick={onClick}
       >
         <div className="container">
-          {title && (
-            <StyledCoverHeading customStyle={customStyle.title} className="mb-3">
-              {title}
-            </StyledCoverHeading>
-          )}
-          {subtitle && (
-            <StyledParagraph customStyle={customStyle.paragraph} className="mb-4">
-              {subtitle}
-            </StyledParagraph>
-          )}
+          <div className="col-12 col-md-10 col-lg-6 mx-auto">
+            {title && (
+              <StyledCoverHeading customStyle={customStyle.title} className="mb-3">
+                {title}
+              </StyledCoverHeading>
+            )}
+            {subtitle && (
+              <StyledParagraph customStyle={customStyle.paragraph} className="mb-4">
+                {subtitle}
+              </StyledParagraph>
+            )}
+          </div>
           {buttonText && <StyledCoverButton>{buttonText}</StyledCoverButton>}
         </div>
       </StyledCoverBackground>
