@@ -1,15 +1,17 @@
 export type MarginProps = {
-  mt: string | number
-  mb: string | number
-  mr: string | number
-  ml: string | number
+  m?: string | number
+  mt?: string | number
+  mb?: string | number
+  mr?: string | number
+  ml?: string | number
 }
 
 export type PaddingProps = {
-  pt: string | number
-  pb: string | number
-  pr: string | number
-  pl: string | number
+  p?: string | number
+  pt?: string | number
+  pb?: string | number
+  pr?: string | number
+  pl?: string | number
 }
 
 export type BackgroundProps = (
@@ -19,6 +21,12 @@ export type BackgroundProps = (
 ) &
   MarginProps &
   PaddingProps
+
+export type LayoutProps = {
+  type?: 'flex' | 'grid'
+  mobile?: { columnAmount?: number; columnRatio?: number[] }
+  desktop?: { columnAmount?: number; columnRatio?: number[] }
+}
 
 export type ParagraphProps = {
   textAlign: 'left' | 'center' | 'right'

@@ -1,0 +1,7 @@
+{
+  "cSpell.words": [
+    "kolable",
+    "typegen",
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

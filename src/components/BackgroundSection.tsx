@@ -1,17 +1,26 @@
+import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { BackgroundProps } from '../types/style'
+import { generateCustomMarginStyle, generateCustomPaddingStyle, StyledTitle as Title } from './common'
 
-const StyledSection = styled.section<{ customStyle: BackgroundProps }>`
+export const StyledLink = styled(Link)`
+  margin-top: 40px;
+`
+export const StyledTitle = styled(Title)`
+  margin: 0 auto;
+  margin-bottom: 40px;
+`
+const StyledSection = styled.section<{ customStyle?: BackgroundProps }>`
   position: relative;
   padding: 64px 0;
   background-color: ${props =>
-    props.customStyle.backgroundColor ? `url(${props.customStyle.backgroundImage})` : 'white'};
-  background-image: ${props => props.customStyle.backgroundImage && `url(${props.customStyle.backgroundImage})`};
+    props.customStyle?.backgroundColor ? `url(${props.customStyle.backgroundImage})` : 'white'};
+  background-image: ${props => props.customStyle?.backgroundImage && `url(${props.customStyle.backgroundImage})`};
   background-size: cover;
   background-position: center;
 
   ${props =>
-    props.customStyle.mode === 'light' &&
+    props.customStyle?.mode === 'light' &&
     css`
       &::after {
         content: '';
@@ -28,7 +37,7 @@ const StyledSection = styled.section<{ customStyle: BackgroundProps }>`
     `};
 
   ${props =>
-    props.customStyle.mode === 'dark' &&
+    props.customStyle?.mode === 'dark' &&
     css`
       color: white;
       &::after {
@@ -46,10 +55,8 @@ const StyledSection = styled.section<{ customStyle: BackgroundProps }>`
     `};
 
   && {
-    ${props => css`
-      margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
-      padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
-    `}
+    ${generateCustomMarginStyle}
+    ${generateCustomPaddingStyle}
   }
 `
 
