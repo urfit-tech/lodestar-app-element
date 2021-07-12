@@ -28,20 +28,20 @@ const StyledCoverBackground = styled.div<{ srcDesktop: string; srcMobile: string
   }
 `
 const StyledCoverHeading = styled.h2<{ customStyle?: TitleProps }>`
-  color: #fff;
+  color: ${props => props.customStyle?.color || 'white'};
   font-size: 28px;
   font-weight: 500;
   letter-spacing: 0.23px;
+  ${props => props.customStyle && `text-align: ${props.customStyle.textAlign}`};
 
   @media (min-width: 992px) {
     font-size: 52px;
     line-height: 1.3;
     letter-spacing: 1px;
-    text-align: center;
-  }
 
-  && {
-    ${generateCustomTitleStyle}
+    && {
+      ${generateCustomTitleStyle}
+    }
   }
 `
 

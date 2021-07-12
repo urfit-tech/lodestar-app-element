@@ -2,6 +2,21 @@ import React from 'react'
 import styled from 'styled-components'
 import { ParagraphProps, TitleProps } from '../types/style'
 import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
+import { BREAK_POINT } from './Responsive'
+
+const StyledDescriptionTitle = styled.h3<{ customStyle: TitleProps }>`
+  font-family: NotoSansCJKtc;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  text-align: center;
+  font-size: ${props => props.customStyle.fontSize}px;
+
+  @media (min-width: ${BREAK_POINT}px) {
+    && {
+      ${generateCustomTitleStyle}
+    }
+  }
+`
 
 const StyledTitle = styled.h3<{ highlight?: boolean; customStyle: TitleProps }>`
   font-family: NotoSansCJKtc;
@@ -41,12 +56,14 @@ const StyledArticle = styled.article`
 
 const Article: React.FC<{ className?: string }> & {
   Title: typeof StyledTitle
+  DescriptionTitle: typeof StyledDescriptionTitle
   Content: typeof StyledParagraph
 } = ({ className, children }) => {
   return <StyledArticle className={className}>{children}</StyledArticle>
 }
 
 Article.Title = StyledTitle
+Article.DescriptionTitle = StyledDescriptionTitle
 Article.Content = StyledParagraph
 
 export default Article
