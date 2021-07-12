@@ -47,6 +47,7 @@ const ProjectCard: React.VFC<ProjectCardProps> = ({ project }) => {
         <CustomRatioImage width="100%" ratio={9 / 16} src={project.previewUrl || project.coverUrl || EmptyCover} />
         <Card.ContentBlock>
           <Card.Title
+            style={{ height: '3rem' }}
             customStyle={{ fontSize: '18', textAlign: 'left', fontWeight: 'bold', color: '' }}
             className="mb-3"
           >

@@ -90,7 +90,7 @@ const PodcastProgramCard: React.VFC<PodcastProgramCardProps> = ({ podcastProgram
         </StyledCoverBlock>
         <StyledContentBlock className="flex-grow-1 d-flex flex-column justify-content-between">
           <StyledTitle>{podcastProgram.title}</StyledTitle>
-          <StyledDescription className="d-flex justify-content-between">
+          <StyledDescription className="d-flex justify-content-between align-items-center">
             <div className="d-none d-lg-flex align-items-center">
               <Avatar.Image src={podcastProgram.instructor?.avatarUrl} size={36} className="mr-2" />
               <span>{podcastProgram.instructor?.name}</span>

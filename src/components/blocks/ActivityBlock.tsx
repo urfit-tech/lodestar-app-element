@@ -22,9 +22,7 @@ const ActivityBlock: React.VFC<{
   return (
     <>
       {activities.map(activity => (
-        <div className="mb-5">
-          <ActivityCard key={activity.id} activity={activity} />
-        </div>
+        <ActivityCard key={activity.id} activity={activity} />
       ))}
     </>
   )

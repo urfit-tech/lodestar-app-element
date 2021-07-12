@@ -27,7 +27,7 @@ const ProgramBlock: React.VFC<{
   return (
     <>
       {programs.map(program => (
-        <div className="mb-5">
+        <div>
           <ProgramCard key={program.id} program={program} />
         </div>
       ))}

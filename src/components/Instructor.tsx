@@ -23,7 +23,8 @@ const StyledAvatar = styled.img<{ size?: number }>`
 const StyledSubTitle = styled.h2<{ customStyle?: TitleProps }>`
   color: var(--gray-darker);
   text-align: center;
-  font-size: 20px;
+  font-size: 24px;
+  margin-bottom: 8px;
   font-weight: bold;
   line-height: 1.3;
   letter-spacing: 0.77;
@@ -32,6 +33,7 @@ const StyledSubTitle = styled.h2<{ customStyle?: TitleProps }>`
   }
 `
 const StyledDescription = styled.div<{ customStyle?: ParagraphProps }>`
+  font-size: 14px;
   line-height: 1;
   letter-spacing: 0.2px;
   max-width: 190px;

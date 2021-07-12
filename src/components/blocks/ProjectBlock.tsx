@@ -29,9 +29,7 @@ const ProjectBlock: React.VFC<{
   return (
     <>
       {projects.map(project => (
-        <div className="mb-5">
-          <ProjectCard key={project.id} project={project} />
-        </div>
+        <ProjectCard key={project.id} project={project} />
       ))}
     </>
   )

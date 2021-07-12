@@ -17,7 +17,7 @@ const StyledTitle = styled.div`
   height: 3em;
 `
 const StyledMeta = styled.div`
-  min-height: 1rem;
+  min-height: 1.5rem;
   color: var(--black-45);
   font-size: 14px;
   letter-spacing: 0.18px;

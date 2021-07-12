@@ -57,9 +57,10 @@ const generateCustomLayoutStyle = (props: { customStyle?: LayoutProps }) =>
       (props.customStyle.mobile?.columnAmount &&
         `repeat(${props.customStyle.mobile.columnAmount},${12 / props.customStyle.mobile.columnAmount})fr`) ||
       '12fr'};
-      grid-gap: 30px;
+      grid-gap: 1.5rem;
 
       @media (min-width: ${BREAK_POINT}px) {
+        grid-gap: 30px;
         ${css`
           grid-template-columns: ${props.customStyle.desktop?.columnRatio?.reduce((a, v) => (a += v + 'fr '), '') ||
           (props.customStyle.desktop?.columnAmount &&

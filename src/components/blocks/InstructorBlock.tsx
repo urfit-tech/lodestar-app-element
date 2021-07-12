@@ -1,11 +1,44 @@
 import React from 'react'
+import styled from 'styled-components'
 import { useInstructorCollection } from '../../hooks/data'
-import { ReactComponent as AngleThinLeftIcon } from '../../images/icons/angle-thin-left.svg'
-import { ReactComponent as AngleThinRightIcon } from '../../images/icons/angle-thin-right.svg'
+import AngleThinLeft from '../../images/icons/angle-thin-left.svg'
+import AngleThinRight from '../../images/icons/angle-thin-right.svg'
 import Carousel from '../Carousel'
 import Instructor from '../Instructor'
 import { BREAK_POINT } from '../Responsive'
 import Skeleton from '../Skeleton'
+
+const StyledCarousel = styled(Carousel)`
+  && {
+    .slick-next::before,
+    .slick-prev::before {
+      content: none;
+    }
+    .slick-prev,
+    .slick-next {
+      margin-top: -32px;
+      width: 64px;
+      height: 64px;
+      font-size: 64px;
+    }
+    .slick-prev {
+      left: -64px;
+      &,
+      &:hover,
+      &:focus {
+        background-image: url(${AngleThinLeft});
+      }
+    }
+    .slick-next {
+      right: -64px;
+      &,
+      &:hover,
+      &:focus {
+        background-image: url(${AngleThinRight});
+      }
+    }
+  }
+`
 
 const InstructorBlock: React.FC<{
   appId: string
@@ -26,15 +59,13 @@ const InstructorBlock: React.FC<{
   if (instructors.length === 0 || errorInstructors) return null
 
   return (
-    <Carousel
+    <StyledCarousel
+      arrows
       dots={false}
-      arrows={true}
       draggable
       swipeToSlide
       slidesToShow={instructors.length < 3 ? instructors.length : 3}
       slidesToScroll={instructors.length < 3 ? instructors.length : 3}
-      prevArrow={<AngleThinLeftIcon />}
-      nextArrow={<AngleThinRightIcon />}
       responsive={[
         {
           breakpoint: BREAK_POINT,
@@ -55,7 +86,7 @@ const InstructorBlock: React.FC<{
           isShowDescription={!!isShowDescription}
         />
       ))}
-    </Carousel>
+    </StyledCarousel>
   )
 }
 
