@@ -44,7 +44,7 @@ const InstructorBlock: React.FC<{
   appId: string
   displayAmount?: number
   isShowDescription?: boolean
-}> = ({ appId, displayAmount, isShowDescription }) => {
+}> = ({ appId, displayAmount = 4, isShowDescription }) => {
   const { loadingInstructors, errorInstructors, instructors } = useInstructorCollection(appId)
 
   if (loadingInstructors)
@@ -64,8 +64,8 @@ const InstructorBlock: React.FC<{
       dots={false}
       draggable
       swipeToSlide
-      slidesToShow={instructors.length < 3 ? instructors.length : 3}
-      slidesToScroll={instructors.length < 3 ? instructors.length : 3}
+      slidesToShow={instructors.length < displayAmount ? instructors.length : displayAmount}
+      slidesToScroll={1}
       responsive={[
         {
           breakpoint: BREAK_POINT,
@@ -75,7 +75,7 @@ const InstructorBlock: React.FC<{
         },
       ]}
     >
-      {instructors.slice(0, displayAmount).map(v => (
+      {instructors.map(v => (
         <Instructor
           key={v.id}
           id={v.id}
