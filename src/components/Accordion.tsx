@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ReactComponent as AngleRightIcon } from '../images/icons/angle-right.svg'
 import { CardProps, ParagraphProps, TitleProps } from '../types/style'
-import { generateCustomCardStyle, StyledParagraph, StyledTitle } from './common'
+import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph as Paragraph } from './common'
 
 const StyledAction = styled.div<{ isActive: boolean }>`
   font-size: 20px;
@@ -10,14 +10,24 @@ const StyledAction = styled.div<{ isActive: boolean }>`
     props.isActive &&
     css`
       transform: rotate(90deg);
-      margin-right: 6px;
     `};
   color: var(--gray);
-  transition: transform 0.5s ease-in-out;
+  transition: transform 0.3s ease-in-out;
+`
+
+const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
+  line-height: 1.5;
+  && {
+    ${generateCustomTitleStyle}
+  }
+`
+
+const StyledParagraph = styled(Paragraph)<{ isActive: boolean }>`
+  margin-top: 1.25rem;
+  display: ${props => (props.isActive ? 'block' : `none`)};
 `
 
 const StyledAccordionHeader = styled.header`
-  margin-bottom: 1.25rem;
   font-family: NotoSansCJKtc;
   font-size: 16px;
   font-weight: bold;
@@ -31,15 +41,8 @@ const StyledAccordion = styled.article<{ titleHeight: number; customStyle: CardP
   margin-bottom: 1.5rem;
   border-radius: 4px;
   padding: 1.25rem;
-  max-height: ${props =>
-    props.isActive ? '500px' : `${props.titleHeight + Number(props.customStyle.pt) + Number(props.customStyle.pb)}px`};
   overflow: hidden;
   background-color: var(--gray-lighter);
-  transition: max-height 0s;
-
-  &:hover {
-    transition: max-height 1s ease-out;
-  }
 
   && {
     ${generateCustomCardStyle}
@@ -76,7 +79,9 @@ const Accordion: React.FC<{
               <AngleRightIcon />
             </StyledAction>
           </StyledAccordionHeader>
-          <StyledParagraph customStyle={customStyle.paragraph}>{v.description}</StyledParagraph>
+          <StyledParagraph isActive={activeIndex === i} customStyle={customStyle.paragraph}>
+            {v.description}
+          </StyledParagraph>
         </StyledAccordion>
       ))}
     </div>
