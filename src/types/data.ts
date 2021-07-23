@@ -59,6 +59,7 @@ export type ProgramPlanProps = {
   listPrice: number
   salePrice: number | null
   soldAt: Date | null
+  periodAmount: number
   periodType: PeriodType
 }
 

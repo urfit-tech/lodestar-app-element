@@ -70,6 +70,7 @@ export const usePublishedProgramCollection = (options?: {
             list_price
             sale_price
             sold_at
+            period_amount
             period_type
           }
           program_content_sections {
@@ -127,6 +128,7 @@ export const usePublishedProgramCollection = (options?: {
               listPrice: programPlan.list_price,
               salePrice: programPlan.sale_price,
               soldAt: programPlan.sold_at && new Date(programPlan.sold_at),
+              periodAmount: programPlan.period_amount,
               periodType: programPlan.period_type as PeriodType,
             })),
             totalDuration: sum(

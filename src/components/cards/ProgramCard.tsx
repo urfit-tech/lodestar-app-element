@@ -41,6 +41,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = ({ program }) => {
       : (program.soldAt?.getTime() || 0) > Date.now()
       ? program.salePrice
       : undefined
+  const periodAmount = program.isSubscription && program.plans.length > 0 ? program.plans[0].periodAmount : null
   const periodType = program.isSubscription && program.plans.length > 0 ? program.plans[0].periodType : null
 
   return (
@@ -70,6 +71,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = ({ program }) => {
                   variant="inline"
                   listPrice={listPrice}
                   salePrice={salePrice}
+                  periodAmount={periodAmount}
                   periodType={periodType || undefined}
                 />
               </div>
