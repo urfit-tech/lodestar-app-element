@@ -28,6 +28,15 @@ const StyledSubTitle = styled.h3<{ customStyle: TitleProps }>`
   margin-bottom: 0.75rem;
   font-size: 16px;
   text-align: center;
+  font-weight: ${props =>
+    props.customStyle &&
+    (props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500)};
 
   && {
     ${generateCustomTitleStyle}

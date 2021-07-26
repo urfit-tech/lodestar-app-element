@@ -6,7 +6,14 @@ import { BREAK_POINT } from './Responsive'
 
 const StyledDescriptionTitle = styled.h3<{ customStyle: TitleProps }>`
   font-family: NotoSansCJKtc;
-  font-weight: bold;
+  font-weight: ${props =>
+    props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500};
   letter-spacing: 0.2px;
   text-align: center;
   font-size: ${props => props.customStyle.fontSize}px;
@@ -21,7 +28,14 @@ const StyledDescriptionTitle = styled.h3<{ customStyle: TitleProps }>`
 const StyledTitle = styled.h3<{ highlight?: boolean; customStyle: TitleProps }>`
   font-family: NotoSansCJKtc;
   font-size: ${props => props.customStyle.fontSize || 16}px;
-  font-weight: bold;
+  font-weight: ${props =>
+    props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500};
   letter-spacing: 0.2px;
   color: ${props => (props.highlight ? props.theme['@primary-color'] : 'var(--gray-darker)')};
 
@@ -39,7 +53,14 @@ const StyledTitle = styled.h3<{ highlight?: boolean; customStyle: TitleProps }>`
 
 const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
   font-size: 16px;
-  font-weight: 500;
+  font-weight: ${props =>
+    props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500};
   line-height: 1.69;
   letter-spacing: 0.2px;
   text-align: justify;

@@ -28,12 +28,31 @@ const StyledSubTitle = styled.h2<{ customStyle?: TitleProps }>`
   font-weight: bold;
   line-height: 1.3;
   letter-spacing: 0.77;
+  font-weight: ${props =>
+    props.customStyle &&
+    (props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500)};
+
   && {
     ${generateCustomTitleStyle}
   }
 `
 const StyledDescription = styled.div<{ customStyle?: ParagraphProps }>`
   font-size: 14px;
+  font-weight: ${props =>
+    props.customStyle &&
+    (props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500)};
   line-height: 1;
   letter-spacing: 0.2px;
   max-width: 190px;
@@ -52,6 +71,15 @@ const StyledDescription = styled.div<{ customStyle?: ParagraphProps }>`
 const StyledAbstract = styled(StyledDescription)`
   color: #a9a9a9;
   line-height: 1.5;
+  font-weight: ${props =>
+    props.customStyle &&
+    (props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500)};
 `
 
 const Instructor: React.FC<{

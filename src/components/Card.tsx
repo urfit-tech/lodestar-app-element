@@ -25,7 +25,15 @@ const StyledContentBlock = styled.div`
   padding: 1.25rem;
 `
 const StyledCardContent = styled.p<{ customStyle?: ParagraphProps }>`
-  font-weight: 500;
+  font-weight: ${props =>
+    props.customStyle &&
+    (props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500)};
 
   && {
     ${generateCustomParagraphStyle}

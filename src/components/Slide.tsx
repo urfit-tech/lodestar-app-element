@@ -48,7 +48,15 @@ const StyledCoverHeading = styled.h2<{ customStyle?: TitleProps }>`
 const StyledParagraph = styled.p<{ customStyle?: ParagraphProps }>`
   color: #fff;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: ${props =>
+    props.customStyle &&
+    (props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500)};
   line-height: 1.69;
   letter-spacing: 0.2px;
 

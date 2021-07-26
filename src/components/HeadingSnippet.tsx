@@ -29,7 +29,14 @@ const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
 const StyledContent = styled.p<{ customStyle: ParagraphProps }>`
   font-family: NotoSansCJKtc;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: ${props =>
+    props.customStyle.fontWeight === 'bold'
+      ? 800
+      : props.customStyle.fontWeight === 'normal'
+      ? 500
+      : props.customStyle.fontWeight === 'lighter'
+      ? 200
+      : 500};
   line-height: 1.38;
   color: #ffffff;
   margin-top: 24px;
