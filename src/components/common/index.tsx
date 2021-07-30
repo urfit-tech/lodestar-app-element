@@ -90,6 +90,7 @@ const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
   }
 `
 const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
+  white-space: pre-line;
   && {
     ${generateCustomParagraphStyle}
   }
