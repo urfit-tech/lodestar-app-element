@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { commonMessages } from '../../helpers/translation'
-import EmptyCover from '../../images/default/empty-cover.png'
+import EmptyCover from '../../images/empty-cover.png'
 import FileUploader from './FileUploader'
 
 type CustomRatioImageProps = {
