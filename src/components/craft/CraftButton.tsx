@@ -1,11 +1,9 @@
 import { useNode, UserComponent } from '@craftjs/core'
-import { Button as AntdButton, Checkbox, Form, Input, Radio, Space } from 'antd'
+import { Button as AntdButton, Checkbox, Form, Input } from 'antd'
 import Collapse, { CollapseProps } from 'antd/lib/collapse'
 import { useForm } from 'antd/lib/form/Form'
-import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import Button from '../../components/Button'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftButtonProps } from '../../types/craft'
 import {
   AdminHeaderTitle,
@@ -55,7 +53,7 @@ const CraftButton: UserComponent<CraftButtonProps & { setActiveKey: React.Dispat
 }
 
 const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
-  const { formatMessage } = useIntl()
+  // const { formatMessage } = useIntl()
   const [form] = useForm<FieldProps>()
   const {
     actions: { setProp },
@@ -105,11 +103,19 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
       >
         <StyledCollapsePanel
           key="buttonSetting"
-          header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.buttonSetting)}</AdminHeaderTitle>}
+          header={
+            <AdminHeaderTitle>
+              {/* {formatMessage(craftPageMessages.label.buttonSetting)} */}buttonSettings
+            </AdminHeaderTitle>
+          }
         >
           <Form.Item
             name="title"
-            label={<StyledCraftSettingLabel>{formatMessage(craftPageMessages.label.title)}</StyledCraftSettingLabel>}
+            label={
+              <StyledCraftSettingLabel>
+                {/* {formatMessage(craftPageMessages.label.title)} */}title
+              </StyledCraftSettingLabel>
+            }
           >
             <Input className="mt-2" value={props.title} />
           </Form.Item>
@@ -117,12 +123,16 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
           <Form.Item
             className="m-0"
             name="link"
-            label={<StyledCraftSettingLabel>{formatMessage(craftPageMessages.label.link)}</StyledCraftSettingLabel>}
+            label={
+              <StyledCraftSettingLabel>
+                {/* {formatMessage(craftPageMessages.label.link)} */}link
+              </StyledCraftSettingLabel>
+            }
           >
             <StyledUnderLineInput className="mb-2" placeholder="https://" />
           </Form.Item>
           <Form.Item name="openNewTab" valuePropName="checked">
-            <Checkbox>{formatMessage(craftPageMessages.label.openNewTab)}</Checkbox>
+            <Checkbox>{/* {formatMessage(craftPageMessages.label.openNewTab)} */}openNewTab</Checkbox>
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
@@ -137,9 +147,11 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
       >
         <StyledCollapsePanel
           key="buttonStyle"
-          header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.buttonStyle)}</AdminHeaderTitle>}
+          header={
+            <AdminHeaderTitle>{/* {formatMessage(craftPageMessages.label.buttonStyle)} */}buttonStyle</AdminHeaderTitle>
+          }
         >
-          <Form.Item
+          {/* <Form.Item
             name="size"
             label={
               <StyledCraftSettingLabel className="mb-2">
@@ -154,8 +166,8 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
                 <Radio value="sl">{formatMessage(craftPageMessages.label.small)}</Radio>
               </Space>
             </Radio.Group>
-          </Form.Item>
-          <Form.Item
+          </Form.Item> */}
+          {/* <Form.Item
             name="block"
             valuePropName="checked"
             label={<StyledCraftSettingLabel>{formatMessage(craftPageMessages.label.width)}</StyledCraftSettingLabel>}
@@ -167,7 +179,7 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
             >
               {formatMessage(craftPageMessages.label.buttonBlock)}
             </Checkbox>
-          </Form.Item>
+          </Form.Item> */}
 
           {/* 
           //TODO: not display in the version, tbd 
@@ -189,10 +201,11 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
+
       {selected && (
         <StyledSettingButtonWrapper>
           <AntdButton className="mb-3" type="primary" block htmlType="submit">
-            {formatMessage(commonMessages.ui.save)}
+            {/* {formatMessage(commonMessages.ui.save)} */}save
           </AntdButton>
         </StyledSettingButtonWrapper>
       )}
