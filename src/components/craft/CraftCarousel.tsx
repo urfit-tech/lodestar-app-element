@@ -7,8 +7,8 @@ import styled from 'styled-components'
 import Carousel from '../../components/Carousel'
 import { StyledTitle } from '../../components/common'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
-import { ReactComponent as TrashOIcon } from '../../images/icon/trash-o.svg'
 import { ReactComponent as PlusIcon } from '../../images/icons/plus.svg'
+import { ReactComponent as TrashOIcon } from '../../images/icons/trash-o.svg'
 import { CraftTextStyleProps } from '../../types/craft'
 import {
   AdminHeaderTitle,
