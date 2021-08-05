@@ -151,7 +151,7 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
               <Space direction="vertical">
                 <Radio value="lg">{formatMessage(craftPageMessages.label.large)}</Radio>
                 <Radio value="md">{formatMessage(craftPageMessages.label.middle)}</Radio>
-                <Radio value="sl">{formatMessage(craftPageMessages.label.small)}</Radio>
+                <Radio value="sm">{formatMessage(craftPageMessages.label.small)}</Radio>
               </Space>
             </Radio.Group>
           </Form.Item>
