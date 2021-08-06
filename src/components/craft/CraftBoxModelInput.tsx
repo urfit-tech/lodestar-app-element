@@ -1,4 +1,5 @@
 import { Input } from 'antd'
+import { range } from 'ramda'
 import React from 'react'
 import { StyledCraftSettingLabel, StyledCraftSlider } from '../common'
 
@@ -26,11 +27,9 @@ const CraftBoxModelInput: React.VFC<{
           onChange={e => {
             const eventBoxModelValue = formatBoxModelValue(e.target.value)
             onChange?.(
-              `${isNaN(eventBoxModelValue?.[0] || 0) ? eventBoxModelValue?.[0] || 0 : 0};${
-                isNaN(eventBoxModelValue?.[0] || 0) ? eventBoxModelValue?.[1] || 0 : 0
-              };${isNaN(eventBoxModelValue?.[0] || 0) ? eventBoxModelValue?.[2] || 0 : 0};${
-                isNaN(eventBoxModelValue?.[0] || 0) ? eventBoxModelValue?.[3] || 0 : 0
-              }`,
+              `${range(0, 4)
+                .map(index => (isNaN(eventBoxModelValue?.[index] || 0) ? eventBoxModelValue?.[index] || 0 : 0))
+                .join(';')}`,
             )
           }}
         />
