@@ -26,7 +26,11 @@ const CraftBoxModelInput: React.VFC<{
           onChange={e => {
             const eventBoxModelValue = formatBoxModelValue(e.target.value)
             onChange?.(
-              `${eventBoxModelValue?.[0]};${eventBoxModelValue?.[1]};${eventBoxModelValue?.[2]};${eventBoxModelValue?.[3]}`,
+              `${isNaN(eventBoxModelValue?.[0] || 0) ? eventBoxModelValue?.[0] || 0 : 0};${
+                isNaN(eventBoxModelValue?.[0] || 0) ? eventBoxModelValue?.[1] || 0 : 0
+              };${isNaN(eventBoxModelValue?.[0] || 0) ? eventBoxModelValue?.[2] || 0 : 0};${
+                isNaN(eventBoxModelValue?.[0] || 0) ? eventBoxModelValue?.[3] || 0 : 0
+              }`,
             )
           }}
         />

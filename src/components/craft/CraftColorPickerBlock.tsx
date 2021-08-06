@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { SketchPicker } from 'react-color'
 import { useIntl } from 'react-intl'
-import styled from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { craftPageMessages } from '../../helpers/translation'
 import { StyledCraftSettingLabel, StyledUnderLineInput } from '../common'
 
@@ -17,11 +17,11 @@ const StyledSketchPicker = styled(SketchPicker)`
 `
 
 const CraftColorPickerBlock: React.VFC<{
-  primaryColor?: string
   value?: string
   onChange?: (value: string) => void
-}> = ({ primaryColor, value, onChange }) => {
+}> = ({ value, onChange }) => {
   const { formatMessage } = useIntl()
+  const theme = useContext(ThemeContext)
   const [visible, setVisible] = useState(false)
   const sketchPickerRef = useRef<HTMLDivElement | null>(null)
 
@@ -50,8 +50,8 @@ const CraftColorPickerBlock: React.VFC<{
 
       <div className="d-flex mb-3">
         <StyleCircleColorInput
-          background={primaryColor || '#e1614b'}
-          onClick={() => onChange?.(primaryColor || '#e1614b')}
+          background={theme['@primary-color'] || '#e1614b'}
+          onClick={() => onChange?.(theme['@primary-color'] || '#e1614b')}
         />
         <StyleCircleColorInput className="ml-2" background="#585858" onClick={() => onChange?.('#585858')} />
         <StyleCircleColorInput className="ml-2" background="#ffffff" onClick={() => onChange?.('#ffffff')} />
