@@ -4,7 +4,7 @@ import { ButtonProps } from '../types/style'
 
 const StyledButton = styled.span<ButtonProps>`
   display: inline-block;
-  border-radius: 4px;
+  border-radius: 2px;
   user-select: none;
   cursor: pointer;
   transition: 0.3s;
@@ -16,6 +16,7 @@ const StyledButton = styled.span<ButtonProps>`
   }
 
   color: ${props => props.color || 'white'};
+  background-color: ${props => props.backgroundColor};
   ${props =>
     props.size === 'lg'
       ? 'padding: 10px 56px;'

@@ -43,6 +43,7 @@ export type ButtonProps = {
   variant?: 'text' | 'solid' | 'outline'
   block?: boolean
   colorScheme?: string
+  backgroundColor?: string
 }
 
 export type ImageProps = MarginProps & PaddingProps

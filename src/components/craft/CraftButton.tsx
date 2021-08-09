@@ -16,9 +16,9 @@ import {
 } from '../common'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
 
-const StyledButtonWrapper = styled.div<{ block: boolean; variant: string }>`
+const StyledButtonWrapper = styled.div<{ block: boolean }>`
   display: ${props => (props.block ? 'block' : 'inline-block')};
-  background-color: ${props => (props.variant === 'solid' ? props.theme['@primary-color'] : '')};
+  border-radius: 2px;
   text-align: center;
 `
 
@@ -40,14 +40,8 @@ const CraftButton: UserComponent<CraftButtonProps & { setActiveKey: React.Dispat
   } = useNode()
 
   return (
-    <StyledButtonWrapper
-      ref={ref => ref && connect(drag(ref))}
-      block={block}
-      variant={variant}
-      style={{ cursor: 'pointer', background: `${color}` }}
-      onClick={() => setActiveKey('settings')}
-    >
-      <Button size={size} block={block}>
+    <StyledButtonWrapper ref={ref => ref && connect(drag(ref))} block={block} onClick={() => setActiveKey('settings')}>
+      <Button size={size} block={block} backgroundColor={color}>
         {title}
       </Button>
     </StyledButtonWrapper>
