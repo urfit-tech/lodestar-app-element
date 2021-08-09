@@ -18,15 +18,15 @@ const StyledCard = styled.div<{
   customStyle: {
     title: string
     titleStyle: CraftTextStyleProps
-    cardPadding: CraftPaddingProps
     cardMargin: CraftMarginProps
+    cardPadding: CraftPaddingProps
     solidColor?: string
   }
 }>`
-  padding: ${props =>
-    `${props.customStyle.cardPadding.pt}px ${props.customStyle.cardPadding.pr}px ${props.customStyle.cardPadding.pb}px ${props.customStyle.cardPadding.pl}px`};
   margin: ${props =>
     `${props.customStyle.cardMargin.mt}px ${props.customStyle.cardMargin.mr}px ${props.customStyle.cardMargin.mb}px ${props.customStyle.cardMargin.ml}px`};
+  padding: ${props =>
+    `${props.customStyle.cardPadding.pt}px ${props.customStyle.cardPadding.pr}px ${props.customStyle.cardPadding.pb}px ${props.customStyle.cardPadding.pl}px`};
   color: ${props => props.customStyle.titleStyle.color};
   font-size: ${props => `${props.customStyle.titleStyle.fontSize}px`};
   font-weight: ${props => props.customStyle.titleStyle.fontWeight};
@@ -37,15 +37,15 @@ type CraftCardProps = {
   type: 'feature' | 'featureWithParagraph' | 'referrer' | 'referrerReverse'
   imageType: 'empty' | 'image'
   imageUrl: string
-  imagePadding?: CraftPaddingProps
   imageMargin?: CraftMarginProps
+  imagePadding?: CraftPaddingProps
   name?: string
   title: string
   titleStyle: CraftTextStyleProps
   paragraph?: string
   paragraphStyle?: CraftTextStyleProps
-  cardPadding: CraftPaddingProps
   cardMargin: CraftMarginProps
+  cardPadding: CraftPaddingProps
   variant: 'backgroundColor' | 'outline' | 'none'
   outlineColor?: string
   backgroundType?: 'none' | 'solidColor' | 'backgroundImage'
@@ -55,24 +55,24 @@ type CraftCardProps = {
 
 type FieldProps = Omit<
   CraftCardProps,
-  'type' | 'imagePadding' | 'imageMargin' | 'titleStyle' | 'paragraphStyle' | 'cardPadding' | 'cardMargin'
+  'type' | 'imageMargin' | 'imagePadding' | 'titleStyle' | 'paragraphStyle' | 'cardMargin' | 'cardPadding'
 > & {
-  imagePadding?: string
   imageMargin?: string
-  titleStyle: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
-  paragraphStyle?: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
-  cardPadding: string
+  imagePadding?: string
+  titleStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  paragraphStyle?: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
   cardMargin: string
+  cardPadding: string
 }
 
 const CraftCard: UserComponent<CraftCardProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }> = ({
   imageType,
   imageUrl,
-  imagePadding,
   imageMargin,
+  imagePadding,
   name,
-  cardPadding,
   cardMargin,
+  cardPadding,
   variant,
   outlineColor,
   backgroundType,
@@ -92,8 +92,8 @@ const CraftCard: UserComponent<CraftCardProps & { setActiveKey: React.Dispatch<R
     <StyledCard
       ref={ref => ref && connect(drag(ref))}
       customStyle={{
-        cardPadding,
         cardMargin,
+        cardPadding,
         title,
         titleStyle,
         solidColor,
@@ -123,40 +123,40 @@ const CardSettings: React.VFC = () => {
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null)
 
   const handleSubmit = (values: FieldProps) => {
-    const imagePadding = formatBoxModelValue(values.imagePadding)
     const imageMargin = formatBoxModelValue(values.imageMargin)
-    const cardPadding = formatBoxModelValue(values.cardPadding)
+    const imagePadding = formatBoxModelValue(values.imagePadding)
     const cardMargin = formatBoxModelValue(values.cardMargin)
-    const titlePadding = formatBoxModelValue(values.titleStyle?.padding)
-    const paragraphPadding = formatBoxModelValue(values.paragraphStyle?.padding)
+    const cardPadding = formatBoxModelValue(values.cardPadding)
+    const titleMargin = formatBoxModelValue(values.titleStyle?.margin)
+    const paragraphMargin = formatBoxModelValue(values.paragraphStyle?.margin)
 
     setProp(props => {
       props.imageType = values.imageType
       props.imageUrl = values.imageUrl
-      props.imagePadding = {
-        pt: imagePadding?.[0] || '0',
-        pr: imagePadding?.[1] || '0',
-        pb: imagePadding?.[2] || '0',
-        pl: imagePadding?.[3] || '0',
-      }
       props.imageMargin = {
         mt: imageMargin?.[0] || '0',
         mr: imageMargin?.[1] || '0',
         mb: imageMargin?.[2] || '0',
         ml: imageMargin?.[3] || '0',
       }
-      props.name = values.name
-      props.cardPadding = {
-        pt: cardPadding?.[0] || '0',
-        pr: cardPadding?.[1] || '0',
-        pb: cardPadding?.[2] || '0',
-        pl: cardPadding?.[3] || '0',
+      props.imagePadding = {
+        pt: imagePadding?.[0] || '0',
+        pr: imagePadding?.[1] || '0',
+        pb: imagePadding?.[2] || '0',
+        pl: imagePadding?.[3] || '0',
       }
+      props.name = values.name
       props.cardMargin = {
         mt: cardMargin?.[0] || '0',
         mr: cardMargin?.[1] || '0',
         mb: cardMargin?.[2] || '0',
         ml: cardMargin?.[3] || '0',
+      }
+      props.cardPadding = {
+        pt: cardPadding?.[0] || '0',
+        pr: cardPadding?.[1] || '0',
+        pb: cardPadding?.[2] || '0',
+        pl: cardPadding?.[3] || '0',
       }
       props.variant = values.variant
       props.outlineColor = values.outlineColor
@@ -164,11 +164,11 @@ const CardSettings: React.VFC = () => {
       props.backgroundImageUrl = values.backgroundImageUrl
       props.title = values.title
       props.titleStyle.fontSize = values.titleStyle.fontSize
-      props.titleStyle.padding = {
-        pt: titlePadding?.[0] || '0',
-        pr: titlePadding?.[1] || '0',
-        pb: titlePadding?.[2] || '0',
-        pl: titlePadding?.[3] || '0',
+      props.titleStyle.margin = {
+        mt: titleMargin?.[0] || '0',
+        mr: titleMargin?.[1] || '0',
+        mb: titleMargin?.[2] || '0',
+        ml: titleMargin?.[3] || '0',
       }
       props.titleStyle.textAlign = values.titleStyle.textAlign
       props.titleStyle.fontWeight = values.titleStyle.fontWeight
@@ -177,11 +177,11 @@ const CardSettings: React.VFC = () => {
         props.paragraph = values?.paragraph
         props.paragraphStyle.fontSize = values.paragraphStyle?.fontSize || 0
         props.paragraphStyle.lineHeight = values?.paragraphStyle?.lineHeight || 1
-        props.paragraphStyle.padding = {
-          pt: paragraphPadding?.[0] || '0',
-          pr: paragraphPadding?.[1] || '0',
-          pb: paragraphPadding?.[2] || '0',
-          pl: paragraphPadding?.[3] || '0',
+        props.paragraphStyle.margin = {
+          mt: paragraphMargin?.[0] || '0',
+          mr: paragraphMargin?.[1] || '0',
+          mb: paragraphMargin?.[2] || '0',
+          ml: paragraphMargin?.[3] || '0',
         }
         props.paragraphStyle.textAlign = values?.paragraphStyle?.textAlign || 'center'
         props.paragraphStyle.fontWeight = values?.paragraphStyle?.fontWeight || 'normal'
@@ -199,19 +199,19 @@ const CardSettings: React.VFC = () => {
       initialValues={{
         imageType: props.imageType || 'image',
         coverImage: props.imageUrl || '',
-        imagePadding: `${props.imagePadding?.pt || 0};${props.imagePadding?.pr || 0};${props.imagePadding?.pb || 0};${
-          props.imagePadding?.pl || 0
-        }`,
         imageMargin: `${props.imageMargin?.mt || 0};${props.imageMargin?.mr || 0};${props.imageMargin?.mb || 0};${
           props.imageMargin?.ml || 0
         }`,
+        imagePadding: `${props.imagePadding?.pt || 0};${props.imagePadding?.pr || 0};${props.imagePadding?.pb || 0};${
+          props.imagePadding?.pl || 0
+        }`,
         avatarImage: props.imageUrl || '',
         name: props.name || '',
-        cardPadding: `${props.cardPadding?.pt || 0};${props.cardPadding?.pr || 0};${props.cardPadding?.pb || 0};${
-          props.cardPadding?.pl || 0
-        }`,
         cardMargin: `${props.cardMargin?.mt || 0};${props.cardMargin?.mr || 0};${props.cardMargin?.mb || 0};${
           props.cardMargin?.ml || 0
+        }`,
+        cardPadding: `${props.cardPadding?.pt || 0};${props.cardPadding?.pr || 0};${props.cardPadding?.pb || 0};${
+          props.cardPadding?.pl || 0
         }`,
         variant: props.variant || 'none',
         outlineColor: props.outlineColor || '#585858',
@@ -221,9 +221,9 @@ const CardSettings: React.VFC = () => {
         title: props.title || '',
         titleStyle: {
           fontSize: props.titleStyle.fontSize || 16,
-          padding: `${props.titleStyle.padding?.pt || 0};${props.titleStyle.padding?.pr || 0};${
-            props.titleStyle.padding?.pb || 0
-          };${props.titleStyle.padding?.pl || 0}`,
+          margin: `${props.titleStyle.margin?.mt || 0};${props.titleStyle.margin?.mr || 0};${
+            props.titleStyle.margin?.mb || 0
+          };${props.titleStyle.margin?.ml || 0}`,
           textAlign: props.titleStyle.textAlign || 'left',
           fontWeight: props.titleStyle.fontWeight || 'normal',
           color: props.titleStyle.color || '#585858',
@@ -231,9 +231,9 @@ const CardSettings: React.VFC = () => {
         paragraph: props?.paragraph || '',
         paragraphStyle: {
           fontSize: props.paragraphStyle?.fontSize || 16,
-          padding: `${props.paragraphStyle?.padding?.pt || 0};${props.paragraphStyle?.padding?.pr || 0};${
-            props.paragraphStyle?.padding?.pb || 0
-          };${props.paragraphStyle?.padding?.pl || 0}`,
+          margin: `${props.paragraphStyle?.margin?.mt || 0};${props.paragraphStyle?.margin?.mr || 0};${
+            props.paragraphStyle?.margin?.mb || 0
+          };${props.paragraphStyle?.margin?.ml || 0}`,
           textAlign: props.paragraphStyle?.textAlign || 'left',
           fontWeight: props.paragraphStyle?.fontWeight || 'normal',
           color: props.paragraphStyle?.color || '#585858',
@@ -305,8 +305,8 @@ const CardSettings: React.VFC = () => {
                 header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.imageStyle)}</AdminHeaderTitle>}
               >
                 <Form.Item
-                  name="imagePadding"
-                  label={formatMessage(craftPageMessages.label.boundary)}
+                  name="imageMargin"
+                  label={formatMessage(craftPageMessages.label.margin)}
                   rules={[
                     {
                       required: true,
@@ -318,8 +318,8 @@ const CardSettings: React.VFC = () => {
                   <CraftBoxModelInput />
                 </Form.Item>
                 <Form.Item
-                  name="imageMargin"
-                  label={formatMessage(craftPageMessages.label.borderSpacing)}
+                  name="imagePadding"
+                  label={formatMessage(craftPageMessages.label.padding)}
                   rules={[
                     {
                       required: true,
@@ -475,8 +475,8 @@ const CardSettings: React.VFC = () => {
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.cardStyle)}</AdminHeaderTitle>}
         >
           <Form.Item
-            name="cardPadding"
-            label={formatMessage(craftPageMessages.label.boundary)}
+            name="cardMargin"
+            label={formatMessage(craftPageMessages.label.margin)}
             rules={[
               {
                 required: true,
@@ -489,8 +489,8 @@ const CardSettings: React.VFC = () => {
           </Form.Item>
 
           <Form.Item
-            name="cardMargin"
-            label={formatMessage(craftPageMessages.label.borderSpacing)}
+            name="cardPadding"
+            label={formatMessage(craftPageMessages.label.padding)}
             rules={[
               {
                 required: true,

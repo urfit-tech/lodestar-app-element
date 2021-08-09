@@ -11,12 +11,12 @@ import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } fro
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
-type FieldProps = CraftImageProps & { padding: string; margin: string }
+type FieldProps = CraftImageProps & { margin: string; padding: string }
 
 const CraftImage: UserComponent<
   CraftImageProps &
     CraftBoxModelProps & { coverUrl: string; setActiveKey: React.Dispatch<React.SetStateAction<string>> }
-> = ({ coverUrl, margin, padding, setActiveKey, children }) => {
+> = ({ coverUrl, margin, padding, setActiveKey }) => {
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -56,22 +56,22 @@ const ImageSettings: React.VFC = () => {
   const [coverImage, setCoverImage] = useState<File | null>(null)
 
   const handleSubmit = (values: FieldProps) => {
-    const padding = formatBoxModelValue(values.padding)
     const margin = formatBoxModelValue(values.margin)
+    const padding = formatBoxModelValue(values.padding)
 
     setProp(props => {
       props.type = values.type
-      props.padding = {
-        pt: padding?.[0] || '0',
-        pr: padding?.[1] || '0',
-        pb: padding?.[2] || '0',
-        pl: padding?.[3] || '0',
-      }
       props.margin = {
         mt: margin?.[0] || '0',
         mr: margin?.[1] || '0',
         mb: margin?.[2] || '0',
         ml: margin?.[3] || '0',
+      }
+      props.padding = {
+        pt: padding?.[0] || '0',
+        pr: padding?.[1] || '0',
+        pb: padding?.[2] || '0',
+        pl: padding?.[3] || '0',
       }
     })
     //TODO: upload image
@@ -85,10 +85,10 @@ const ImageSettings: React.VFC = () => {
       requiredMark={false}
       initialValues={{
         coverImage: props.coverUrl,
+        margin: `${props.margin?.mt || 0};${props.margin?.mr || 0};${props.margin?.mb || 0};${props.margin?.ml || 0}`,
         padding: `${props.padding?.pt || 0};${props.padding?.pr || 0};${props.padding?.pb || 0};${
           props.padding?.pl || 0
         }`,
-        margin: `${props.margin?.mt || 0};${props.margin?.mr || 0};${props.margin?.mb || 0};${props.margin?.ml || 0}`,
       }}
       onFinish={handleSubmit}
     >
@@ -120,8 +120,8 @@ const ImageSettings: React.VFC = () => {
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.containerComponent)}</AdminHeaderTitle>}
         >
           <Form.Item
-            name="padding"
-            label={formatMessage(craftPageMessages.label.boundary)}
+            name="margin"
+            label={formatMessage(craftPageMessages.label.margin)}
             rules={[
               {
                 required: true,
@@ -133,8 +133,8 @@ const ImageSettings: React.VFC = () => {
             <CraftBoxModelInput />
           </Form.Item>
           <Form.Item
-            name="margin"
-            label={formatMessage(craftPageMessages.label.borderSpacing)}
+            name="padding"
+            label={formatMessage(craftPageMessages.label.padding)}
             rules={[
               {
                 required: true,

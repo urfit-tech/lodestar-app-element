@@ -14,9 +14,9 @@ import CraftTitleContentBlock from './CraftTitleContentBlock'
 
 type FieldProps = {
   titleContent: string
-  titleStyle: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
+  titleStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
   paragraphContent: string
-  paragraphStyle: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
+  paragraphStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
 }
 
 const CraftTitleAndParagraph: UserComponent<
@@ -33,10 +33,10 @@ const CraftTitleAndParagraph: UserComponent<
       <StyledTitle
         customStyle={{
           fontSize: title.fontSize,
-          pt: title.padding.pt,
-          pr: title.padding.pr,
-          pb: title.padding.pb,
-          pl: title.padding.pl,
+          mt: title.margin.mt,
+          mr: title.margin.mr,
+          mb: title.margin.mb,
+          ml: title.margin.ml,
           textAlign: title.textAlign,
           fontWeight: title.fontWeight,
           color: title.color,
@@ -47,10 +47,10 @@ const CraftTitleAndParagraph: UserComponent<
       <StyledParagraph
         customStyle={{
           fontSize: paragraph.fontSize,
-          pt: paragraph.padding.pt,
-          pr: paragraph.padding.pr,
-          pb: paragraph.padding.pb,
-          pl: paragraph.padding.pl,
+          mt: paragraph.margin.mt,
+          mr: paragraph.margin.mr,
+          mb: paragraph.margin.mb,
+          ml: paragraph.margin.ml,
           textAlign: paragraph.textAlign,
           fontWeight: paragraph.fontWeight,
           color: paragraph.color,
@@ -80,17 +80,17 @@ const TitleAndParagraphSettings: React.VFC = () => {
   }))
 
   const handleSubmit = (values: FieldProps) => {
-    const titlePadding = formatBoxModelValue(values.titleStyle.padding)
-    const paragraphPadding = formatBoxModelValue(values.paragraphStyle.padding)
+    const titleMargin = formatBoxModelValue(values.titleStyle.margin)
+    const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
 
     setProp(props => {
       props.title.titleContent = values.titleContent
       props.title.fontSize = values.titleStyle.fontSize
-      props.title.padding = {
-        pt: titlePadding?.[0] || '0',
-        pr: titlePadding?.[1] || '0',
-        pb: titlePadding?.[2] || '0',
-        pl: titlePadding?.[3] || '0',
+      props.title.margin = {
+        mt: titleMargin?.[0] || '0',
+        mr: titleMargin?.[1] || '0',
+        mb: titleMargin?.[2] || '0',
+        ml: titleMargin?.[3] || '0',
       }
       props.title.textAlign = values.titleStyle.textAlign
       props.title.fontWeight = values.titleStyle.fontWeight
@@ -98,11 +98,11 @@ const TitleAndParagraphSettings: React.VFC = () => {
       props.paragraph.paragraphContent = values.paragraphContent
       props.paragraph.fontSize = values.paragraphStyle.fontSize
       props.paragraph.lineHeight = values.paragraphStyle.lineHeight
-      props.paragraph.padding = {
-        pt: paragraphPadding?.[0] || '0',
-        pr: paragraphPadding?.[1] || '0',
-        pb: paragraphPadding?.[2] || '0',
-        pl: paragraphPadding?.[3] || '0',
+      props.paragraph.margin = {
+        mt: paragraphMargin?.[0] || '0',
+        mr: paragraphMargin?.[1] || '0',
+        mb: paragraphMargin?.[2] || '0',
+        ml: paragraphMargin?.[3] || '0',
       }
       props.paragraph.textAlign = values.paragraphStyle.textAlign
       props.paragraph.fontWeight = values.paragraphStyle.fontWeight
@@ -120,8 +120,8 @@ const TitleAndParagraphSettings: React.VFC = () => {
         titleContent: props.title.titleContent || '',
         titleStyle: {
           fontSize: props.title.fontSize || 16,
-          padding: `${props.title.padding?.pt || 0};${props.title.padding?.pr || 0};${props.title.padding?.pb || 0};${
-            props.title.padding?.pl || 0
+          margin: `${props.title.margin?.mt || 0};${props.title.margin?.mr || 0};${props.title.margin?.mb || 0};${
+            props.title.margin?.ml || 0
           }`,
           textAlign: props.title.textAlign || 'left',
           fontWeight: props.title.fontWeight || 'normal',
@@ -130,9 +130,9 @@ const TitleAndParagraphSettings: React.VFC = () => {
         paragraphContent: props.paragraph.paragraphContent || '',
         paragraphStyle: {
           fontSize: props.paragraph.fontSize || 16,
-          padding: `${props.paragraph.padding?.pt || 0};${props.paragraph.padding?.pr || 0};${
-            props.paragraph.padding?.pb || 0
-          };${props.paragraph.padding?.pl || 0}`,
+          margin: `${props.paragraph.margin?.mt || 0};${props.paragraph.margin?.mr || 0};${
+            props.paragraph.margin?.mb || 0
+          };${props.paragraph.margin?.ml || 0}`,
           textAlign: props.paragraph.textAlign || 'left',
           fontWeight: props.paragraph.fontWeight || 'normal',
           color: props.paragraph.color || '#585858',

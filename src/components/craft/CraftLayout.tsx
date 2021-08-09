@@ -24,20 +24,20 @@ const StyledInputNumber = styled(InputNumber)`
   width: 100% !important;
 `
 const StyledContainer = styled.div<{ mobile: CraftLayoutProps; desktop: CraftLayoutProps }>`
-  padding: ${props =>
-    `${props.mobile.padding.pt}px ${props.mobile.padding.pr}px ${props.mobile.padding.pb}px ${props.mobile.padding.pl}px`};
+  margin: ${props =>
+    `${props.mobile.margin.mt}px ${props.mobile.margin.mr}px ${props.mobile.margin.mb}px ${props.mobile.margin.ml}px`};
   @media (min-width: ${BREAK_POINT}px) {
-    padding: ${props =>
-      `${props.desktop.padding.pt}px ${props.desktop.padding.pr}px ${props.desktop.padding.pb}px ${props.desktop.padding.pl}px`};
+    margin: ${props =>
+      `${props.desktop.margin.mt}px ${props.desktop.margin.mr}px ${props.desktop.margin.mb}px ${props.desktop.margin.ml}px`};
   }
 `
 
 type FieldProps = {
-  desktopPadding: string
+  desktopMargin: string
   desktopColumnAmount: number
   desktopColumnRatio: number[]
   desktopDisplayAmount: number
-  mobilePadding: string
+  mobileMargin: string
   mobileColumnAmount: number
   mobileColumnRatio: number[]
   mobileDisplayAmount: number
@@ -79,27 +79,27 @@ const LayoutSettings: React.VFC = () => {
   }))
 
   const handleSubmit = (values: FieldProps) => {
-    const desktopPadding = formatBoxModelValue(values.desktopPadding)
-    const mobilePadding = formatBoxModelValue(values.mobilePadding)
+    const desktopMargin = formatBoxModelValue(values.desktopMargin)
+    const mobileMargin = formatBoxModelValue(values.mobileMargin)
 
     setProp(props => {
       props.desktop = {
-        padding: {
-          pt: desktopPadding?.[0] || '0',
-          pr: desktopPadding?.[1] || '0',
-          pb: desktopPadding?.[2] || '0',
-          pl: desktopPadding?.[3] || '0',
+        margin: {
+          mt: desktopMargin?.[0] || '0',
+          mr: desktopMargin?.[1] || '0',
+          mb: desktopMargin?.[2] || '0',
+          ml: desktopMargin?.[3] || '0',
         },
         columnAmount: values.desktopColumnAmount,
         columnRatio: values.desktopColumnRatio,
         displayAmount: values.desktopDisplayAmount,
       }
       props.mobile = {
-        padding: {
-          pt: mobilePadding?.[0] || '0',
-          pr: mobilePadding?.[1] || '0',
-          pb: mobilePadding?.[2] || '0',
-          pl: mobilePadding?.[3] || '0',
+        margin: {
+          mt: mobileMargin?.[0] || '0',
+          mr: mobileMargin?.[1] || '0',
+          mb: mobileMargin?.[2] || '0',
+          ml: mobileMargin?.[3] || '0',
         },
         columnAmount: values.mobileColumnAmount,
         columnRatio: values.mobileColumnRatio,
@@ -115,15 +115,15 @@ const LayoutSettings: React.VFC = () => {
       colon={false}
       requiredMark={false}
       initialValues={{
-        desktopPadding: `${props.desktop.padding?.pt || 0};${props.desktop.padding?.pr || 0};${
-          props.desktop.padding?.pb || 0
-        };${props.desktop.padding?.pl || 0}`,
+        desktopMargin: `${props.desktop.margin?.mt || 0};${props.desktop.margin?.mr || 0};${
+          props.desktop.margin?.mb || 0
+        };${props.desktop.margin?.ml || 0}`,
         desktopColumnAmount: props.desktop.columnAmount || 3,
         desktopColumnRatio: replace(/,/g, ':', props.desktop.columnRatio.toString() || '3,3,3') || [3, 3, 3],
         desktopDisplayAmount: props.desktop.displayAmount || 3,
-        mobilePadding: `${props.mobile.padding?.pt || 0};${props.mobile.padding?.pr || 0};${
-          props.mobile.padding?.pb || 0
-        };${props.mobile.padding?.pl || 0}`,
+        mobileMargin: `${props.mobile.margin?.mt || 0};${props.mobile.margin?.mr || 0};${
+          props.mobile.margin?.mb || 0
+        };${props.mobile.margin?.ml || 0}`,
         mobileColumnAmount: props.mobile.columnAmount || 3,
         mobileColumnRatio: props.mobile.columnRatio || [3, 3, 3],
         mobileDisplayAmount: props.mobile.displayAmount || 3,
@@ -141,7 +141,7 @@ const LayoutSettings: React.VFC = () => {
           key="desktopLayoutComponent"
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.desktopLayoutComponent)}</AdminHeaderTitle>}
         >
-          <Form.Item name="desktopPadding" label={formatMessage(craftPageMessages.label.boundary)}>
+          <Form.Item name="desktopMargin" label={formatMessage(craftPageMessages.label.margin)}>
             <CraftBoxModelInput />
           </Form.Item>
           <Form.Item name="desktopColumnAmount" label={formatMessage(craftPageMessages.label.columnAmount)}>
@@ -186,7 +186,7 @@ const LayoutSettings: React.VFC = () => {
           key="mobileLayoutComponent"
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.mobileLayoutComponent)}</AdminHeaderTitle>}
         >
-          <Form.Item name="mobilePadding" label={formatMessage(craftPageMessages.label.boundary)}>
+          <Form.Item name="mobileMargin" label={formatMessage(craftPageMessages.label.margin)}>
             <CraftBoxModelInput />
           </Form.Item>
           <Form.Item name="mobileColumnAmount" label={formatMessage(craftPageMessages.label.columnAmount)}>

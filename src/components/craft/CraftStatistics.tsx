@@ -25,9 +25,9 @@ type FieldProps = {
   padding: string
   margin: string
   titleContent: string
-  titleStyle: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
+  titleStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
   paragraphContent: string
-  paragraphStyle: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
+  paragraphStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
 }
 
 const CraftStatistics: UserComponent<
@@ -69,8 +69,8 @@ const StatisticsSettings: React.VFC = () => {
   const handleSubmit = (values: FieldProps) => {
     const padding = formatBoxModelValue(values.padding)
     const margin = formatBoxModelValue(values.margin)
-    const titlePadding = formatBoxModelValue(values.titleStyle.padding)
-    const paragraphPadding = formatBoxModelValue(values.paragraphStyle.padding)
+    const titleMargin = formatBoxModelValue(values.titleStyle.margin)
+    const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
 
     setProp(props => {
       props.type = values.type
@@ -90,11 +90,11 @@ const StatisticsSettings: React.VFC = () => {
       props.title = {
         titleContent: values.titleContent,
         fontSize: values.titleStyle.fontSize,
-        padding: {
-          pt: titlePadding?.[0] || '0',
-          pr: titlePadding?.[1] || '0',
-          pb: titlePadding?.[2] || '0',
-          pl: titlePadding?.[3] || '0',
+        margin: {
+          mt: titleMargin?.[0] || '0',
+          mr: titleMargin?.[1] || '0',
+          mb: titleMargin?.[2] || '0',
+          ml: titleMargin?.[3] || '0',
         },
         textAlign: values.titleStyle.textAlign,
         fontWeight: values.titleStyle.fontWeight,
@@ -103,11 +103,11 @@ const StatisticsSettings: React.VFC = () => {
       props.paragraph = {
         content: values.paragraphContent,
         fontSize: values.paragraphStyle.fontSize,
-        padding: {
-          pt: paragraphPadding?.[0] || '0',
-          pr: paragraphPadding?.[1] || '0',
-          pb: paragraphPadding?.[2] || '0',
-          pl: paragraphPadding?.[3] || '0',
+        margin: {
+          mt: paragraphMargin?.[0] || '0',
+          mr: paragraphMargin?.[1] || '0',
+          mb: paragraphMargin?.[2] || '0',
+          ml: paragraphMargin?.[3] || '0',
         },
         textAlign: values.paragraphStyle.textAlign,
         fontWeight: values.paragraphStyle.fontWeight,
@@ -133,8 +133,8 @@ const StatisticsSettings: React.VFC = () => {
         titleContent: props.title.titleContent || '',
         titleStyle: {
           fontSize: props.title.fontSize || 16,
-          padding: `${props.title.padding?.pt || 0};${props.title.padding?.pr || 0};${props.title.padding?.pb || 0};${
-            props.title.padding?.pl || 0
+          margin: `${props.title.margin?.mt || 0};${props.title.margin?.mr || 0};${props.title.margin?.mb || 0};${
+            props.title.margin?.ml || 0
           }`,
           textAlign: props.title.textAlign || 'left',
           fontWeight: props.title.fontWeight || 'normal',
@@ -144,9 +144,9 @@ const StatisticsSettings: React.VFC = () => {
         paragraphStyle: {
           fontSize: props.paragraph.fontSize || 16,
           lineHeight: props.paragraph.lineHeight || 1,
-          padding: `${props.paragraph.padding?.pt || 0};${props.paragraph.padding?.pr || 0};${
-            props.paragraph.padding?.pb || 0
-          };${props.paragraph.padding?.pl || 0}`,
+          margin: `${props.paragraph.margin?.mt || 0};${props.paragraph.margin?.mr || 0};${
+            props.paragraph.margin?.mb || 0
+          };${props.paragraph.margin?.ml || 0}`,
           textAlign: props.paragraph.textAlign || 'left',
           fontWeight: props.paragraph.fontWeight || 'normal',
           color: props.paragraph.color || '#585858',
@@ -215,8 +215,8 @@ const StatisticsSettings: React.VFC = () => {
             header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.containerComponent)}</AdminHeaderTitle>}
           >
             <Form.Item
-              name="padding"
-              label={formatMessage(craftPageMessages.label.boundary)}
+              name="margin"
+              label={formatMessage(craftPageMessages.label.margin)}
               rules={[
                 {
                   required: true,
@@ -228,8 +228,8 @@ const StatisticsSettings: React.VFC = () => {
               <CraftBoxModelInput />
             </Form.Item>
             <Form.Item
-              name="margin"
-              label={formatMessage(craftPageMessages.label.borderSpacing)}
+              name="padding"
+              label={formatMessage(craftPageMessages.label.padding)}
               rules={[
                 {
                   required: true,

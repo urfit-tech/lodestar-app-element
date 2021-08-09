@@ -15,7 +15,7 @@ const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
       : props.customStyle.fontWeight === 'lighter'
       ? 200
       : 500};
-    padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+    padding: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
     color: ${props.customStyle.color};
   `
 const generateCustomParagraphStyle = (props: { customStyle?: ParagraphProps }) =>
@@ -31,7 +31,7 @@ const generateCustomParagraphStyle = (props: { customStyle?: ParagraphProps }) =
       : props.customStyle.fontWeight === 'lighter'
       ? 200
       : 500};
-    padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+    margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
     color: ${props.customStyle.color};
   `
 const generateCustomCardStyle = (props: { customStyle?: CardProps }) =>

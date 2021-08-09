@@ -16,15 +16,15 @@ type CraftBackgroundProps = {
   backgroundType: 'none' | 'solidColor' | 'backgroundImage'
   solidColor?: string
   coverUrl?: string
-  padding: CraftPaddingProps
   margin: CraftMarginProps
+  padding: CraftPaddingProps
 }
 
-type FieldProps = Omit<CraftBackgroundProps, 'padding' | 'margin'> & { padding: string; margin: string }
+type FieldProps = Omit<CraftBackgroundProps, 'margin' | 'padding'> & { margin: string; padding: string }
 
 const CraftBackground: UserComponent<
   { setActiveKey: React.Dispatch<React.SetStateAction<string>> } & CraftBackgroundProps
-> = ({ backgroundType, solidColor, padding, margin, coverUrl, setActiveKey }) => {
+> = ({ backgroundType, solidColor, margin, padding, coverUrl, setActiveKey }) => {
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -33,14 +33,14 @@ const CraftBackground: UserComponent<
     <StyledSection
       ref={ref => ref && connect(drag(ref))}
       customStyle={{
-        pt: padding.pt,
-        pr: padding.pr,
-        pb: padding.pb,
-        pl: padding.pl,
         mt: margin.mt,
         mr: margin.mr,
         mb: margin.mb,
         ml: margin.ml,
+        pt: padding.pt,
+        pr: padding.pr,
+        pb: padding.pb,
+        pl: padding.pl,
       }}
       background-image={coverUrl}
       style={{ cursor: 'pointer' }}
@@ -66,22 +66,22 @@ const BackgroundSettings: React.VFC = () => {
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null)
 
   const handleSubmit = (values: FieldProps) => {
-    const padding = formatBoxModelValue(values.padding)
     const margin = formatBoxModelValue(values.margin)
+    const padding = formatBoxModelValue(values.padding)
 
     setProp(props => {
       props.backgroundType = values.backgroundType
-      props.padding = {
-        pt: padding?.[0] || '0',
-        pr: padding?.[1] || '0',
-        pb: padding?.[2] || '0',
-        pl: padding?.[3] || '0',
-      }
       props.margin = {
         mt: margin?.[0] || '0',
         mr: margin?.[1] || '0',
         mb: margin?.[2] || '0',
         ml: margin?.[3] || '0',
+      }
+      props.padding = {
+        pt: padding?.[0] || '0',
+        pr: padding?.[1] || '0',
+        pb: padding?.[2] || '0',
+        pl: padding?.[3] || '0',
       }
     })
     //TODO: upload image
@@ -97,10 +97,10 @@ const BackgroundSettings: React.VFC = () => {
         backgroundType: props.backgroundType || 'none',
         solidColor: props.solidColor || '#cccccc',
         backgroundImage: props.coverUrl || '',
+        margin: `${props.margin?.mt || 0};${props.margin?.mr || 0};${props.margin?.mb || 0};${props.margin?.ml || 0}`,
         padding: `${props.padding?.pt || 0};${props.padding?.pr || 0};${props.padding?.pb || 0};${
           props.padding?.pl || 0
         }`,
-        margin: `${props.margin?.mt || 0};${props.margin?.mr || 0};${props.margin?.mb || 0};${props.margin?.ml || 0}`,
       }}
       onFinish={handleSubmit}
     >
@@ -176,8 +176,8 @@ const BackgroundSettings: React.VFC = () => {
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.containerComponent)}</AdminHeaderTitle>}
         >
           <Form.Item
-            name="padding"
-            label={formatMessage(craftPageMessages.label.boundary)}
+            name="margin"
+            label={formatMessage(craftPageMessages.label.margin)}
             rules={[
               {
                 required: true,
@@ -189,8 +189,8 @@ const BackgroundSettings: React.VFC = () => {
             <CraftBoxModelInput />
           </Form.Item>
           <Form.Item
-            name="margin"
-            label={formatMessage(craftPageMessages.label.borderSpacing)}
+            name="padding"
+            label={formatMessage(craftPageMessages.label.padding)}
             rules={[
               {
                 required: true,
