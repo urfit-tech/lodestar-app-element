@@ -13,12 +13,14 @@ import CraftTextStyleBlock from './CraftTextStyleBlock'
 
 type FieldProps = {
   paragraphContent: string
-  paragraphStyle: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
+  paragraphStyle: Pick<CraftTextStyleProps, 'fontSize' | 'lineHeight' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
 }
 
 const CraftParagraph: UserComponent<
   CraftParagraphProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }
-> = ({ paragraphContent, fontSize, lineHeight, padding, textAlign, fontWeight, color, setActiveKey }) => {
+> = ({ paragraphContent, fontSize, lineHeight, margin, textAlign, fontWeight, color, setActiveKey }) => {
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -28,10 +30,10 @@ const CraftParagraph: UserComponent<
       ref={ref => ref && connect(drag(ref))}
       customStyle={{
         fontSize,
-        pt: padding.pt,
-        pr: padding.pr,
-        pb: padding.pb,
-        pl: padding.pl,
+        mt: margin.mt,
+        mr: margin.mr,
+        mb: margin.mb,
+        ml: margin.ml,
         textAlign,
         fontWeight,
         color,
@@ -59,17 +61,17 @@ const ParagraphSettings: React.VFC = () => {
   }))
 
   const handleSubmit = (values: FieldProps) => {
-    const paragraphPadding = formatBoxModelValue(values.paragraphStyle.padding)
+    const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
 
     setProp(props => {
       props.paragraphContent = values.paragraphContent
       props.fontSize = values.paragraphStyle.fontSize
       props.lineHeight = values.paragraphStyle.lineHeight
-      props.padding = {
-        pt: paragraphPadding?.[0] || '0',
-        pr: paragraphPadding?.[1] || '0',
-        pb: paragraphPadding?.[2] || '0',
-        pl: paragraphPadding?.[3] || '0',
+      props.margin = {
+        mt: paragraphMargin?.[0] || '0',
+        mr: paragraphMargin?.[1] || '0',
+        mb: paragraphMargin?.[2] || '0',
+        ml: paragraphMargin?.[3] || '0',
       }
       props.textAlign = values.paragraphStyle.textAlign
       props.fontWeight = values.paragraphStyle.fontWeight
@@ -87,9 +89,7 @@ const ParagraphSettings: React.VFC = () => {
         paragraphContent: props.paragraphContent || '',
         paragraphStyle: {
           fontSize: props.fontSize || 16,
-          padding: `${props.padding?.pt || 0};${props.padding?.pr || 0};${props.padding?.pb || 0};${
-            props.padding?.pl || 0
-          }`,
+          margin: `${props.margin?.mt || 0};${props.margin?.mr || 0};${props.margin?.mb || 0};${props.margin?.ml || 0}`,
           lineHeight: props?.lineHeight || 1,
           textAlign: props.textAlign || 'left',
           fontWeight: props.fontWeight || 'normal',

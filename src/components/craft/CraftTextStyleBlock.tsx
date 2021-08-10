@@ -12,7 +12,7 @@ const CraftTextStyleBlock: React.VFC<{
   value?: {
     fontSize: number
     lineHeight?: number
-    padding: string
+    margin: string
     textAlign: 'left' | 'right' | 'center'
     fontWeight: 'lighter' | 'normal' | 'bold'
     color: string
@@ -20,12 +20,12 @@ const CraftTextStyleBlock: React.VFC<{
   onChange?: (value: {
     fontSize: number
     lineHeight?: number
-    padding: string
+    margin: string
     textAlign: 'left' | 'right' | 'center'
     fontWeight: 'lighter' | 'normal' | 'bold'
     color: string
   }) => void
-}> = ({ type, title, value, onChange, ...collapseProps }) => {
+}> = ({ type, title, value, onChange }) => {
   const { formatMessage } = useIntl()
 
   return (
@@ -81,9 +81,9 @@ const CraftTextStyleBlock: React.VFC<{
           )}
 
           <CraftBoxModelInput
-            title={formatMessage(craftPageMessages.label.boundary)}
-            value={value.padding}
-            onChange={v => onChange?.({ ...value, padding: v })}
+            title={formatMessage(craftPageMessages.label.margin)}
+            value={value.margin}
+            onChange={v => onChange?.({ ...value, margin: v })}
           />
 
           <div className="d-flex mb-3">

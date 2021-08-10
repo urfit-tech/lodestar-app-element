@@ -34,7 +34,7 @@ export type ParagraphProps = {
   fontWeight: 'lighter' | 'normal' | 'bold'
   lineHeight: string | number
   color: string
-} & PaddingProps
+} & MarginProps
 
 export type TitleProps = Omit<ParagraphProps, 'lineHeight'>
 
@@ -43,6 +43,7 @@ export type ButtonProps = {
   variant?: 'text' | 'solid' | 'outline'
   block?: boolean
   colorScheme?: string
+  backgroundColor?: string
 }
 
 export type ImageProps = MarginProps & PaddingProps

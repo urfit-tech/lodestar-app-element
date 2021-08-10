@@ -13,13 +13,15 @@ import CraftTitleContentBlock from './CraftTitleContentBlock'
 
 type FieldProps = {
   titleContent: string
-  titleStyle: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
+  titleStyle: Pick<CraftTextStyleProps, 'fontSize' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
 }
 
 const CraftTitle: UserComponent<CraftTitleProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }> = ({
   titleContent,
   fontSize,
-  padding,
+  margin,
   textAlign,
   fontWeight,
   color,
@@ -34,10 +36,10 @@ const CraftTitle: UserComponent<CraftTitleProps & { setActiveKey: React.Dispatch
       ref={ref => ref && connect(drag(ref))}
       customStyle={{
         fontSize,
-        pt: padding.pt,
-        pr: padding.pr,
-        pb: padding.pb,
-        pl: padding.pl,
+        mt: margin.mt,
+        mr: margin.mr,
+        mb: margin.mb,
+        ml: margin.ml,
         textAlign: textAlign,
         fontWeight: fontWeight,
         color: color,
@@ -63,16 +65,16 @@ const TitleSettings: React.VFC = () => {
   }))
 
   const handleSubmit = (values: FieldProps) => {
-    const titlePadding = formatBoxModelValue(values.titleStyle.padding)
+    const titleMargin = formatBoxModelValue(values.titleStyle.margin)
 
     setProp(prop => {
       prop.titleContent = values.titleContent
       prop.fontSize = values.titleStyle.fontSize
-      prop.padding = {
-        pt: titlePadding?.[0] || '0',
-        pr: titlePadding?.[1] || '0',
-        pb: titlePadding?.[2] || '0',
-        pl: titlePadding?.[3] || '0',
+      prop.margin = {
+        mt: titleMargin?.[0] || '0',
+        mr: titleMargin?.[1] || '0',
+        mb: titleMargin?.[2] || '0',
+        ml: titleMargin?.[3] || '0',
       }
       prop.textAlign = values.titleStyle.textAlign
       prop.fontWeight = values.titleStyle.fontWeight
@@ -90,9 +92,7 @@ const TitleSettings: React.VFC = () => {
         titleContent: props.titleContent || '',
         titleStyle: {
           fontSize: props.fontSize || 16,
-          padding: `${props.padding?.pt || 0};${props.padding?.pr || 0};${props.padding?.pb || 0};${
-            props.padding?.pl || 0
-          }`,
+          margin: `${props.margin?.mt || 0};${props.margin?.mr || 0};${props.margin?.mb || 0};${props.margin?.ml || 0}`,
           textAlign: props.textAlign || 'left',
           fontWeight: props.fontWeight || 'normal',
           color: props.color || '#585858',

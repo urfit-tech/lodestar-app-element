@@ -4,16 +4,16 @@ import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
-import { CraftPaddingProps } from '../../types/craft'
+import { CraftMarginProps } from '../../types/craft'
 import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
-type FieldProps = { padding: string }
+type FieldProps = { margin: string }
 
 const CraftContainer: UserComponent<{
-  padding: CraftPaddingProps
+  margin: CraftMarginProps
   setActiveKey: React.Dispatch<React.SetStateAction<string>>
-}> = ({ padding, setActiveKey, children }) => {
+}> = ({ margin, setActiveKey, children }) => {
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -22,7 +22,7 @@ const CraftContainer: UserComponent<{
     <div
       ref={ref => ref && connect(drag(ref))}
       style={{
-        padding: `${padding.pt}px ${padding.pr}px ${padding.pb}px ${padding.pl}px`,
+        margin: `${margin.mt}px ${margin.mr}px ${margin.mb}px ${margin.ml}px`,
         cursor: 'pointer',
       }}
       onClick={() => setActiveKey('settings')}
@@ -41,20 +41,20 @@ const ContainerSettings: React.VFC = () => {
     props,
     selected,
   } = useNode(node => ({
-    props: node.data.props as { padding: CraftPaddingProps },
+    props: node.data.props as { margin: CraftMarginProps },
     button: node.data.custom.button,
     selected: node.events.selected,
   }))
 
   const handleSubmit = (values: FieldProps) => {
-    const padding = formatBoxModelValue(values.padding)
+    const margin = formatBoxModelValue(values.margin)
 
     setProp(props => {
-      props.padding = {
-        pt: padding?.[0] || '0',
-        pr: padding?.[1] || '0',
-        pb: padding?.[2] || '0',
-        pl: padding?.[3] || '0',
+      props.margin = {
+        mt: margin?.[0] || '0',
+        mr: margin?.[1] || '0',
+        mb: margin?.[2] || '0',
+        ml: margin?.[3] || '0',
       }
     })
   }
@@ -66,9 +66,7 @@ const ContainerSettings: React.VFC = () => {
       colon={false}
       requiredMark={false}
       initialValues={{
-        padding: `${props.padding?.pt || 0};${props.padding?.pr || 0};${props.padding?.pb || 0};${
-          props.padding?.pl || 0
-        }`,
+        margin: `${props.margin?.mt || 0};${props.margin?.mr || 0};${props.margin?.mb || 0};${props.margin?.ml || 0}`,
       }}
       onFinish={handleSubmit}
     >
@@ -78,8 +76,8 @@ const ContainerSettings: React.VFC = () => {
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.containerComponent)}</AdminHeaderTitle>}
         >
           <Form.Item
-            name="padding"
-            label={formatMessage(craftPageMessages.label.boundary)}
+            name="margin"
+            label={formatMessage(craftPageMessages.label.margin)}
             rules={[
               {
                 required: true,

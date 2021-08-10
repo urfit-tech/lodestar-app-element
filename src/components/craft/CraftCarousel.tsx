@@ -63,8 +63,12 @@ type FieldProps = {
     link: string
     openNewTab: boolean
   }[]
-  titleStyle?: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
-  paragraphStyle?: Omit<CraftTextStyleProps, 'padding'> & { padding: string }
+  titleStyle?: Pick<CraftTextStyleProps, 'fontSize' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
+  paragraphStyle?: Pick<CraftTextStyleProps, 'fontSize' | 'lineHeight' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
 }
 
 type CraftCarouselProps = {
@@ -104,10 +108,10 @@ const CraftCarousel: UserComponent<
                 <StyledTitle
                   customStyle={{
                     fontSize: titleStyle.fontSize,
-                    pt: titleStyle.padding.pt,
-                    pr: titleStyle.padding.pr,
-                    pb: titleStyle.padding.pb,
-                    pl: titleStyle.padding.pl,
+                    mt: titleStyle.margin.mt,
+                    mr: titleStyle.margin.mr,
+                    mb: titleStyle.margin.mb,
+                    ml: titleStyle.margin.ml,
                     textAlign: titleStyle.textAlign,
                     fontWeight: titleStyle.fontWeight,
                     color: titleStyle.color,
@@ -152,18 +156,18 @@ const CarouselSettings: React.VFC = () => {
   const [mobileCover, setMobileCover] = useState<File[]>([])
 
   const handleSubmit = (values: FieldProps) => {
-    const titlePadding = formatBoxModelValue(values.titleStyle?.padding)
-    const paragraphPadding = formatBoxModelValue(values.paragraphStyle?.padding)
+    const titleMargin = formatBoxModelValue(values.titleStyle?.margin)
+    const paragraphMargin = formatBoxModelValue(values.paragraphStyle?.margin)
 
     setProp(props => {
       props.covers = values.covers
       props.titleStyle = {
         fontSize: values.titleStyle?.fontSize,
-        padding: {
-          pt: titlePadding?.[0] || '0',
-          pr: titlePadding?.[1] || '0',
-          pb: titlePadding?.[2] || '0',
-          pl: titlePadding?.[3] || '0',
+        margin: {
+          mt: titleMargin?.[0] || '0',
+          mr: titleMargin?.[1] || '0',
+          mb: titleMargin?.[2] || '0',
+          ml: titleMargin?.[3] || '0',
         },
         textAlign: values.titleStyle?.textAlign,
         fontWeight: values.titleStyle?.fontWeight,
@@ -172,11 +176,11 @@ const CarouselSettings: React.VFC = () => {
       props.paragraphStyle = {
         fontSize: values.paragraphStyle?.fontSize,
         lineHeight: values.paragraphStyle?.lineHeight,
-        padding: {
-          pt: paragraphPadding?.[0] || '0',
-          pr: paragraphPadding?.[1] || '0',
-          pb: paragraphPadding?.[2] || '0',
-          pl: paragraphPadding?.[3] || '0',
+        margin: {
+          mt: paragraphMargin?.[0] || '0',
+          mr: paragraphMargin?.[1] || '0',
+          mb: paragraphMargin?.[2] || '0',
+          ml: paragraphMargin?.[3] || '0',
         },
         textAlign: values.paragraphStyle?.textAlign,
         fontWeight: values.paragraphStyle?.fontWeight,
@@ -201,18 +205,18 @@ const CarouselSettings: React.VFC = () => {
         })),
         titleStyle: {
           fontSize: props.titleStyle?.fontSize || 16,
-          padding: `${props.titleStyle?.padding?.pt || 0};${props.titleStyle?.padding?.pr || 0};${
-            props.titleStyle?.padding?.pb || 0
-          };${props.titleStyle?.padding?.pl || 0}`,
+          margin: `${props.titleStyle?.margin?.mt || 0};${props.titleStyle?.margin?.mr || 0};${
+            props.titleStyle?.margin?.mb || 0
+          };${props.titleStyle?.margin?.ml || 0}`,
           textAlign: props.titleStyle?.textAlign || 'center',
           fontWeight: props.titleStyle?.fontWeight || 'bold',
           color: props.titleStyle?.color || '#585858',
         },
         paragraphStyle: {
           fontSize: props.paragraphStyle?.fontSize || 16,
-          padding: `${props.paragraphStyle?.padding?.pt || 0};${props.paragraphStyle?.padding?.pr || 0};${
-            props.paragraphStyle?.padding?.pb || 0
-          };${props.paragraphStyle?.padding?.pl || 0}`,
+          margin: `${props.paragraphStyle?.margin?.mt || 0};${props.paragraphStyle?.margin?.mr || 0};${
+            props.paragraphStyle?.margin?.mb || 0
+          };${props.paragraphStyle?.margin?.ml || 0}`,
           lineHeight: props.paragraphStyle?.lineHeight || 1,
           textAlign: props.paragraphStyle?.textAlign || 'center',
           fontWeight: props.paragraphStyle?.fontWeight || 'bold',
