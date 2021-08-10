@@ -16,7 +16,7 @@ const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
       css`
         font-size: ${props.customStyle.fontSize}px;
         font-weight: ${props.customStyle.fontWeight};
-        padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+        margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
         color: ${props.customStyle.color};
 
         @media (min-width: 768px) {
@@ -49,7 +49,7 @@ const StyledContent = styled.p<{ customStyle: ParagraphProps }>`
         line-height: ${props.customStyle.lineHeight};
         font-size: ${props.customStyle.fontSize}px;
         font-weight: ${props.customStyle.fontWeight};
-        padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+        margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
         color: ${props.customStyle.color};
 
         @media (min-width: 768px) {
