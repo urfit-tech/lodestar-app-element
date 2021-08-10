@@ -20,7 +20,10 @@ type CraftBackgroundProps = {
   padding: CraftPaddingProps
 }
 
-type FieldProps = Omit<CraftBackgroundProps, 'margin' | 'padding'> & { margin: string; padding: string }
+type FieldProps = Pick<CraftBackgroundProps, 'backgroundType' | 'solidColor' | 'coverUrl'> & {
+  margin: string
+  padding: string
+}
 
 const CraftBackground: UserComponent<
   { setActiveKey: React.Dispatch<React.SetStateAction<string>> } & CraftBackgroundProps

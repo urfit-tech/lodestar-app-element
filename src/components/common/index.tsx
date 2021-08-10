@@ -15,7 +15,7 @@ const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
       : props.customStyle.fontWeight === 'lighter'
       ? 200
       : 500};
-    padding: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
+    margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
     color: ${props.customStyle.color};
   `
 const generateCustomParagraphStyle = (props: { customStyle?: ParagraphProps }) =>
