@@ -47,9 +47,16 @@ type CraftCollapseProps = {
   backgroundImageUrl?: string
 }
 
-type FieldProps = Omit<CraftCollapseProps, 'titleStyle' | 'paragraphStyle' | 'cardMargin' | 'cardPadding'> & {
-  titleStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
-  paragraphStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+type FieldProps = Pick<
+  CraftCollapseProps,
+  'title' | 'paragraph' | 'variant' | 'outlineColor' | 'backgroundType' | 'solidColor' | 'backgroundImageUrl'
+> & {
+  titleStyle: Pick<CraftTextStyleProps, 'fontSize' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
+  paragraphStyle: Pick<CraftTextStyleProps, 'fontSize' | 'lineHeight' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
   cardMargin: string
   cardPadding: string
 }

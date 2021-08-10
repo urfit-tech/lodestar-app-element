@@ -13,7 +13,9 @@ import CraftTextStyleBlock from './CraftTextStyleBlock'
 
 type FieldProps = {
   paragraphContent: string
-  paragraphStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  paragraphStyle: Pick<CraftTextStyleProps, 'fontSize' | 'lineHeight' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
 }
 
 const CraftParagraph: UserComponent<

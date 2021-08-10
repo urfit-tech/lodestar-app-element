@@ -63,8 +63,12 @@ type FieldProps = {
     link: string
     openNewTab: boolean
   }[]
-  titleStyle?: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
-  paragraphStyle?: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  titleStyle?: Pick<CraftTextStyleProps, 'fontSize' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
+  paragraphStyle?: Pick<CraftTextStyleProps, 'fontSize' | 'lineHeight' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
 }
 
 type CraftCarouselProps = {

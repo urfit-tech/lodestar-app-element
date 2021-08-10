@@ -13,7 +13,9 @@ import CraftTitleContentBlock from './CraftTitleContentBlock'
 
 type FieldProps = {
   titleContent: string
-  titleStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  titleStyle: Pick<CraftTextStyleProps, 'fontSize' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
 }
 
 const CraftTitle: UserComponent<CraftTitleProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }> = ({

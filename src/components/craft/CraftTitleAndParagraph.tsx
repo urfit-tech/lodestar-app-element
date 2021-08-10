@@ -14,9 +14,13 @@ import CraftTitleContentBlock from './CraftTitleContentBlock'
 
 type FieldProps = {
   titleContent: string
-  titleStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  titleStyle: Pick<CraftTextStyleProps, 'fontSize' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
   paragraphContent: string
-  paragraphStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  paragraphStyle: Pick<CraftTextStyleProps, 'fontSize' | 'lineHeight' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
 }
 
 const CraftTitleAndParagraph: UserComponent<

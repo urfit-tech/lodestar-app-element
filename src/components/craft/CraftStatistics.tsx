@@ -25,9 +25,13 @@ type FieldProps = {
   padding: string
   margin: string
   titleContent: string
-  titleStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  titleStyle: Pick<CraftTextStyleProps, 'fontSize' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
   paragraphContent: string
-  paragraphStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  paragraphStyle: Pick<CraftTextStyleProps, 'fontSize' | 'lineHeight' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
 }
 
 const CraftStatistics: UserComponent<

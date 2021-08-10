@@ -53,14 +53,27 @@ type CraftCardProps = {
   backgroundImageUrl?: string
 }
 
-type FieldProps = Omit<
+type FieldProps = Pick<
   CraftCardProps,
-  'type' | 'imageMargin' | 'imagePadding' | 'titleStyle' | 'paragraphStyle' | 'cardMargin' | 'cardPadding'
+  | 'imageType'
+  | 'imageUrl'
+  | 'name'
+  | 'title'
+  | 'paragraph'
+  | 'variant'
+  | 'outlineColor'
+  | 'backgroundType'
+  | 'solidColor'
+  | 'backgroundImageUrl'
 > & {
   imageMargin?: string
   imagePadding?: string
-  titleStyle: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
-  paragraphStyle?: Omit<CraftTextStyleProps, 'margin'> & { margin: string }
+  titleStyle: Pick<CraftTextStyleProps, 'fontSize' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
+  paragraphStyle?: Pick<CraftTextStyleProps, 'fontSize' | 'lineHeight' | 'textAlign' | 'fontWeight' | 'color'> & {
+    margin: string
+  }
   cardMargin: string
   cardPadding: string
 }
