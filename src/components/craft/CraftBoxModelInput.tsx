@@ -1,5 +1,5 @@
 import { Input } from 'antd'
-import { range } from 'ramda'
+import { range, repeat } from 'ramda'
 import React from 'react'
 import { StyledCraftSettingLabel, StyledCraftSlider } from '../common'
 
@@ -17,21 +17,18 @@ const CraftBoxModelInput: React.VFC<{
         <div className="col-8 p-0">
           <StyledCraftSlider
             min={0}
-            value={(new Set(value?.toString().split(';') || []).size === 1 && Number(boxModelValue?.[0])) || 0}
-            onChange={(v: number) => onChange?.(`${v};${v};${v};${v}`)}
+            value={new Set(boxModelValue).size === 1 ? Number(boxModelValue[0]) : 0}
+            onChange={(v: number) => onChange?.(`${repeat(v, 4).join(';')}`)}
           />
         </div>
         <Input
           className="col-4"
-          value={`${boxModelValue?.[0]};${boxModelValue?.[1]};${boxModelValue?.[2]};${boxModelValue?.[3]}`}
-          onChange={e => {
+          value={value}
+          onBlur={e => {
             const eventBoxModelValue = formatBoxModelValue(e.target.value)
-            onChange?.(
-              `${range(0, 4)
-                .map(index => (isNaN(eventBoxModelValue?.[index] || 0) ? eventBoxModelValue?.[index] || 0 : 0))
-                .join(';')}`,
-            )
+            onChange?.(`${eventBoxModelValue?.join(';')}`)
           }}
+          onChange={e => onChange?.(e.target.value)}
         />
       </div>
     </>
@@ -39,7 +36,8 @@ const CraftBoxModelInput: React.VFC<{
 }
 
 export const formatBoxModelValue = (value?: string) => {
-  return value?.toString().split(';').map(Number)
+  const slices = value?.split(';') || []
+  return range(0, 4).map(index => Number(slices[index]) || 0)
 }
 
 export default CraftBoxModelInput
