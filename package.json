@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.5",
-    "@craftjs/core": "^0.1.0-beta.20",
+    "@craftjs/core": "0.1.0-beta.20",
     "@types/node": "^12.0.0",
     "@types/ramda": "^0.27.10",
     "@types/react": "^17.0.0",
