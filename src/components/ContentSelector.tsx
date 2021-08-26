@@ -66,11 +66,11 @@ const ContentSelector: React.FC<{
             <StyledCraftSettingLabel>{formatMessage(craftPageMessages.label.dataDisplay)}</StyledCraftSettingLabel>
           }
         >
-          {selectedContentIds.map((id, i) => (
-            <div className="my-2" key={id}>
+          {selectedContentIds.map((_, i) => (
+            <div className="my-2" key={i}>
               <ContentSelect
                 value={selectedContentIds[i]}
-                contents={contents}
+                contents={contents.filter(content => !selectedContentIds.slice(0, i).includes(content.id))}
                 onChange={value => {
                   const newContentIds = [...selectedContentIds]
                   newContentIds[i] = value
