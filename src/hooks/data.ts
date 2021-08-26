@@ -14,34 +14,14 @@ import {
   ProjectType,
 } from '../types/data'
 
-export const usePublishedProgramCollection = (options?: {
-  instructorId?: string
-  isPrivate?: boolean
-  categoryId?: string
-  limit?: number
-}) => {
+export const usePublishedProgramCollection = (options: { ids?: string[]; limit?: number }) => {
   const { loading, error, data, refetch } = useQuery<
     hasura.GET_PUBLISHED_PROGRAM_COLLECTION,
     hasura.GET_PUBLISHED_PROGRAM_COLLECTIONVariables
   >(
     gql`
-      query GET_PUBLISHED_PROGRAM_COLLECTION(
-        $instructorId: String
-        $isPrivate: Boolean
-        $categoryId: String
-        $limit: Int
-      ) {
-        program(
-          where: {
-            published_at: { _is_null: false }
-            program_roles: { name: { _eq: "instructor" }, member_id: { _eq: $instructorId } }
-            is_private: { _eq: $isPrivate }
-            is_deleted: { _eq: false }
-            _or: [{ _not: { program_categories: {} } }, { program_categories: { category_id: { _eq: $categoryId } } }]
-          }
-          order_by: [{ position: asc }, { published_at: desc }]
-          limit: $limit
-        ) {
+      query GET_PUBLISHED_PROGRAM_COLLECTION($ids: [uuid!], $limit: Int) {
+        program(where: { id: { _in: $ids } }, order_by: [{ position: asc }, { published_at: desc }], limit: $limit) {
           id
           cover_url
           title
@@ -87,12 +67,7 @@ export const usePublishedProgramCollection = (options?: {
       }
     `,
     {
-      variables: {
-        instructorId: options?.instructorId,
-        isPrivate: options?.isPrivate,
-        categoryId: options?.categoryId,
-        limit: options?.limit,
-      },
+      variables: options,
     },
   )
 
@@ -102,41 +77,36 @@ export const usePublishedProgramCollection = (options?: {
   })[] =
     loading || error || !data
       ? []
-      : data.program
-          .filter(
-            program =>
-              !options?.categoryId || program.program_categories.some(v => v.category.id === options.categoryId),
-          )
-          .map(program => ({
-            id: program.id,
-            coverUrl: program.cover_url,
-            title: program.title,
-            abstract: program.abstract,
-            publishedAt: program.published_at && new Date(program.published_at),
-            isSubscription: program.is_subscription,
-            isSoldOut: program.is_sold_out,
-            isPrivate: program.is_private,
-            listPrice: program.list_price,
-            salePrice: program.sale_price,
-            soldAt: program.sold_at && new Date(program.sold_at),
-            roles: program.program_roles.map(programRole => ({
-              id: programRole.id,
-              memberId: programRole.member_id,
-            })),
-            plans: program.program_plans.map(programPlan => ({
-              id: programPlan.id,
-              listPrice: programPlan.list_price,
-              salePrice: programPlan.sale_price,
-              soldAt: programPlan.sold_at && new Date(programPlan.sold_at),
-              periodAmount: programPlan.period_amount,
-              periodType: programPlan.period_type as PeriodType,
-            })),
-            totalDuration: sum(
-              program.program_content_sections.map(
-                section => section.program_contents_aggregate.aggregate?.sum?.duration || 0,
-              ),
+      : data.program.map(program => ({
+          id: program.id,
+          coverUrl: program.cover_url,
+          title: program.title,
+          abstract: program.abstract,
+          publishedAt: program.published_at && new Date(program.published_at),
+          isSubscription: program.is_subscription,
+          isSoldOut: program.is_sold_out,
+          isPrivate: program.is_private,
+          listPrice: program.list_price,
+          salePrice: program.sale_price,
+          soldAt: program.sold_at && new Date(program.sold_at),
+          roles: program.program_roles.map(programRole => ({
+            id: programRole.id,
+            memberId: programRole.member_id,
+          })),
+          plans: program.program_plans.map(programPlan => ({
+            id: programPlan.id,
+            listPrice: programPlan.list_price,
+            salePrice: programPlan.sale_price,
+            soldAt: programPlan.sold_at && new Date(programPlan.sold_at),
+            periodAmount: programPlan.period_amount,
+            periodType: programPlan.period_type as PeriodType,
+          })),
+          totalDuration: sum(
+            program.program_content_sections.map(
+              section => section.program_contents_aggregate.aggregate?.sum?.duration || 0,
             ),
-          }))
+          ),
+        }))
 
   return {
     loadingPrograms: loading,

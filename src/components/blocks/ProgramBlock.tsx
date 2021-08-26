@@ -4,13 +4,11 @@ import ProgramCard from '../cards/ProgramCard'
 import Skeleton from '../Skeleton'
 
 const ProgramBlock: React.VFC<{
-  displayAmount?: number
-  categoryId?: string
-}> = ({ displayAmount, categoryId }) => {
+  customContentIds?: string[]
+}> = ({ customContentIds }) => {
   const { loadingPrograms, errorPrograms, programs } = usePublishedProgramCollection({
-    isPrivate: false,
-    categoryId,
-    limit: displayAmount,
+    limit: customContentIds === undefined ? 3 : undefined,
+    ids: customContentIds,
   })
 
   if (loadingPrograms)
