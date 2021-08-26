@@ -4,6 +4,138 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_PROGRAM
+// ====================================================
+
+export interface GET_PROGRAM_contents {
+  __typename: 'program'
+  id: any
+  title: string
+}
+
+export interface GET_PROGRAM {
+  /**
+   * fetch data from the table: "program"
+   */
+  contents: GET_PROGRAM_contents[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_ACTIVITY
+// ====================================================
+
+export interface GET_ACTIVITY_contents {
+  __typename: 'activity'
+  id: any
+  title: string
+}
+
+export interface GET_ACTIVITY {
+  /**
+   * fetch data from the table: "activity"
+   */
+  contents: GET_ACTIVITY_contents[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_PODCAST_PROGRAM
+// ====================================================
+
+export interface GET_PODCAST_PROGRAM_contents {
+  __typename: 'podcast_program'
+  id: any
+  title: string
+}
+
+export interface GET_PODCAST_PROGRAM {
+  /**
+   * fetch data from the table: "podcast_program"
+   */
+  contents: GET_PODCAST_PROGRAM_contents[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_CREATOR
+// ====================================================
+
+export interface GET_CREATOR_contents {
+  __typename: 'creator'
+  id: string | null
+  title: string | null
+}
+
+export interface GET_CREATOR {
+  /**
+   * fetch data from the table: "creator"
+   */
+  contents: GET_CREATOR_contents[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_FUNDING_PROJECT
+// ====================================================
+
+export interface GET_FUNDING_PROJECT_contents {
+  __typename: 'project'
+  id: any
+  title: string
+}
+
+export interface GET_FUNDING_PROJECT {
+  /**
+   * fetch data from the table: "project"
+   */
+  contents: GET_FUNDING_PROJECT_contents[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_PRE_ORDER_PROJECT
+// ====================================================
+
+export interface GET_PRE_ORDER_PROJECT_contents {
+  __typename: 'project'
+  id: any
+  title: string
+}
+
+export interface GET_PRE_ORDER_PROJECT {
+  /**
+   * fetch data from the table: "project"
+   */
+  contents: GET_PRE_ORDER_PROJECT_contents[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_PUBLISHED_PROGRAM_COLLECTION
 // ====================================================
 
@@ -102,9 +234,7 @@ export interface GET_PUBLISHED_PROGRAM_COLLECTION {
 }
 
 export interface GET_PUBLISHED_PROGRAM_COLLECTIONVariables {
-  instructorId?: string | null
-  isPrivate?: boolean | null
-  categoryId?: string | null
+  ids?: any[] | null
   limit?: number | null
 }
 
@@ -597,6 +727,8 @@ export interface activity_ticket_bool_exp {
   activity_session_tickets?: activity_session_ticket_bool_exp | null
   activity_ticket_enrollments?: activity_ticket_enrollment_bool_exp | null
   count?: Int_comparison_exp | null
+  currency?: currency_bool_exp | null
+  currency_id?: String_comparison_exp | null
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -616,6 +748,7 @@ export interface activity_ticket_enrollment_bool_exp {
   activity_ticket?: activity_ticket_bool_exp | null
   activity_ticket_id?: uuid_comparison_exp | null
   member_id?: String_comparison_exp | null
+  order_log?: order_log_bool_exp | null
   order_log_id?: String_comparison_exp | null
   order_product_id?: uuid_comparison_exp | null
 }
@@ -643,6 +776,7 @@ export interface app_bool_exp {
   _or?: (app_bool_exp | null)[] | null
   activities?: activity_bool_exp | null
   app_admins?: app_admin_bool_exp | null
+  app_hosts?: app_host_bool_exp | null
   app_modules?: app_module_bool_exp | null
   app_navs?: app_nav_bool_exp | null
   app_secrets?: app_secret_bool_exp | null
@@ -650,6 +784,7 @@ export interface app_bool_exp {
   cards?: card_bool_exp | null
   cart_items?: cart_item_bool_exp | null
   comments?: comment_bool_exp | null
+  created_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   id?: String_comparison_exp | null
   issues?: issue_bool_exp | null
@@ -667,8 +802,22 @@ export interface app_bool_exp {
   properties?: property_bool_exp | null
   sharing_codes?: sharing_code_bool_exp | null
   title?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
   vimeo_project_id?: String_comparison_exp | null
   voucher_plans?: voucher_plan_bool_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "app_host". All fields are combined with a logical 'AND'.
+ */
+export interface app_host_bool_exp {
+  _and?: (app_host_bool_exp | null)[] | null
+  _not?: app_host_bool_exp | null
+  _or?: (app_host_bool_exp | null)[] | null
+  app?: app_bool_exp | null
+  app_id?: String_comparison_exp | null
+  host?: String_comparison_exp | null
+  priority?: Int_comparison_exp | null
 }
 
 /**
@@ -702,7 +851,10 @@ export interface app_nav_bool_exp {
   id?: uuid_comparison_exp | null
   label?: String_comparison_exp | null
   locale?: String_comparison_exp | null
+  options?: jsonb_comparison_exp | null
+  parent_id?: uuid_comparison_exp | null
   position?: Int_comparison_exp | null
+  sub_app_navs?: app_nav_bool_exp | null
   tag?: String_comparison_exp | null
 }
 
@@ -717,6 +869,7 @@ export interface app_secret_bool_exp {
   app_id?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   key?: String_comparison_exp | null
+  setting?: setting_bool_exp | null
   value?: String_comparison_exp | null
 }
 
@@ -731,6 +884,7 @@ export interface app_setting_bool_exp {
   app_id?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   key?: String_comparison_exp | null
+  setting?: setting_bool_exp | null
   value?: String_comparison_exp | null
 }
 
@@ -1240,6 +1394,7 @@ export interface currency_bool_exp {
   appointment_plans?: appointment_plan_bool_exp | null
   id?: String_comparison_exp | null
   label?: String_comparison_exp | null
+  minor_units?: Int_comparison_exp | null
   name?: String_comparison_exp | null
   order_products?: order_product_bool_exp | null
   program_plans?: program_plan_bool_exp | null
@@ -1438,6 +1593,7 @@ export interface member_bool_exp {
   member_categories?: member_category_bool_exp | null
   member_contracts?: member_contract_bool_exp | null
   member_notes?: member_note_bool_exp | null
+  member_oauths?: member_oauth_bool_exp | null
   member_permission_extras?: member_permission_extra_bool_exp | null
   member_permissions?: member_permission_bool_exp | null
   member_phones?: member_phone_bool_exp | null
@@ -1568,11 +1724,14 @@ export interface member_note_bool_exp {
   author?: member_bool_exp | null
   author_id?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
+  deleted_at?: timestamptz_comparison_exp | null
+  deleted_from?: String_comparison_exp | null
   description?: String_comparison_exp | null
   duration?: Int_comparison_exp | null
   id?: String_comparison_exp | null
   member?: member_bool_exp | null
   memberByAuthorId?: member_bool_exp | null
+  memberByDeleteFrom?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   member_note_attachments?: member_note_attachment_bool_exp | null
   metadata?: jsonb_comparison_exp | null
@@ -1581,6 +1740,20 @@ export interface member_note_bool_exp {
   status?: String_comparison_exp | null
   type?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "member_oauth". All fields are combined with a logical 'AND'.
+ */
+export interface member_oauth_bool_exp {
+  _and?: (member_oauth_bool_exp | null)[] | null
+  _not?: member_oauth_bool_exp | null
+  _or?: (member_oauth_bool_exp | null)[] | null
+  id?: uuid_comparison_exp | null
+  member?: member_bool_exp | null
+  member_id?: String_comparison_exp | null
+  provider?: String_comparison_exp | null
+  provider_user_id?: String_comparison_exp | null
 }
 
 /**
@@ -1940,9 +2113,12 @@ export interface module_bool_exp {
   _and?: (module_bool_exp | null)[] | null
   _not?: module_bool_exp | null
   _or?: (module_bool_exp | null)[] | null
+  abstract?: String_comparison_exp | null
   app_modules?: app_module_bool_exp | null
+  category_name?: String_comparison_exp | null
   id?: String_comparison_exp | null
   name?: String_comparison_exp | null
+  settings?: setting_bool_exp | null
 }
 
 /**
@@ -2787,6 +2963,7 @@ export interface program_bool_exp {
   in_advance?: Boolean_comparison_exp | null
   is_countdown_timer_visible?: Boolean_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
+  is_introduction_section_visible?: Boolean_comparison_exp | null
   is_issues_open?: Boolean_comparison_exp | null
   is_private?: Boolean_comparison_exp | null
   is_sold_out?: Boolean_comparison_exp | null
@@ -2892,6 +3069,7 @@ export interface program_content_bool_exp {
   program_content_section?: program_content_section_bool_exp | null
   program_content_type?: program_content_type_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
+  sale_free?: program_content_sale_free_bool_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
@@ -2976,6 +3154,24 @@ export interface program_content_progress_enrollment_bool_exp {
   program_id?: uuid_comparison_exp | null
   progress?: numeric_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "program_content_sale_free". All fields are combined with a logical 'AND'.
+ */
+export interface program_content_sale_free_bool_exp {
+  _and?: (program_content_sale_free_bool_exp | null)[] | null
+  _not?: program_content_sale_free_bool_exp | null
+  _or?: (program_content_sale_free_bool_exp | null)[] | null
+  is_sale_free_by_program?: Boolean_comparison_exp | null
+  is_sale_free_by_program_content?: Boolean_comparison_exp | null
+  is_sale_free_by_program_plan?: Boolean_comparison_exp | null
+  program?: program_bool_exp | null
+  program_content?: program_content_bool_exp | null
+  program_content_id?: uuid_comparison_exp | null
+  program_id?: uuid_comparison_exp | null
+  program_plan?: program_plan_bool_exp | null
+  program_plan_id?: uuid_comparison_exp | null
 }
 
 /**
@@ -3465,6 +3661,25 @@ export interface role_permission_bool_exp {
   role?: role_bool_exp | null
   role_id?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "setting". All fields are combined with a logical 'AND'.
+ */
+export interface setting_bool_exp {
+  _and?: (setting_bool_exp | null)[] | null
+  _not?: setting_bool_exp | null
+  _or?: (setting_bool_exp | null)[] | null
+  app_secrets?: app_secret_bool_exp | null
+  app_settings?: app_setting_bool_exp | null
+  is_protected?: Boolean_comparison_exp | null
+  is_required?: Boolean_comparison_exp | null
+  is_secret?: Boolean_comparison_exp | null
+  key?: String_comparison_exp | null
+  module?: module_bool_exp | null
+  module_id?: String_comparison_exp | null
+  options?: jsonb_comparison_exp | null
+  type?: String_comparison_exp | null
 }
 
 /**
