@@ -70,7 +70,7 @@ const ContentSelector: React.FC<{
             <div className="my-2" key={id}>
               <ContentSelect
                 value={selectedContentIds[i]}
-                contents={contents.filter(content => !selectedContentIds.slice(0, i).includes(content.id))}
+                contents={contents}
                 onChange={value => {
                   const newContentIds = [...selectedContentIds]
                   newContentIds[i] = value
