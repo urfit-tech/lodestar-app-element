@@ -1,3 +1,6 @@
+import axios, { AxiosRequestConfig } from 'axios'
+import queryString from 'query-string'
+
 export const durationFullFormatter = (seconds: number) => {
   if (seconds >= 3600) {
     const remainSeconds = seconds % 3600
@@ -15,3 +18,30 @@ export const durationFullFormatter = (seconds: number) => {
 export const durationFormatter = (value?: number | null) => {
   return typeof value === 'number' && `約 ${(value / 60).toFixed(0)} 分鐘`
 }
+
+export const uploadFile = async (key: string, file: Blob, authToken: string | null, config?: AxiosRequestConfig) =>
+  await axios
+    .post(
+      `${process.env.REACT_APP_API_BASE_ROOT}/sys/sign-url`,
+      {
+        operation: 'putObject',
+        params: {
+          Key: key,
+          ContentType: file.type,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${authToken}` },
+      },
+    )
+    .then(res => res.data.result)
+    .then(url => {
+      const { query } = queryString.parseUrl(url)
+      return axios.put<{ status: number; data: string }>(url, file, {
+        ...config,
+        headers: {
+          ...query,
+          'Content-Type': file.type,
+        },
+      })
+    })
