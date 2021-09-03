@@ -116,8 +116,14 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
   }
 }
 
-export const useProjectCollection = (options?: { categoryId?: string; projectType?: ProjectType; limit?: number }) => {
+export const useProjectCollection = (options?: {
+  ids?: string[]
+  categoryId?: string
+  projectType?: ProjectType
+  limit?: number
+}) => {
   const condition: hasura.GET_PROJECT_COLLECTIONVariables['condition'] = {
+    ...(options?.ids?.length ? { id: { _in: options.ids } } : {}),
     published_at: { _is_null: false },
     type: { ...(options?.projectType ? { _eq: options.projectType } : { _in: ['on-sale', 'pre-order', 'funding'] }) },
     ...(options?.categoryId && { project_categories: { category_id: { _eq: options.categoryId } } }),
@@ -184,7 +190,7 @@ export const useProjectCollection = (options?: { categoryId?: string; projectTyp
   }
 }
 
-export const usePublishedPodcastProgramCollection = (options?: { limit?: number }) => {
+export const usePublishedPodcastProgramCollection = (options?: { ids?: string[]; limit?: number }) => {
   const { loading, error, data, refetch } = useQuery<hasura.GET_PUBLISHED_PODCAST_PROGRAM_COLLECTION>(
     gql`
       query GET_PUBLISHED_PODCAST_PROGRAM_COLLECTION($limit: Int) {
@@ -268,15 +274,15 @@ export const usePublicMember = (memberId: string) => {
   }
 }
 
-export const useInstructorCollection = (appId: string, options?: { limit?: number }) => {
+export const useInstructorCollection = (appId: string, options?: { ids?: string[]; limit?: number }) => {
   const { loading, error, data } = useQuery<
     hasura.GET_INSTRUCTOR_COLLECTION,
     hasura.GET_INSTRUCTOR_COLLECTIONVariables
   >(
     gql`
-      query GET_INSTRUCTOR_COLLECTION($limit: Int!, $appId: String) {
+      query GET_INSTRUCTOR_COLLECTION($appId: String!, $limit: Int, $instructorIds: [String!]) {
         instructor: member_public(
-          where: { app_id: { _eq: $appId }, role: { _in: ["content-creator"] } }
+          where: { app_id: { _eq: $appId }, id: { _in: $instructorIds }, role: { _in: ["content-creator"] } }
           limit: $limit
           order_by: { created_at: desc }
         ) {
@@ -288,7 +294,7 @@ export const useInstructorCollection = (appId: string, options?: { limit?: numbe
         }
       }
     `,
-    { variables: { appId, limit: options?.limit || 9 } },
+    { variables: { appId, limit: options?.limit, instructorIds: options?.ids } },
   )
 
   const instructors: {
@@ -313,7 +319,7 @@ export const useInstructorCollection = (appId: string, options?: { limit?: numbe
   }
 }
 
-export const usePublishedActivityCollection = (options?: { limit?: number }) => {
+export const usePublishedActivityCollection = (options?: { ids?: string[]; limit?: number }) => {
   const { loading, error, data, refetch } = useQuery<
     hasura.GET_PUBLISHED_ACTIVITY_COLLECTION,
     hasura.GET_PUBLISHED_ACTIVITY_COLLECTIONVariables

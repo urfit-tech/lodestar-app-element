@@ -418,8 +418,9 @@ export interface GET_INSTRUCTOR_COLLECTION {
 }
 
 export interface GET_INSTRUCTOR_COLLECTIONVariables {
-  limit: number
-  appId?: string | null
+  appId: string
+  limit?: number | null
+  instructorIds?: string[] | null
 }
 
 /* tslint:disable */
@@ -856,6 +857,43 @@ export interface app_nav_bool_exp {
   position?: Int_comparison_exp | null
   sub_app_navs?: app_nav_bool_exp | null
   tag?: String_comparison_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "app_page". All fields are combined with a logical 'AND'.
+ */
+export interface app_page_bool_exp {
+  _and?: (app_page_bool_exp | null)[] | null
+  _not?: app_page_bool_exp | null
+  _or?: (app_page_bool_exp | null)[] | null
+  app_id?: String_comparison_exp | null
+  app_page_sections?: app_page_section_bool_exp | null
+  craft_data?: jsonb_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
+  editor?: member_bool_exp | null
+  editor_id?: String_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  is_deleted?: Boolean_comparison_exp | null
+  options?: jsonb_comparison_exp | null
+  path?: String_comparison_exp | null
+  published_at?: timestamptz_comparison_exp | null
+  title?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "app_page_section". All fields are combined with a logical 'AND'.
+ */
+export interface app_page_section_bool_exp {
+  _and?: (app_page_section_bool_exp | null)[] | null
+  _not?: app_page_section_bool_exp | null
+  _or?: (app_page_section_bool_exp | null)[] | null
+  app_page?: app_page_bool_exp | null
+  app_page_id?: uuid_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  options?: jsonb_comparison_exp | null
+  position?: numeric_comparison_exp | null
+  type?: String_comparison_exp | null
 }
 
 /**
@@ -1554,6 +1592,7 @@ export interface member_bool_exp {
   activities?: activity_bool_exp | null
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
+  app_pages?: app_page_bool_exp | null
   appointment_plans?: appointment_plan_bool_exp | null
   assignRulesBySourceMemberId?: xuemi_assign_rule_bool_exp | null
   assignRulesByTargetMemberId?: xuemi_assign_rule_bool_exp | null
@@ -1595,6 +1634,7 @@ export interface member_bool_exp {
   member_notes?: member_note_bool_exp | null
   member_oauths?: member_oauth_bool_exp | null
   member_permission_extras?: member_permission_extra_bool_exp | null
+  member_permission_groups?: member_permission_group_bool_exp | null
   member_permissions?: member_permission_bool_exp | null
   member_phones?: member_phone_bool_exp | null
   member_properties?: member_property_bool_exp | null
@@ -1781,6 +1821,22 @@ export interface member_permission_extra_bool_exp {
   member_id?: String_comparison_exp | null
   permission?: permission_bool_exp | null
   permission_id?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "member_permission_group". All fields are combined with a logical 'AND'.
+ */
+export interface member_permission_group_bool_exp {
+  _and?: (member_permission_group_bool_exp | null)[] | null
+  _not?: member_permission_group_bool_exp | null
+  _or?: (member_permission_group_bool_exp | null)[] | null
+  created_at?: timestamptz_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  member?: member_bool_exp | null
+  member_id?: String_comparison_exp | null
+  permission_group?: permission_group_bool_exp | null
+  permission_group_id?: uuid_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
 
@@ -2219,6 +2275,7 @@ export interface order_log_bool_exp {
   auto_renewed_at?: timestamptz_comparison_exp | null
   coupon?: coupon_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
+  custom_id?: String_comparison_exp | null
   deliver_message?: String_comparison_exp | null
   delivered_at?: timestamptz_comparison_exp | null
   discount_coupon_id?: uuid_comparison_exp | null
@@ -2383,6 +2440,7 @@ export interface payment_log_bool_exp {
   _not?: payment_log_bool_exp | null
   _or?: (payment_log_bool_exp | null)[] | null
   created_at?: timestamptz_comparison_exp | null
+  custom_no?: String_comparison_exp | null
   gateway?: String_comparison_exp | null
   method?: String_comparison_exp | null
   no?: numeric_comparison_exp | null
@@ -2410,6 +2468,37 @@ export interface permission_bool_exp {
   id?: String_comparison_exp | null
   member_permission_extras?: member_permission_extra_bool_exp | null
   role_permissions?: role_permission_bool_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "permission_group". All fields are combined with a logical 'AND'.
+ */
+export interface permission_group_bool_exp {
+  _and?: (permission_group_bool_exp | null)[] | null
+  _not?: permission_group_bool_exp | null
+  _or?: (permission_group_bool_exp | null)[] | null
+  app_id?: String_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  name?: String_comparison_exp | null
+  permission_group_permissions?: permission_group_permission_bool_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "permission_group_permission". All fields are combined with a logical 'AND'.
+ */
+export interface permission_group_permission_bool_exp {
+  _and?: (permission_group_permission_bool_exp | null)[] | null
+  _not?: permission_group_permission_bool_exp | null
+  _or?: (permission_group_permission_bool_exp | null)[] | null
+  created_at?: timestamptz_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  permission?: permission_bool_exp | null
+  permission_group?: permission_group_bool_exp | null
+  permission_group_id?: uuid_comparison_exp | null
+  permission_id?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
 
