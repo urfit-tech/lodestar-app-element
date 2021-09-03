@@ -3,6 +3,7 @@ import { Button, Collapse, Form, Radio } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
+import styled from 'styled-components'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import {
   CraftBoxModelProps,
@@ -11,11 +12,28 @@ import {
   CraftTextStyleProps,
   CraftTitleProps,
 } from '../../types/craft'
-import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { MarginProps, PaddingProps } from '../../types/style'
+import {
+  AdminHeaderTitle,
+  generateCustomMarginStyle,
+  generateCustomPaddingStyle,
+  StyledCollapsePanel,
+  StyledSettingButtonWrapper,
+} from '../common'
 import ImageUploader from '../common/ImageUploader'
+import Stat from '../Stat'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
+import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
+
+const StatisticsWrapper = styled.div<{ customStyle: MarginProps & PaddingProps }>`
+  cursor: pointer;
+  width: fit-content;
+  text-align: center;
+  ${generateCustomMarginStyle}
+  ${generateCustomPaddingStyle}
+`
 
 type CraftStatisticsProps = CraftImageProps &
   CraftBoxModelProps & { title: CraftTitleProps; paragraph: CraftParagraphProps }
@@ -34,25 +52,57 @@ type FieldProps = {
   }
 }
 
-const CraftStatistics: UserComponent<
-  CraftStatisticsProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }
-> = ({ title, paragraph, padding, margin, coverUrl, setActiveKey, children }) => {
+const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph, padding, margin, coverUrl }) => {
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <div
+    <StatisticsWrapper
       ref={ref => ref && connect(drag(ref))}
-      style={{
-        padding: `${padding?.pt}px ${padding?.pr}px ${padding?.pb}px ${padding?.pl}px`,
-        margin: `${margin?.mt}px ${margin?.mr}px ${margin?.mb}px ${margin?.ml}px`,
-        cursor: 'pointer',
+      customStyle={{
+        ...padding,
+        ...margin,
       }}
-      onClick={() => setActiveKey('settings')}
     >
-      <div>{title.titleContent}</div>
-    </div>
+      <Stat.Image
+        src={coverUrl}
+        customStyle={{
+          mt: '0',
+          mb: '24',
+          mr: '0',
+          ml: '0',
+          pt: '0',
+          pb: '0',
+          pr: '0',
+          pl: '0',
+        }}
+      />
+      <Stat.Digit
+        customStyle={{
+          textAlign: title.textAlign || 'center',
+          fontSize: title.fontSize || '20',
+          fontWeight: title.fontWeight || 'normal',
+          color: title.color || '#585858',
+          mb: '16',
+          ...title.margin,
+        }}
+      >
+        {title.titleContent}
+      </Stat.Digit>
+      <Stat.Content
+        customStyle={{
+          textAlign: paragraph.textAlign || 'center',
+          fontSize: paragraph.fontSize || '20',
+          fontWeight: paragraph.fontWeight || 'normal',
+          lineHeight: paragraph.lineHeight || 1,
+          color: paragraph.color || '#585858',
+          ...paragraph.margin,
+        }}
+      >
+        {paragraph.paragraphContent}
+      </Stat.Content>
+    </StatisticsWrapper>
   )
 }
 
@@ -78,7 +128,6 @@ const StatisticsSettings: React.VFC = () => {
 
     setProp(props => {
       props.type = values.type
-      props.coverImage = coverImage
       props.padding = {
         pt: padding?.[0] || '0',
         pr: padding?.[1] || '0',
@@ -105,7 +154,7 @@ const StatisticsSettings: React.VFC = () => {
         color: values.titleStyle.color,
       }
       props.paragraph = {
-        content: values.paragraphContent,
+        paragraphContent: values.paragraphContent,
         fontSize: values.paragraphStyle.fontSize,
         margin: {
           mt: paragraphMargin?.[0] || '0',
@@ -224,7 +273,7 @@ const StatisticsSettings: React.VFC = () => {
               rules={[
                 {
                   required: true,
-                  pattern: /^\d+;\d+;\d+;\d+;$/,
+                  pattern: /^\d+;\d+;\d+;\d+$/,
                   message: formatMessage(craftPageMessages.text.boxModelInputWarning),
                 },
               ]}
@@ -237,7 +286,7 @@ const StatisticsSettings: React.VFC = () => {
               rules={[
                 {
                   required: true,
-                  pattern: /^\d+;\d+;\d+;\d+;$/,
+                  pattern: /^\d+;\d+;\d+;\d+$/,
                   message: formatMessage(craftPageMessages.text.boxModelInputWarning),
                 },
               ]}
@@ -254,14 +303,14 @@ const StatisticsSettings: React.VFC = () => {
         <CraftTextStyleBlock type="title" title={formatMessage(craftPageMessages.label.titleStyle)} />
       </Form.Item>
       <Form.Item name="paragraphContent">
-        <CraftTitleContentBlock />
+        <CraftParagraphContentBlock />
       </Form.Item>
       <Form.Item name="paragraphStyle">
         <CraftTextStyleBlock type="paragraph" title={formatMessage(craftPageMessages.label.paragraphStyle)} />
       </Form.Item>
       {selected && (
         <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" block htmlType="submit">
+          <Button loading={loading} className="mb-3" type="primary" block htmlType="submit">
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>
