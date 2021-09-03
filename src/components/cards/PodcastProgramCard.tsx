@@ -75,6 +75,8 @@ const PodcastProgramCard: React.VFC<PodcastProgramCardProps> = ({ podcastProgram
           bordered: false,
           shadow: true,
           p: '0',
+          backgroundColor: 'white',
+          overflow: 'hidden',
         }}
       >
         <StyledCoverBlock>

@@ -43,6 +43,8 @@ const ProjectCard: React.VFC<ProjectCardProps> = ({ project, craftEnabled }) => 
           bordered: false,
           shadow: true,
           p: '0',
+          backgroundColor: 'white',
+          overflow: 'hidden',
         }}
       >
         <CustomRatioImage width="100%" ratio={9 / 16} src={project.previewUrl || project.coverUrl || EmptyCover} />

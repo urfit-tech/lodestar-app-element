@@ -42,6 +42,8 @@ const ActivityCard: React.VFC<ActivityCardProps> = ({ activity, craftEnabled }) 
           bordered: false,
           shadow: true,
           p: '0',
+          backgroundColor: 'white',
+          overflow: 'hidden',
         }}
       >
         <CustomRatioImage width="100%" ratio={9 / 16} src={activity.coverUrl || EmptyCover} />

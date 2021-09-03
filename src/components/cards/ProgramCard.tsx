@@ -62,7 +62,9 @@ const ProgramCard: React.VFC<ProgramCardProps> = ({ program, craftEnabled }) => 
             direction: 'column',
             bordered: false,
             shadow: true,
+            backgroundColor: 'white',
             p: '0',
+            overflow: 'hidden',
           }}
         >
           <CustomRatioImage width="100%" ratio={9 / 16} src={program.coverUrl || EmptyCover} />
