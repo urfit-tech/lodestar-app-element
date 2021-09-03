@@ -14,6 +14,26 @@ export type CraftPaddingProps = {
   pl?: string
 }
 
+export type CraftBorderProps = {
+  border?: string
+  borderRadius?: string
+  borderStyle?: string
+  borderWidth?: string
+  borderColor?: string
+  borderTopStyle?: string
+  borderTopColor?: string
+  borderTopWidth?: string
+  borderBottomStyle?: string
+  borderBottomColor?: string
+  borderBottomWidth?: string
+  borderLeftStyle?: string
+  borderLeftColor?: string
+  borderLeftWidth?: string
+  borderRightStyle?: string
+  borderRightColor?: string
+  borderRightWidth?: string
+}
+
 export type CraftLayoutProps = {
   margin: CraftMarginProps
   columnAmount: number
@@ -42,6 +62,8 @@ export type CraftTextStyleProps = {
   textAlign: 'left' | 'right' | 'center'
   fontWeight: 'lighter' | 'normal' | 'bold'
   color: string
+  border?: CraftBorderProps
+  padding?: CraftPaddingProps
 }
 
 export type CraftTitleProps = {
@@ -50,16 +72,20 @@ export type CraftTitleProps = {
 
 export type CraftParagraphProps = {
   paragraphContent: string
+  letterSpacing?: string | number
 } & CraftTextStyleProps
 
 export type CraftButtonProps = {
   title: string
-  link: string
+  link?: string
   openNewTab: boolean
   size: 'sm' | 'md' | 'lg'
   block: boolean
   variant: 'text' | 'solid' | 'outline'
   color: string
+  outlineColor?: string
+  backgroundColor?: string
+  backgroundType?: 'none' | 'solidColor'
 }
 
 export type CraftBoxModelProps = {
@@ -69,5 +95,7 @@ export type CraftBoxModelProps = {
 
 export type CraftImageProps = {
   type?: 'empty' | 'image'
-  coverUrl: string | null
+  width?: string
+  height?: string
+  coverUrl?: string
 }

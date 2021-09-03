@@ -14,18 +14,46 @@ export type PaddingProps = {
   pl?: string | number
 }
 
-export type BackgroundProps = (
-  | { backgroundColor?: never; backgroundImage?: never; mode?: never }
-  | { backgroundColor: string; backgroundImage?: never; mode?: never }
-  | { backgroundColor?: never; backgroundImage: string; mode?: 'light' | 'dark' }
-) &
-  MarginProps &
+export type BorderProps = {
+  border?: string
+  borderRadius?: string
+  borderStyle?: string
+  borderWidth?: string
+  borderColor?: string
+  borderTopStyle?: string
+  borderTopColor?: string
+  borderTopWidth?: string | number
+  borderBottomStyle?: string
+  borderBottomColor?: string
+  borderBottomWidth?: string | number
+  borderLeftStyle?: string
+  borderLeftColor?: string
+  borderLeftWidth?: string | number
+  borderRightStyle?: string
+  borderRightColor?: string
+  borderRightWidth?: string | number
+  borderTopLeftRadius?: string
+  borderTopRightRadius?: string
+  borderBottomRightRadius?: string
+  borderBottomLeftRadius?: string
+}
+
+export type BackgroundProps = {
+  backgroundColor?: string
+  backgroundImage?: string
+  mode?: 'light' | 'dark'
+} & MarginProps &
   PaddingProps
 
 export type LayoutProps = {
   type?: 'flex' | 'grid'
-  mobile?: { columnAmount?: number; columnRatio?: number[] }
-  desktop?: { columnAmount?: number; columnRatio?: number[] }
+  mobile?: { margin?: MarginProps; columnAmount?: number; columnRatio?: number[]; displayAmount?: number }
+  desktop?: { margin?: MarginProps; columnAmount?: number; columnRatio?: number[]; displayAmount?: number }
+}
+
+export type CarouselProps = {
+  mobile?: { margin?: MarginProps }
+  desktop?: { margin?: MarginProps }
 }
 
 export type ParagraphProps = {
@@ -34,7 +62,10 @@ export type ParagraphProps = {
   fontWeight: 'lighter' | 'normal' | 'bold'
   lineHeight: string | number
   color: string
-} & MarginProps
+  letterSpacing?: string | number
+} & MarginProps &
+  PaddingProps &
+  BorderProps
 
 export type TitleProps = Omit<ParagraphProps, 'lineHeight'>
 
@@ -44,12 +75,26 @@ export type ButtonProps = {
   block?: boolean
   colorScheme?: string
   backgroundColor?: string
+  color?: string
+  outlineColor?: string
+  link?: string
+  openNewTab?: boolean
 }
 
-export type ImageProps = MarginProps & PaddingProps
+export type ImageProps = {
+  width?: string
+  height?: string
+  objectFit?: 'cover' | 'contain' | 'fill'
+} & MarginProps &
+  PaddingProps
 
 export type CardProps = {
   bordered?: boolean
+  backgroundColor?: string
+  backgroundImage?: string
   shadow?: boolean
+  dropShadow?: string
+  overflow?: string
 } & MarginProps &
-  PaddingProps
+  PaddingProps &
+  BorderProps
