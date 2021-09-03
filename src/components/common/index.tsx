@@ -1,6 +1,14 @@
 import { Collapse, Input, Slider } from 'antd'
 import styled, { css } from 'styled-components'
-import { CardProps, LayoutProps, MarginProps, PaddingProps, ParagraphProps, TitleProps } from '../../types/style'
+import {
+  BorderProps,
+  CardProps,
+  LayoutProps,
+  MarginProps,
+  PaddingProps,
+  ParagraphProps,
+  TitleProps,
+} from '../../types/style'
 import { BREAK_POINT } from '../Responsive'
 
 const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
@@ -15,8 +23,16 @@ const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
       : props.customStyle.fontWeight === 'lighter'
       ? 200
       : 500};
-    margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
     color: ${props.customStyle.color};
+    ${css`
+      ${generateCustomMarginStyle}
+    `}
+    ${css`
+      ${generateCustomPaddingStyle}
+    `}
+    ${css`
+      ${generateCustomBorderStyle}
+    `}
   `
 const generateCustomParagraphStyle = (props: { customStyle?: ParagraphProps }) =>
   props.customStyle &&
@@ -31,34 +47,47 @@ const generateCustomParagraphStyle = (props: { customStyle?: ParagraphProps }) =
       : props.customStyle.fontWeight === 'lighter'
       ? 200
       : 500};
-    margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
+    letter-spacing: ${props.customStyle.letterSpacing}px;
     color: ${props.customStyle.color};
+    ${css`
+      ${generateCustomMarginStyle}
+    `}
+    ${css`
+      ${generateCustomPaddingStyle}
+    `}
+    ${css`
+      ${generateCustomBorderStyle}
+    `}
   `
 const generateCustomCardStyle = (props: { customStyle?: CardProps }) =>
   props.customStyle &&
   css`
     ${props.customStyle.bordered ? `border: 1px solid white;` : ''}
     ${props.customStyle.shadow ? `box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);` : ``}
-    margin: ${props.customStyle.mt}px ${props.customStyle.mr}px ${props.customStyle.mb}px ${props.customStyle.ml}px;
-    padding: ${props.customStyle.pt}px ${props.customStyle.pr}px ${props.customStyle.pb}px ${props.customStyle.pl}px;
+    ${css`
+      ${generateCustomPaddingStyle}
+    `}
+    ${css`
+      ${generateCustomMarginStyle}
+    `}
   `
 const generateCustomMarginStyle = (props: { customStyle?: MarginProps }) =>
   props.customStyle &&
   css`
-    ${props.customStyle.m && `margin: ${props.customStyle.m}px;`}
-    ${props.customStyle.mt && `margin-top: ${props.customStyle.mt}px;`}
-    ${props.customStyle.mb && `margin-bottom: ${props.customStyle.mb}px;`}
-    ${props.customStyle.mr && `margin-right: ${props.customStyle.mr}px;`}
-    ${props.customStyle.ml && `margin-left: ${props.customStyle.ml}px;`}
+    ${props.customStyle.m && `margin: ${props.customStyle.m}${Number(props.customStyle.m) ? 'px' : ''};`}
+    ${props.customStyle.mt && `margin-top: ${props.customStyle.mt}${Number(props.customStyle.mt) ? 'px' : ''};`}
+    ${props.customStyle.mb && `margin-bottom: ${props.customStyle.mb}${Number(props.customStyle.mb) ? 'px' : ''};`}
+    ${props.customStyle.mr && `margin-right: ${props.customStyle.mr}${Number(props.customStyle.mr) ? 'px' : ''};`}
+    ${props.customStyle.ml && `margin-left: ${props.customStyle.ml}${Number(props.customStyle.ml) ? 'px' : ''};`}
   `
 const generateCustomPaddingStyle = (props: { customStyle?: PaddingProps }) =>
   props.customStyle &&
   css`
-    ${props.customStyle.p && `padding: ${props.customStyle.p}px;`}
-    ${props.customStyle.pt && `padding-top: ${props.customStyle.pt}px;`}
-    ${props.customStyle.pb && `padding-bottom: ${props.customStyle.pb}px;`}
-    ${props.customStyle.pr && `padding-right: ${props.customStyle.pr}px;`}
-    ${props.customStyle.pl && `padding-left: ${props.customStyle.pl}px;`}
+    ${props.customStyle.p && `padding: ${props.customStyle.p}${Number(props.customStyle.p) ? 'px' : ''};`}
+    ${props.customStyle.pt && `padding-top: ${props.customStyle.pt}${Number(props.customStyle.pt) ? 'px' : ''};`}
+    ${props.customStyle.pb && `padding-bottom: ${props.customStyle.pb}${Number(props.customStyle.pb) ? 'px' : ''};`}
+    ${props.customStyle.pr && `padding-right: ${props.customStyle.pr}${Number(props.customStyle.pr) ? 'px' : ''};`}
+    ${props.customStyle.pl && `padding-left: ${props.customStyle.pl}${Number(props.customStyle.pl) ? 'px' : ''};`}
   `
 const generateCustomLayoutStyle = (props: { customStyle?: LayoutProps }) =>
   props.customStyle &&
@@ -71,19 +100,71 @@ const generateCustomLayoutStyle = (props: { customStyle?: LayoutProps }) =>
         `repeat(${props.customStyle.mobile.columnAmount},${12 / props.customStyle.mobile.columnAmount})fr`) ||
       '12fr'};
       grid-gap: 1.5rem;
+      place-items: center;
 
       @media (min-width: ${BREAK_POINT}px) {
         grid-gap: 30px;
-        ${css`
-          grid-template-columns: ${props.customStyle.desktop?.columnRatio?.reduce((a, v) => (a += v + 'fr '), '') ||
-          (props.customStyle.desktop?.columnAmount &&
-            `repeat(${props.customStyle.desktop.columnAmount},${12 / props.customStyle.desktop.columnAmount})fr`) ||
-          'repeat(3,4fr)'};
-        `}
+        grid-template-columns: ${props.customStyle.desktop?.columnRatio?.reduce((a, v) => (a += v + 'fr '), '') ||
+        (props.customStyle.desktop?.columnAmount &&
+          `repeat(${props.customStyle.desktop.columnAmount},${12 / props.customStyle.desktop.columnAmount})fr`) ||
+        'repeat(3,4fr)'};
       }
     `}
+    ${props.customStyle.mobile?.displayAmount &&
+    css`
+      @media (max-width: ${BREAK_POINT - 1}px) {
+        & > :not(:nth-child(-n + ${props.customStyle.mobile.displayAmount})) {
+          display: none;
+        }
+      }
+    `}
+    ${props.customStyle.desktop?.displayAmount &&
+    css`
+      @media (min-width: ${BREAK_POINT}px) {
+        & > :not(:nth-child(-n + ${props.customStyle.desktop.displayAmount})) {
+          display: none;
+        }
+      }
+    `}
+     ${generateCustomMarginStyle({ customStyle: props.customStyle.mobile?.margin })}
+     @media (min-width: ${BREAK_POINT}px) {
+      ${generateCustomMarginStyle({ customStyle: props.customStyle.desktop?.margin })}
+    }
   `
-
+const generateCustomBorderStyle = (props: { customStyle?: BorderProps }) =>
+  props.customStyle &&
+  css`
+    ${props.customStyle.borderRadius && `border-radius: ${props.customStyle.borderRadius};`}
+    ${props.customStyle.borderStyle && `border-style: ${props.customStyle.borderStyle};`}
+    ${props.customStyle.borderWidth && `border-width: ${props.customStyle.borderWidth};`}
+    ${props.customStyle.borderColor && `border-color: ${props.customStyle.borderColor};`}
+    ${props.customStyle.borderTopStyle && `border-top-style: ${props.customStyle.borderTopStyle} ;`}
+    ${props.customStyle.borderTopColor && `border-top-color: ${props.customStyle.borderTopColor} ;`}
+    ${props.customStyle.borderTopWidth &&
+    `border-top-width: ${props.customStyle.borderTopWidth}${Number(props.customStyle.borderTopWidth) ? 'px' : ''};`}
+    ${props.customStyle.borderBottomStyle && `border-bottom-style:${props.customStyle.borderBottomStyle} ;`}
+    ${props.customStyle.borderBottomColor && `border-bottom-color: ${props.customStyle.borderBottomColor} ;`}
+    ${props.customStyle.borderBottomWidth &&
+    `border-bottom-width: ${props.customStyle.borderBottomWidth}${
+      Number(props.customStyle.borderBottomWidth) ? 'px' : ''
+    };`}
+    ${props.customStyle.borderLeftStyle && `border-left-style: ${props.customStyle.borderLeftStyle};`}
+    ${props.customStyle.borderLeftColor && `border-left-color: ${props.customStyle.borderLeftColor} ;`}
+    ${props.customStyle.borderLeftWidth &&
+    `border-left-width: ${props.customStyle.borderLeftWidth}${Number(props.customStyle.borderLeftWidth) ? 'px' : ''} ;`}
+    ${props.customStyle.borderRightStyle && `border-right-style: ${props.customStyle.borderRightStyle};`}
+    ${props.customStyle.borderRightColor && `border-right-color: ${props.customStyle.borderRightColor};`}
+    ${props.customStyle.borderRightWidth &&
+    `border-right-width: ${props.customStyle.borderRightWidth}${
+      Number(props.customStyle.borderRightWidth) ? 'px' : ''
+    };`}
+    ${props.customStyle.borderTopLeftRadius && `border-top-left-radius: ${props.customStyle.borderTopLeftRadius};`}
+    ${props.customStyle.borderTopRightRadius && `border-top-right-radius: ${props.customStyle.borderTopRightRadius};`}
+    ${props.customStyle.borderBottomLeftRadius &&
+    `border-bottom-left-radius: ${props.customStyle.borderBottomLeftRadius};`}
+    ${props.customStyle.borderBottomRightRadius &&
+    `border-bottom-right-radius: ${props.customStyle.borderBottomRightRadius};`}
+  `
 const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
   line-height: 1;
   && {
@@ -92,6 +173,7 @@ const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
 `
 const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
   white-space: pre-line;
+  margin-bottom: 0;
   && {
     ${generateCustomParagraphStyle}
   }
@@ -105,6 +187,7 @@ export {
   generateCustomMarginStyle,
   generateCustomPaddingStyle,
   generateCustomLayoutStyle,
+  generateCustomBorderStyle,
 }
 
 export const AdminHeaderTitle = styled.div`
