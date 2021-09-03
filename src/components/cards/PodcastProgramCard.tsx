@@ -1,5 +1,4 @@
 import React from 'react'
-import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFullFormatter } from '../../helpers/index'
@@ -64,13 +63,12 @@ const StyledDuration = styled.div`
 `
 export type PodcastProgramCardProps = {
   podcastProgram: PodcastProgramBriefProps
+  craftEnabled?: boolean
 }
 
-const PodcastProgramCard: React.VFC<PodcastProgramCardProps> = ({ podcastProgram }) => {
-  const { formatMessage } = useIntl()
-
+const PodcastProgramCard: React.VFC<PodcastProgramCardProps> = ({ podcastProgram, craftEnabled }) => {
   return (
-    <Link to={`/podcasts/${podcastProgram.id}`}>
+    <Link to={`/podcasts/${podcastProgram.id}`} onClick={craftEnabled ? e => e.preventDefault() : undefined}>
       <Card
         customStyle={{
           direction: 'row',

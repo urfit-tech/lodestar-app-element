@@ -1,3 +1,4 @@
+import { useNode } from '@craftjs/core'
 import React from 'react'
 import { useProjectCollection } from '../../hooks/data'
 import { ProjectType } from '../../types/data'
@@ -6,13 +7,18 @@ import Skeleton from '../Skeleton'
 
 const ProjectBlock: React.VFC<{
   projectType?: ProjectType
-  displayAmount?: number
+  customContentIds?: string[]
   categoryId?: string
-}> = ({ projectType, displayAmount, categoryId }) => {
+  craftEnabled?: boolean
+}> = ({ projectType, customContentIds, categoryId, craftEnabled }) => {
+  const {
+    connectors: { connect },
+  } = useNode()
   const { loadingProjects, errorProjects, projects } = useProjectCollection({
     projectType,
+    ids: customContentIds,
     categoryId: categoryId,
-    limit: displayAmount,
+    limit: customContentIds?.length ? undefined : 3,
   })
 
   if (loadingProjects)
@@ -29,7 +35,9 @@ const ProjectBlock: React.VFC<{
   return (
     <>
       {projects.map(project => (
-        <ProjectCard key={project.id} project={project} />
+        <div ref={ref => ref && connect(ref)} style={{ width: '100%' }}>
+          <ProjectCard key={project.id} project={project} craftEnabled={craftEnabled} />
+        </div>
       ))}
     </>
   )

@@ -28,14 +28,15 @@ const StyledPercent = styled.div`
 `
 export type ProjectCardProps = {
   project: ProjectBasicProps
+  craftEnabled?: boolean
 }
 
-const ProjectCard: React.VFC<ProjectCardProps> = ({ project }) => {
+const ProjectCard: React.VFC<ProjectCardProps> = ({ project, craftEnabled }) => {
   const { formatMessage } = useIntl()
   const theme = useContext(ThemeContext)
 
   return (
-    <Link to={`/projects/${project.id}`}>
+    <Link to={`/projects/${project.id}`} onClick={craftEnabled ? e => e.preventDefault() : undefined}>
       <Card
         customStyle={{
           direction: 'column',

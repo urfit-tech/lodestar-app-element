@@ -29,9 +29,10 @@ export type ProgramCardProps = {
     roles: ProgramRoleProps[]
     plans: ProgramPlanProps[]
   }
+  craftEnabled?: boolean
 }
 
-const ProgramCard: React.VFC<ProgramCardProps> = ({ program }) => {
+const ProgramCard: React.VFC<ProgramCardProps> = ({ program, craftEnabled }) => {
   const instructorId = program.roles.length > 0 && program.roles[0].memberId
   const listPrice =
     program.isSubscription && program.plans.length > 0 ? program.plans[0].listPrice : program.listPrice || 0
@@ -47,12 +48,15 @@ const ProgramCard: React.VFC<ProgramCardProps> = ({ program }) => {
   return (
     <>
       <InstructorPlaceHolder>
-        <Link to={instructorId ? `/creators/${instructorId}?tabkey=introduction` : `/creators`}>
+        <Link
+          onClick={craftEnabled ? e => e.preventDefault() : undefined}
+          to={instructorId ? `/creators/${instructorId}?tabkey=introduction` : `/creators`}
+        >
           <MemberAvatar memberId={instructorId || ''} withName />
         </Link>
       </InstructorPlaceHolder>
 
-      <Link to={`/programs/${program.id}/contents`}>
+      <Link onClick={craftEnabled ? e => e.preventDefault() : undefined} to={`/programs/${program.id}/contents`}>
         <Card
           customStyle={{
             direction: 'column',

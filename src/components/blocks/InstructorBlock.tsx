@@ -1,3 +1,4 @@
+import { useNode } from '@craftjs/core'
 import React from 'react'
 import styled from 'styled-components'
 import { useInstructorCollection } from '../../hooks/data'
@@ -42,10 +43,17 @@ const StyledCarousel = styled(Carousel)`
 
 const InstructorBlock: React.FC<{
   appId: string
-  displayAmount?: number
+  customContentIds?: string[]
   isShowDescription?: boolean
-}> = ({ appId, displayAmount = 4, isShowDescription }) => {
-  const { loadingInstructors, errorInstructors, instructors } = useInstructorCollection(appId)
+  craftEnabled?: boolean
+}> = ({ appId, customContentIds, isShowDescription, craftEnabled }) => {
+  const {
+    connectors: { connect },
+  } = useNode()
+  const { loadingInstructors, errorInstructors, instructors } = useInstructorCollection(appId, {
+    ids: customContentIds,
+    limit: customContentIds?.length ? undefined : 8,
+  })
 
   if (loadingInstructors)
     return (
@@ -64,7 +72,7 @@ const InstructorBlock: React.FC<{
       dots={false}
       draggable
       swipeToSlide
-      slidesToShow={instructors.length < displayAmount ? instructors.length : displayAmount}
+      slidesToShow={customContentIds?.length || 4}
       slidesToScroll={1}
       responsive={[
         {
@@ -76,15 +84,18 @@ const InstructorBlock: React.FC<{
       ]}
     >
       {instructors.map(v => (
-        <Instructor
-          key={v.id}
-          id={v.id}
-          name={v.name}
-          abstract={v.abstract}
-          description={v.description}
-          avatarUrl={v.avatarUrl}
-          isShowDescription={!!isShowDescription}
-        />
+        <div ref={ref => ref && connect(ref)}>
+          <Instructor
+            key={v.id}
+            id={v.id}
+            name={v.name}
+            abstract={v.abstract}
+            description={v.description}
+            avatarUrl={v.avatarUrl}
+            isShowDescription={!!isShowDescription}
+            craftEnabled={craftEnabled}
+          />
+        </div>
       ))}
     </StyledCarousel>
   )

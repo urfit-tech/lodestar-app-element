@@ -25,16 +25,17 @@ const StyledMeta = styled.div`
 
 export type ActivityCardProps = {
   activity: ActivityProps
+  craftEnabled?: boolean
 }
 
-const ActivityCard: React.VFC<ActivityCardProps> = ({ activity }) => {
+const ActivityCard: React.VFC<ActivityCardProps> = ({ activity, craftEnabled }) => {
   const { formatMessage } = useIntl()
 
   const startDate = activity.startedAt ? moment(activity.startedAt).format('YYYY-MM-DD(dd)') : ''
   const endDate = activity.endedAt ? moment(activity.endedAt).format('YYYY-MM-DD(dd)') : ''
 
   return (
-    <Link to={`/activities/${activity.id}`}>
+    <Link to={`/activities/${activity.id}`} onClick={craftEnabled ? e => e.preventDefault() : undefined}>
       <Card
         customStyle={{
           direction: 'column',
