@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftLayoutProps } from '../../types/craft'
 import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
-import { BREAK_POINT } from '../Responsive'
+import Layout from '../Layout'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
 const StyledFullWidthSelect = styled(Select)`
@@ -23,45 +23,38 @@ const StyledFullWidthSelect = styled(Select)`
 const StyledInputNumber = styled(InputNumber)`
   width: 100% !important;
 `
-const StyledContainer = styled.div<{ mobile: CraftLayoutProps; desktop: CraftLayoutProps }>`
-  margin: ${props =>
-    `${props.mobile.margin.mt}px ${props.mobile.margin.mr}px ${props.mobile.margin.mb}px ${props.mobile.margin.ml}px`};
-  @media (min-width: ${BREAK_POINT}px) {
-    margin: ${props =>
-      `${props.desktop.margin.mt}px ${props.desktop.margin.mr}px ${props.desktop.margin.mb}px ${props.desktop.margin.ml}px`};
-  }
-`
 
 type FieldProps = {
   desktopMargin: string
   desktopColumnAmount: number
-  desktopColumnRatio: number[]
+  desktopColumnRatio: string
   desktopDisplayAmount: number
   mobileMargin: string
   mobileColumnAmount: number
-  mobileColumnRatio: number[]
+  mobileColumnRatio: string
   mobileDisplayAmount: number
 }
 
 const CraftLayout: UserComponent<{
   desktop: CraftLayoutProps
   mobile: CraftLayoutProps
-  setActiveKey: React.Dispatch<React.SetStateAction<string>>
-}> = ({ desktop, mobile, setActiveKey }) => {
+}> = ({ desktop, mobile, children }) => {
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <StyledContainer
-      ref={ref => ref && connect(drag(ref))}
-      desktop={desktop}
-      mobile={mobile}
-      style={{ cursor: 'pointer' }}
-      onClick={() => setActiveKey('settings')}
-    >
-      layout
-    </StyledContainer>
+    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }}>
+      <Layout
+        customStyle={{
+          type: 'grid',
+          mobile,
+          desktop,
+        }}
+      >
+        {children}
+      </Layout>
+    </div>
   )
 }
 
@@ -91,7 +84,7 @@ const LayoutSettings: React.VFC = () => {
           ml: desktopMargin?.[3] || '0',
         },
         columnAmount: values.desktopColumnAmount,
-        columnRatio: values.desktopColumnRatio,
+        columnRatio: values.desktopColumnRatio.split(':').map(Number),
         displayAmount: values.desktopDisplayAmount,
       }
       props.mobile = {
@@ -102,7 +95,7 @@ const LayoutSettings: React.VFC = () => {
           ml: mobileMargin?.[3] || '0',
         },
         columnAmount: values.mobileColumnAmount,
-        columnRatio: values.mobileColumnRatio,
+        columnRatio: values.mobileColumnRatio.split(':').map(Number),
         displayAmount: values.mobileDisplayAmount,
       }
     })
@@ -119,13 +112,13 @@ const LayoutSettings: React.VFC = () => {
           props.desktop.margin?.mb || 0
         };${props.desktop.margin?.ml || 0}`,
         desktopColumnAmount: props.desktop.columnAmount || 3,
-        desktopColumnRatio: replace(/,/g, ':', props.desktop.columnRatio.toString() || '3,3,3') || [3, 3, 3],
+        desktopColumnRatio: replace(/,/g, ':', props.desktop.columnRatio.toString() || '4,4,4') || [4, 4, 4],
         desktopDisplayAmount: props.desktop.displayAmount || 3,
         mobileMargin: `${props.mobile.margin?.mt || 0};${props.mobile.margin?.mr || 0};${
           props.mobile.margin?.mb || 0
         };${props.mobile.margin?.ml || 0}`,
         mobileColumnAmount: props.mobile.columnAmount || 3,
-        mobileColumnRatio: props.mobile.columnRatio || [3, 3, 3],
+        mobileColumnRatio: replace(/,/g, ':', props.mobile.columnRatio.toString() || '12') || [12],
         mobileDisplayAmount: props.mobile.displayAmount || 3,
       }}
       onFinish={handleSubmit}

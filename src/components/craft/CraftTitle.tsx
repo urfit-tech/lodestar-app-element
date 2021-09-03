@@ -18,14 +18,13 @@ type FieldProps = {
   }
 }
 
-const CraftTitle: UserComponent<CraftTitleProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }> = ({
+const CraftTitle: UserComponent<CraftTitleProps> = ({
   titleContent,
   fontSize,
   margin,
   textAlign,
   fontWeight,
   color,
-  setActiveKey,
 }) => {
   const {
     connectors: { connect, drag },
@@ -45,7 +44,6 @@ const CraftTitle: UserComponent<CraftTitleProps & { setActiveKey: React.Dispatch
         color: color,
       }}
       style={{ cursor: 'pointer' }}
-      onClick={() => setActiveKey('settings')}
     >
       {titleContent}
     </StyledTitle>

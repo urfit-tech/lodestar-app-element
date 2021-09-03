@@ -23,27 +23,25 @@ type FieldProps = {
   }
 }
 
-const CraftTitleAndParagraph: UserComponent<
-  { title: CraftTitleProps; paragraph: CraftParagraphProps } & {
-    setActiveKey: React.Dispatch<React.SetStateAction<string>>
-  }
-> = ({ title, paragraph, setActiveKey }) => {
+const CraftTitleAndParagraph: UserComponent<{ title: CraftTitleProps; paragraph: CraftParagraphProps }> = ({
+  title,
+  paragraph,
+}) => {
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }} onClick={() => setActiveKey('settings')}>
+    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }}>
       <StyledTitle
         customStyle={{
           fontSize: title.fontSize,
-          mt: title.margin.mt,
-          mr: title.margin.mr,
-          mb: title.margin.mb,
-          ml: title.margin.ml,
           textAlign: title.textAlign,
           fontWeight: title.fontWeight,
           color: title.color,
+          ...title.margin,
+          ...title.padding,
+          ...title.border,
         }}
       >
         {title.titleContent}
@@ -51,14 +49,13 @@ const CraftTitleAndParagraph: UserComponent<
       <StyledParagraph
         customStyle={{
           fontSize: paragraph.fontSize,
-          mt: paragraph.margin.mt,
-          mr: paragraph.margin.mr,
-          mb: paragraph.margin.mb,
-          ml: paragraph.margin.ml,
           textAlign: paragraph.textAlign,
           fontWeight: paragraph.fontWeight,
           color: paragraph.color,
           lineHeight: paragraph.lineHeight || 1,
+          ...paragraph.margin,
+          ...paragraph.padding,
+          ...paragraph.border,
         }}
       >
         {paragraph.paragraphContent}

@@ -18,9 +18,16 @@ type FieldProps = {
   }
 }
 
-const CraftParagraph: UserComponent<
-  CraftParagraphProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }
-> = ({ paragraphContent, fontSize, lineHeight, margin, textAlign, fontWeight, color, setActiveKey }) => {
+const CraftParagraph: UserComponent<CraftParagraphProps> = ({
+  paragraphContent,
+  fontSize,
+  lineHeight,
+  margin,
+  textAlign,
+  fontWeight,
+  color,
+  letterSpacing,
+}) => {
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -38,9 +45,9 @@ const CraftParagraph: UserComponent<
         fontWeight,
         color,
         lineHeight: lineHeight || 1,
+        letterSpacing,
       }}
       style={{ cursor: 'pointer' }}
-      onClick={() => setActiveKey('settings')}
     >
       {paragraphContent}
     </StyledParagraph>

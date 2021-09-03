@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button as AntdButton, Checkbox, Form, Input, Radio, Space } from 'antd'
 import Collapse, { CollapseProps } from 'antd/lib/collapse'
 import { useForm } from 'antd/lib/form/Form'
@@ -17,14 +17,13 @@ import {
 import CraftColorPickerBlock from './CraftColorPickerBlock'
 
 const StyledButtonWrapper = styled.div<{ block: boolean }>`
-  display: ${props => (props.block ? 'block' : 'inline-block')};
-  border-radius: 2px;
+  ${props => (props.block ? 'display:block; width:100%;' : 'display:inline-block;')}
   text-align: center;
 `
 
 type FieldProps = CraftButtonProps
 
-const CraftButton: UserComponent<CraftButtonProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }> = ({
+const CraftButton: UserComponent<CraftButtonProps> = ({
   title,
   link,
   openNewTab,
@@ -32,16 +31,30 @@ const CraftButton: UserComponent<CraftButtonProps & { setActiveKey: React.Dispat
   block,
   variant,
   color,
-  setActiveKey,
-  children,
+  outlineColor,
+  backgroundColor,
+  backgroundType,
 }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <StyledButtonWrapper ref={ref => ref && connect(drag(ref))} block={block} onClick={() => setActiveKey('settings')}>
-      <Button size={size} block={block} backgroundColor={color}>
+    <StyledButtonWrapper ref={ref => ref && connect(drag(ref))} block={block}>
+      <Button
+        variant={variant}
+        color={color}
+        outlineColor={outlineColor}
+        backgroundColor={backgroundType === 'solidColor' ? backgroundColor : undefined}
+        size={size}
+        block={block}
+        link={link}
+        openNewTab={openNewTab}
+        craftEnabled={enabled}
+      >
         {title}
       </Button>
     </StyledButtonWrapper>
@@ -69,6 +82,9 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
       props.block = values.block
       props.variant = values.variant
       props.color = values.color
+      props.outlineColor = values.outlineColor
+      props.backgroundColor = values.backgroundType === 'solidColor' ? values.backgroundColor : undefined
+      props.backgroundType = values.backgroundType
     })
   }
 
@@ -86,6 +102,9 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
         block: props.block || false,
         variant: props.variant || 'solid',
         color: props.color || '#585858',
+        outlineColor: props.outlineColor,
+        backgroundColor: props.backgroundColor,
+        backgroundType: props.backgroundType || 'none',
       }}
       onFinish={handleSubmit}
     >
@@ -116,7 +135,13 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
             <StyledUnderLineInput className="mb-2" placeholder="https://" />
           </Form.Item>
           <Form.Item name="openNewTab" valuePropName="checked">
-            <Checkbox>{formatMessage(craftPageMessages.label.openNewTab)}</Checkbox>
+            <Checkbox
+              onChange={e => {
+                setProp((props: CraftButtonProps) => (props.openNewTab = e.target.checked))
+              }}
+            >
+              {formatMessage(craftPageMessages.label.openNewTab)}
+            </Checkbox>
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
@@ -141,7 +166,7 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
               </StyledCraftSettingLabel>
             }
           >
-            <Radio.Group>
+            <Radio.Group onChange={e => setProp((props: CraftButtonProps) => (props.size = e.target.value))}>
               <Space direction="vertical">
                 <Radio value="lg">{formatMessage(craftPageMessages.label.large)}</Radio>
                 <Radio value="md">{formatMessage(craftPageMessages.label.middle)}</Radio>
@@ -156,33 +181,53 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
           >
             <Checkbox
               onChange={e => {
-                setProp((props: CraftButtonProps) => (props.openNewTab = e.target.checked))
+                setProp((props: CraftButtonProps) => (props.block = e.target.checked))
               }}
             >
               {formatMessage(craftPageMessages.label.buttonBlock)}
             </Checkbox>
           </Form.Item>
 
-          {/* 
-          //TODO: not display in the version, tbd 
           <Form.Item
             name="variant"
             label={<StyledCraftSettingLabel>{formatMessage(craftPageMessages.label.variant)}</StyledCraftSettingLabel>}
           >
-            <Radio.Group>
+            <Radio.Group onChange={e => setProp((props: CraftButtonProps) => (props.variant = e.target.value))}>
               <Space direction="vertical">
                 <Radio value="text">{formatMessage(craftPageMessages.label.plainText)}</Radio>
                 <Radio value="solid">{formatMessage(craftPageMessages.label.coloring)}</Radio>
                 <Radio value="outline">{formatMessage(craftPageMessages.label.outline)}</Radio>
               </Space>
             </Radio.Group>
-          </Form.Item> */}
+          </Form.Item>
 
-          <Form.Item name="color">
-            <CraftColorPickerBlock />
+          <Form.Item name="color" noStyle={props.variant !== 'text'}>
+            {props.variant === 'text' && <CraftColorPickerBlock />}
+          </Form.Item>
+
+          <Form.Item name="outlineColor" noStyle={props.variant !== 'outline'}>
+            {props.variant === 'outline' && <CraftColorPickerBlock />}
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
+      <Form.Item
+        name="backgroundType"
+        label={formatMessage(craftPageMessages.label.background)}
+        noStyle={props.variant !== 'solid'}
+      >
+        {props.variant === 'solid' && (
+          <Radio.Group
+            buttonStyle="solid"
+            onChange={e => setProp((props: CraftButtonProps) => (props.backgroundType = e.target.value))}
+          >
+            <Radio.Button value="none">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
+            <Radio.Button value="solidColor">{formatMessage(craftPageMessages.ui.solidColor)}</Radio.Button>
+          </Radio.Group>
+        )}
+      </Form.Item>
+      <Form.Item name="backgroundColor" noStyle={props.variant !== 'solid' && props.backgroundType !== 'solidColor'}>
+        {props.variant === 'solid' && props.backgroundType === 'solidColor' && <CraftColorPickerBlock />}
+      </Form.Item>
       {selected && (
         <StyledSettingButtonWrapper>
           <AntdButton className="mb-3" type="primary" block htmlType="submit">
