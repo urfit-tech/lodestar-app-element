@@ -4,6 +4,10 @@ import Form from 'antd/lib/form/'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
+import { v4 as uuid } from 'uuid'
+import { useApp } from '../../contexts/AppContext'
+import { useAuth } from '../../contexts/AuthContext'
+import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
 import StyledSection from '../BackgroundSection'
@@ -61,6 +65,9 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
 
 const BackgroundSettings: React.VFC = () => {
   const { formatMessage } = useIntl()
+  const [loading, setLoading] = useState(false)
+  const { authToken } = useAuth()
+  const { id: appId } = useApp()
   const [form] = useForm<FieldProps>()
 
   const {
@@ -93,7 +100,20 @@ const BackgroundSettings: React.VFC = () => {
         pl: padding?.[3] || '0',
       }
     })
-    //TODO: upload image
+
+    if (backgroundImage) {
+      const uniqId = uuid()
+      setLoading(true)
+      uploadFile(`images/${appId}/craft/${uniqId}`, backgroundImage, authToken)
+        .then(() => {
+          setProp(props => {
+            props.coverUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${uniqId}${
+              backgroundImage.type.startsWith('image') ? '/1200' : ''
+            }`
+          })
+        })
+        .finally(() => setLoading(false))
+    }
   }
 
   return (
@@ -215,7 +235,7 @@ const BackgroundSettings: React.VFC = () => {
 
       {selected && (
         <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" block htmlType="submit">
+          <Button loading={loading} className="mb-3" type="primary" block htmlType="submit">
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>

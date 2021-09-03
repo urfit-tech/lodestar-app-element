@@ -4,7 +4,11 @@ import Form from 'antd/lib/form/'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
+import { v4 as uuid } from 'uuid'
 import StyledImage from '../../components/Image'
+import { useApp } from '../../contexts/AppContext'
+import { useAuth } from '../../contexts/AuthContext'
+import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftBoxModelProps, CraftImageProps } from '../../types/craft'
 import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
@@ -46,7 +50,8 @@ const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUr
 const ImageSettings: React.VFC = () => {
   const { formatMessage } = useIntl()
   const [form] = useForm<FieldProps>()
-
+  const { authToken } = useAuth()
+  const { id: appId } = useApp()
   const {
     actions: { setProp },
     props,
@@ -55,6 +60,7 @@ const ImageSettings: React.VFC = () => {
     props: node.data.props as CraftImageProps & CraftBoxModelProps,
     selected: node.events.selected,
   }))
+  const [loading, setLoading] = useState(false)
   const [coverImage, setCoverImage] = useState<File | null>(null)
 
   const handleSubmit = (values: FieldProps) => {
@@ -76,7 +82,20 @@ const ImageSettings: React.VFC = () => {
         pl: padding?.[3] || '0',
       }
     })
-    //TODO: upload image
+
+    if (coverImage) {
+      const uniqId = uuid()
+      setLoading(true)
+      uploadFile(`images/${appId}/craft/${uniqId}`, coverImage, authToken)
+        .then(() => {
+          setProp(props => {
+            props.coverUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${uniqId}${
+              coverImage.type.startsWith('image') ? '/1200' : ''
+            }`
+          })
+        })
+        .finally(() => setLoading(false))
+    }
   }
 
   return (
@@ -151,7 +170,7 @@ const ImageSettings: React.VFC = () => {
       </Collapse>
       {selected && (
         <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" block htmlType="submit">
+          <Button loading={loading} className="mb-3" type="primary" block htmlType="submit">
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>

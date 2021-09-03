@@ -4,6 +4,10 @@ import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
+import { v4 as uuid } from 'uuid'
+import { useApp } from '../../contexts/AppContext'
+import { useAuth } from '../../contexts/AuthContext'
+import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import Card from '../Card'
@@ -179,6 +183,9 @@ const CraftCard: UserComponent<CraftCardProps> = ({
 
 const CardSettings: React.VFC = () => {
   const { formatMessage } = useIntl()
+  const { authToken } = useAuth()
+  const { id: appId } = useApp()
+  const [loading, setLoading] = useState(false)
   const [form] = useForm<FieldProps>()
 
   const {
@@ -259,6 +266,38 @@ const CardSettings: React.VFC = () => {
         props.paragraphStyle.color = values?.paragraphStyle?.color || '#585858'
       }
     })
+    if (backgroundImage || image || avatarImage) {
+      const backgroundImageId = uuid()
+      const imageId = uuid()
+      const avatarImageId = uuid()
+
+      setLoading(true)
+      backgroundImage &&
+        (await uploadFile(`images/${appId}/craft/${backgroundImageId}`, backgroundImage, authToken).then(() => {
+          setProp(props => {
+            props.backgroundImageUrl = `https://${
+              process.env.REACT_APP_S3_BUCKET
+            }/images/${appId}/craft/${backgroundImageId}${backgroundImage.type.startsWith('image') ? '/300' : ''}`
+          })
+        }))
+      image &&
+        (await uploadFile(`images/${appId}/craft/${imageId}`, image, authToken).then(() => {
+          setProp(props => {
+            props.imageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${imageId}${
+              image.type.startsWith('image') ? '/200' : ''
+            }`
+          })
+        }))
+      avatarImage &&
+        (await uploadFile(`images/${appId}/craft/${avatarImageId}`, avatarImage, authToken).then(() => {
+          setProp(props => {
+            props.avatarImageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${avatarImageId}${
+              avatarImage.type.startsWith('image') ? '/100' : ''
+            }`
+          })
+        }))
+      setLoading(false)
+    }
   }
 
   return (
@@ -573,7 +612,7 @@ const CardSettings: React.VFC = () => {
       )}
       {selected && (
         <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" block htmlType="submit">
+          <Button loading={loading} className="mb-3" type="primary" block htmlType="submit">
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>

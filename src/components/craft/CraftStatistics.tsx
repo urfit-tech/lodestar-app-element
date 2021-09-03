@@ -4,6 +4,10 @@ import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
+import { v4 as uuid } from 'uuid'
+import { useApp } from '../../contexts/AppContext'
+import { useAuth } from '../../contexts/AuthContext'
+import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import {
   CraftBoxModelProps,
@@ -108,6 +112,9 @@ const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph
 
 const StatisticsSettings: React.VFC = () => {
   const { formatMessage } = useIntl()
+  const [loading, setLoading] = useState(false)
+  const { authToken } = useAuth()
+  const { id: appId } = useApp()
   const [form] = useForm<FieldProps>()
 
   const {
@@ -167,7 +174,19 @@ const StatisticsSettings: React.VFC = () => {
         color: values.paragraphStyle.color,
       }
     })
-    //TODO: upload image
+    if (coverImage) {
+      const uniqId = uuid()
+      setLoading(true)
+      uploadFile(`images/${appId}/craft/${uniqId}`, coverImage, authToken)
+        .then(() => {
+          setProp(props => {
+            props.coverUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${uniqId}${
+              coverImage.type.startsWith('image') ? '/100' : ''
+            }`
+          })
+        })
+        .finally(() => setLoading(false))
+    }
   }
 
   return (

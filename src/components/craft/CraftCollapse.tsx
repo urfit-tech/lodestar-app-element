@@ -3,6 +3,10 @@ import { Button, Collapse, Form, Radio, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
+import { v4 as uuid } from 'uuid'
+import { useApp } from '../../contexts/AppContext'
+import { useAuth } from '../../contexts/AuthContext'
+import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import Accordion from '../AccordionSingle'
@@ -98,6 +102,9 @@ const CraftCollapse: UserComponent<CraftCollapseProps> = ({
 
 const CollapseSettings: React.VFC = () => {
   const { formatMessage } = useIntl()
+  const [loading, setLoading] = useState(false)
+  const { authToken } = useAuth()
+  const { id: appId } = useApp()
   const [form] = useForm<FieldProps>()
 
   const {
@@ -157,6 +164,20 @@ const CollapseSettings: React.VFC = () => {
       props.paragraphStyle.fontWeight = values.paragraphStyle.fontWeight
       props.paragraphStyle.color = values.paragraphStyle.color
     })
+
+    if (backgroundImage) {
+      const uniqId = uuid()
+      setLoading(true)
+      uploadFile(`images/${appId}/craft/${uniqId}`, backgroundImage, authToken)
+        .then(() => {
+          setProp(props => {
+            props.backgroundImageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${uniqId}${
+              backgroundImage.type.startsWith('image') ? '/1200' : ''
+            }`
+          })
+        })
+        .finally(() => setLoading(false))
+    }
   }
 
   return (
@@ -299,7 +320,7 @@ const CollapseSettings: React.VFC = () => {
       )}
       {selected && (
         <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" block htmlType="submit">
+          <Button loading={loading} className="mb-3" type="primary" block htmlType="submit">
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>

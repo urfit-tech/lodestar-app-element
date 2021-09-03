@@ -3,8 +3,13 @@ import { Button, Checkbox, Collapse, Form, Input } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { Fragment, useState } from 'react'
 import { useIntl } from 'react-intl'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
+import { v4 as uuid } from 'uuid'
 import Carousel from '../../components/Carousel'
+import { useApp } from '../../contexts/AppContext'
+import { useAuth } from '../../contexts/AuthContext'
+import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { ReactComponent as PlusIcon } from '../../images/icons/plus.svg'
 import { ReactComponent as TrashOIcon } from '../../images/icons/trash-o.svg'
@@ -137,7 +142,10 @@ const CraftCarousel: UserComponent<CraftCarouselProps> = ({ type, covers, titleS
 
 const CarouselSettings: React.VFC = () => {
   const { formatMessage } = useIntl()
+  const [loading, setLoading] = useState(false)
   const [form] = useForm<FieldProps>()
+  const { authToken } = useAuth()
+  const { id: appId } = useApp()
 
   const {
     actions: { setProp },
@@ -183,7 +191,43 @@ const CarouselSettings: React.VFC = () => {
         color: values.paragraphStyle?.color,
       }
     })
-    //TODO: upload cover to s3
+
+    if (desktopCover.length || mobileCover.length) {
+      setLoading(true)
+      try {
+        for (let i = 0; i < desktopCover.length; i++) {
+          const file = desktopCover[i]
+          if (!file) {
+            continue
+          }
+          const uniqId = uuid()
+
+          await uploadFile(`images/${appId}/craft/${uniqId}`, file, authToken)
+          setProp(props => {
+            props.covers[i].desktopCoverUrl = `https://${
+              process.env.REACT_APP_S3_BUCKET
+            }/images/${appId}/craft/${uniqId}${file.type.startsWith('image') ? '/1200' : ''}`
+          })
+        }
+        for (let i = 0; i < mobileCover.length; i++) {
+          const file = mobileCover[i]
+          if (!file) {
+            continue
+          }
+          const uniqId = uuid()
+
+          await uploadFile(`images/${appId}/craft/${uniqId}`, file, authToken)
+          setProp(props => {
+            props.covers[i].mobileCoverUrl = `https://${
+              process.env.REACT_APP_S3_BUCKET
+            }/images/${appId}/craft/${uniqId}${file.type.startsWith('image') ? '/1200' : ''}`
+          })
+        }
+      } catch (error) {
+        handleError(error)
+      }
+      setLoading(false)
+    }
   }
 
   return (
@@ -291,9 +335,13 @@ const CarouselSettings: React.VFC = () => {
                     >
                       <ImageUploader
                         file={desktopCover ? desktopCover[index] : null}
-                        initialCoverUrl={''}
+                        initialCoverUrl={props.covers[index]?.desktopCoverUrl || ''}
                         onChange={file => {
-                          setDesktopCover([...desktopCover.slice(0, index), file, ...desktopCover.slice(index + 1)])
+                          setDesktopCover(cover => {
+                            const coverClone = cover.slice()
+                            coverClone[index] = file
+                            return coverClone
+                          })
                         }}
                       />
                     </Form.Item>
@@ -309,9 +357,13 @@ const CarouselSettings: React.VFC = () => {
                     >
                       <ImageUploader
                         file={mobileCover ? mobileCover[index] : null}
-                        initialCoverUrl={''}
+                        initialCoverUrl={props.covers[index]?.mobileCoverUrl || ''}
                         onChange={file => {
-                          setMobileCover([...mobileCover.slice(0, index), file, ...mobileCover.slice(index + 1)])
+                          setMobileCover(cover => {
+                            const coverClone = cover.slice()
+                            coverClone[index] = file
+                            return coverClone
+                          })
                         }}
                       />
                     </Form.Item>
@@ -354,7 +406,7 @@ const CarouselSettings: React.VFC = () => {
       )}
       {selected && (
         <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" htmlType="submit" block>
+          <Button loading={loading} className="mb-3" type="primary" htmlType="submit" block>
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>
