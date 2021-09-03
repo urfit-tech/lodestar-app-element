@@ -5,26 +5,33 @@ import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import ActivityBlock from '../blocks/ActivityBlock'
+import InstructorBlock from '../blocks/InstructorBlock'
+import PodcastProgramBlock from '../blocks/PodcastProgramBlock'
+import ProgramBlock from '../blocks/ProgramBlock'
+import ProjectBlock from '../blocks/ProjectBlock'
 import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import ContentSelector, { ContentType } from '../ContentSelector'
 
 const CraftDataSelector: UserComponent<{
+  appId?: string
   contentType: ContentType
   customContentIds?: string[]
-  setActiveKey: React.Dispatch<React.SetStateAction<string>>
-}> = ({ contentType, customContentIds, children, setActiveKey }) => {
+}> = ({ appId, contentType, customContentIds }) => {
   const {
     connectors: { connect },
   } = useNode()
 
   return (
-    <div
-      ref={ref => ref && connect(ref)}
-      style={{ padding: '20px', background: '#dfa', cursor: 'pointer' }}
-      onClick={() => setActiveKey('settings')}
-    >
-      {/* {contentType === 'program' ? <ProgramBlock customContentIds={customContentIds} /> : null} */}
-      {children}
+    <div ref={ref => ref && connect(ref)} style={{ padding: '20px', cursor: 'pointer' }}>
+      {contentType === 'program' && <ProgramBlock customContentIds={customContentIds} />}
+      {contentType === 'activity' && <ActivityBlock customContentIds={customContentIds} />}
+      {contentType === 'podcast-program' && <PodcastProgramBlock customContentIds={customContentIds} />}
+      {contentType === 'creator' && appId && <InstructorBlock appId={appId} customContentIds={customContentIds} />}
+      {contentType === 'funding-project' && <ProjectBlock projectType="funding" customContentIds={customContentIds} />}
+      {contentType === 'pre-order-project' && (
+        <ProjectBlock projectType="pre-order" customContentIds={customContentIds} />
+      )}
     </div>
   )
 }
