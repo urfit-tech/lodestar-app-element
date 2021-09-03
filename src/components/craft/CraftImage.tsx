@@ -162,6 +162,11 @@ CraftImage.craft = {
   related: {
     settings: ImageSettings,
   },
+  custom: {
+    button: {
+      label: 'deleteBlock',
+    },
+  },
 }
 
 export default CraftImage

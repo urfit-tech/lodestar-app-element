@@ -316,6 +316,11 @@ CraftCollapse.craft = {
   related: {
     settings: CollapseSettings,
   },
+  custom: {
+    button: {
+      label: 'deleteBlock',
+    },
+  },
 }
 
 export default CraftCollapse

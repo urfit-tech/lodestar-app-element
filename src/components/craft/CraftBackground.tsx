@@ -222,6 +222,11 @@ CraftBackground.craft = {
   related: {
     settings: BackgroundSettings,
   },
+  custom: {
+    button: {
+      label: 'deleteAllBlock',
+    },
+  },
 }
 
 export default CraftBackground

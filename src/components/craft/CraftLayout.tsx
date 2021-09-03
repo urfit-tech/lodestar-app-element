@@ -228,6 +228,11 @@ CraftLayout.craft = {
   related: {
     settings: LayoutSettings,
   },
+  custom: {
+    button: {
+      label: 'deleteAllBlock',
+    },
+  },
 }
 
 export default CraftLayout

@@ -119,6 +119,11 @@ CraftTitle.craft = {
   related: {
     settings: TitleSettings,
   },
+  custom: {
+    button: {
+      label: 'deleteBlock',
+    },
+  },
 }
 
 export default CraftTitle

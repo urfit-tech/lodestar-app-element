@@ -126,6 +126,11 @@ CraftParagraph.craft = {
   related: {
     settings: ParagraphSettings,
   },
+  custom: {
+    button: {
+      label: 'deleteBlock',
+    },
+  },
 }
 
 export default CraftParagraph

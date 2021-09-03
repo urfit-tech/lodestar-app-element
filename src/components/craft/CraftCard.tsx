@@ -602,6 +602,11 @@ CraftCard.craft = {
   related: {
     settings: CardSettings,
   },
+  custom: {
+    button: {
+      label: 'deleteBlock',
+    },
+  },
 }
 
 export default CraftCard
