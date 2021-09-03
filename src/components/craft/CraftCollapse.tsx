@@ -3,9 +3,9 @@ import { Button, Collapse, Form, Radio, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
-import styled from 'styled-components'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
+import Accordion from '../AccordionSingle'
 import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
@@ -13,25 +13,6 @@ import CraftColorPickerBlock from './CraftColorPickerBlock'
 import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
-
-const StyledCollapse = styled.div<{
-  customStyle: {
-    title: string
-    titleStyle: CraftTextStyleProps
-    cardMargin: CraftMarginProps
-    cardPadding: CraftPaddingProps
-    solidColor?: string
-  }
-}>`
-  margin: ${props =>
-    `${props.customStyle.cardMargin.mt}px ${props.customStyle.cardMargin.mr}px ${props.customStyle.cardMargin.mb}px ${props.customStyle.cardMargin.ml}px`};
-  padding: ${props =>
-    `${props.customStyle.cardPadding.pt}px ${props.customStyle.cardPadding.pr}px ${props.customStyle.cardPadding.pb}px ${props.customStyle.cardPadding.pl}px`};
-  color: ${props => props.customStyle.titleStyle.color};
-  font-size: ${props => `${props.customStyle.titleStyle.fontSize}px`};
-  font-weight: ${props => props.customStyle.titleStyle.fontWeight};
-  background-color: ${props => props.customStyle.solidColor || ''};
-`
 
 type CraftCollapseProps = {
   title: string
@@ -61,9 +42,7 @@ type FieldProps = Pick<
   cardPadding: string
 }
 
-const CraftCollapse: UserComponent<
-  CraftCollapseProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }
-> = ({
+const CraftCollapse: UserComponent<CraftCollapseProps> = ({
   cardMargin,
   cardPadding,
   variant,
@@ -75,27 +54,45 @@ const CraftCollapse: UserComponent<
   titleStyle,
   paragraph,
   paragraphStyle,
-  setActiveKey,
 }) => {
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <StyledCollapse
-      ref={ref => ref && connect(drag(ref))}
-      customStyle={{
-        cardMargin,
-        cardPadding,
-        title,
-        titleStyle,
-        solidColor,
-      }}
-      style={{ cursor: 'pointer' }}
-      onClick={() => setActiveKey('settings')}
-    >
-      {title}
-    </StyledCollapse>
+    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }}>
+      <Accordion
+        customStyle={{
+          card: {
+            bordered: variant === 'outline',
+            shadow: false,
+            borderColor: outlineColor,
+            backgroundColor: variant !== 'none' && backgroundType === 'solidColor' ? solidColor : undefined,
+            backgroundImage:
+              variant !== 'none' && backgroundType === 'backgroundImage' ? backgroundImageUrl : undefined,
+            ...cardMargin,
+            ...cardPadding,
+          },
+          title: {
+            textAlign: titleStyle.textAlign,
+            fontSize: titleStyle.fontSize,
+            fontWeight: titleStyle.fontWeight,
+            color: titleStyle.color || '#585858',
+            ...titleStyle.margin,
+          },
+          paragraph: {
+            textAlign: paragraphStyle.textAlign,
+            fontSize: paragraphStyle.fontSize,
+            fontWeight: paragraphStyle.fontWeight,
+            color: paragraphStyle.color || '#585858',
+            lineHeight: paragraphStyle.lineHeight || 1.5,
+            ...paragraphStyle.margin,
+          },
+        }}
+        title={title}
+        description={paragraph}
+      />
+    </div>
   )
 }
 
@@ -136,7 +133,6 @@ const CollapseSettings: React.VFC = () => {
       props.variant = values.variant
       props.outlineColor = values.outlineColor
       props.solidColor = values.solidColor
-      props.backgroundImageUrl = values.backgroundImageUrl
       props.title = values.title
       props.titleStyle.fontSize = values.titleStyle.fontSize
       props.titleStyle.margin = {

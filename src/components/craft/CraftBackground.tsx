@@ -25,9 +25,14 @@ type FieldProps = Pick<CraftBackgroundProps, 'backgroundType' | 'solidColor' | '
   padding: string
 }
 
-const CraftBackground: UserComponent<
-  { setActiveKey: React.Dispatch<React.SetStateAction<string>> } & CraftBackgroundProps
-> = ({ backgroundType, solidColor, margin, padding, coverUrl, setActiveKey }) => {
+const CraftBackground: UserComponent<CraftBackgroundProps> = ({
+  backgroundType,
+  solidColor,
+  margin,
+  padding,
+  coverUrl,
+  children,
+}) => {
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -44,12 +49,12 @@ const CraftBackground: UserComponent<
         pr: padding.pr,
         pb: padding.pb,
         pl: padding.pl,
+        backgroundImage: backgroundType === 'backgroundImage' ? coverUrl : undefined,
+        backgroundColor: backgroundType === 'solidColor' ? solidColor : undefined,
       }}
-      background-image={coverUrl}
       style={{ cursor: 'pointer' }}
-      onClick={() => setActiveKey('settings')}
     >
-      背景
+      {children}
     </StyledSection>
   )
 }
@@ -74,6 +79,7 @@ const BackgroundSettings: React.VFC = () => {
 
     setProp(props => {
       props.backgroundType = values.backgroundType
+      props.solidColor = values.solidColor
       props.margin = {
         mt: margin?.[0] || '0',
         mr: margin?.[1] || '0',

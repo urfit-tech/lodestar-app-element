@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
+import Card from '../Card'
 import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
@@ -14,32 +15,24 @@ import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
 
-const StyledCard = styled.div<{
-  customStyle: {
-    title: string
-    titleStyle: CraftTextStyleProps
-    cardMargin: CraftMarginProps
-    cardPadding: CraftPaddingProps
-    solidColor?: string
-  }
-}>`
-  margin: ${props =>
-    `${props.customStyle.cardMargin.mt}px ${props.customStyle.cardMargin.mr}px ${props.customStyle.cardMargin.mb}px ${props.customStyle.cardMargin.ml}px`};
-  padding: ${props =>
-    `${props.customStyle.cardPadding.pt}px ${props.customStyle.cardPadding.pr}px ${props.customStyle.cardPadding.pb}px ${props.customStyle.cardPadding.pl}px`};
-  color: ${props => props.customStyle.titleStyle.color};
-  font-size: ${props => `${props.customStyle.titleStyle.fontSize}px`};
-  font-weight: ${props => props.customStyle.titleStyle.fontWeight};
-  background-color: ${props => props.customStyle.solidColor || ''};
+const StyledTriangle = styled.div`
+  position: absolute;
+  bottom: -49px;
+  left: 0;
+  width: 20%;
+  height: 50px;
+  clip-path: polygon(31% 0, 0 0, 0 38%);
+  background-color: inherit;
+  border-color: inherit;
+  border: inherit;
 `
 
 type CraftCardProps = {
   type: 'feature' | 'featureWithParagraph' | 'referrer' | 'referrerReverse'
-  imageType: 'empty' | 'image'
+  imageType: 'none' | 'image'
   imageUrl: string
   imageMargin?: CraftMarginProps
   imagePadding?: CraftPaddingProps
-  name?: string
   title: string
   titleStyle: CraftTextStyleProps
   paragraph?: string
@@ -51,13 +44,16 @@ type CraftCardProps = {
   backgroundType?: 'none' | 'solidColor' | 'backgroundImage'
   solidColor?: string
   backgroundImageUrl?: string
+  avatarType?: 'none' | 'image'
+  avatarImageUrl?: string
+  avatarName?: string
+  flexDirection?: 'row' | 'column'
 }
 
 type FieldProps = Pick<
   CraftCardProps,
   | 'imageType'
   | 'imageUrl'
-  | 'name'
   | 'title'
   | 'paragraph'
   | 'variant'
@@ -65,6 +61,9 @@ type FieldProps = Pick<
   | 'backgroundType'
   | 'solidColor'
   | 'backgroundImageUrl'
+  | 'avatarType'
+  | 'avatarImageUrl'
+  | 'avatarName'
 > & {
   imageMargin?: string
   imagePadding?: string
@@ -78,12 +77,12 @@ type FieldProps = Pick<
   cardPadding: string
 }
 
-const CraftCard: UserComponent<CraftCardProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }> = ({
+const CraftCard: UserComponent<CraftCardProps> = ({
+  type,
   imageType,
   imageUrl,
   imageMargin,
   imagePadding,
-  name,
   cardMargin,
   cardPadding,
   variant,
@@ -91,31 +90,90 @@ const CraftCard: UserComponent<CraftCardProps & { setActiveKey: React.Dispatch<R
   backgroundType,
   solidColor,
   backgroundImageUrl,
+  avatarType,
+  avatarImageUrl,
+  avatarName,
   title,
   titleStyle,
   paragraph,
   paragraphStyle,
-  setActiveKey,
+  flexDirection,
 }) => {
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <StyledCard
+    <div
       ref={ref => ref && connect(drag(ref))}
-      customStyle={{
-        cardMargin,
-        cardPadding,
-        title,
-        titleStyle,
-        solidColor,
-      }}
-      style={{ cursor: 'pointer' }}
-      onClick={() => setActiveKey('settings')}
+      style={{ cursor: 'pointer', padding: type === 'referrer' ? '10px' : undefined }}
     >
-      {title}
-    </StyledCard>
+      <Card
+        customStyle={{
+          direction: flexDirection || 'column',
+          bordered: variant === 'outline',
+          borderColor: outlineColor,
+          shadow: variant !== 'none',
+          backgroundColor: backgroundType === 'solidColor' ? solidColor : undefined,
+          backgroundImage: backgroundType === 'backgroundImage' ? backgroundImageUrl : undefined,
+          ...cardMargin,
+          ...cardPadding,
+          ...(type === 'referrer' && variant === 'backgroundColor' && backgroundType === 'solidColor'
+            ? { borderBottomLeftRadius: '0' }
+            : {}),
+          ...(type === 'referrer' ? { dropShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' } : {}),
+        }}
+      >
+        {type === 'referrerReverse' && (
+          <Card.Avatar
+            direction="column"
+            src={avatarImageUrl}
+            name={avatarName}
+            withAvatarImage={avatarType === 'image'}
+            withName={!!avatarName}
+          />
+        )}
+        <Card.Image
+          src={imageType === 'image' ? imageUrl : undefined}
+          customStyle={{
+            ...imageMargin,
+            ...imagePadding,
+          }}
+        />
+        <Card.Title
+          customStyle={{
+            fontSize: titleStyle.fontSize || 14,
+            textAlign: titleStyle.textAlign || 'center',
+            fontWeight: titleStyle.fontWeight || 'normal',
+            color: titleStyle.color || '#585858',
+            ...(titleStyle?.margin || {}),
+          }}
+        >
+          {title}
+        </Card.Title>
+        <Card.Content
+          customStyle={{
+            fontSize: paragraphStyle?.fontSize || 14,
+            textAlign: paragraphStyle?.textAlign || 'center',
+            fontWeight: paragraphStyle?.fontWeight || 'normal',
+            color: paragraphStyle?.color || '#585858',
+            lineHeight: paragraphStyle?.lineHeight || 1.5,
+            ...(paragraphStyle?.margin || {}),
+          }}
+        >
+          {paragraph}
+        </Card.Content>
+        {type === 'referrer' && variant === 'backgroundColor' && backgroundType === 'solidColor' && <StyledTriangle />}
+      </Card>
+      {type === 'referrer' && (
+        <Card.Avatar
+          src={avatarImageUrl}
+          name={avatarName}
+          withAvatarImage={avatarType === 'image'}
+          withName={!!avatarName}
+        />
+      )}
+    </div>
   )
 }
 
@@ -133,9 +191,10 @@ const CardSettings: React.VFC = () => {
   }))
 
   const [image, setImage] = useState<File | null>(null)
+  const [avatarImage, setAvatarImage] = useState<File | null>(null)
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null)
 
-  const handleSubmit = (values: FieldProps) => {
+  const handleAsyncSubmit = async (values: FieldProps) => {
     const imageMargin = formatBoxModelValue(values.imageMargin)
     const imagePadding = formatBoxModelValue(values.imagePadding)
     const cardMargin = formatBoxModelValue(values.cardMargin)
@@ -145,7 +204,6 @@ const CardSettings: React.VFC = () => {
 
     setProp(props => {
       props.imageType = values.imageType
-      props.imageUrl = values.imageUrl
       props.imageMargin = {
         mt: imageMargin?.[0] || '0',
         mr: imageMargin?.[1] || '0',
@@ -158,7 +216,8 @@ const CardSettings: React.VFC = () => {
         pb: imagePadding?.[2] || '0',
         pl: imagePadding?.[3] || '0',
       }
-      props.name = values.name
+      props.avatarName = values.avatarName
+      props.avatarType = values.avatarType
       props.cardMargin = {
         mt: cardMargin?.[0] || '0',
         mr: cardMargin?.[1] || '0',
@@ -174,7 +233,6 @@ const CardSettings: React.VFC = () => {
       props.variant = values.variant
       props.outlineColor = values.outlineColor
       props.solidColor = values.solidColor
-      props.backgroundImageUrl = values.backgroundImageUrl
       props.title = values.title
       props.titleStyle.fontSize = values.titleStyle.fontSize
       props.titleStyle.margin = {
@@ -218,8 +276,9 @@ const CardSettings: React.VFC = () => {
         imagePadding: `${props.imagePadding?.pt || 0};${props.imagePadding?.pr || 0};${props.imagePadding?.pb || 0};${
           props.imagePadding?.pl || 0
         }`,
-        avatarImage: props.imageUrl || '',
-        name: props.name || '',
+        avatarType: props.avatarType || 'none',
+        avatarImage: props.avatarImageUrl || '',
+        avatarName: props.avatarName || '',
         cardMargin: `${props.cardMargin?.mt || 0};${props.cardMargin?.mr || 0};${props.cardMargin?.mb || 0};${
           props.cardMargin?.ml || 0
         }`,
@@ -253,7 +312,7 @@ const CardSettings: React.VFC = () => {
           lineHeight: props.paragraphStyle?.lineHeight || 1,
         },
       }}
-      onFinish={handleSubmit}
+      onFinish={handleAsyncSubmit}
     >
       {(props.type === 'feature' || props.type === 'featureWithParagraph') && (
         <>
@@ -269,27 +328,12 @@ const CardSettings: React.VFC = () => {
               header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.imageSetting)}</AdminHeaderTitle>}
             >
               <Form.Item name="imageType">
-                <Radio.Group buttonStyle="solid">
-                  <Radio.Button
-                    value="empty"
-                    onChange={() =>
-                      setProp((props: CraftCardProps) => {
-                        props.imageType = 'empty'
-                      })
-                    }
-                  >
-                    {formatMessage(craftPageMessages.ui.empty)}
-                  </Radio.Button>
-                  <Radio.Button
-                    value="image"
-                    onChange={() =>
-                      setProp((props: CraftCardProps) => {
-                        props.imageType = 'image'
-                      })
-                    }
-                  >
-                    {formatMessage(craftPageMessages.ui.image)}
-                  </Radio.Button>
+                <Radio.Group
+                  buttonStyle="solid"
+                  onChange={e => setProp((props: CraftCardProps) => (props.imageType = e.target.value))}
+                >
+                  <Radio.Button value="none">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
+                  <Radio.Button value="image">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
                 </Radio.Group>
               </Form.Item>
               {props.imageType === 'image' && (
@@ -361,47 +405,29 @@ const CardSettings: React.VFC = () => {
             key="avatarSetting"
             header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.avatarSetting)}</AdminHeaderTitle>}
           >
-            <Form.Item name="type">
-              <Radio.Group buttonStyle="solid">
-                <Radio.Button
-                  value="empty"
-                  onChange={() =>
-                    setProp((props: CraftCardProps) => {
-                      props.imageType = 'empty'
-                    })
-                  }
-                >
-                  {formatMessage(craftPageMessages.ui.empty)}
-                </Radio.Button>
-                <Radio.Button
-                  value="image"
-                  onChange={() =>
-                    setProp((props: CraftCardProps) => {
-                      props.imageType = 'image'
-                    })
-                  }
-                >
-                  {formatMessage(craftPageMessages.ui.image)}
-                </Radio.Button>
+            <Form.Item name="avatarType">
+              <Radio.Group
+                buttonStyle="solid"
+                onChange={e => setProp((props: CraftCardProps) => (props.avatarType = e.target.value))}
+              >
+                <Radio.Button value="none">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
+                <Radio.Button value="image">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
               </Radio.Group>
             </Form.Item>
-            {props.imageType === 'image' && (
-              <>
-                <Form.Item name="avatarImage">
-                  <ImageUploader
-                    file={image}
-                    initialCoverUrl={props?.imageUrl}
-                    onChange={file => {
-                      setImage(file)
-                    }}
-                  />
-                </Form.Item>
-
-                <Form.Item name="name" label={formatMessage(commonMessages.label.name)}>
-                  <Input />
-                </Form.Item>
-              </>
+            {props.avatarType === 'image' && (
+              <Form.Item name="avatarImageUrl">
+                <ImageUploader
+                  file={image}
+                  initialCoverUrl={props.avatarImageUrl}
+                  onChange={file => {
+                    setImage(file)
+                  }}
+                />
+              </Form.Item>
             )}
+            <Form.Item name="avatarName" label={formatMessage(commonMessages.label.name)}>
+              <Input />
+            </Form.Item>
           </StyledCollapsePanel>
         </Collapse>
       )}
@@ -437,47 +463,29 @@ const CardSettings: React.VFC = () => {
             key="avatarSetting"
             header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.avatarSetting)}</AdminHeaderTitle>}
           >
-            <Form.Item name="type">
-              <Radio.Group buttonStyle="solid">
-                <Radio.Button
-                  value="empty"
-                  onChange={() =>
-                    setProp((props: CraftCardProps) => {
-                      props.imageType = 'empty'
-                    })
-                  }
-                >
-                  {formatMessage(craftPageMessages.ui.empty)}
-                </Radio.Button>
-                <Radio.Button
-                  value="image"
-                  onChange={() =>
-                    setProp((props: CraftCardProps) => {
-                      props.imageType = 'image'
-                    })
-                  }
-                >
-                  {formatMessage(craftPageMessages.ui.image)}
-                </Radio.Button>
+            <Form.Item name="avatarType">
+              <Radio.Group
+                buttonStyle="solid"
+                onChange={e => setProp((props: CraftCardProps) => (props.avatarType = e.target.value))}
+              >
+                <Radio.Button value="none">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
+                <Radio.Button value="image">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
               </Radio.Group>
             </Form.Item>
-            {props.imageType === 'image' && (
-              <>
-                <Form.Item name="image">
-                  <ImageUploader
-                    file={image}
-                    initialCoverUrl={props?.imageUrl}
-                    onChange={file => {
-                      setImage(file)
-                    }}
-                  />
-                </Form.Item>
-
-                <Form.Item name="name" label={formatMessage(commonMessages.label.name)}>
-                  <Input />
-                </Form.Item>
-              </>
+            {props.avatarType === 'image' && (
+              <Form.Item name="avatarImageUrl">
+                <ImageUploader
+                  file={image}
+                  initialCoverUrl={props.avatarImageUrl}
+                  onChange={file => {
+                    setAvatarImage(file)
+                  }}
+                />
+              </Form.Item>
             )}
+            <Form.Item name="avatarName" label={formatMessage(commonMessages.label.name)}>
+              <Input />
+            </Form.Item>
           </StyledCollapsePanel>
         </Collapse>
       )}
@@ -535,37 +543,13 @@ const CardSettings: React.VFC = () => {
 
       {props.variant === 'backgroundColor' && (
         <Form.Item name="background" label={formatMessage(craftPageMessages.label.background)}>
-          <Radio.Group buttonStyle="solid">
-            <Radio.Button
-              value="none"
-              onChange={() =>
-                setProp((props: CraftCardProps) => {
-                  props.backgroundType = 'none'
-                })
-              }
-            >
-              {formatMessage(craftPageMessages.ui.empty)}
-            </Radio.Button>
-            <Radio.Button
-              value="solidColor"
-              onChange={() =>
-                setProp((props: CraftCardProps) => {
-                  props.backgroundType = 'solidColor'
-                })
-              }
-            >
-              {formatMessage(craftPageMessages.ui.solidColor)}
-            </Radio.Button>
-            <Radio.Button
-              value="backgroundImage"
-              onChange={() =>
-                setProp((props: CraftCardProps) => {
-                  props.backgroundType = 'backgroundImage'
-                })
-              }
-            >
-              {formatMessage(craftPageMessages.ui.image)}
-            </Radio.Button>
+          <Radio.Group
+            buttonStyle="solid"
+            onChange={e => setProp((props: CraftCardProps) => (props.backgroundType = e.target.value))}
+          >
+            <Radio.Button value="none">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
+            <Radio.Button value="solidColor">{formatMessage(craftPageMessages.ui.solidColor)}</Radio.Button>
+            <Radio.Button value="backgroundImage">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
           </Radio.Group>
         </Form.Item>
       )}

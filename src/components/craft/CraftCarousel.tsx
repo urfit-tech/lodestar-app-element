@@ -1,11 +1,10 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Checkbox, Collapse, Form, Input } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { Fragment, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import Carousel from '../../components/Carousel'
-import { StyledTitle } from '../../components/common'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { ReactComponent as PlusIcon } from '../../images/icons/plus.svg'
 import { ReactComponent as TrashOIcon } from '../../images/icons/trash-o.svg'
@@ -18,7 +17,6 @@ import {
   StyledUnderLineInput,
 } from '../common'
 import ImageUploader from '../common/ImageUploader'
-import { BREAK_POINT } from '../Responsive'
 import { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 
@@ -39,17 +37,6 @@ const StyledAddButton = styled(Button)`
 const StyledLinkFormItem = styled(Form.Item)`
   .ant-form-item-label {
     padding-bottom: 0px;
-  }
-`
-const StyledCraftCarouselWrapper = styled.div<{
-  titleStyle: CraftTextStyleProps
-  paragraphStyle: CraftTextStyleProps
-}>`
-  @media (min-width: ${BREAK_POINT}px) {
-  }
-`
-const StyledCraftCarousel = styled.div<{ desktopCoverUrl: string; mobileCoverUrl: string }>`
-  @media (min-width: ${BREAK_POINT}px) {
   }
 `
 
@@ -85,56 +72,65 @@ type CraftCarouselProps = {
   paragraphStyle?: CraftTextStyleProps
 }
 
-const CraftCarousel: UserComponent<
-  CraftCarouselProps & { setActiveKey: React.Dispatch<React.SetStateAction<string>> }
-> = ({ covers, titleStyle, paragraphStyle, setActiveKey }) => {
+const CraftCarousel: UserComponent<CraftCarouselProps> = ({ type, covers, titleStyle, paragraphStyle, children }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
+  const history = useHistory()
 
-  if (!!titleStyle && !!paragraphStyle) {
-    return (
-      <>
-        <StyledCraftCarouselWrapper
-          ref={ref => ref && connect(drag(ref))}
-          titleStyle={titleStyle}
-          paragraphStyle={paragraphStyle}
-          style={{ cursor: 'pointer' }}
-          onClick={() => setActiveKey('settings')}
-        >
-          <Carousel dots infinite arrows={false} autoplay autoplaySpeed={5000} variant="cover">
-            {covers.map(cover => (
-              <StyledCraftCarousel desktopCoverUrl={cover.desktopCoverUrl} mobileCoverUrl={cover.mobileCoverUrl}>
-                <StyledTitle
-                  customStyle={{
-                    fontSize: titleStyle.fontSize,
-                    mt: titleStyle.margin.mt,
-                    mr: titleStyle.margin.mr,
-                    mb: titleStyle.margin.mb,
-                    ml: titleStyle.margin.ml,
-                    textAlign: titleStyle.textAlign,
-                    fontWeight: titleStyle.fontWeight,
-                    color: titleStyle.color,
-                  }}
-                >
-                  {cover.title}
-                </StyledTitle>
-              </StyledCraftCarousel>
-            ))}
-          </Carousel>
-        </StyledCraftCarouselWrapper>
-      </>
-    )
-  }
   return (
-    <div ref={ref => ref && connect(drag(ref))} onClick={() => setActiveKey('settings')}>
-      {covers.map(cover => (
-        <StyledCraftCarousel
-          key={cover.title}
-          desktopCoverUrl={cover.desktopCoverUrl}
-          mobileCoverUrl={cover.mobileCoverUrl}
-        />
-      ))}
+    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }}>
+      <Carousel dots infinite arrows={false} autoplay autoplaySpeed={5000} variant="cover">
+        {covers.map(cover => (
+          <Carousel.Slide
+            key={cover.title}
+            srcDesktop={cover.desktopCoverUrl}
+            srcMobile={cover.mobileCoverUrl}
+            title={cover.title}
+            subtitle={cover.paragraph}
+            onClick={() => {
+              if (enabled || !cover.link) {
+                return
+              }
+              cover.openNewTab
+                ? window.open(cover.link)
+                : cover.link.includes('http')
+                ? window.location.assign(cover.link)
+                : history.push(cover.link)
+            }}
+            customStyle={
+              type === 'normal'
+                ? {
+                    title: {
+                      fontSize: titleStyle?.fontSize || '',
+                      textAlign: titleStyle?.textAlign || 'center',
+                      fontWeight: titleStyle?.fontWeight || 'bold',
+                      color: titleStyle?.color || '',
+                      mt: titleStyle?.margin.mt || '',
+                      mr: titleStyle?.margin.mr || '',
+                      mb: titleStyle?.margin.mb || '',
+                      ml: titleStyle?.margin.ml || '',
+                    },
+                    paragraph: {
+                      fontSize: paragraphStyle?.fontSize || '',
+                      textAlign: paragraphStyle?.textAlign || 'center',
+                      fontWeight: paragraphStyle?.fontWeight || 'normal',
+                      color: paragraphStyle?.color || '',
+                      lineHeight: paragraphStyle?.lineHeight || 1,
+                      mt: paragraphStyle?.margin.mt || '',
+                      mr: paragraphStyle?.margin.mr || '',
+                      mb: paragraphStyle?.margin.mb || '',
+                      ml: paragraphStyle?.margin.ml || '',
+                    },
+                  }
+                : {}
+            }
+          />
+        ))}
+      </Carousel>
     </div>
   )
 }
@@ -155,7 +151,7 @@ const CarouselSettings: React.VFC = () => {
   const [desktopCover, setDesktopCover] = useState<File[]>([])
   const [mobileCover, setMobileCover] = useState<File[]>([])
 
-  const handleSubmit = (values: FieldProps) => {
+  const handleAsyncSubmit = async (values: FieldProps) => {
     const titleMargin = formatBoxModelValue(values.titleStyle?.margin)
     const paragraphMargin = formatBoxModelValue(values.paragraphStyle?.margin)
 
@@ -224,7 +220,7 @@ const CarouselSettings: React.VFC = () => {
         },
       }}
       colon={false}
-      onFinish={handleSubmit}
+      onFinish={handleAsyncSubmit}
     >
       <Form.List name="covers">
         {(fields, { add, remove }) => (
@@ -270,8 +266,8 @@ const CarouselSettings: React.VFC = () => {
 
                         <Form.Item
                           className="mb-3"
-                          name={[field.name, 'content']}
-                          fieldKey={[field.fieldKey, 'content']}
+                          name={[field.name, 'paragraph']}
+                          fieldKey={[field.fieldKey, 'paragraph']}
                           label={
                             <StyledCraftSettingLabel>
                               {formatMessage(craftPageMessages.label.content)}

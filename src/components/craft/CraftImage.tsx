@@ -13,10 +13,12 @@ import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
 type FieldProps = CraftImageProps & { margin: string; padding: string }
 
-const CraftImage: UserComponent<
-  CraftImageProps &
-    CraftBoxModelProps & { coverUrl: string; setActiveKey: React.Dispatch<React.SetStateAction<string>> }
-> = ({ coverUrl, margin, padding, setActiveKey }) => {
+const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUrl: string }> = ({
+  coverUrl,
+  width,
+  margin,
+  padding,
+}) => {
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -25,6 +27,7 @@ const CraftImage: UserComponent<
     <StyledImage
       ref={ref => ref && connect(drag(ref))}
       customStyle={{
+        width,
         mt: margin?.mt,
         mr: margin?.mr,
         mb: margin?.mb,
@@ -36,7 +39,6 @@ const CraftImage: UserComponent<
       }}
       src={coverUrl}
       style={{ cursor: 'pointer' }}
-      onClick={() => setActiveKey('settings')}
     />
   )
 }
