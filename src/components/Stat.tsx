@@ -1,16 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import { StyledParagraph } from './common'
+import { TitleProps } from '../types/style'
+import { generateCustomTitleStyle, StyledParagraph } from './common'
 import Image from './Image'
 
-const StyledDigit = styled.div<{ isDark: boolean }>`
+const StyledDigit = styled.div<{ isDark?: boolean; customStyle: TitleProps }>`
   color: ${props => (props.isDark ? 'white' : props.theme['@primary-color'])};
   font-size: 40px;
   line-height: 0.75;
   letter-spacing: 1px;
-
-  &::after {
-    content: '+';
+  && {
+    ${generateCustomTitleStyle}
   }
 `
 

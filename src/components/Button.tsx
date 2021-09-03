@@ -4,7 +4,7 @@ import { ButtonProps } from '../types/style'
 
 const StyledButton = styled.span<ButtonProps>`
   display: inline-block;
-  border-radius: 2px;
+  border-radius: 4px;
   user-select: none;
   cursor: pointer;
   transition: 0.3s;
@@ -15,31 +15,45 @@ const StyledButton = styled.span<ButtonProps>`
     color: #eeee;
   }
 
-  color: ${props => props.color || 'white'};
-  background-color: ${props => props.backgroundColor};
+  color: ${props => props.color || '#585858'};
+  ${props => props.backgroundColor && `background-color: ${props.backgroundColor}`};
+  ${props => props.outlineColor && `border: solid 1px ${props.outlineColor}`};
+
   ${props =>
     props.size === 'lg'
-      ? 'padding: 10px 56px;'
+      ? 'padding: 10px 42px;'
       : props.size === 'md'
       ? 'padding: 10px 20px;'
       : props.size === 'sm'
       ? 'padding: 6px 16px;'
       : 'padding: 10px 20px;'}
-  ${props => props.block && 'display: block'}
   ${props =>
-    props.variant === 'solid'
-      ? css`
-          background-color: ${props => props.theme['@primary-color']};
-        `
-      : props.variant === 'outline'
-      ? css`
-          border: solid 1px #ffffff;
-        `
-      : ''}
+    props.block &&
+    css`
+      width: 100%;
+      display: block;
+    `}
 `
 
-const Button: React.FC<ButtonProps> = ({ children, ...props }) => {
-  return <StyledButton {...props}>{children}</StyledButton>
+const Button: React.FC<ButtonProps & { craftEnabled?: boolean }> = ({ craftEnabled, children, ...props }) => {
+  return (
+    <StyledButton
+      {...props}
+      onClick={() => {
+        if (craftEnabled) {
+          return
+        }
+        if (props.link && !props.openNewTab) {
+          window.location.href = props.link
+        }
+        if (props.link && props.openNewTab) {
+          window.open(props.link)
+        }
+      }}
+    >
+      {children}
+    </StyledButton>
+  )
 }
 
 export default Button

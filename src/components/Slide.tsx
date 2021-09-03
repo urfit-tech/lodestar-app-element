@@ -85,8 +85,8 @@ const StyledCoverButton = styled.div`
 const Slide: React.FC<{
   srcDesktop: string
   srcMobile: string
-  title: string
-  subtitle: string
+  title?: string
+  subtitle?: string
   onClick?: () => void
   buttonText?: React.ReactElement | string
   customStyle: {

@@ -12,9 +12,7 @@ export const StyledTitle = styled(Title)`
 `
 const StyledSection = styled.section<{ customStyle?: BackgroundProps }>`
   position: relative;
-  padding: 64px 0;
-  background-color: ${props =>
-    props.customStyle?.backgroundColor ? `url(${props.customStyle.backgroundImage})` : 'white'};
+  background-color: ${props => props.customStyle?.backgroundColor || 'white'};
   background-image: ${props => props.customStyle?.backgroundImage && `url(${props.customStyle.backgroundImage})`};
   background-size: cover;
   background-position: center;
