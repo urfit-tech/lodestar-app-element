@@ -94,10 +94,11 @@ const Instructor: React.FC<{
     abstract?: ParagraphProps
     description?: ParagraphProps
   }
-}> = ({ id, name, abstract, description, avatarUrl, isShowDescription, customStyle }) => {
+  craftEnabled?: boolean
+}> = ({ id, name, abstract, description, avatarUrl, isShowDescription, customStyle, craftEnabled }) => {
   return (
     <StyledInstructorBlock key={id}>
-      <Link to={`/creators/${id}`}>
+      <Link to={`/creators/${id}`} onClick={craftEnabled ? e => e.preventDefault() : undefined}>
         <div className="mb-4">
           <StyledAvatar
             src={avatarUrl !== null ? avatarUrl : DefaultAvatar}
