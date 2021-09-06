@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Collapse, Form } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
@@ -14,6 +14,9 @@ const CraftContainer: UserComponent<{
   margin: CraftMarginProps
   padding?: CraftPaddingProps
 }> = ({ margin, padding, children }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -24,7 +27,7 @@ const CraftContainer: UserComponent<{
       style={{
         margin: `${margin.mt}px ${margin.mr}px ${margin.mb}px ${margin.ml}px`,
         padding: padding && `${padding.pt}px ${padding.pr}px ${padding.pb}px ${padding.pl}px`,
-        cursor: 'pointer',
+        ...(enabled ? { cursor: 'pointer' } : {}),
       }}
     >
       {children}

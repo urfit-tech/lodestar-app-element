@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Collapse, Form, Input, InputNumber, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import { replace } from 'ramda'
@@ -39,12 +39,15 @@ const CraftLayout: UserComponent<{
   desktop: CraftLayoutProps
   mobile: CraftLayoutProps
 }> = ({ desktop, mobile, children }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }}>
+    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
       <Layout
         customStyle={{
           type: 'grid',

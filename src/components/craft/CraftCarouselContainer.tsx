@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Collapse, Form, InputNumber } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
@@ -15,9 +15,7 @@ import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 const StyledInputNumber = styled(InputNumber)`
   width: 100% !important;
 `
-const StyledContainer = styled.div`
-  cursor: pointer;
-`
+
 type CarouselProps = {
   margin: CraftMarginProps
   dots?: boolean
@@ -43,6 +41,9 @@ type CraftCarouselProps = {
 }
 
 const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mobile, children }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -56,7 +57,7 @@ const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mo
   }
 
   return (
-    <StyledContainer ref={ref => ref && connect(drag(ref))}>
+    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
       <Carousel
         dots
         infinite
@@ -77,7 +78,7 @@ const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mo
       >
         {child}
       </Carousel>
-    </StyledContainer>
+    </div>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Collapse, Form, Input, Radio, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
@@ -103,6 +103,9 @@ const CraftCard: UserComponent<CraftCardProps> = ({
   paragraphStyle,
   flexDirection,
 }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -110,7 +113,7 @@ const CraftCard: UserComponent<CraftCardProps> = ({
   return (
     <div
       ref={ref => ref && connect(drag(ref))}
-      style={{ cursor: 'pointer', padding: type === 'referrer' ? '10px' : undefined }}
+      style={{ padding: type === 'referrer' ? '10px' : undefined, ...(enabled ? { cursor: 'pointer' } : {}) }}
     >
       <Card
         customStyle={{

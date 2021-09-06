@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Collapse, Form, Radio, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
@@ -59,12 +59,15 @@ const CraftCollapse: UserComponent<CraftCollapseProps> = ({
   paragraph,
   paragraphStyle,
 }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }}>
+    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
       <Accordion
         customStyle={{
           card: {

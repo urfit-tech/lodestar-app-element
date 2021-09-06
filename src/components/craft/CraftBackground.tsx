@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Collapse, Radio } from 'antd'
 import Form from 'antd/lib/form/'
 import { useForm } from 'antd/lib/form/Form'
@@ -37,6 +37,9 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
   coverUrl,
   children,
 }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -56,7 +59,7 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
         backgroundImage: backgroundType === 'backgroundImage' ? coverUrl : undefined,
         backgroundColor: backgroundType === 'solidColor' ? solidColor : undefined,
       }}
-      style={{ cursor: 'pointer' }}
+      style={enabled ? { cursor: 'pointer' } : {}}
     >
       {children}
     </StyledSection>

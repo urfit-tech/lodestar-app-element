@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Form } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
@@ -28,6 +28,9 @@ const CraftParagraph: UserComponent<CraftParagraphProps> = ({
   color,
   letterSpacing,
 }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -47,7 +50,7 @@ const CraftParagraph: UserComponent<CraftParagraphProps> = ({
         lineHeight: lineHeight || 1,
         letterSpacing,
       }}
-      style={{ cursor: 'pointer' }}
+      style={enabled ? { cursor: 'pointer' } : {}}
     >
       {paragraphContent}
     </StyledParagraph>

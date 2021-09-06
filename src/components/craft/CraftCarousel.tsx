@@ -87,7 +87,7 @@ const CraftCarousel: UserComponent<CraftCarouselProps> = ({ type, covers, titleS
   const history = useHistory()
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }}>
+    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
       <Carousel dots infinite arrows={false} autoplay autoplaySpeed={5000} variant="cover">
         {covers.map(cover => (
           <Carousel.Slide

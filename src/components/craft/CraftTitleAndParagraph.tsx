@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Form } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
@@ -27,12 +27,15 @@ const CraftTitleAndParagraph: UserComponent<{ title: CraftTitleProps; paragraph:
   title,
   paragraph,
 }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={{ cursor: 'pointer' }}>
+    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
       <StyledTitle
         customStyle={{
           fontSize: title.fontSize,

@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Collapse, Form, Radio } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
@@ -31,8 +31,8 @@ import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
 
-const StatisticsWrapper = styled.div<{ customStyle: MarginProps & PaddingProps }>`
-  cursor: pointer;
+const StatisticsWrapper = styled.div<{ enabled: boolean; customStyle: MarginProps & PaddingProps }>`
+  ${props => (props.enabled ? 'cursor: pointer;' : '')}
   width: fit-content;
   text-align: center;
   ${generateCustomMarginStyle}
@@ -57,6 +57,9 @@ type FieldProps = {
 }
 
 const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph, padding, margin, coverUrl }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -64,12 +67,16 @@ const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph
   return (
     <StatisticsWrapper
       ref={ref => ref && connect(drag(ref))}
+      enabled={enabled}
       customStyle={{
         ...padding,
         ...margin,
       }}
     >
       <Stat.Image
+        style={{
+          display: 'inline-block',
+        }}
         src={coverUrl}
         customStyle={{
           mt: '0',

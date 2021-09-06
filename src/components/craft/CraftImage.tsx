@@ -1,4 +1,4 @@
-import { useNode, UserComponent } from '@craftjs/core'
+import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Button, Collapse } from 'antd'
 import Form from 'antd/lib/form/'
 import { useForm } from 'antd/lib/form/Form'
@@ -23,6 +23,9 @@ const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUr
   margin,
   padding,
 }) => {
+  const { enabled } = useEditor(state => ({
+    enabled: state.options.enabled,
+  }))
   const {
     connectors: { connect, drag },
   } = useNode()
@@ -42,7 +45,7 @@ const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUr
         pl: padding?.pl,
       }}
       src={coverUrl}
-      style={{ cursor: 'pointer' }}
+      style={enabled ? { cursor: 'pointer' } : {}}
     />
   )
 }
