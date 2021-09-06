@@ -4,7 +4,7 @@ import { TitleProps } from '../types/style'
 import { generateCustomTitleStyle, StyledParagraph } from './common'
 import Image from './Image'
 
-const StyledDigit = styled.div<{ isDark?: boolean; customStyle: TitleProps }>`
+const StyledDigit = styled.div<{ isDark?: boolean; customStyle?: TitleProps }>`
   color: ${props => (props.isDark ? 'white' : props.theme['@primary-color'])};
   font-size: 40px;
   line-height: 0.75;
