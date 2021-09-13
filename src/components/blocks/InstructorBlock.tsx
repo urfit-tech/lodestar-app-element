@@ -72,7 +72,7 @@ const InstructorBlock: React.FC<{
       dots={false}
       draggable
       swipeToSlide
-      slidesToShow={customContentIds?.length || 4}
+      slidesToShow={instructors.length < 5 ? instructors.length : 5}
       slidesToScroll={1}
       responsive={[
         {
