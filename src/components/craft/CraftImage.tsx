@@ -40,7 +40,7 @@ const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUr
         mb: margin?.mb,
         ml: margin?.ml,
         pt: padding?.pt,
-        pr: padding?.pt,
+        pr: padding?.pr,
         pb: padding?.pb,
         pl: padding?.pl,
       }}
