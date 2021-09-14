@@ -2,6 +2,7 @@ import { useNode } from '@craftjs/core'
 import React from 'react'
 import { usePublishedPodcastProgramCollection } from '../../hooks/data'
 import PodcastProgramCard from '../cards/PodcastProgramCard'
+import { CraftRefBlock } from '../common'
 import Skeleton from '../Skeleton'
 
 const PodcastProgramBlock: React.VFC<{
@@ -10,7 +11,10 @@ const PodcastProgramBlock: React.VFC<{
 }> = ({ customContentIds, craftEnabled }) => {
   const {
     connectors: { connect },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
   const { loadingPodcastPrograms, errorPodcastPrograms, podcastPrograms } = usePublishedPodcastProgramCollection({
     ids: customContentIds,
     limit: customContentIds?.length ? undefined : 3,
@@ -30,9 +34,16 @@ const PodcastProgramBlock: React.VFC<{
   return (
     <>
       {podcastPrograms.map(podcastProgram => (
-        <div ref={ref => ref && connect(ref)} style={{ width: '100%' }}>
+        <CraftRefBlock
+          ref={ref => ref && connect(ref)}
+          style={{
+            width: '100%',
+          }}
+          enabled={craftEnabled}
+          selected={selected}
+        >
           <PodcastProgramCard key={podcastProgram.id} podcastProgram={podcastProgram} craftEnabled={craftEnabled} />
-        </div>
+        </CraftRefBlock>
       ))}
     </>
   )

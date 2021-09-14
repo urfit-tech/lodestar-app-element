@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import { StyledTitle } from '../../components/common'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftTextStyleProps, CraftTitleProps } from '../../types/craft'
-import { StyledSettingButtonWrapper } from '../common'
+import { CraftRefBlock, StyledSettingButtonWrapper } from '../common'
 import { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
@@ -31,25 +31,28 @@ const CraftTitle: UserComponent<CraftTitleProps> = ({
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
-    <StyledTitle
-      ref={ref => ref && connect(drag(ref))}
-      customStyle={{
-        fontSize,
-        mt: margin.mt,
-        mr: margin.mr,
-        mb: margin.mb,
-        ml: margin.ml,
-        textAlign: textAlign,
-        fontWeight: fontWeight,
-        color: color,
-      }}
-      style={enabled ? { cursor: 'pointer' } : {}}
-    >
-      {titleContent}
-    </StyledTitle>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
+      <StyledTitle
+        customStyle={{
+          fontSize,
+          mt: margin.mt,
+          mr: margin.mr,
+          mb: margin.mb,
+          ml: margin.ml,
+          textAlign: textAlign,
+          fontWeight: fontWeight,
+          color: color,
+        }}
+      >
+        {titleContent}
+      </StyledTitle>
+    </CraftRefBlock>
   )
 }
 

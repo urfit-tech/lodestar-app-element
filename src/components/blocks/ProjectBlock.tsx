@@ -3,6 +3,7 @@ import React from 'react'
 import { useProjectCollection } from '../../hooks/data'
 import { ProjectType } from '../../types/data'
 import ProjectCard from '../cards/ProjectCard'
+import { CraftRefBlock } from '../common'
 import Skeleton from '../Skeleton'
 
 const ProjectBlock: React.VFC<{
@@ -13,7 +14,10 @@ const ProjectBlock: React.VFC<{
 }> = ({ projectType, customContentIds, categoryId, craftEnabled }) => {
   const {
     connectors: { connect },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
   const { loadingProjects, errorProjects, projects } = useProjectCollection({
     projectType,
     ids: customContentIds,
@@ -35,9 +39,16 @@ const ProjectBlock: React.VFC<{
   return (
     <>
       {projects.map(project => (
-        <div ref={ref => ref && connect(ref)} style={{ width: '100%' }}>
+        <CraftRefBlock
+          ref={ref => ref && connect(ref)}
+          style={{
+            width: '100%',
+          }}
+          enabled={craftEnabled}
+          selected={selected}
+        >
           <ProjectCard key={project.id} project={project} craftEnabled={craftEnabled} />
-        </div>
+        </CraftRefBlock>
       ))}
     </>
   )

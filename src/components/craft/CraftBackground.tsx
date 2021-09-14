@@ -4,17 +4,25 @@ import Form from 'antd/lib/form/'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
+import styled from 'styled-components'
 import { v4 as uuid } from 'uuid'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
-import StyledSection from '../BackgroundSection'
-import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import BackgroundSection from '../BackgroundSection'
+import { AdminHeaderTitle, CraftSelectedMixin, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
+
+const StyledSection = styled(BackgroundSection)<{ enabled?: boolean; selected?: boolean }>`
+  && {
+    ${props => props.enabled && `cursor: pointer;`}
+    ${props => props.selected && CraftSelectedMixin}
+  }
+`
 
 type CraftBackgroundProps = {
   backgroundType: 'none' | 'solidColor' | 'backgroundImage'
@@ -42,7 +50,10 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
     <StyledSection
@@ -59,7 +70,8 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
         backgroundImage: backgroundType === 'backgroundImage' ? coverUrl : undefined,
         backgroundColor: backgroundType === 'solidColor' ? solidColor : undefined,
       }}
-      style={enabled ? { cursor: 'pointer' } : {}}
+      enabled={enabled}
+      selected={selected}
     >
       {children}
     </StyledSection>

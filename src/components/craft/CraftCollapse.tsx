@@ -10,7 +10,7 @@ import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import Accordion from '../AccordionSingle'
-import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
@@ -64,10 +64,13 @@ const CraftCollapse: UserComponent<CraftCollapseProps> = ({
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
       <Accordion
         customStyle={{
           card: {
@@ -99,7 +102,7 @@ const CraftCollapse: UserComponent<CraftCollapseProps> = ({
         title={title}
         description={paragraph}
       />
-    </div>
+    </CraftRefBlock>
   )
 }
 

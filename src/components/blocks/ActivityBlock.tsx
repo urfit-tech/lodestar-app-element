@@ -2,6 +2,7 @@ import { useNode } from '@craftjs/core'
 import React from 'react'
 import { usePublishedActivityCollection } from '../../hooks/data'
 import ActivityCard from '../cards/ActivityCard'
+import { CraftRefBlock } from '../common'
 import Skeleton from '../Skeleton'
 
 const ActivityBlock: React.VFC<{
@@ -10,7 +11,10 @@ const ActivityBlock: React.VFC<{
 }> = ({ customContentIds, craftEnabled }) => {
   const {
     connectors: { connect },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
   const { loadingActivities, errorActivities, activities } = usePublishedActivityCollection({
     ids: customContentIds,
     limit: customContentIds?.length ? undefined : 3,
@@ -30,9 +34,16 @@ const ActivityBlock: React.VFC<{
   return (
     <>
       {activities.map(activity => (
-        <div ref={ref => ref && connect(ref)} style={{ width: '100%' }}>
+        <CraftRefBlock
+          ref={ref => ref && connect(ref)}
+          style={{
+            width: '100%',
+          }}
+          enabled={craftEnabled}
+          selected={selected}
+        >
           <ActivityCard key={activity.id} activity={activity} craftEnabled={craftEnabled} />
-        </div>
+        </CraftRefBlock>
       ))}
     </>
   )

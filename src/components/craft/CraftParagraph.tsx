@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import { StyledParagraph } from '../../components/common'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftParagraphProps, CraftTextStyleProps } from '../../types/craft'
-import { StyledSettingButtonWrapper } from '../common'
+import { CraftRefBlock, StyledSettingButtonWrapper } from '../common'
 import { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
@@ -33,27 +33,30 @@ const CraftParagraph: UserComponent<CraftParagraphProps> = ({
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
-    <StyledParagraph
-      ref={ref => ref && connect(drag(ref))}
-      customStyle={{
-        fontSize,
-        mt: margin.mt,
-        mr: margin.mr,
-        mb: margin.mb,
-        ml: margin.ml,
-        textAlign,
-        fontWeight,
-        color,
-        lineHeight: lineHeight || 1,
-        letterSpacing,
-      }}
-      style={enabled ? { cursor: 'pointer' } : {}}
-    >
-      {paragraphContent}
-    </StyledParagraph>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
+      <StyledParagraph
+        customStyle={{
+          fontSize,
+          mt: margin.mt,
+          mr: margin.mr,
+          mb: margin.mb,
+          ml: margin.ml,
+          textAlign,
+          fontWeight,
+          color,
+          lineHeight: lineHeight || 1,
+          letterSpacing,
+        }}
+      >
+        {paragraphContent}
+      </StyledParagraph>
+    </CraftRefBlock>
   )
 }
 

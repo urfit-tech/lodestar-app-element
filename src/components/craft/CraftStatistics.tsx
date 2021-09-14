@@ -19,6 +19,7 @@ import {
 import { MarginProps, PaddingProps } from '../../types/style'
 import {
   AdminHeaderTitle,
+  CraftSelectedMixin,
   generateCustomMarginStyle,
   generateCustomPaddingStyle,
   StyledCollapsePanel,
@@ -31,8 +32,13 @@ import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
 
-const StatisticsWrapper = styled.div<{ enabled: boolean; customStyle: MarginProps & PaddingProps }>`
-  ${props => (props.enabled ? 'cursor: pointer;' : '')}
+const StatisticsWrapper = styled.div<{
+  enabled?: boolean
+  selected?: boolean
+  customStyle: MarginProps & PaddingProps
+}>`
+  ${props => props.enabled && 'cursor: pointer;'}
+  ${props => props.selected && CraftSelectedMixin}
   width: fit-content;
   text-align: center;
   ${generateCustomMarginStyle}
@@ -62,12 +68,16 @@ const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
     <StatisticsWrapper
       ref={ref => ref && connect(drag(ref))}
       enabled={enabled}
+      selected={selected}
       customStyle={{
         ...padding,
         ...margin,

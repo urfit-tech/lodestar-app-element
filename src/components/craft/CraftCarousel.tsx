@@ -16,6 +16,7 @@ import { ReactComponent as TrashOIcon } from '../../images/icons/trash-o.svg'
 import { CraftTextStyleProps } from '../../types/craft'
 import {
   AdminHeaderTitle,
+  CraftRefBlock,
   StyledCollapsePanel,
   StyledCraftSettingLabel,
   StyledSettingButtonWrapper,
@@ -83,11 +84,14 @@ const CraftCarousel: UserComponent<CraftCarouselProps> = ({ type, covers, titleS
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
   const history = useHistory()
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
       <Carousel dots infinite arrows={false} autoplay autoplaySpeed={5000} variant="cover">
         {covers.map(cover => (
           <Carousel.Slide
@@ -136,7 +140,7 @@ const CraftCarousel: UserComponent<CraftCarouselProps> = ({ type, covers, titleS
           />
         ))}
       </Carousel>
-    </div>
+    </CraftRefBlock>
   )
 }
 

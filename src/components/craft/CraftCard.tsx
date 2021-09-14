@@ -11,7 +11,7 @@ import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import Card from '../Card'
-import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
@@ -108,12 +108,17 @@ const CraftCard: UserComponent<CraftCardProps> = ({
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
-    <div
+    <CraftRefBlock
       ref={ref => ref && connect(drag(ref))}
       style={{ padding: type === 'referrer' ? '10px' : undefined, ...(enabled ? { cursor: 'pointer' } : {}) }}
+      enabled={enabled}
+      selected={selected}
     >
       <Card
         customStyle={{
@@ -180,7 +185,7 @@ const CraftCard: UserComponent<CraftCardProps> = ({
           withName={!!avatarName}
         />
       )}
-    </div>
+    </CraftRefBlock>
   )
 }
 

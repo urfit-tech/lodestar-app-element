@@ -5,7 +5,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
-import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
 type FieldProps = { margin: string; padding: string }
@@ -19,19 +19,23 @@ const CraftContainer: UserComponent<{
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
-    <div
+    <CraftRefBlock
       ref={ref => ref && connect(drag(ref))}
       style={{
         margin: `${margin.mt}px ${margin.mr}px ${margin.mb}px ${margin.ml}px`,
         padding: padding && `${padding.pt}px ${padding.pr}px ${padding.pb}px ${padding.pl}px`,
-        ...(enabled ? { cursor: 'pointer' } : {}),
       }}
+      selected={selected}
+      enabled={enabled}
     >
       {children}
-    </div>
+    </CraftRefBlock>
   )
 }
 

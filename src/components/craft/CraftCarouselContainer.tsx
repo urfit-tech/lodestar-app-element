@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import Carousel from '../../components/Carousel'
 import { craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps } from '../../types/craft'
-import { AdminHeaderTitle, StyledCollapsePanel } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel } from '../common'
 import { BREAK_POINT } from '../Responsive'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
@@ -46,7 +46,10 @@ const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mo
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   let child = children
 
@@ -57,7 +60,7 @@ const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mo
   }
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} selected={selected} enabled={enabled}>
       <Carousel
         dots
         infinite
@@ -78,7 +81,7 @@ const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mo
       >
         {child}
       </Carousel>
-    </div>
+    </CraftRefBlock>
   )
 }
 

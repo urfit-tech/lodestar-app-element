@@ -11,7 +11,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftBoxModelProps, CraftImageProps } from '../../types/craft'
-import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
@@ -28,25 +28,28 @@ const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUr
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
-    <StyledImage
-      ref={ref => ref && connect(drag(ref))}
-      customStyle={{
-        width,
-        mt: margin?.mt,
-        mr: margin?.mr,
-        mb: margin?.mb,
-        ml: margin?.ml,
-        pt: padding?.pt,
-        pr: padding?.pr,
-        pb: padding?.pb,
-        pl: padding?.pl,
-      }}
-      src={coverUrl}
-      style={enabled ? { cursor: 'pointer' } : {}}
-    />
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
+      <StyledImage
+        customStyle={{
+          width,
+          mt: margin?.mt,
+          mr: margin?.mr,
+          mb: margin?.mb,
+          ml: margin?.ml,
+          pt: padding?.pt,
+          pr: padding?.pr,
+          pb: padding?.pb,
+          pl: padding?.pl,
+        }}
+        src={coverUrl}
+      />
+    </CraftRefBlock>
   )
 }
 

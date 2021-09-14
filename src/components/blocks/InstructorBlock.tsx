@@ -5,12 +5,14 @@ import { useInstructorCollection } from '../../hooks/data'
 import AngleThinLeft from '../../images/icons/angle-thin-left.svg'
 import AngleThinRight from '../../images/icons/angle-thin-right.svg'
 import Carousel from '../Carousel'
+import { CraftSelectedMixin } from '../common'
 import Instructor from '../Instructor'
 import { BREAK_POINT } from '../Responsive'
 import Skeleton from '../Skeleton'
 
-const StyledCarousel = styled(Carousel)`
+const StyledCarousel = styled(Carousel)<{ selected?: boolean }>`
   && {
+    ${props => props.selected && CraftSelectedMixin}
     .slick-next::before,
     .slick-prev::before {
       content: none;
@@ -49,7 +51,10 @@ const InstructorBlock: React.FC<{
 }> = ({ appId, customContentIds, isShowDescription, craftEnabled }) => {
   const {
     connectors: { connect },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
   const { loadingInstructors, errorInstructors, instructors } = useInstructorCollection(appId, {
     ids: customContentIds,
     limit: customContentIds?.length ? undefined : 8,
@@ -68,6 +73,7 @@ const InstructorBlock: React.FC<{
 
   return (
     <StyledCarousel
+      selected={selected}
       arrows
       dots={false}
       draggable

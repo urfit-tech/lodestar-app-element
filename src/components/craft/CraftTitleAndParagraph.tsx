@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import { StyledParagraph, StyledTitle } from '../../components/common'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftParagraphProps, CraftTextStyleProps, CraftTitleProps } from '../../types/craft'
-import { StyledSettingButtonWrapper } from '../common'
+import { CraftRefBlock, StyledSettingButtonWrapper } from '../common'
 import { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
@@ -32,10 +32,13 @@ const CraftTitleAndParagraph: UserComponent<{ title: CraftTitleProps; paragraph:
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} selected={selected} enabled={enabled}>
       <StyledTitle
         customStyle={{
           fontSize: title.fontSize,
@@ -63,7 +66,7 @@ const CraftTitleAndParagraph: UserComponent<{ title: CraftTitleProps; paragraph:
       >
         {paragraph.paragraphContent}
       </StyledParagraph>
-    </div>
+    </CraftRefBlock>
   )
 }
 

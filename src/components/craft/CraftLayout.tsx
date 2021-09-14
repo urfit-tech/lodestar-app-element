@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftLayoutProps } from '../../types/craft'
-import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
 import Layout from '../Layout'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
@@ -44,10 +44,13 @@ const CraftLayout: UserComponent<{
   }))
   const {
     connectors: { connect, drag },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
 
   return (
-    <div ref={ref => ref && connect(drag(ref))} style={enabled ? { cursor: 'pointer' } : {}}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
       <Layout
         customStyle={{
           type: 'grid',
@@ -57,7 +60,7 @@ const CraftLayout: UserComponent<{
       >
         {children}
       </Layout>
-    </div>
+    </CraftRefBlock>
   )
 }
 

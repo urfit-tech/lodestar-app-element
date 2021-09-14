@@ -2,6 +2,7 @@ import { useNode } from '@craftjs/core'
 import React from 'react'
 import { usePublishedProgramCollection } from '../../hooks/data'
 import ProgramCard from '../cards/ProgramCard'
+import { CraftRefBlock } from '../common'
 import Skeleton from '../Skeleton'
 
 const ProgramBlock: React.VFC<{
@@ -10,7 +11,10 @@ const ProgramBlock: React.VFC<{
 }> = ({ customContentIds, craftEnabled }) => {
   const {
     connectors: { connect },
-  } = useNode()
+    selected,
+  } = useNode(node => ({
+    selected: node.events.selected,
+  }))
   const { loadingPrograms, errorPrograms, programs } = usePublishedProgramCollection({
     limit: customContentIds === undefined ? 3 : undefined,
     ids: customContentIds,
@@ -30,9 +34,16 @@ const ProgramBlock: React.VFC<{
   return (
     <>
       {programs.map(program => (
-        <div ref={ref => ref && connect(ref)} style={{ width: '100%' }}>
+        <CraftRefBlock
+          ref={ref => ref && connect(ref)}
+          style={{
+            width: '100%',
+          }}
+          enabled={craftEnabled}
+          selected={selected}
+        >
           <ProgramCard key={program.id} program={program} craftEnabled={craftEnabled} />
-        </div>
+        </CraftRefBlock>
       ))}
     </>
   )
