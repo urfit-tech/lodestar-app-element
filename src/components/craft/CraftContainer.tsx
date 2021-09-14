@@ -1,11 +1,11 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Button, Collapse, Form } from 'antd'
+import { Collapse, Form } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
 import { useIntl } from 'react-intl'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import { craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
-import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel } from '../common'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
 type FieldProps = { margin: string; padding: string }
@@ -46,31 +46,34 @@ const ContainerSettings: React.VFC = () => {
   const {
     actions: { setProp },
     props,
-    selected,
   } = useNode(node => ({
     props: node.data.props as { margin: CraftMarginProps; padding?: CraftPaddingProps },
     button: node.data.custom.button,
-    selected: node.events.selected,
   }))
 
-  const handleSubmit = (values: FieldProps) => {
-    const margin = formatBoxModelValue(values.margin)
-    const padding = formatBoxModelValue(values.padding)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const margin = formatBoxModelValue(values.margin)
+        const padding = formatBoxModelValue(values.padding)
 
-    setProp(props => {
-      props.margin = {
-        mt: margin?.[0] || '0',
-        mr: margin?.[1] || '0',
-        mb: margin?.[2] || '0',
-        ml: margin?.[3] || '0',
-      }
-      props.padding = {
-        pt: padding?.[0] || '0',
-        pr: padding?.[1] || '0',
-        pb: padding?.[2] || '0',
-        pl: padding?.[3] || '0',
-      }
-    })
+        setProp(props => {
+          props.margin = {
+            mt: margin?.[0] || '0',
+            mr: margin?.[1] || '0',
+            mb: margin?.[2] || '0',
+            ml: margin?.[3] || '0',
+          }
+          props.padding = {
+            pt: padding?.[0] || '0',
+            pr: padding?.[1] || '0',
+            pb: padding?.[2] || '0',
+            pl: padding?.[3] || '0',
+          }
+        })
+      })
+      .catch(() => {})
   }
 
   return (
@@ -85,7 +88,7 @@ const ContainerSettings: React.VFC = () => {
           props.padding?.pl || 0
         }`,
       }}
-      onFinish={handleSubmit}
+      onValuesChange={handleChange}
     >
       <Collapse className="mt-2 p-0" bordered={false} expandIconPosition="right" ghost defaultActiveKey={['container']}>
         <StyledCollapsePanel
@@ -120,14 +123,6 @@ const ContainerSettings: React.VFC = () => {
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
-
-      {selected && (
-        <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" htmlType="submit" block>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

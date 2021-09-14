@@ -1,13 +1,13 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Button, Collapse, Form, Input, InputNumber, Select } from 'antd'
+import { Collapse, Form, Input, InputNumber, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import { replace } from 'ramda'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import { craftPageMessages } from '../../helpers/translation'
 import { CraftLayoutProps } from '../../types/craft'
-import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel } from '../common'
 import Layout from '../Layout'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
@@ -71,40 +71,43 @@ const LayoutSettings: React.VFC = () => {
   const {
     actions: { setProp },
     props,
-    selected,
   } = useNode(node => ({
     props: node.data.props as { mobile: CraftLayoutProps; desktop: CraftLayoutProps },
-    selected: node.events.selected,
   }))
 
-  const handleSubmit = (values: FieldProps) => {
-    const desktopMargin = formatBoxModelValue(values.desktopMargin)
-    const mobileMargin = formatBoxModelValue(values.mobileMargin)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const desktopMargin = formatBoxModelValue(values.desktopMargin)
+        const mobileMargin = formatBoxModelValue(values.mobileMargin)
 
-    setProp(props => {
-      props.desktop = {
-        margin: {
-          mt: desktopMargin?.[0] || '0',
-          mr: desktopMargin?.[1] || '0',
-          mb: desktopMargin?.[2] || '0',
-          ml: desktopMargin?.[3] || '0',
-        },
-        columnAmount: values.desktopColumnAmount,
-        columnRatio: values.desktopColumnRatio.split(':').map(Number),
-        displayAmount: values.desktopDisplayAmount,
-      }
-      props.mobile = {
-        margin: {
-          mt: mobileMargin?.[0] || '0',
-          mr: mobileMargin?.[1] || '0',
-          mb: mobileMargin?.[2] || '0',
-          ml: mobileMargin?.[3] || '0',
-        },
-        columnAmount: values.mobileColumnAmount,
-        columnRatio: values.mobileColumnRatio.split(':').map(Number),
-        displayAmount: values.mobileDisplayAmount,
-      }
-    })
+        setProp(props => {
+          props.desktop = {
+            margin: {
+              mt: desktopMargin?.[0] || '0',
+              mr: desktopMargin?.[1] || '0',
+              mb: desktopMargin?.[2] || '0',
+              ml: desktopMargin?.[3] || '0',
+            },
+            columnAmount: values.desktopColumnAmount,
+            columnRatio: values.desktopColumnRatio.split(':').map(Number),
+            displayAmount: values.desktopDisplayAmount,
+          }
+          props.mobile = {
+            margin: {
+              mt: mobileMargin?.[0] || '0',
+              mr: mobileMargin?.[1] || '0',
+              mb: mobileMargin?.[2] || '0',
+              ml: mobileMargin?.[3] || '0',
+            },
+            columnAmount: values.mobileColumnAmount,
+            columnRatio: values.mobileColumnRatio.split(':').map(Number),
+            displayAmount: values.mobileDisplayAmount,
+          }
+        })
+      })
+      .catch(() => {})
   }
 
   return (
@@ -127,7 +130,7 @@ const LayoutSettings: React.VFC = () => {
         mobileColumnRatio: replace(/,/g, ':', props.mobile.columnRatio.toString() || '12') || [12],
         mobileDisplayAmount: props.mobile.displayAmount || 3,
       }}
-      onFinish={handleSubmit}
+      onValuesChange={handleChange}
     >
       <Collapse
         className="mt-2 p-0"
@@ -218,14 +221,6 @@ const LayoutSettings: React.VFC = () => {
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
-
-      {selected && (
-        <StyledSettingButtonWrapper>
-          <Button type="primary" block htmlType="submit">
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

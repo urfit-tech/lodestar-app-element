@@ -1,12 +1,12 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Button, Form } from 'antd'
+import { Form } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import { StyledTitle } from '../../components/common'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import { craftPageMessages } from '../../helpers/translation'
 import { CraftTextStyleProps, CraftTitleProps } from '../../types/craft'
-import { CraftRefBlock, StyledSettingButtonWrapper } from '../common'
+import { CraftRefBlock } from '../common'
 import { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
@@ -62,28 +62,31 @@ const TitleSettings: React.VFC = () => {
   const {
     actions: { setProp },
     props,
-    selected,
   } = useNode(node => ({
     props: node.data.props as CraftTitleProps,
-    selected: node.events.selected,
   }))
 
-  const handleSubmit = (values: FieldProps) => {
-    const titleMargin = formatBoxModelValue(values.titleStyle.margin)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const titleMargin = formatBoxModelValue(values.titleStyle.margin)
 
-    setProp(prop => {
-      prop.titleContent = values.titleContent
-      prop.fontSize = values.titleStyle.fontSize
-      prop.margin = {
-        mt: titleMargin?.[0] || '0',
-        mr: titleMargin?.[1] || '0',
-        mb: titleMargin?.[2] || '0',
-        ml: titleMargin?.[3] || '0',
-      }
-      prop.textAlign = values.titleStyle.textAlign
-      prop.fontWeight = values.titleStyle.fontWeight
-      prop.color = values.titleStyle.color
-    })
+        setProp(prop => {
+          prop.titleContent = values.titleContent
+          prop.fontSize = values.titleStyle.fontSize
+          prop.margin = {
+            mt: titleMargin?.[0] || '0',
+            mr: titleMargin?.[1] || '0',
+            mb: titleMargin?.[2] || '0',
+            ml: titleMargin?.[3] || '0',
+          }
+          prop.textAlign = values.titleStyle.textAlign
+          prop.fontWeight = values.titleStyle.fontWeight
+          prop.color = values.titleStyle.color
+        })
+      })
+      .catch(() => {})
   }
 
   return (
@@ -102,7 +105,7 @@ const TitleSettings: React.VFC = () => {
           color: props.color || '#585858',
         },
       }}
-      onFinish={handleSubmit}
+      onValuesChange={handleChange}
     >
       <Form.Item name="titleContent">
         <CraftTitleContentBlock />
@@ -110,13 +113,6 @@ const TitleSettings: React.VFC = () => {
       <Form.Item name="titleStyle">
         <CraftTextStyleBlock type="title" title={formatMessage(craftPageMessages.label.titleStyle)} />
       </Form.Item>
-      {selected && (
-        <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" htmlType="submit" block>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

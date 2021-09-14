@@ -1,12 +1,12 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Button, Form } from 'antd'
+import { Form } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import { StyledParagraph, StyledTitle } from '../../components/common'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import { craftPageMessages } from '../../helpers/translation'
 import { CraftParagraphProps, CraftTextStyleProps, CraftTitleProps } from '../../types/craft'
-import { CraftRefBlock, StyledSettingButtonWrapper } from '../common'
+import { CraftRefBlock } from '../common'
 import { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
@@ -77,44 +77,47 @@ const TitleAndParagraphSettings: React.VFC = () => {
   const {
     actions: { setProp },
     props,
-    selected,
   } = useNode(node => ({
     props: {
       title: node.data.props.title as CraftTitleProps,
       paragraph: node.data.props.paragraph as CraftParagraphProps,
     },
-    selected: node.events.selected,
   }))
 
-  const handleSubmit = (values: FieldProps) => {
-    const titleMargin = formatBoxModelValue(values.titleStyle.margin)
-    const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const titleMargin = formatBoxModelValue(values.titleStyle.margin)
+        const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
 
-    setProp(props => {
-      props.title.titleContent = values.titleContent
-      props.title.fontSize = values.titleStyle.fontSize
-      props.title.margin = {
-        mt: titleMargin?.[0] || '0',
-        mr: titleMargin?.[1] || '0',
-        mb: titleMargin?.[2] || '0',
-        ml: titleMargin?.[3] || '0',
-      }
-      props.title.textAlign = values.titleStyle.textAlign
-      props.title.fontWeight = values.titleStyle.fontWeight
-      props.title.color = values.titleStyle.color
-      props.paragraph.paragraphContent = values.paragraphContent
-      props.paragraph.fontSize = values.paragraphStyle.fontSize
-      props.paragraph.lineHeight = values.paragraphStyle.lineHeight
-      props.paragraph.margin = {
-        mt: paragraphMargin?.[0] || '0',
-        mr: paragraphMargin?.[1] || '0',
-        mb: paragraphMargin?.[2] || '0',
-        ml: paragraphMargin?.[3] || '0',
-      }
-      props.paragraph.textAlign = values.paragraphStyle.textAlign
-      props.paragraph.fontWeight = values.paragraphStyle.fontWeight
-      props.paragraph.color = values.paragraphStyle.color
-    })
+        setProp(props => {
+          props.title.titleContent = values.titleContent
+          props.title.fontSize = values.titleStyle.fontSize
+          props.title.margin = {
+            mt: titleMargin?.[0] || '0',
+            mr: titleMargin?.[1] || '0',
+            mb: titleMargin?.[2] || '0',
+            ml: titleMargin?.[3] || '0',
+          }
+          props.title.textAlign = values.titleStyle.textAlign
+          props.title.fontWeight = values.titleStyle.fontWeight
+          props.title.color = values.titleStyle.color
+          props.paragraph.paragraphContent = values.paragraphContent
+          props.paragraph.fontSize = values.paragraphStyle.fontSize
+          props.paragraph.lineHeight = values.paragraphStyle.lineHeight
+          props.paragraph.margin = {
+            mt: paragraphMargin?.[0] || '0',
+            mr: paragraphMargin?.[1] || '0',
+            mb: paragraphMargin?.[2] || '0',
+            ml: paragraphMargin?.[3] || '0',
+          }
+          props.paragraph.textAlign = values.paragraphStyle.textAlign
+          props.paragraph.fontWeight = values.paragraphStyle.fontWeight
+          props.paragraph.color = values.paragraphStyle.color
+        })
+      })
+      .catch(() => {})
   }
 
   return (
@@ -146,7 +149,7 @@ const TitleAndParagraphSettings: React.VFC = () => {
           lineHeight: props.paragraph?.lineHeight || 1,
         },
       }}
-      onFinish={handleSubmit}
+      onValuesChange={handleChange}
     >
       <Form.Item name="titleContent">
         <CraftTitleContentBlock />
@@ -160,13 +163,6 @@ const TitleAndParagraphSettings: React.VFC = () => {
       <Form.Item name="paragraphStyle">
         <CraftTextStyleBlock type="paragraph" title={formatMessage(craftPageMessages.label.paragraphStyle)} />
       </Form.Item>
-      {selected && (
-        <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" block htmlType="submit">
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

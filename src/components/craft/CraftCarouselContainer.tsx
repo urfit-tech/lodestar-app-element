@@ -31,8 +31,12 @@ type CarouselProps = {
 }
 
 type FieldProps = {
-  desktop: CarouselProps
-  mobile: CarouselProps
+  desktopMargin: string
+  desktopColumnAmount: number
+  desktopScrollAmount: string
+  mobileMargin: string
+  mobileColumnAmount: number
+  mobileScrollAmount: string
 }
 
 type CraftCarouselProps = {
@@ -96,6 +100,35 @@ const CarouselSettings: React.VFC = () => {
     props: node.data.props as CraftCarouselProps,
   }))
 
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const desktopMargin = formatBoxModelValue(values.desktopMargin)
+        const mobileMargin = formatBoxModelValue(values.mobileMargin)
+
+        setProp(props => {
+          props.desktop.margin = {
+            mt: desktopMargin?.[0] || '0',
+            mr: desktopMargin?.[1] || '0',
+            mb: desktopMargin?.[2] || '0',
+            ml: desktopMargin?.[3] || '0',
+          }
+          props.desktop.slidesToShow = values.desktopColumnAmount
+          props.desktop.slidesToScroll = values.desktopScrollAmount
+          props.mobile.margin = {
+            mt: mobileMargin?.[0] || '0',
+            mr: mobileMargin?.[1] || '0',
+            mb: mobileMargin?.[2] || '0',
+            ml: mobileMargin?.[3] || '0',
+          }
+          props.mobile.slidesToShow = values.mobileColumnAmount
+          props.mobile.slidesToScroll = values.mobileScrollAmount
+        })
+      })
+      .catch(() => {})
+  }
+
   return (
     <Form
       form={form}
@@ -114,6 +147,7 @@ const CarouselSettings: React.VFC = () => {
         mobileColumnAmount: props.mobile.slidesToShow || 1,
         mobileScrollAmount: props.mobile.slidesToScroll || 1,
       }}
+      onValuesChange={handleChange}
     >
       <Collapse
         className="mt-2 p-0"
@@ -129,39 +163,13 @@ const CarouselSettings: React.VFC = () => {
           }
         >
           <Form.Item name="desktopMargin" label={formatMessage(craftPageMessages.label.margin)}>
-            <CraftBoxModelInput
-              onChange={v => {
-                const margin = formatBoxModelValue(v)
-                setProp(props => {
-                  props.desktop.margin = {
-                    mt: margin?.[0] || '0',
-                    mr: margin?.[1] || '0',
-                    mb: margin?.[2] || '0',
-                    ml: margin?.[3] || '0',
-                  }
-                })
-              }}
-            />
+            <CraftBoxModelInput />
           </Form.Item>
           <Form.Item name="desktopColumnAmount" label={formatMessage(craftPageMessages.label.columnAmount)}>
-            <StyledInputNumber
-              min="1"
-              onChange={v =>
-                setProp(props => {
-                  props.desktop.slidesToShow = v
-                })
-              }
-            />
+            <StyledInputNumber min="1" />
           </Form.Item>
           <Form.Item name="desktopScrollAmount" label={formatMessage(craftPageMessages.label.scrollAmount)}>
-            <StyledInputNumber
-              min="1"
-              onChange={v =>
-                setProp(props => {
-                  props.desktop.slidesToScroll = v
-                })
-              }
-            />
+            <StyledInputNumber min="1" />
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
@@ -178,39 +186,13 @@ const CarouselSettings: React.VFC = () => {
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.mobileCarouselComponent)}</AdminHeaderTitle>}
         >
           <Form.Item name="mobileMargin" label={formatMessage(craftPageMessages.label.margin)}>
-            <CraftBoxModelInput
-              onChange={v => {
-                const margin = formatBoxModelValue(v)
-                setProp(props => {
-                  props.mobile.margin = {
-                    mt: margin?.[0] || '0',
-                    mr: margin?.[1] || '0',
-                    mb: margin?.[2] || '0',
-                    ml: margin?.[3] || '0',
-                  }
-                })
-              }}
-            />
+            <CraftBoxModelInput />
           </Form.Item>
           <Form.Item name="mobileColumnAmount" label={formatMessage(craftPageMessages.label.columnAmount)}>
-            <StyledInputNumber
-              min="1"
-              onChange={v =>
-                setProp(props => {
-                  props.mobile.slidesToShow = v
-                })
-              }
-            />
+            <StyledInputNumber min="1" />
           </Form.Item>
           <Form.Item name="mobileScrollAmount" label={formatMessage(craftPageMessages.label.scrollAmount)}>
-            <StyledInputNumber
-              min="1"
-              onChange={v =>
-                setProp(props => {
-                  props.mobile.slidesToScroll = v
-                })
-              }
-            />
+            <StyledInputNumber min="1" />
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>

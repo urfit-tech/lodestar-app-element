@@ -1,12 +1,12 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Button, Collapse } from 'antd'
+import { Collapse } from 'antd'
 import Form from 'antd/lib/form/'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
 import { useIntl } from 'react-intl'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import { craftPageMessages } from '../../helpers/translation'
 import InstructorBlock from '../blocks/InstructorBlock'
-import { AdminHeaderTitle, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, StyledCollapsePanel } from '../common'
 import ContentSelector from '../ContentSelector'
 
 const CraftInstructor: UserComponent<{
@@ -29,13 +29,12 @@ const InstructorSettings: React.VFC = () => {
   const {
     actions: { setProp },
     props,
-    selected,
   } = useNode(node => ({
     props: node.data.props,
     selected: node.events.selected,
   }))
 
-  const handleSubmit = (values: FieldProps) => setProp(props => (props.customContentIds = values.contentIds))
+  const handleChange = (values: FieldProps) => setProp(props => (props.customContentIds = values.contentIds))
 
   return (
     <Form
@@ -44,7 +43,7 @@ const InstructorSettings: React.VFC = () => {
       colon={false}
       requiredMark={false}
       initialValues={{ contentIds: props.customContentIds }}
-      onFinish={handleSubmit}
+      onValuesChange={handleChange}
     >
       <Collapse
         className="mt-2 p-0"
@@ -62,13 +61,6 @@ const InstructorSettings: React.VFC = () => {
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
-      {selected && (
-        <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" block htmlType="submit">
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

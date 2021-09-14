@@ -78,19 +78,24 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
     selected: node.events.selected,
   }))
 
-  const handleSubmit = (values: FieldProps) => {
-    setProp((props: CraftButtonProps) => {
-      props.title = values.title
-      props.link = values.link
-      props.openNewTab = values.openNewTab
-      props.size = values.size
-      props.block = values.block
-      props.variant = values.variant
-      props.color = values.color
-      props.outlineColor = values.outlineColor
-      props.backgroundColor = values.backgroundType === 'solidColor' ? values.backgroundColor : undefined
-      props.backgroundType = values.backgroundType
-    })
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        setProp((props: CraftButtonProps) => {
+          props.title = values.title
+          props.link = values.link
+          props.openNewTab = values.openNewTab
+          props.size = values.size
+          props.block = values.block
+          props.variant = values.variant
+          props.color = values.color
+          props.outlineColor = values.outlineColor
+          props.backgroundColor = values.backgroundType === 'solidColor' ? values.backgroundColor : undefined
+          props.backgroundType = values.backgroundType
+        })
+      })
+      .catch(() => {})
   }
 
   return (
@@ -111,7 +116,7 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
         backgroundColor: props.backgroundColor,
         backgroundType: props.backgroundType || 'none',
       }}
-      onFinish={handleSubmit}
+      onValuesChange={handleChange}
     >
       <Collapse
         {...collapseProps}

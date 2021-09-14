@@ -1,12 +1,12 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Button, Form } from 'antd'
+import { Form } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import { StyledParagraph } from '../../components/common'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import { craftPageMessages } from '../../helpers/translation'
 import { CraftParagraphProps, CraftTextStyleProps } from '../../types/craft'
-import { CraftRefBlock, StyledSettingButtonWrapper } from '../common'
+import { CraftRefBlock } from '../common'
 import { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
@@ -67,29 +67,32 @@ const ParagraphSettings: React.VFC = () => {
   const {
     actions: { setProp },
     props,
-    selected,
   } = useNode(node => ({
     props: node.data.props as CraftParagraphProps,
-    selected: node.events.selected,
   }))
 
-  const handleSubmit = (values: FieldProps) => {
-    const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
 
-    setProp(props => {
-      props.paragraphContent = values.paragraphContent
-      props.fontSize = values.paragraphStyle.fontSize
-      props.lineHeight = values.paragraphStyle.lineHeight
-      props.margin = {
-        mt: paragraphMargin?.[0] || '0',
-        mr: paragraphMargin?.[1] || '0',
-        mb: paragraphMargin?.[2] || '0',
-        ml: paragraphMargin?.[3] || '0',
-      }
-      props.textAlign = values.paragraphStyle.textAlign
-      props.fontWeight = values.paragraphStyle.fontWeight
-      props.color = values.paragraphStyle.color
-    })
+        setProp(props => {
+          props.paragraphContent = values.paragraphContent
+          props.fontSize = values.paragraphStyle.fontSize
+          props.lineHeight = values.paragraphStyle.lineHeight
+          props.margin = {
+            mt: paragraphMargin?.[0] || '0',
+            mr: paragraphMargin?.[1] || '0',
+            mb: paragraphMargin?.[2] || '0',
+            ml: paragraphMargin?.[3] || '0',
+          }
+          props.textAlign = values.paragraphStyle.textAlign
+          props.fontWeight = values.paragraphStyle.fontWeight
+          props.color = values.paragraphStyle.color
+        })
+      })
+      .catch(() => {})
   }
 
   return (
@@ -109,7 +112,7 @@ const ParagraphSettings: React.VFC = () => {
           color: props.color || '#585858',
         },
       }}
-      onFinish={handleSubmit}
+      onValuesChange={handleChange}
     >
       <Form.Item name="paragraphContent">
         <CraftParagraphContentBlock />
@@ -117,13 +120,6 @@ const ParagraphSettings: React.VFC = () => {
       <Form.Item name="paragraphStyle">
         <CraftTextStyleBlock type="paragraph" title={formatMessage(craftPageMessages.label.paragraphStyle)} />
       </Form.Item>
-      {selected && (
-        <StyledSettingButtonWrapper>
-          <Button className="mb-3" type="primary" htmlType="submit" block>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }
