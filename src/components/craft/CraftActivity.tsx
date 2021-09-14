@@ -1,29 +1,57 @@
+import { useApolloClient } from '@apollo/react-hooks'
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Collapse } from 'antd'
-import Form from 'antd/lib/form/'
+import { Collapse, Form } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-import React from 'react'
+import gql from 'graphql-tag'
+import React, { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
+import ActivityCollectionSelector, { ActivityCollection } from '../../components/ActivityCollectionSelector'
+import { useApp } from '../../contexts/AppContext'
+import hasura from '../../hasura'
+import { notEmpty } from '../../helpers'
 import { craftPageMessages } from '../../helpers/translation'
 import ActivityBlock from '../blocks/ActivityBlock'
 import { AdminHeaderTitle, StyledCollapsePanel } from '../common'
-import ContentSelector from '../ContentSelector'
 
 const CraftActivity: UserComponent<{
-  customContentIds?: string[]
-}> = ({ customContentIds }) => {
+  type: ActivityCollection['type']
+  ids: ActivityCollection['ids']
+}> = ({ type, ids }) => {
+  const apolloClient = useApolloClient()
+  const { id: appId } = useApp()
   const { enabled } = useEditor(state => ({
     enabled: state.options.enabled,
   }))
-  return <ActivityBlock customContentIds={customContentIds} craftEnabled={enabled} />
-}
-type FieldProps = {
-  contentIds?: string[]
+  const [activityIds, setActivityIds] = useState<string[]>([])
+  useEffect(() => {
+    if (type === 'newest') {
+      apolloClient
+        .query({
+          query: gql`
+            query GET_NEWEST_ACTIVITIES($appId: String!, $limit: Int) {
+              activity(where: { app_id: { _eq: $appId }, published_at: { _is_null: false } }, limit: $limit) {
+                id
+              }
+            }
+          `,
+          variables: {
+            appId,
+            limit: ids.length > 0 ? ids.length : undefined,
+          },
+        })
+        .then(({ data }: { data?: hasura.GET_NEWEST_ACTIVITIES }) => {
+          setActivityIds(data?.activity.map(v => v.id) || [])
+        })
+    } else {
+      setActivityIds(ids.filter(notEmpty) || [])
+    }
+  }, [type, ids, apolloClient, appId])
+  return <ActivityBlock activityIds={activityIds} craftEnabled={enabled} />
 }
 
 const ActivitySettings: React.VFC = () => {
   const { formatMessage } = useIntl()
-  const [form] = useForm<FieldProps>()
+  const [form] = useForm<{ activityCollection: ActivityCollection }>()
 
   const {
     actions: { setProp },
@@ -33,16 +61,24 @@ const ActivitySettings: React.VFC = () => {
     selected: node.events.selected,
   }))
 
-  const handleChange = (values: FieldProps) => setProp(props => (props.customContentIds = values.contentIds))
-
   return (
     <Form
       form={form}
       layout="vertical"
       colon={false}
       requiredMark={false}
-      initialValues={{ contentIds: props.customContentIds }}
-      onValuesChange={handleChange}
+      initialValues={{ activityCollection: { type: props.type, ids: props.ids } }}
+      onValuesChange={() => {
+        form
+          .validateFields()
+          .then(values => {
+            setProp(props => {
+              props.type = values.activityCollection.type
+              props.ids = values.activityCollection.ids
+            })
+          })
+          .catch(() => {})
+      }}
     >
       <Collapse
         className="mt-2 p-0"
@@ -55,8 +91,8 @@ const ActivitySettings: React.VFC = () => {
           key="displayItem"
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.specifyDisplayItem)}</AdminHeaderTitle>}
         >
-          <Form.Item name="contentIds">
-            <ContentSelector contentType="activity" />
+          <Form.Item name="activityCollection">
+            <ActivityCollectionSelector />
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>

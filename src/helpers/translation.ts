@@ -152,6 +152,7 @@ export const craftPageMessages = {
     activitySection: { id: 'craft.label.activitySection', defaultMessage: '活動區塊' },
     blockSetting: { id: 'craft.label.blockSetting', defaultMessage: '區塊樣式' },
     dataDisplay: { id: 'craft.label.dataDisplay', defaultMessage: '資料顯示' },
+    addItem: { id: 'craft.label.addItem', defaultMessage: '新增項目' },
     specifyDisplayItem: { id: 'craft.label.specifyDisplayItem', defaultMessage: '指定顯示項目' },
     choiceData: { id: 'craft.label.choiceData', defaultMessage: '選擇資料' },
     program: { id: 'craft.label.program', defaultMessage: '課程' },

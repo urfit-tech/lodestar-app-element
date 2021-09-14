@@ -4,6 +4,33 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: SEARCH_ACTIVITY
+// ====================================================
+
+export interface SEARCH_ACTIVITY_activity {
+  __typename: 'activity'
+  id: any
+  title: string
+}
+
+export interface SEARCH_ACTIVITY {
+  /**
+   * fetch data from the table: "activity"
+   */
+  activity: SEARCH_ACTIVITY_activity[]
+}
+
+export interface SEARCH_ACTIVITYVariables {
+  appId: string
+  searchText: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_PROGRAM
 // ====================================================
 
@@ -128,6 +155,32 @@ export interface GET_PRE_ORDER_PROJECT {
    * fetch data from the table: "project"
    */
   contents: GET_PRE_ORDER_PROJECT_contents[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_NEWEST_ACTIVITIES
+// ====================================================
+
+export interface GET_NEWEST_ACTIVITIES_activity {
+  __typename: 'activity'
+  id: any
+}
+
+export interface GET_NEWEST_ACTIVITIES {
+  /**
+   * fetch data from the table: "activity"
+   */
+  activity: GET_NEWEST_ACTIVITIES_activity[]
+}
+
+export interface GET_NEWEST_ACTIVITIESVariables {
+  appId: string
+  limit?: number | null
 }
 
 /* tslint:disable */
@@ -507,7 +560,7 @@ export interface GET_PUBLISHED_ACTIVITY_COLLECTION {
 }
 
 export interface GET_PUBLISHED_ACTIVITY_COLLECTIONVariables {
-  limit?: number | null
+  ids?: any[] | null
 }
 
 /* tslint:disable */
@@ -2145,6 +2198,7 @@ export interface merchandise_spec_inventory_status_bool_exp {
   merchandise_spec_id?: uuid_comparison_exp | null
   total_quantity?: bigint_comparison_exp | null
   undelivered_quantity?: bigint_comparison_exp | null
+  unpaid_quantity?: bigint_comparison_exp | null
 }
 
 /**
@@ -3543,6 +3597,7 @@ export interface project_bool_exp {
   expired_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
   introduction?: String_comparison_exp | null
+  introduction_desktop?: String_comparison_exp | null
   is_countdown_timer_visible?: Boolean_comparison_exp | null
   is_participants_visible?: Boolean_comparison_exp | null
   position?: Int_comparison_exp | null

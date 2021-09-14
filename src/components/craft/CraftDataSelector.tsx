@@ -25,7 +25,7 @@ const CraftDataSelector: UserComponent<{
   return (
     <div ref={ref => ref && connect(ref)} style={{ padding: '20px', cursor: 'pointer' }}>
       {contentType === 'program' && <ProgramBlock customContentIds={customContentIds} />}
-      {contentType === 'activity' && <ActivityBlock customContentIds={customContentIds} />}
+      {contentType === 'activity' && <ActivityBlock activityIds={customContentIds || []} />}
       {contentType === 'podcast-program' && <PodcastProgramBlock customContentIds={customContentIds} />}
       {contentType === 'creator' && appId && <InstructorBlock appId={appId} customContentIds={customContentIds} />}
       {contentType === 'funding-project' && <ProjectBlock projectType="funding" customContentIds={customContentIds} />}

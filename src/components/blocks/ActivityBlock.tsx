@@ -6,9 +6,9 @@ import { CraftRefBlock } from '../common'
 import Skeleton from '../Skeleton'
 
 const ActivityBlock: React.VFC<{
-  customContentIds?: string[]
+  activityIds: string[]
   craftEnabled?: boolean
-}> = ({ customContentIds, craftEnabled }) => {
+}> = ({ activityIds, craftEnabled }) => {
   const {
     connectors: { connect },
     selected,
@@ -16,8 +16,7 @@ const ActivityBlock: React.VFC<{
     selected: node.events.selected,
   }))
   const { loadingActivities, errorActivities, activities } = usePublishedActivityCollection({
-    ids: customContentIds,
-    limit: customContentIds?.length ? undefined : 3,
+    ids: activityIds,
   })
 
   if (loadingActivities)

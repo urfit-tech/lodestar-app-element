@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { sum } from 'ramda'
 import hasura from '../hasura'
+import { notEmpty } from '../helpers'
 import {
   ActivityProps,
   MemberPublicProps,
@@ -319,17 +320,16 @@ export const useInstructorCollection = (appId: string, options?: { ids?: string[
   }
 }
 
-export const usePublishedActivityCollection = (options?: { ids?: string[]; limit?: number }) => {
+export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
   const { loading, error, data, refetch } = useQuery<
     hasura.GET_PUBLISHED_ACTIVITY_COLLECTION,
     hasura.GET_PUBLISHED_ACTIVITY_COLLECTIONVariables
   >(
     gql`
-      query GET_PUBLISHED_ACTIVITY_COLLECTION($limit: Int) {
+      query GET_PUBLISHED_ACTIVITY_COLLECTION($ids: [uuid!]) {
         activity(
-          where: { published_at: { _is_null: false } }
+          where: { published_at: { _is_null: false }, id: { _in: $ids } }
           order_by: [{ position: asc }, { published_at: desc }]
-          limit: $limit
         ) {
           id
           cover_url
@@ -361,28 +361,31 @@ export const usePublishedActivityCollection = (options?: { ids?: string[]; limit
         }
       }
     `,
-    { variables: { limit: options?.limit } },
+    { variables: { ids: options?.ids } },
   )
 
   const activities: ActivityProps[] =
-    loading || error || !data
-      ? []
-      : data.activity
-          .filter(activity => activity.published_at && new Date(activity.published_at).getTime() < Date.now())
-          .map(activity => ({
-            id: activity.id,
-            coverUrl: activity.cover_url,
-            title: activity.title,
-            isParticipantsVisible: activity.is_participants_visible,
-            startedAt:
-              activity.activity_sessions_aggregate.aggregate?.min?.started_at &&
-              new Date(activity.activity_sessions_aggregate.aggregate.min.started_at),
-            endedAt:
-              activity.activity_sessions_aggregate.aggregate?.max?.ended_at &&
-              new Date(activity.activity_sessions_aggregate.aggregate.max.ended_at),
-            participantCount: activity.activity_enrollments_aggregate.aggregate?.count || 0,
-            totalSeats: activity.activity_tickets_aggregate.aggregate?.sum?.count || 0,
-          }))
+    options?.ids
+      .map(id => {
+        const value = data?.activity.find(v => v.id === id)
+        return value
+          ? {
+              id: value.id,
+              coverUrl: value.cover_url,
+              title: value.title,
+              isParticipantsVisible: value.is_participants_visible,
+              startedAt:
+                value.activity_sessions_aggregate.aggregate?.min?.started_at &&
+                new Date(value.activity_sessions_aggregate.aggregate.min.started_at),
+              endedAt:
+                value.activity_sessions_aggregate.aggregate?.max?.ended_at &&
+                new Date(value.activity_sessions_aggregate.aggregate.max.ended_at),
+              participantCount: value.activity_enrollments_aggregate.aggregate?.count || 0,
+              totalSeats: value.activity_tickets_aggregate.aggregate?.sum?.count || 0,
+            }
+          : null
+      })
+      .filter(notEmpty) || []
 
   return {
     loadingActivities: loading,
