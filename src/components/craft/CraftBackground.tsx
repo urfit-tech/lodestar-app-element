@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { v4 as uuid } from 'uuid'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
-import { uploadFile } from '../../helpers/index'
+import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
 import BackgroundSection from '../BackgroundSection'
@@ -80,11 +80,9 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
 
 const BackgroundSettings: React.VFC = () => {
   const { formatMessage } = useIntl()
-  const [loading, setLoading] = useState(false)
   const { authToken } = useAuth()
   const { id: appId } = useApp()
   const [form] = useForm<FieldProps>()
-
   const {
     actions: { setProp },
     props,
@@ -93,29 +91,39 @@ const BackgroundSettings: React.VFC = () => {
     props: node.data.props as CraftBackgroundProps,
     selected: node.events.selected,
   }))
+
+  const [loading, setLoading] = useState(false)
+  const [isImageUploaded, setIsImageUploaded] = useState(false)
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null)
 
-  const handleSubmit = (values: FieldProps) => {
-    const margin = formatBoxModelValue(values.margin)
-    const padding = formatBoxModelValue(values.padding)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const margin = formatBoxModelValue(values.margin)
+        const padding = formatBoxModelValue(values.padding)
 
-    setProp(props => {
-      props.backgroundType = values.backgroundType
-      props.solidColor = values.solidColor
-      props.margin = {
-        mt: margin?.[0] || '0',
-        mr: margin?.[1] || '0',
-        mb: margin?.[2] || '0',
-        ml: margin?.[3] || '0',
-      }
-      props.padding = {
-        pt: padding?.[0] || '0',
-        pr: padding?.[1] || '0',
-        pb: padding?.[2] || '0',
-        pl: padding?.[3] || '0',
-      }
-    })
+        setProp(props => {
+          props.backgroundType = values.backgroundType
+          props.solidColor = values.solidColor
+          props.margin = {
+            mt: margin?.[0] || '0',
+            mr: margin?.[1] || '0',
+            mb: margin?.[2] || '0',
+            ml: margin?.[3] || '0',
+          }
+          props.padding = {
+            pt: padding?.[0] || '0',
+            pr: padding?.[1] || '0',
+            pb: padding?.[2] || '0',
+            pl: padding?.[3] || '0',
+          }
+        })
+      })
+      .catch(() => {})
+  }
 
+  const handleImageUpload = () => {
     if (backgroundImage) {
       const uniqId = uuid()
       setLoading(true)
@@ -126,7 +134,9 @@ const BackgroundSettings: React.VFC = () => {
               backgroundImage.type.startsWith('image') ? '/1200' : ''
             }`
           })
+          setIsImageUploaded(true)
         })
+        .catch(handleError)
         .finally(() => setLoading(false))
     }
   }
@@ -146,7 +156,7 @@ const BackgroundSettings: React.VFC = () => {
           props.padding?.pl || 0
         }`,
       }}
-      onFinish={handleSubmit}
+      onChange={handleChange}
     >
       <Collapse
         className="mt-2 p-0"
@@ -161,36 +171,9 @@ const BackgroundSettings: React.VFC = () => {
         >
           <Form.Item name="backgroundType" label={formatMessage(craftPageMessages.label.background)}>
             <Radio.Group buttonStyle="solid">
-              <Radio.Button
-                value="none"
-                onChange={() =>
-                  setProp((props: FieldProps) => {
-                    props.backgroundType = 'none'
-                  })
-                }
-              >
-                {formatMessage(craftPageMessages.ui.empty)}
-              </Radio.Button>
-              <Radio.Button
-                value="solidColor"
-                onChange={() =>
-                  setProp((props: FieldProps) => {
-                    props.backgroundType = 'solidColor'
-                  })
-                }
-              >
-                {formatMessage(craftPageMessages.ui.solidColor)}
-              </Radio.Button>
-              <Radio.Button
-                value="backgroundImage"
-                onChange={() =>
-                  setProp((props: FieldProps) => {
-                    props.backgroundType = 'backgroundImage'
-                  })
-                }
-              >
-                {formatMessage(craftPageMessages.ui.image)}
-              </Radio.Button>
+              <Radio.Button value="none">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
+              <Radio.Button value="solidColor">{formatMessage(craftPageMessages.ui.solidColor)}</Radio.Button>
+              <Radio.Button value="backgroundImage">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
             </Radio.Group>
           </Form.Item>
 
@@ -206,6 +189,7 @@ const BackgroundSettings: React.VFC = () => {
                 file={backgroundImage}
                 initialCoverUrl={props.coverUrl}
                 onChange={file => {
+                  setIsImageUploaded(false)
                   setBackgroundImage(file)
                 }}
               />
@@ -248,9 +232,9 @@ const BackgroundSettings: React.VFC = () => {
         </StyledCollapsePanel>
       </Collapse>
 
-      {selected && (
+      {selected && backgroundImage && !isImageUploaded && (
         <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" block htmlType="submit">
+          <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageUpload}>
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>

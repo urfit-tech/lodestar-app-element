@@ -8,7 +8,7 @@ import { v4 as uuid } from 'uuid'
 import StyledImage from '../../components/Image'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
-import { uploadFile } from '../../helpers/index'
+import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftBoxModelProps, CraftImageProps } from '../../types/craft'
 import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
@@ -67,28 +67,35 @@ const ImageSettings: React.VFC = () => {
     selected: node.events.selected,
   }))
   const [loading, setLoading] = useState(false)
+  const [isImageUploaded, setIsImageUploaded] = useState(false)
   const [coverImage, setCoverImage] = useState<File | null>(null)
 
-  const handleSubmit = (values: FieldProps) => {
-    const margin = formatBoxModelValue(values.margin)
-    const padding = formatBoxModelValue(values.padding)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const margin = formatBoxModelValue(values.margin)
+        const padding = formatBoxModelValue(values.padding)
 
-    setProp(props => {
-      props.type = values.type
-      props.margin = {
-        mt: margin?.[0] || '0',
-        mr: margin?.[1] || '0',
-        mb: margin?.[2] || '0',
-        ml: margin?.[3] || '0',
-      }
-      props.padding = {
-        pt: padding?.[0] || '0',
-        pr: padding?.[1] || '0',
-        pb: padding?.[2] || '0',
-        pl: padding?.[3] || '0',
-      }
-    })
+        setProp(props => {
+          props.margin = {
+            mt: margin?.[0] || '0',
+            mr: margin?.[1] || '0',
+            mb: margin?.[2] || '0',
+            ml: margin?.[3] || '0',
+          }
+          props.padding = {
+            pt: padding?.[0] || '0',
+            pr: padding?.[1] || '0',
+            pb: padding?.[2] || '0',
+            pl: padding?.[3] || '0',
+          }
+        })
+      })
+      .catch(() => {})
+  }
 
+  const handleImageUpload = () => {
     if (coverImage) {
       const uniqId = uuid()
       setLoading(true)
@@ -99,7 +106,9 @@ const ImageSettings: React.VFC = () => {
               coverImage.type.startsWith('image') ? '/1200' : ''
             }`
           })
+          setIsImageUploaded(true)
         })
+        .catch(handleError)
         .finally(() => setLoading(false))
     }
   }
@@ -117,7 +126,7 @@ const ImageSettings: React.VFC = () => {
           props.padding?.pl || 0
         }`,
       }}
-      onFinish={handleSubmit}
+      onChange={handleChange}
     >
       <Collapse
         className="mt-2 p-0"
@@ -135,6 +144,7 @@ const ImageSettings: React.VFC = () => {
               file={coverImage}
               initialCoverUrl={props.coverUrl}
               onChange={file => {
+                setIsImageUploaded(false)
                 setCoverImage(file)
               }}
             />
@@ -174,9 +184,9 @@ const ImageSettings: React.VFC = () => {
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
-      {selected && (
+      {selected && coverImage && !isImageUploaded && (
         <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" block htmlType="submit">
+          <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageUpload}>
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>

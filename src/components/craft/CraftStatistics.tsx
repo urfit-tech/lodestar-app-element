@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { v4 as uuid } from 'uuid'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
-import { uploadFile } from '../../helpers/index'
+import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import {
   CraftBoxModelProps,
@@ -142,55 +142,64 @@ const StatisticsSettings: React.VFC = () => {
     props: node.data.props as CraftBoxModelProps & CraftStatisticsProps,
     selected: node.events.selected,
   }))
+  const [isImageUploaded, setIsImageUploaded] = useState(false)
   const [coverImage, setCoverImage] = useState<File | null>(null)
 
-  const handleSubmit = (values: FieldProps) => {
-    const padding = formatBoxModelValue(values.padding)
-    const margin = formatBoxModelValue(values.margin)
-    const titleMargin = formatBoxModelValue(values.titleStyle.margin)
-    const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const padding = formatBoxModelValue(values.padding)
+        const margin = formatBoxModelValue(values.margin)
+        const titleMargin = formatBoxModelValue(values.titleStyle.margin)
+        const paragraphMargin = formatBoxModelValue(values.paragraphStyle.margin)
 
-    setProp(props => {
-      props.type = values.type
-      props.padding = {
-        pt: padding?.[0] || '0',
-        pr: padding?.[1] || '0',
-        pb: padding?.[2] || '0',
-        pl: padding?.[3] || '0',
-      }
-      props.margin = {
-        mt: margin?.[0] || '0',
-        mr: margin?.[1] || '0',
-        mb: margin?.[2] || '0',
-        ml: margin?.[3] || '0',
-      }
-      props.title = {
-        titleContent: values.titleContent,
-        fontSize: values.titleStyle.fontSize,
-        margin: {
-          mt: titleMargin?.[0] || '0',
-          mr: titleMargin?.[1] || '0',
-          mb: titleMargin?.[2] || '0',
-          ml: titleMargin?.[3] || '0',
-        },
-        textAlign: values.titleStyle.textAlign,
-        fontWeight: values.titleStyle.fontWeight,
-        color: values.titleStyle.color,
-      }
-      props.paragraph = {
-        paragraphContent: values.paragraphContent,
-        fontSize: values.paragraphStyle.fontSize,
-        margin: {
-          mt: paragraphMargin?.[0] || '0',
-          mr: paragraphMargin?.[1] || '0',
-          mb: paragraphMargin?.[2] || '0',
-          ml: paragraphMargin?.[3] || '0',
-        },
-        textAlign: values.paragraphStyle.textAlign,
-        fontWeight: values.paragraphStyle.fontWeight,
-        color: values.paragraphStyle.color,
-      }
-    })
+        setProp(props => {
+          props.type = values.type
+          props.padding = {
+            pt: padding?.[0] || '0',
+            pr: padding?.[1] || '0',
+            pb: padding?.[2] || '0',
+            pl: padding?.[3] || '0',
+          }
+          props.margin = {
+            mt: margin?.[0] || '0',
+            mr: margin?.[1] || '0',
+            mb: margin?.[2] || '0',
+            ml: margin?.[3] || '0',
+          }
+          props.title = {
+            titleContent: values.titleContent,
+            fontSize: values.titleStyle.fontSize,
+            margin: {
+              mt: titleMargin?.[0] || '0',
+              mr: titleMargin?.[1] || '0',
+              mb: titleMargin?.[2] || '0',
+              ml: titleMargin?.[3] || '0',
+            },
+            textAlign: values.titleStyle.textAlign,
+            fontWeight: values.titleStyle.fontWeight,
+            color: values.titleStyle.color,
+          }
+          props.paragraph = {
+            paragraphContent: values.paragraphContent,
+            fontSize: values.paragraphStyle.fontSize,
+            margin: {
+              mt: paragraphMargin?.[0] || '0',
+              mr: paragraphMargin?.[1] || '0',
+              mb: paragraphMargin?.[2] || '0',
+              ml: paragraphMargin?.[3] || '0',
+            },
+            textAlign: values.paragraphStyle.textAlign,
+            fontWeight: values.paragraphStyle.fontWeight,
+            color: values.paragraphStyle.color,
+          }
+        })
+      })
+      .catch(() => {})
+  }
+
+  const handleImageUpload = () => {
     if (coverImage) {
       const uniqId = uuid()
       setLoading(true)
@@ -201,7 +210,9 @@ const StatisticsSettings: React.VFC = () => {
               coverImage.type.startsWith('image') ? '/100' : ''
             }`
           })
+          setIsImageUploaded(true)
         })
+        .catch(handleError)
         .finally(() => setLoading(false))
     }
   }
@@ -241,7 +252,7 @@ const StatisticsSettings: React.VFC = () => {
           color: props.paragraph.color || '#585858',
         },
       }}
-      onFinish={handleSubmit}
+      onChange={handleChange}
     >
       <Collapse
         className="mt-2 p-0"
@@ -256,26 +267,8 @@ const StatisticsSettings: React.VFC = () => {
         >
           <Form.Item name="type">
             <Radio.Group buttonStyle="solid">
-              <Radio.Button
-                value="empty"
-                onChange={() =>
-                  setProp((props: CraftStatisticsProps) => {
-                    props.type = 'empty'
-                  })
-                }
-              >
-                {formatMessage(craftPageMessages.ui.empty)}
-              </Radio.Button>
-              <Radio.Button
-                value="image"
-                onChange={() =>
-                  setProp((props: CraftStatisticsProps) => {
-                    props.type = 'image'
-                  })
-                }
-              >
-                {formatMessage(craftPageMessages.ui.image)}
-              </Radio.Button>
+              <Radio.Button value="empty">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
+              <Radio.Button value="image">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
             </Radio.Group>
           </Form.Item>
           {props.type === 'image' && (
@@ -284,6 +277,7 @@ const StatisticsSettings: React.VFC = () => {
                 file={coverImage}
                 initialCoverUrl={props.coverUrl}
                 onChange={file => {
+                  setIsImageUploaded(false)
                   setCoverImage(file)
                 }}
               />
@@ -344,9 +338,9 @@ const StatisticsSettings: React.VFC = () => {
       <Form.Item name="paragraphStyle">
         <CraftTextStyleBlock type="paragraph" title={formatMessage(craftPageMessages.label.paragraphStyle)} />
       </Form.Item>
-      {selected && (
+      {selected && coverImage && !isImageUploaded && (
         <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" block htmlType="submit">
+          <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageUpload}>
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>
