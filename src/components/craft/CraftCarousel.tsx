@@ -159,11 +159,11 @@ const CarouselSettings: React.VFC = () => {
     props: node.data.props as CraftCarouselProps,
     selected: node.events.selected,
   }))
-
+  const [isImagesUploaded, setIsImagesUploaded] = useState(false)
   const [desktopCover, setDesktopCover] = useState<File[]>([])
   const [mobileCover, setMobileCover] = useState<File[]>([])
 
-  const handleAsyncSubmit = async (values: FieldProps) => {
+  const handleChange = (values: FieldProps) => {
     const titleMargin = formatBoxModelValue(values.titleStyle?.margin)
     const paragraphMargin = formatBoxModelValue(values.paragraphStyle?.margin)
 
@@ -195,7 +195,9 @@ const CarouselSettings: React.VFC = () => {
         color: values.paragraphStyle?.color,
       }
     })
+  }
 
+  const handleImageAsyncUpload = async () => {
     if (desktopCover.length || mobileCover.length) {
       setLoading(true)
       try {
@@ -227,13 +229,13 @@ const CarouselSettings: React.VFC = () => {
             }/images/${appId}/craft/${uniqId}${file.type.startsWith('image') ? '/1200' : ''}`
           })
         }
+        setIsImagesUploaded(true)
       } catch (error) {
         handleError(error)
       }
       setLoading(false)
     }
   }
-
   return (
     <Form
       form={form}
@@ -268,7 +270,7 @@ const CarouselSettings: React.VFC = () => {
         },
       }}
       colon={false}
-      onFinish={handleAsyncSubmit}
+      onValuesChange={handleChange}
     >
       <Form.List name="covers">
         {(fields, { add, remove }) => (
@@ -341,6 +343,7 @@ const CarouselSettings: React.VFC = () => {
                         file={desktopCover ? desktopCover[index] : null}
                         initialCoverUrl={props.covers[index]?.desktopCoverUrl || ''}
                         onChange={file => {
+                          setIsImagesUploaded(false)
                           setDesktopCover(cover => {
                             const coverClone = cover.slice()
                             coverClone[index] = file
@@ -363,6 +366,7 @@ const CarouselSettings: React.VFC = () => {
                         file={mobileCover ? mobileCover[index] : null}
                         initialCoverUrl={props.covers[index]?.mobileCoverUrl || ''}
                         onChange={file => {
+                          setIsImagesUploaded(false)
                           setMobileCover(cover => {
                             const coverClone = cover.slice()
                             coverClone[index] = file
@@ -408,9 +412,9 @@ const CarouselSettings: React.VFC = () => {
           </Form.Item>
         </>
       )}
-      {selected && (
+      {selected && (desktopCover.length || mobileCover.length) && !isImagesUploaded && (
         <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" htmlType="submit" block>
+          <Button loading={loading} className="mb-3" type="primary" onClick={handleImageAsyncUpload} block>
             {formatMessage(commonMessages.ui.save)}
           </Button>
         </StyledSettingButtonWrapper>
