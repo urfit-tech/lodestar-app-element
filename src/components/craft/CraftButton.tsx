@@ -1,18 +1,17 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Button as AntdButton, Checkbox, Form, Input, Radio, Space } from 'antd'
+import { Checkbox, Form, Input, Radio, Space } from 'antd'
 import Collapse, { CollapseProps } from 'antd/lib/collapse'
 import { useForm } from 'antd/lib/form/Form'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import Button from '../../components/Button'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import { craftPageMessages } from '../../helpers/translation'
 import { CraftButtonProps } from '../../types/craft'
 import {
   AdminHeaderTitle,
   CraftSelectedMixin,
   StyledCollapsePanel,
   StyledCraftSettingLabel,
-  StyledSettingButtonWrapper,
   StyledUnderLineInput,
 } from '../common'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
@@ -238,13 +237,6 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
       <Form.Item name="backgroundColor" noStyle={props.variant !== 'solid' && props.backgroundType !== 'solidColor'}>
         {props.variant === 'solid' && props.backgroundType === 'solidColor' && <CraftColorPickerBlock />}
       </Form.Item>
-      {selected && (
-        <StyledSettingButtonWrapper>
-          <AntdButton className="mb-3" type="primary" block htmlType="submit">
-            {formatMessage(commonMessages.ui.save)}
-          </AntdButton>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }
