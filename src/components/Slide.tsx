@@ -8,7 +8,7 @@ const SliderWrapper = styled.div`
   padding-top: 70%;
 
   @media (min-width: 992px) {
-    padding-top: 36%;
+    padding-top: 32%;
   }
 `
 
