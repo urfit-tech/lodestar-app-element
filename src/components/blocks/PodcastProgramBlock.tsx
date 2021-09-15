@@ -12,8 +12,10 @@ const PodcastProgramBlock: React.VFC<{
   const {
     connectors: { connect },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
   const { loadingPodcastPrograms, errorPodcastPrograms, podcastPrograms } = usePublishedPodcastProgramCollection({
     ids: customContentIds,
@@ -39,6 +41,7 @@ const PodcastProgramBlock: React.VFC<{
           style={{
             width: '100%',
           }}
+          hovered={hovered}
           enabled={craftEnabled}
           selected={selected}
         >

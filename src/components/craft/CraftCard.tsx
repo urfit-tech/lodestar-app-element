@@ -109,14 +109,17 @@ const CraftCard: UserComponent<CraftCardProps> = ({
   const {
     connectors: { connect, drag },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
 
   return (
     <CraftRefBlock
       ref={ref => ref && connect(drag(ref))}
       style={{ padding: type === 'referrer' ? '10px' : undefined, ...(enabled ? { cursor: 'pointer' } : {}) }}
+      hovered={hovered}
       enabled={enabled}
       selected={selected}
     >

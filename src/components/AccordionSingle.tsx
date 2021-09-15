@@ -49,7 +49,6 @@ const StyledAccordion = styled.article<{ titleHeight: number; customStyle: CardP
   border-radius: 4px;
   padding: 1.25rem;
   overflow: hidden;
-  background-color: var(--gray-lighter);
 
   && {
     ${generateCustomCardStyle}
@@ -66,11 +65,10 @@ const StyledAccordion = styled.article<{ titleHeight: number; customStyle: CardP
         background-position: center;
       `}
     ${props =>
-      props.customStyle.bordered && props.customStyle.borderColor
-        ? css`
-            border: 1px solid ${props.customStyle.borderColor};
-          `
-        : ''}
+      props.customStyle.bordered &&
+      css`
+        border: ${props.customStyle.borderColor ? `1px solid ${props.customStyle.borderColor}` : 'none'};
+      `}
   }
 `
 
@@ -97,7 +95,9 @@ const Accordion: React.FC<{
         onClick={() => setAsActive(active => !active)}
         className="d-flex justify-content-between align-items-center"
       >
-        <StyledTitle customStyle={customStyle.title}>{title}</StyledTitle>
+        <StyledTitle className="flex-grow-1" customStyle={customStyle.title}>
+          {title}
+        </StyledTitle>
         <StyledAction isActive={isActive}>
           <AngleRightIcon />
         </StyledAction>

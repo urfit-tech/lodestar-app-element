@@ -20,8 +20,10 @@ const CraftContainer: UserComponent<{
   const {
     connectors: { connect, drag },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
 
   return (
@@ -31,6 +33,7 @@ const CraftContainer: UserComponent<{
         margin: `${margin.mt}px ${margin.mr}px ${margin.mb}px ${margin.ml}px`,
         padding: padding && `${padding.pt}px ${padding.pr}px ${padding.pb}px ${padding.pl}px`,
       }}
+      hovered={hovered}
       selected={selected}
       enabled={enabled}
     >
@@ -88,7 +91,6 @@ const ContainerSettings: React.VFC = () => {
           props.padding?.pl || 0
         }`,
       }}
-      onValuesChange={handleChange}
     >
       <Collapse className="mt-2 p-0" bordered={false} expandIconPosition="right" ghost defaultActiveKey={['container']}>
         <StyledCollapsePanel
@@ -106,7 +108,7 @@ const ContainerSettings: React.VFC = () => {
               },
             ]}
           >
-            <CraftBoxModelInput />
+            <CraftBoxModelInput onChange={handleChange} />
           </Form.Item>
           <Form.Item
             name="padding"
@@ -119,7 +121,7 @@ const ContainerSettings: React.VFC = () => {
               },
             ]}
           >
-            <CraftBoxModelInput />
+            <CraftBoxModelInput onChange={handleChange} />
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>

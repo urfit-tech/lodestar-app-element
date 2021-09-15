@@ -69,8 +69,10 @@ const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph
   const {
     connectors: { connect, drag },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
 
   return (

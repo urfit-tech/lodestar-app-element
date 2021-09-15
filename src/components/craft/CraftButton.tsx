@@ -42,8 +42,10 @@ const CraftButton: UserComponent<CraftButtonProps> = ({
   const {
     connectors: { connect, drag },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
 
   return (
@@ -71,7 +73,6 @@ const ButtonSetting: React.VFC<CollapseProps> = ({ ...collapseProps }) => {
   const {
     actions: { setProp },
     props,
-    selected,
   } = useNode(node => ({
     props: node.data.props as CraftButtonProps,
     selected: node.events.selected,

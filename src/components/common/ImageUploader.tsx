@@ -85,7 +85,7 @@ const ImageUploader: React.FC<{
         <FileUploader
           renderTrigger={({ onClick }) => (
             <StyledButton icon={<UploadOutlined />} onClick={onClick}>
-              {formatMessage(commonMessages.ui.uploadImage)}
+              {formatMessage(commonMessages.ui.selectImage)}
             </StyledButton>
           )}
           accept="image/*"

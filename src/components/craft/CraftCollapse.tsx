@@ -65,16 +65,18 @@ const CraftCollapse: UserComponent<CraftCollapseProps> = ({
   const {
     connectors: { connect, drag },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} hovered={hovered} enabled={enabled} selected={selected}>
       <Accordion
         customStyle={{
           card: {
-            bordered: variant === 'outline',
+            bordered: variant !== 'none',
             shadow: false,
             borderColor: outlineColor,
             backgroundColor: variant !== 'none' && backgroundType === 'solidColor' ? solidColor : undefined,
@@ -235,7 +237,7 @@ const CollapseSettings: React.VFC = () => {
           color: props.paragraphStyle.color || '#585858',
         },
       }}
-      onChange={handleChange}
+      onValuesChange={handleChange}
     >
       <Form.Item name="title">
         <CraftTitleContentBlock />
@@ -256,10 +258,10 @@ const CollapseSettings: React.VFC = () => {
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.cardStyle)}</AdminHeaderTitle>}
         >
           <Form.Item name="cardMargin" label={formatMessage(craftPageMessages.label.margin)}>
-            <CraftBoxModelInput />
+            <CraftBoxModelInput onChange={handleChange} />
           </Form.Item>
           <Form.Item name="cardPadding" label={formatMessage(craftPageMessages.label.padding)}>
-            <CraftBoxModelInput />
+            <CraftBoxModelInput onChange={handleChange} />
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
@@ -274,30 +276,36 @@ const CollapseSettings: React.VFC = () => {
         </Radio.Group>
       </Form.Item>
 
-      {props.variant === 'outline' && (
-        <Form.Item name="outlineColor">
-          <CraftColorPickerBlock />
-        </Form.Item>
-      )}
+      <Form.Item name="outlineColor" noStyle={props.variant !== 'outline'}>
+        {props.variant === 'outline' && <CraftColorPickerBlock />}
+      </Form.Item>
 
-      {props.variant === 'backgroundColor' && (
-        <Form.Item name="backgroundType" label={formatMessage(craftPageMessages.label.background)}>
+      <Form.Item
+        name="backgroundType"
+        label={formatMessage(craftPageMessages.label.background)}
+        noStyle={props.variant !== 'backgroundColor'}
+      >
+        {props.variant === 'backgroundColor' && (
           <Radio.Group buttonStyle="solid">
             <Radio.Button value="none">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
             <Radio.Button value="solidColor">{formatMessage(craftPageMessages.ui.solidColor)}</Radio.Button>
             <Radio.Button value="backgroundImage">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
           </Radio.Group>
-        </Form.Item>
-      )}
+        )}
+      </Form.Item>
 
-      {props.variant === 'backgroundColor' && props.backgroundType === 'solidColor' && (
-        <Form.Item name="solidColor">
-          <CraftColorPickerBlock />
-        </Form.Item>
-      )}
+      <Form.Item
+        name="solidColor"
+        noStyle={props.variant !== 'backgroundColor' || props.backgroundType !== 'solidColor'}
+      >
+        {props.variant === 'backgroundColor' && props.backgroundType === 'solidColor' && <CraftColorPickerBlock />}
+      </Form.Item>
 
-      {props.variant === 'backgroundColor' && props.backgroundType === 'backgroundImage' && (
-        <Form.Item name="backgroundImage">
+      <Form.Item
+        name="backgroundImage"
+        noStyle={props.variant !== 'backgroundColor' || props.backgroundType !== 'backgroundImage'}
+      >
+        {props.variant === 'backgroundColor' && props.backgroundType === 'backgroundImage' && (
           <ImageUploader
             file={backgroundImage}
             initialCoverUrl={props.backgroundImageUrl}
@@ -306,8 +314,8 @@ const CollapseSettings: React.VFC = () => {
               setBackgroundImage(file)
             }}
           />
-        </Form.Item>
-      )}
+        )}
+      </Form.Item>
       {selected && backgroundImage && !isImageUploaded && (
         <StyledSettingButtonWrapper>
           <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageUpload}>

@@ -52,8 +52,10 @@ const InstructorBlock: React.FC<{
   const {
     connectors: { connect },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
   const { loadingInstructors, errorInstructors, instructors } = useInstructorCollection(appId, {
     ids: customContentIds,

@@ -32,7 +32,6 @@ const ProjectSettings: React.VFC = () => {
     props,
   } = useNode(node => ({
     props: node.data.props,
-    selected: node.events.selected,
   }))
 
   const handleChange = (values: FieldProps) => setProp(props => (props.customContentIds = values.contentIds))

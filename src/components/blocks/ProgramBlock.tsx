@@ -12,8 +12,10 @@ const ProgramBlock: React.VFC<{
   const {
     connectors: { connect },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
   const { loadingPrograms, errorPrograms, programs } = usePublishedProgramCollection({
     limit: customContentIds === undefined ? 3 : undefined,
@@ -39,6 +41,7 @@ const ProgramBlock: React.VFC<{
           style={{
             width: '100%',
           }}
+          hovered={hovered}
           enabled={craftEnabled}
           selected={selected}
         >

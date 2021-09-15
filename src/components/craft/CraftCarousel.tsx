@@ -85,13 +85,15 @@ const CraftCarousel: UserComponent<CraftCarouselProps> = ({ type, covers, titleS
   const {
     connectors: { connect, drag },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
   const history = useHistory()
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} hovered={hovered} enabled={enabled} selected={selected}>
       <Carousel dots infinite arrows={false} autoplay autoplaySpeed={5000} variant="cover">
         {covers.map(cover => (
           <Carousel.Slide

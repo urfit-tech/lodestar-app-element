@@ -12,8 +12,10 @@ const ActivityBlock: React.VFC<{
   const {
     connectors: { connect },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
   const { loadingActivities, errorActivities, activities } = usePublishedActivityCollection({
     ids: activityIds,
@@ -38,6 +40,7 @@ const ActivityBlock: React.VFC<{
           style={{
             width: '100%',
           }}
+          hovered={hovered}
           enabled={craftEnabled}
           selected={selected}
         >

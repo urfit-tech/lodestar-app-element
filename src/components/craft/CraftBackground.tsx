@@ -12,7 +12,7 @@ import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
 import BackgroundSection from '../BackgroundSection'
-import { AdminHeaderTitle, CraftSelectedMixin, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftSelectedMixin, StyledCollapsePanel } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
@@ -51,8 +51,10 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
   const {
     connectors: { connect, drag },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
 
   return (
@@ -156,7 +158,7 @@ const BackgroundSettings: React.VFC = () => {
           props.padding?.pl || 0
         }`,
       }}
-      onChange={handleChange}
+      onValuesChange={handleChange}
     >
       <Collapse
         className="mt-2 p-0"
@@ -177,24 +179,29 @@ const BackgroundSettings: React.VFC = () => {
             </Radio.Group>
           </Form.Item>
 
-          {props.backgroundType === 'solidColor' && (
-            <Form.Item name="solidColor">
-              <CraftColorPickerBlock />
-            </Form.Item>
-          )}
+          <Form.Item name="solidColor" noStyle={props.backgroundType !== 'solidColor'}>
+            {props.backgroundType === 'solidColor' && <CraftColorPickerBlock />}
+          </Form.Item>
 
-          {props.backgroundType === 'backgroundImage' && (
-            <Form.Item name="backgroundImage">
-              <ImageUploader
-                file={backgroundImage}
-                initialCoverUrl={props.coverUrl}
-                onChange={file => {
-                  setIsImageUploaded(false)
-                  setBackgroundImage(file)
-                }}
-              />
-            </Form.Item>
-          )}
+          <Form.Item name="backgroundImage" noStyle={props.backgroundType !== 'backgroundImage'}>
+            {props.backgroundType === 'backgroundImage' && (
+              <div className="d-flex align-items-center">
+                <ImageUploader
+                  file={backgroundImage}
+                  initialCoverUrl={props.coverUrl}
+                  onChange={file => {
+                    setIsImageUploaded(false)
+                    setBackgroundImage(file)
+                  }}
+                />
+                {selected && backgroundImage && !isImageUploaded && (
+                  <Button loading={loading} className="ml-3 mb-3" type="primary" onClick={handleImageUpload}>
+                    {formatMessage(commonMessages.ui.upload)}
+                  </Button>
+                )}
+              </div>
+            )}
+          </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
 
@@ -214,7 +221,7 @@ const BackgroundSettings: React.VFC = () => {
               },
             ]}
           >
-            <CraftBoxModelInput />
+            <CraftBoxModelInput onChange={handleChange} />
           </Form.Item>
           <Form.Item
             name="padding"
@@ -227,18 +234,10 @@ const BackgroundSettings: React.VFC = () => {
               },
             ]}
           >
-            <CraftBoxModelInput />
+            <CraftBoxModelInput onChange={handleChange} />
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
-
-      {selected && backgroundImage && !isImageUploaded && (
-        <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageUpload}>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

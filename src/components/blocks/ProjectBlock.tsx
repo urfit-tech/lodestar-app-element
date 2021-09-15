@@ -15,8 +15,10 @@ const ProjectBlock: React.VFC<{
   const {
     connectors: { connect },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
   const { loadingProjects, errorProjects, projects } = useProjectCollection({
     projectType,
@@ -44,6 +46,7 @@ const ProjectBlock: React.VFC<{
           style={{
             width: '100%',
           }}
+          hovered={hovered}
           enabled={craftEnabled}
           selected={selected}
         >

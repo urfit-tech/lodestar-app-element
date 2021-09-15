@@ -24,6 +24,8 @@ export const commonMessages = {
   }),
   ui: defineMessages({
     uploadImage: { id: 'common.ui.uploadImage', defaultMessage: '上傳圖片' },
+    upload: { id: 'common.ui.upload', defaultMessage: '上傳' },
+    selectImage: { id: 'common.ui.selectImage', defaultMessage: '選擇圖片' },
     save: { id: 'common.ui.save', defaultMessage: '儲存' },
   }),
 }
@@ -200,7 +202,7 @@ export const craftPageMessages = {
     },
     boxModelInputWarning: {
       id: 'craft.text.boxModelInputWarning',
-      defaultMessage: '請填入以下格式，5;3;5;3;',
+      defaultMessage: '請填入以下格式，5;3;5;3',
     },
   }),
 }

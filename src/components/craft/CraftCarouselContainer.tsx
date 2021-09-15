@@ -51,8 +51,10 @@ const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mo
   const {
     connectors: { connect, drag },
     selected,
+    hovered,
   } = useNode(node => ({
     selected: node.events.selected,
+    hovered: node.events.hovered,
   }))
 
   let child = children
@@ -64,7 +66,7 @@ const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mo
   }
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} selected={selected} enabled={enabled}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} hovered={hovered} selected={selected} enabled={enabled}>
       <Carousel
         dots
         infinite
