@@ -414,7 +414,7 @@ const CarouselSettings: React.VFC = () => {
           </Form.Item>
         </>
       )}
-      {selected && (desktopCover.length || mobileCover.length) && !isImagesUploaded && (
+      {selected && !!(desktopCover.length || mobileCover.length) && !isImagesUploaded && (
         <StyledSettingButtonWrapper>
           <Button loading={loading} className="mb-3" type="primary" onClick={handleImageAsyncUpload} block>
             {formatMessage(commonMessages.ui.save)}

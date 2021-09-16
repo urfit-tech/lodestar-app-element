@@ -3,7 +3,7 @@ import { Button, Collapse, Form, Radio } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { v4 as uuid } from 'uuid'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
@@ -16,16 +16,7 @@ import {
   CraftTextStyleProps,
   CraftTitleProps,
 } from '../../types/craft'
-import { MarginProps, PaddingProps } from '../../types/style'
-import {
-  AdminHeaderTitle,
-  CraftHoveredMixin,
-  CraftSelectedMixin,
-  generateCustomMarginStyle,
-  generateCustomPaddingStyle,
-  StyledCollapsePanel,
-  StyledSettingButtonWrapper,
-} from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import Stat from '../Stat'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
@@ -33,30 +24,16 @@ import CraftParagraphContentBlock from './CraftParagraphContentBlock'
 import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
 
-const StatisticsWrapper = styled.div<{
-  customStyle: MarginProps & PaddingProps
-  craftEvents?: {
-    hovered?: boolean
-    selected?: boolean
-  }
-}>`
-  ${props =>
-    css`
-      cursor: pointer;
-      ${props?.craftEvents?.hovered && CraftHoveredMixin}
-      ${props?.craftEvents?.selected && CraftSelectedMixin}
-    `}
+const StatisticsWrapper = styled.div`
   width: fit-content;
   text-align: center;
-  ${generateCustomMarginStyle}
-  ${generateCustomPaddingStyle}
 `
 
 type CraftStatisticsProps = CraftImageProps &
   CraftBoxModelProps & { title: CraftTitleProps; paragraph: CraftParagraphProps }
 
 type FieldProps = {
-  type: string
+  type: CraftImageProps['type']
   padding: string
   margin: string
   titleContent: string
@@ -69,7 +46,14 @@ type FieldProps = {
   }
 }
 
-const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph, padding, margin, coverUrl }) => {
+const CraftStatistics: UserComponent<CraftStatisticsProps> = ({
+  type,
+  title,
+  paragraph,
+  padding,
+  margin,
+  coverUrl,
+}) => {
   const { enabled } = useEditor(state => ({
     enabled: state.options.enabled,
   }))
@@ -83,55 +67,44 @@ const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph
   }))
 
   return (
-    <StatisticsWrapper
-      ref={ref => ref && connect(drag(ref))}
-      customStyle={{
-        ...padding,
-        ...margin,
-      }}
-      craftEvents={enabled ? { hovered, selected } : {}}
-    >
-      <Stat.Image
-        style={{
-          display: 'inline-block',
-        }}
-        src={coverUrl}
-        customStyle={{
-          mt: '0',
-          mb: '24',
-          mr: '0',
-          ml: '0',
-          pt: '0',
-          pb: '0',
-          pr: '0',
-          pl: '0',
-        }}
-      />
-      <Stat.Digit
-        customStyle={{
-          textAlign: title.textAlign || 'center',
-          fontSize: title.fontSize || '20',
-          fontWeight: title.fontWeight || 'normal',
-          color: title.color || '#585858',
-          mb: '16',
-          ...title.margin,
-        }}
-      >
-        {title.titleContent}
-      </Stat.Digit>
-      <Stat.Content
-        customStyle={{
-          textAlign: paragraph.textAlign || 'center',
-          fontSize: paragraph.fontSize || '20',
-          fontWeight: paragraph.fontWeight || 'normal',
-          lineHeight: paragraph.lineHeight || 1,
-          color: paragraph.color || '#585858',
-          ...paragraph.margin,
-        }}
-      >
-        {paragraph.paragraphContent}
-      </Stat.Content>
-    </StatisticsWrapper>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} options={{ enabled }} events={{ hovered, selected }}>
+      <StatisticsWrapper>
+        <Stat.Image
+          style={{
+            display: type === 'image' ? 'inline-block' : 'none',
+          }}
+          src={coverUrl}
+          customStyle={{
+            ...padding,
+            ...margin,
+          }}
+        />
+        <Stat.Digit
+          customStyle={{
+            textAlign: title.textAlign || 'center',
+            fontSize: title.fontSize || '20',
+            fontWeight: title.fontWeight || 'normal',
+            color: title.color || '#585858',
+            mb: '16',
+            ...title.margin,
+          }}
+        >
+          {title.titleContent}
+        </Stat.Digit>
+        <Stat.Content
+          customStyle={{
+            textAlign: paragraph.textAlign || 'center',
+            fontSize: paragraph.fontSize || '20',
+            fontWeight: paragraph.fontWeight || 'normal',
+            lineHeight: paragraph.lineHeight || 1,
+            color: paragraph.color || '#585858',
+            ...paragraph.margin,
+          }}
+        >
+          {paragraph.paragraphContent}
+        </Stat.Content>
+      </StatisticsWrapper>
+    </CraftRefBlock>
   )
 }
 
@@ -260,7 +233,7 @@ const StatisticsSettings: React.VFC = () => {
           color: props.paragraph.color || '#585858',
         },
       }}
-      onChange={handleChange}
+      onValuesChange={handleChange}
     >
       <Collapse
         className="mt-2 p-0"
@@ -281,14 +254,21 @@ const StatisticsSettings: React.VFC = () => {
           </Form.Item>
           {props.type === 'image' && (
             <Form.Item name="coverImage">
-              <ImageUploader
-                file={coverImage}
-                initialCoverUrl={props.coverUrl}
-                onChange={file => {
-                  setIsImageUploaded(false)
-                  setCoverImage(file)
-                }}
-              />
+              <div className="d-flex align-items-center">
+                <ImageUploader
+                  file={coverImage}
+                  initialCoverUrl={props.coverUrl}
+                  onChange={file => {
+                    setIsImageUploaded(false)
+                    setCoverImage(file)
+                  }}
+                />
+                {selected && coverImage && !isImageUploaded && (
+                  <Button loading={loading} className="ml-3 mb-3" type="primary" block onClick={handleImageUpload}>
+                    {formatMessage(commonMessages.ui.save)}
+                  </Button>
+                )}
+              </div>
             </Form.Item>
           )}
         </StyledCollapsePanel>
@@ -299,11 +279,11 @@ const StatisticsSettings: React.VFC = () => {
           bordered={false}
           expandIconPosition="right"
           ghost
-          defaultActiveKey={['container']}
+          defaultActiveKey={['imageStyle']}
         >
           <StyledCollapsePanel
-            key="container"
-            header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.containerComponent)}</AdminHeaderTitle>}
+            key="imageStyle"
+            header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.imageStyle)}</AdminHeaderTitle>}
           >
             <Form.Item
               name="margin"
@@ -316,7 +296,7 @@ const StatisticsSettings: React.VFC = () => {
                 },
               ]}
             >
-              <CraftBoxModelInput />
+              <CraftBoxModelInput onChange={handleChange} />
             </Form.Item>
             <Form.Item
               name="padding"
@@ -329,7 +309,7 @@ const StatisticsSettings: React.VFC = () => {
                 },
               ]}
             >
-              <CraftBoxModelInput />
+              <CraftBoxModelInput onChange={handleChange} />
             </Form.Item>
           </StyledCollapsePanel>
         </Collapse>
@@ -346,13 +326,6 @@ const StatisticsSettings: React.VFC = () => {
       <Form.Item name="paragraphStyle">
         <CraftTextStyleBlock type="paragraph" title={formatMessage(craftPageMessages.label.paragraphStyle)} />
       </Form.Item>
-      {selected && coverImage && !isImageUploaded && (
-        <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageUpload}>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

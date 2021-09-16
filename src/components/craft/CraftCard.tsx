@@ -11,7 +11,7 @@ import { uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import Card from '../Card'
-import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
@@ -125,7 +125,7 @@ const CraftCard: UserComponent<CraftCardProps> = ({
       <Card
         customStyle={{
           direction: flexDirection || 'column',
-          bordered: variant === 'outline',
+          bordered: variant !== 'none',
           borderColor: outlineColor,
           shadow: variant !== 'none',
           backgroundColor: backgroundType === 'solidColor' ? solidColor : undefined,
@@ -206,7 +206,10 @@ const CardSettings: React.VFC = () => {
     props: node.data.props as CraftCardProps,
     selected: node.events.selected,
   }))
-  const [isImagesUploaded, setIsImagesUploaded] = useState(false)
+  const [isImageUploaded, setIsImageUploaded] = useState(false)
+  const [isAvatarImageUploaded, setIsAvatarImagesUploaded] = useState(false)
+  const [isBackgroundImageUploaded, setIsBackgroundImagesUploaded] = useState(false)
+
   const [image, setImage] = useState<File | null>(null)
   const [avatarImage, setAvatarImage] = useState<File | null>(null)
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null)
@@ -284,41 +287,50 @@ const CardSettings: React.VFC = () => {
       .catch(() => {})
   }
   const handleImageAsyncUpload = async () => {
-    if (backgroundImage || image || avatarImage) {
-      const backgroundImageId = uuid()
-      const imageId = uuid()
-      const avatarImageId = uuid()
-
+    if (!isImageUploaded && image) {
       setLoading(true)
-      backgroundImage &&
-        (await uploadFile(`images/${appId}/craft/${backgroundImageId}`, backgroundImage, authToken).then(() => {
-          setProp(props => {
-            props.backgroundImageUrl = `https://${
-              process.env.REACT_APP_S3_BUCKET
-            }/images/${appId}/craft/${backgroundImageId}${backgroundImage.type.startsWith('image') ? '/300' : ''}`
-          })
-        }))
-      image &&
-        (await uploadFile(`images/${appId}/craft/${imageId}`, image, authToken).then(() => {
-          setProp(props => {
-            props.imageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${imageId}${
-              image.type.startsWith('image') ? '/200' : ''
-            }`
-          })
-        }))
-      avatarImage &&
-        (await uploadFile(`images/${appId}/craft/${avatarImageId}`, avatarImage, authToken).then(() => {
-          setProp(props => {
-            props.avatarImageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${avatarImageId}${
-              avatarImage.type.startsWith('image') ? '/100' : ''
-            }`
-          })
-        }))
-      setIsImagesUploaded(true)
+      const imageId = uuid()
+      await uploadFile(`images/${appId}/craft/${imageId}`, image, authToken).then(() => {
+        setProp(props => {
+          props.imageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${imageId}${
+            image.type.startsWith('image') ? '/200' : ''
+          }`
+        })
+      })
+      setIsImageUploaded(true)
       setLoading(false)
     }
   }
-
+  const handleAvatarImageAsyncUpload = async () => {
+    if (!isAvatarImageUploaded && avatarImage) {
+      setLoading(true)
+      const avatarImageId = uuid()
+      await uploadFile(`images/${appId}/craft/${avatarImageId}`, avatarImage, authToken).then(() => {
+        setProp(props => {
+          props.avatarImageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${avatarImageId}${
+            avatarImage.type.startsWith('image') ? '/100' : ''
+          }`
+        })
+      })
+      setIsAvatarImagesUploaded(true)
+      setLoading(false)
+    }
+  }
+  const handleBackgroundImageAsyncUpload = async () => {
+    if (!isBackgroundImageUploaded && backgroundImage) {
+      setLoading(true)
+      const backgroundImageId = uuid()
+      await uploadFile(`images/${appId}/craft/${backgroundImageId}`, backgroundImage, authToken).then(() => {
+        setProp(props => {
+          props.backgroundImageUrl = `https://${
+            process.env.REACT_APP_S3_BUCKET
+          }/images/${appId}/craft/${backgroundImageId}${backgroundImage.type.startsWith('image') ? '/300' : ''}`
+        })
+      })
+      setIsBackgroundImagesUploaded(true)
+      setLoading(false)
+    }
+  }
   return (
     <Form
       form={form}
@@ -345,7 +357,7 @@ const CardSettings: React.VFC = () => {
         }`,
         variant: props.variant || 'none',
         outlineColor: props.outlineColor || '#585858',
-        background: props.backgroundType || 'none',
+        backgroundType: props.backgroundType || 'none',
         solidColor: props.solidColor || '#cccccc',
         backgroundImage: props.backgroundImageUrl || '',
         title: props.title || '',
@@ -370,7 +382,7 @@ const CardSettings: React.VFC = () => {
           lineHeight: props.paragraphStyle?.lineHeight || 1,
         },
       }}
-      onChange={handleChange}
+      onValuesChange={handleChange}
     >
       {(props.type === 'feature' || props.type === 'featureWithParagraph') && (
         <>
@@ -391,18 +403,32 @@ const CardSettings: React.VFC = () => {
                   <Radio.Button value="image">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
                 </Radio.Group>
               </Form.Item>
-              {props.imageType === 'image' && (
-                <Form.Item name="image">
-                  <ImageUploader
-                    file={image}
-                    initialCoverUrl={props?.imageUrl}
-                    onChange={file => {
-                      setIsImagesUploaded(false)
-                      setImage(file)
-                    }}
-                  />
-                </Form.Item>
-              )}
+
+              <Form.Item name="image" noStyle={props.imageType !== 'image'}>
+                {props.imageType === 'image' && (
+                  <div className="d-flex align-items-center">
+                    <ImageUploader
+                      file={image}
+                      initialCoverUrl={props?.imageUrl}
+                      onChange={file => {
+                        setIsImageUploaded(false)
+                        setImage(file)
+                      }}
+                    />
+                    {selected && image && !isImageUploaded && (
+                      <Button
+                        loading={loading}
+                        className="ml-3 mb-3"
+                        type="primary"
+                        block
+                        onClick={handleImageAsyncUpload}
+                      >
+                        {formatMessage(commonMessages.ui.upload)}
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </Form.Item>
             </StyledCollapsePanel>
           </Collapse>
           {props.imageType === 'image' && (
@@ -467,18 +493,33 @@ const CardSettings: React.VFC = () => {
                 <Radio.Button value="image">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
               </Radio.Group>
             </Form.Item>
-            {props.avatarType === 'image' && (
-              <Form.Item name="avatarImageUrl">
-                <ImageUploader
-                  file={image}
-                  initialCoverUrl={props.avatarImageUrl}
-                  onChange={file => {
-                    setIsImagesUploaded(false)
-                    setImage(file)
-                  }}
-                />
-              </Form.Item>
-            )}
+
+            <Form.Item name="avatarImageUrl" noStyle={props.avatarType !== 'image'}>
+              {props.avatarType === 'image' && (
+                <div className="d-flex align-items-center">
+                  <ImageUploader
+                    file={avatarImage}
+                    initialCoverUrl={props.avatarImageUrl}
+                    onChange={file => {
+                      setIsAvatarImagesUploaded(false)
+                      setImage(file)
+                    }}
+                  />
+                  {selected && avatarImage && !isAvatarImageUploaded && (
+                    <Button
+                      loading={loading}
+                      className="ml-3 mb-3"
+                      type="primary"
+                      block
+                      onClick={handleAvatarImageAsyncUpload}
+                    >
+                      {formatMessage(commonMessages.ui.upload)}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </Form.Item>
+
             <Form.Item name="avatarName" label={formatMessage(commonMessages.label.name)}>
               <Input onChange={handleChange} />
             </Form.Item>
@@ -531,18 +572,33 @@ const CardSettings: React.VFC = () => {
                 <Radio.Button value="image">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
               </Radio.Group>
             </Form.Item>
-            {props.avatarType === 'image' && (
-              <Form.Item name="avatarImageUrl">
-                <ImageUploader
-                  file={image}
-                  initialCoverUrl={props.avatarImageUrl}
-                  onChange={file => {
-                    setIsImagesUploaded(false)
-                    setAvatarImage(file)
-                  }}
-                />
-              </Form.Item>
-            )}
+
+            <Form.Item name="avatarImageUrl" noStyle={props.avatarType !== 'image'}>
+              {props.avatarType === 'image' && (
+                <div className="d-flex align-items-center">
+                  <ImageUploader
+                    file={avatarImage}
+                    initialCoverUrl={props.avatarImageUrl}
+                    onChange={file => {
+                      setIsAvatarImagesUploaded(false)
+                      setAvatarImage(file)
+                    }}
+                  />
+                  {selected && avatarImage && !isAvatarImageUploaded && (
+                    <Button
+                      loading={loading}
+                      className="ml-3 mb-3"
+                      type="primary"
+                      block
+                      onClick={handleAvatarImageAsyncUpload}
+                    >
+                      {formatMessage(commonMessages.ui.upload)}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </Form.Item>
+
             <Form.Item name="avatarName" label={formatMessage(commonMessages.label.name)}>
               <Input onChange={handleChange} />
             </Form.Item>
@@ -595,47 +651,59 @@ const CardSettings: React.VFC = () => {
         </Radio.Group>
       </Form.Item>
 
-      {props.variant === 'outline' && (
-        <Form.Item name="outlineColor">
-          <CraftColorPickerBlock onChange={handleChange} />
-        </Form.Item>
-      )}
+      <Form.Item name="outlineColor" noStyle={props.variant !== 'outline'}>
+        {props.variant === 'outline' && <CraftColorPickerBlock />}
+      </Form.Item>
 
-      {props.variant === 'backgroundColor' && (
-        <Form.Item name="backgroundType" label={formatMessage(craftPageMessages.label.background)}>
+      <Form.Item
+        name="backgroundType"
+        label={formatMessage(craftPageMessages.label.background)}
+        noStyle={props.variant !== 'backgroundColor'}
+      >
+        {props.variant === 'backgroundColor' && (
           <Radio.Group buttonStyle="solid">
             <Radio.Button value="none">{formatMessage(craftPageMessages.ui.empty)}</Radio.Button>
             <Radio.Button value="solidColor">{formatMessage(craftPageMessages.ui.solidColor)}</Radio.Button>
             <Radio.Button value="backgroundImage">{formatMessage(craftPageMessages.ui.image)}</Radio.Button>
           </Radio.Group>
-        </Form.Item>
-      )}
+        )}
+      </Form.Item>
 
-      {props.variant === 'backgroundColor' && props.backgroundType === 'solidColor' && (
-        <Form.Item name="solidColor">
-          <CraftColorPickerBlock onChange={handleChange} />
-        </Form.Item>
-      )}
+      <Form.Item
+        name="solidColor"
+        noStyle={props.variant !== 'backgroundColor' || props.backgroundType !== 'solidColor'}
+      >
+        {props.variant === 'backgroundColor' && props.backgroundType === 'solidColor' && <CraftColorPickerBlock />}
+      </Form.Item>
 
-      {props.variant === 'backgroundColor' && props.backgroundType === 'backgroundImage' && (
-        <Form.Item name="backgroundImage">
-          <ImageUploader
-            file={backgroundImage}
-            initialCoverUrl={props.backgroundImageUrl}
-            onChange={file => {
-              setIsImagesUploaded(false)
-              setBackgroundImage(file)
-            }}
-          />
-        </Form.Item>
-      )}
-      {selected && (backgroundImage || image || avatarImage) && !isImagesUploaded && (
-        <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageAsyncUpload}>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
+      <Form.Item
+        name="backgroundImage"
+        noStyle={props.variant !== 'backgroundColor' || props.backgroundType !== 'backgroundImage'}
+      >
+        {props.variant === 'backgroundColor' && props.backgroundType === 'backgroundImage' && (
+          <div className="d-flex align-items-center">
+            <ImageUploader
+              file={backgroundImage}
+              initialCoverUrl={props.backgroundImageUrl}
+              onChange={file => {
+                setIsBackgroundImagesUploaded(false)
+                setBackgroundImage(file)
+              }}
+            />
+            {selected && backgroundImage && !isBackgroundImageUploaded && (
+              <Button
+                loading={loading}
+                className="ml-3 mb-3"
+                type="primary"
+                block
+                onClick={handleBackgroundImageAsyncUpload}
+              >
+                {formatMessage(commonMessages.ui.upload)}
+              </Button>
+            )}
+          </div>
+        )}
+      </Form.Item>
     </Form>
   )
 }
