@@ -9,6 +9,7 @@ import { craftPageMessages } from '../../helpers/translation'
 import { CraftButtonProps } from '../../types/craft'
 import {
   AdminHeaderTitle,
+  CraftHoveredMixin,
   CraftSelectedMixin,
   StyledCollapsePanel,
   StyledCraftSettingLabel,
@@ -16,9 +17,10 @@ import {
 } from '../common'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
 
-const StyledButtonWrapper = styled.div<{ block: boolean; selected?: boolean }>`
+const StyledButtonWrapper = styled.div<{ block: boolean; craftEvents?: { hovered?: boolean; selected?: boolean } }>`
   ${props => (props.block ? 'display:block; width:100%;' : 'display:inline-block;')}
-  ${props => props.selected && CraftSelectedMixin}
+  ${props => props?.craftEvents?.hovered && CraftHoveredMixin}
+  ${props => props?.craftEvents?.selected && CraftSelectedMixin}
   text-align: center;
 `
 
@@ -49,7 +51,11 @@ const CraftButton: UserComponent<CraftButtonProps> = ({
   }))
 
   return (
-    <StyledButtonWrapper ref={ref => ref && connect(drag(ref))} block={block} selected={selected}>
+    <StyledButtonWrapper
+      ref={ref => ref && connect(drag(ref))}
+      block={block}
+      craftEvents={enabled ? { selected, hovered } : {}}
+    >
       <Button
         variant={variant}
         color={color}

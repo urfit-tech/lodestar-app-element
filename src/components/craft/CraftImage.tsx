@@ -11,7 +11,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftBoxModelProps, CraftImageProps } from '../../types/craft'
-import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 
@@ -36,7 +36,7 @@ const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUr
   }))
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} hovered={hovered} enabled={enabled} selected={selected}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} events={{ hovered, selected }} options={{ enabled }}>
       <StyledImage
         customStyle={{
           width,
@@ -142,14 +142,21 @@ const ImageSettings: React.VFC = () => {
           header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.imageSetting)}</AdminHeaderTitle>}
         >
           <Form.Item name="coverImage">
-            <ImageUploader
-              file={coverImage}
-              initialCoverUrl={props.coverUrl}
-              onChange={file => {
-                setIsImageUploaded(false)
-                setCoverImage(file)
-              }}
-            />
+            <div className="d-flex align-items-center">
+              <ImageUploader
+                file={coverImage}
+                initialCoverUrl={props.coverUrl}
+                onChange={file => {
+                  setIsImageUploaded(false)
+                  setCoverImage(file)
+                }}
+              />
+              {selected && coverImage && !isImageUploaded && (
+                <Button loading={loading} className="ml-3 mb-3" type="primary" block onClick={handleImageUpload}>
+                  {formatMessage(commonMessages.ui.upload)}
+                </Button>
+              )}
+            </div>
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
@@ -186,13 +193,6 @@ const ImageSettings: React.VFC = () => {
           </Form.Item>
         </StyledCollapsePanel>
       </Collapse>
-      {selected && coverImage && !isImageUploaded && (
-        <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageUpload}>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

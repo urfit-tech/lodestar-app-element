@@ -66,7 +66,7 @@ const CraftCarouselContainer: UserComponent<CraftCarouselProps> = ({ desktop, mo
   }
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} hovered={hovered} selected={selected} enabled={enabled}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} events={{ hovered, selected }} options={{ enabled }}>
       <Carousel
         dots
         infinite

@@ -52,7 +52,7 @@ const CraftLayout: UserComponent<{
   }))
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} enabled={enabled} selected={selected}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} events={{ hovered, selected }} options={{ enabled }}>
       <Layout
         customStyle={{
           type: 'grid',

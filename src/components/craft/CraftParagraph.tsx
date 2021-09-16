@@ -41,7 +41,7 @@ const CraftParagraph: UserComponent<CraftParagraphProps> = ({
   }))
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} hovered={hovered} enabled={enabled} selected={selected}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} events={{ hovered, selected }} options={{ enabled }}>
       <StyledParagraph
         customStyle={{
           fontSize,

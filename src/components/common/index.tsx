@@ -222,13 +222,16 @@ const StyledUnderLineInput = styled(Input)`
     border-color: #d8d8d8;
   }
 `
-const CraftRefBlock = styled.div<{ hovered?: boolean; selected?: boolean; enabled?: boolean }>`
+const CraftRefBlock = styled.div<{
+  options?: { enabled?: boolean }
+  events?: { hovered?: boolean; selected?: boolean }
+}>`
   ${props =>
-    props.enabled &&
+    props?.options?.enabled &&
     css`
       cursor: pointer;
-      ${props.hovered && CraftHoveredMixin}
-      ${props.selected && CraftSelectedMixin}
+      ${props?.events?.hovered && CraftHoveredMixin}
+      ${props?.events?.selected && CraftSelectedMixin}
     `}
 `
 const CraftHoveredMixin = css`

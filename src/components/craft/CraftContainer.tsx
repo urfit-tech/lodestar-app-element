@@ -33,9 +33,8 @@ const CraftContainer: UserComponent<{
         margin: `${margin.mt}px ${margin.mr}px ${margin.mb}px ${margin.ml}px`,
         padding: padding && `${padding.pt}px ${padding.pr}px ${padding.pb}px ${padding.pl}px`,
       }}
-      hovered={hovered}
-      selected={selected}
-      enabled={enabled}
+      events={{ hovered, selected }}
+      options={{ enabled }}
     >
       {children}
     </CraftRefBlock>

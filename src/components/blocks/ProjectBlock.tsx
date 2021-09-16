@@ -46,9 +46,8 @@ const ProjectBlock: React.VFC<{
           style={{
             width: '100%',
           }}
-          hovered={hovered}
-          enabled={craftEnabled}
-          selected={selected}
+          events={{ hovered, selected }}
+          options={{ enabled: craftEnabled }}
         >
           <ProjectCard key={project.id} project={project} craftEnabled={craftEnabled} />
         </CraftRefBlock>

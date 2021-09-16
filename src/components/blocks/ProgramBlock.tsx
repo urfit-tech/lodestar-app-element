@@ -41,9 +41,8 @@ const ProgramBlock: React.VFC<{
           style={{
             width: '100%',
           }}
-          hovered={hovered}
-          enabled={craftEnabled}
-          selected={selected}
+          events={{ hovered, selected }}
+          options={{ enabled: craftEnabled }}
         >
           <ProgramCard key={program.id} program={program} craftEnabled={craftEnabled} />
         </CraftRefBlock>

@@ -4,7 +4,7 @@ import Form from 'antd/lib/form/'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { v4 as uuid } from 'uuid'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
@@ -12,15 +12,19 @@ import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
 import BackgroundSection from '../BackgroundSection'
-import { AdminHeaderTitle, CraftSelectedMixin, StyledCollapsePanel } from '../common'
+import { AdminHeaderTitle, CraftHoveredMixin, CraftSelectedMixin, StyledCollapsePanel } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
 
-const StyledSection = styled(BackgroundSection)<{ enabled?: boolean; selected?: boolean }>`
+const StyledSection = styled(BackgroundSection)<{ craftEvents?: { hovered?: boolean; selected?: boolean } }>`
   && {
-    ${props => props.enabled && `cursor: pointer;`}
-    ${props => props.selected && CraftSelectedMixin}
+    ${props =>
+      css`
+        cursor: pointer;
+        ${props?.craftEvents?.hovered && CraftHoveredMixin}
+        ${props?.craftEvents?.selected && CraftSelectedMixin}
+      `}
   }
 `
 
@@ -72,8 +76,7 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
         backgroundImage: backgroundType === 'backgroundImage' ? coverUrl : undefined,
         backgroundColor: backgroundType === 'solidColor' ? solidColor : undefined,
       }}
-      enabled={enabled}
-      selected={selected}
+      craftEvents={enabled ? { hovered, selected } : {}}
     >
       {children}
     </StyledSection>

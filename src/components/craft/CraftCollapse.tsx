@@ -10,7 +10,7 @@ import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import Accordion from '../AccordionSingle'
-import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledSettingButtonWrapper } from '../common'
+import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel } from '../common'
 import ImageUploader from '../common/ImageUploader'
 import CraftBoxModelInput, { formatBoxModelValue } from './CraftBoxModelInput'
 import CraftColorPickerBlock from './CraftColorPickerBlock'
@@ -72,7 +72,7 @@ const CraftCollapse: UserComponent<CraftCollapseProps> = ({
   }))
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} hovered={hovered} enabled={enabled} selected={selected}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} events={{ hovered, selected }} options={{ enabled }}>
       <Accordion
         customStyle={{
           card: {
@@ -306,23 +306,23 @@ const CollapseSettings: React.VFC = () => {
         noStyle={props.variant !== 'backgroundColor' || props.backgroundType !== 'backgroundImage'}
       >
         {props.variant === 'backgroundColor' && props.backgroundType === 'backgroundImage' && (
-          <ImageUploader
-            file={backgroundImage}
-            initialCoverUrl={props.backgroundImageUrl}
-            onChange={file => {
-              setIsImageUploaded(false)
-              setBackgroundImage(file)
-            }}
-          />
+          <div className="d-flex align-items-center">
+            <ImageUploader
+              file={backgroundImage}
+              initialCoverUrl={props.backgroundImageUrl}
+              onChange={file => {
+                setIsImageUploaded(false)
+                setBackgroundImage(file)
+              }}
+            />
+            {selected && backgroundImage && !isImageUploaded && (
+              <Button loading={loading} className="ml-3 mb-3" type="primary" block onClick={handleImageUpload}>
+                {formatMessage(commonMessages.ui.save)}
+              </Button>
+            )}
+          </div>
         )}
       </Form.Item>
-      {selected && backgroundImage && !isImageUploaded && (
-        <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" block onClick={handleImageUpload}>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
-      )}
     </Form>
   )
 }

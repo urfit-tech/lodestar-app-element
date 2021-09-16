@@ -3,7 +3,7 @@ import { Button, Collapse, Form, Radio } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { v4 as uuid } from 'uuid'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
@@ -19,6 +19,7 @@ import {
 import { MarginProps, PaddingProps } from '../../types/style'
 import {
   AdminHeaderTitle,
+  CraftHoveredMixin,
   CraftSelectedMixin,
   generateCustomMarginStyle,
   generateCustomPaddingStyle,
@@ -33,12 +34,18 @@ import CraftTextStyleBlock from './CraftTextStyleBlock'
 import CraftTitleContentBlock from './CraftTitleContentBlock'
 
 const StatisticsWrapper = styled.div<{
-  enabled?: boolean
-  selected?: boolean
   customStyle: MarginProps & PaddingProps
+  craftEvents?: {
+    hovered?: boolean
+    selected?: boolean
+  }
 }>`
-  ${props => props.enabled && 'cursor: pointer;'}
-  ${props => props.selected && CraftSelectedMixin}
+  ${props =>
+    css`
+      cursor: pointer;
+      ${props?.craftEvents?.hovered && CraftHoveredMixin}
+      ${props?.craftEvents?.selected && CraftSelectedMixin}
+    `}
   width: fit-content;
   text-align: center;
   ${generateCustomMarginStyle}
@@ -78,12 +85,11 @@ const CraftStatistics: UserComponent<CraftStatisticsProps> = ({ title, paragraph
   return (
     <StatisticsWrapper
       ref={ref => ref && connect(drag(ref))}
-      enabled={enabled}
-      selected={selected}
       customStyle={{
         ...padding,
         ...margin,
       }}
+      craftEvents={enabled ? { hovered, selected } : {}}
     >
       <Stat.Image
         style={{

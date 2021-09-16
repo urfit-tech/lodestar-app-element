@@ -118,10 +118,9 @@ const CraftCard: UserComponent<CraftCardProps> = ({
   return (
     <CraftRefBlock
       ref={ref => ref && connect(drag(ref))}
-      style={{ padding: type === 'referrer' ? '10px' : undefined, ...(enabled ? { cursor: 'pointer' } : {}) }}
-      hovered={hovered}
-      enabled={enabled}
-      selected={selected}
+      style={{ padding: type === 'referrer' ? '10px' : undefined }}
+      events={{ hovered, selected }}
+      options={{ enabled }}
     >
       <Card
         customStyle={{

@@ -40,9 +40,8 @@ const ActivityBlock: React.VFC<{
           style={{
             width: '100%',
           }}
-          hovered={hovered}
-          enabled={craftEnabled}
-          selected={selected}
+          events={{ hovered, selected }}
+          options={{ enabled: craftEnabled }}
         >
           <ActivityCard key={activity.id} activity={activity} craftEnabled={craftEnabled} />
         </CraftRefBlock>

@@ -39,7 +39,7 @@ const CraftTitle: UserComponent<CraftTitleProps> = ({
   }))
 
   return (
-    <CraftRefBlock ref={ref => ref && connect(drag(ref))} hovered={hovered} enabled={enabled} selected={selected}>
+    <CraftRefBlock ref={ref => ref && connect(drag(ref))} events={{ hovered, selected }} options={{ enabled }}>
       <StyledTitle
         customStyle={{
           fontSize,
