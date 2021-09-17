@@ -19,7 +19,6 @@ import {
   CraftRefBlock,
   StyledCollapsePanel,
   StyledCraftSettingLabel,
-  StyledSettingButtonWrapper,
   StyledUnderLineInput,
 } from '../common'
 import ImageUploader from '../common/ImageUploader'
@@ -161,83 +160,113 @@ const CarouselSettings: React.VFC = () => {
     props: node.data.props as CraftCarouselProps,
     selected: node.events.selected,
   }))
-  const [isImagesUploaded, setIsImagesUploaded] = useState(false)
+  const [isDesktopImagesUploaded, setIsDesktopImagesUploaded] = useState<boolean[]>([])
+  const [isMobileImagesUploaded, setIsMobileImagesUploaded] = useState<boolean[]>([])
   const [desktopCover, setDesktopCover] = useState<File[]>([])
   const [mobileCover, setMobileCover] = useState<File[]>([])
 
-  const handleChange = (values: FieldProps) => {
-    const titleMargin = formatBoxModelValue(values.titleStyle?.margin)
-    const paragraphMargin = formatBoxModelValue(values.paragraphStyle?.margin)
+  const handleChange = () => {
+    form
+      .validateFields()
+      .then(values => {
+        const titleMargin = formatBoxModelValue(values.titleStyle?.margin)
+        const paragraphMargin = formatBoxModelValue(values.paragraphStyle?.margin)
 
-    setProp(props => {
-      props.covers = values.covers
-      props.titleStyle = {
-        fontSize: values.titleStyle?.fontSize,
-        margin: {
-          mt: titleMargin?.[0] || '0',
-          mr: titleMargin?.[1] || '0',
-          mb: titleMargin?.[2] || '0',
-          ml: titleMargin?.[3] || '0',
-        },
-        textAlign: values.titleStyle?.textAlign,
-        fontWeight: values.titleStyle?.fontWeight,
-        color: values.titleStyle?.color,
-      }
-      props.paragraphStyle = {
-        fontSize: values.paragraphStyle?.fontSize,
-        lineHeight: values.paragraphStyle?.lineHeight,
-        margin: {
-          mt: paragraphMargin?.[0] || '0',
-          mr: paragraphMargin?.[1] || '0',
-          mb: paragraphMargin?.[2] || '0',
-          ml: paragraphMargin?.[3] || '0',
-        },
-        textAlign: values.paragraphStyle?.textAlign,
-        fontWeight: values.paragraphStyle?.fontWeight,
-        color: values.paragraphStyle?.color,
-      }
-    })
+        setProp(props => {
+          props.covers = values.covers
+          props.titleStyle = {
+            fontSize: values.titleStyle?.fontSize,
+            margin: {
+              mt: titleMargin?.[0] || '0',
+              mr: titleMargin?.[1] || '0',
+              mb: titleMargin?.[2] || '0',
+              ml: titleMargin?.[3] || '0',
+            },
+            textAlign: values.titleStyle?.textAlign,
+            fontWeight: values.titleStyle?.fontWeight,
+            color: values.titleStyle?.color,
+          }
+          props.paragraphStyle = {
+            fontSize: values.paragraphStyle?.fontSize,
+            lineHeight: values.paragraphStyle?.lineHeight,
+            margin: {
+              mt: paragraphMargin?.[0] || '0',
+              mr: paragraphMargin?.[1] || '0',
+              mb: paragraphMargin?.[2] || '0',
+              ml: paragraphMargin?.[3] || '0',
+            },
+            textAlign: values.paragraphStyle?.textAlign,
+            fontWeight: values.paragraphStyle?.fontWeight,
+            color: values.paragraphStyle?.color,
+          }
+        })
+      })
+      .catch(() => {})
   }
 
   const handleImageAsyncUpload = async () => {
     if (desktopCover.length || mobileCover.length) {
+      let covers: FieldProps['covers'] = [...form.getFieldValue('covers')]
       setLoading(true)
       try {
         for (let i = 0; i < desktopCover.length; i++) {
           const file = desktopCover[i]
-          if (!file) {
+          if (!file || isDesktopImagesUploaded[i]) {
             continue
           }
           const uniqId = uuid()
 
           await uploadFile(`images/${appId}/craft/${uniqId}`, file, authToken)
+          const desktopCoverUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${uniqId}${
+            file.type.startsWith('image') ? '/1200' : ''
+          }`
           setProp(props => {
-            props.covers[i].desktopCoverUrl = `https://${
-              process.env.REACT_APP_S3_BUCKET
-            }/images/${appId}/craft/${uniqId}${file.type.startsWith('image') ? '/1200' : ''}`
+            props.covers[i].desktopCoverUrl = desktopCoverUrl
+          })
+          covers[i] = {
+            ...covers[i],
+            desktopCoverUrl,
+          }
+          form.setFieldsValue({ covers })
+          setIsDesktopImagesUploaded(isUploaded => {
+            const isUploadedClone = [...isUploaded]
+            isUploadedClone[i] = true
+            return isUploadedClone
           })
         }
+
         for (let i = 0; i < mobileCover.length; i++) {
           const file = mobileCover[i]
-          if (!file) {
+          if (!file || isMobileImagesUploaded[i]) {
             continue
           }
           const uniqId = uuid()
 
           await uploadFile(`images/${appId}/craft/${uniqId}`, file, authToken)
+          const mobileCoverUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${uniqId}${
+            file.type.startsWith('image') ? '/600' : ''
+          }`
           setProp(props => {
-            props.covers[i].mobileCoverUrl = `https://${
-              process.env.REACT_APP_S3_BUCKET
-            }/images/${appId}/craft/${uniqId}${file.type.startsWith('image') ? '/1200' : ''}`
+            props.covers[i].mobileCoverUrl = mobileCoverUrl
+          })
+          covers[i] = {
+            ...covers[i],
+            mobileCoverUrl,
+          }
+          form.setFieldsValue({ covers })
+          setIsMobileImagesUploaded(isUploaded => {
+            const isUploadedClone = [...isUploaded]
+            isUploadedClone[i] = true
+            return isUploadedClone
           })
         }
-        setIsImagesUploaded(true)
       } catch (error) {
         handleError(error)
       }
       setLoading(false)
     }
   }
+
   return (
     <Form
       form={form}
@@ -291,7 +320,21 @@ const CarouselSettings: React.VFC = () => {
                     header={
                       <div className="d-flex">
                         <AdminHeaderTitle>{formatMessage(craftPageMessages.label.carouselSetting)}</AdminHeaderTitle>
-                        <StyledAddButton type="link" icon={<PlusIcon />} className="p-0 mr-1" onClick={() => add()} />
+                        <StyledAddButton
+                          type="link"
+                          icon={<PlusIcon />}
+                          className="p-0 mr-1"
+                          onClick={() =>
+                            add({
+                              paragraph: '',
+                              title: '',
+                              desktopCoverUrl: '',
+                              link: '',
+                              mobileCoverUrl: '',
+                              openNewTab: false,
+                            })
+                          }
+                        />
                         <StyledDeleteButton
                           type="link"
                           icon={<TrashOIcon />}
@@ -333,49 +376,83 @@ const CarouselSettings: React.VFC = () => {
 
                     <Form.Item
                       className="mb-3"
-                      name={[field.name, 'desktopCover']}
-                      fieldKey={[field.fieldKey, 'desktopCover']}
+                      name={[field.name, 'desktopCoverUrl']}
+                      fieldKey={[field.fieldKey, 'desktopCoverUrl']}
                       label={
                         <StyledCraftSettingLabel>
                           {formatMessage(craftPageMessages.label.desktopDisplay)}
                         </StyledCraftSettingLabel>
                       }
                     >
-                      <ImageUploader
-                        file={desktopCover ? desktopCover[index] : null}
-                        initialCoverUrl={props.covers[index]?.desktopCoverUrl || ''}
-                        onChange={file => {
-                          setIsImagesUploaded(false)
-                          setDesktopCover(cover => {
-                            const coverClone = cover.slice()
-                            coverClone[index] = file
-                            return coverClone
-                          })
-                        }}
-                      />
+                      <div className="d-flex align-items-center">
+                        <ImageUploader
+                          file={desktopCover ? desktopCover[index] : null}
+                          initialCoverUrl={props.covers[index]?.desktopCoverUrl || ''}
+                          onChange={file => {
+                            setIsDesktopImagesUploaded(isUploaded => {
+                              const isUploadedClone = [...isUploaded]
+                              isUploadedClone[index] = false
+                              return isUploadedClone
+                            })
+                            setDesktopCover(cover => {
+                              const coverClone = cover.slice()
+                              coverClone[index] = file
+                              return coverClone
+                            })
+                          }}
+                        />
+                        {selected && desktopCover[index] && !isDesktopImagesUploaded[index] && (
+                          <Button
+                            loading={loading}
+                            className="ml-3 mb-3"
+                            type="primary"
+                            block
+                            onClick={handleImageAsyncUpload}
+                          >
+                            {formatMessage(commonMessages.ui.upload)}
+                          </Button>
+                        )}
+                      </div>
                     </Form.Item>
                     <Form.Item
                       className="mb-3"
-                      name={[field.name, 'mobileCover']}
-                      fieldKey={[field.fieldKey, 'mobileCover']}
+                      name={[field.name, 'mobileCoverUrl']}
+                      fieldKey={[field.fieldKey, 'mobileCoverUrl']}
                       label={
                         <StyledCraftSettingLabel>
                           {formatMessage(craftPageMessages.label.mobileDisplay)}
                         </StyledCraftSettingLabel>
                       }
                     >
-                      <ImageUploader
-                        file={mobileCover ? mobileCover[index] : null}
-                        initialCoverUrl={props.covers[index]?.mobileCoverUrl || ''}
-                        onChange={file => {
-                          setIsImagesUploaded(false)
-                          setMobileCover(cover => {
-                            const coverClone = cover.slice()
-                            coverClone[index] = file
-                            return coverClone
-                          })
-                        }}
-                      />
+                      <div className="d-flex align-items-center">
+                        <ImageUploader
+                          file={mobileCover ? mobileCover[index] : null}
+                          initialCoverUrl={props.covers[index]?.mobileCoverUrl || ''}
+                          onChange={file => {
+                            setIsMobileImagesUploaded(isUploaded => {
+                              const isUploadedClone = [...isUploaded]
+                              isUploadedClone[index] = false
+                              return isUploadedClone
+                            })
+                            setMobileCover(cover => {
+                              const coverClone = cover.slice()
+                              coverClone[index] = file
+                              return coverClone
+                            })
+                          }}
+                        />
+                        {selected && mobileCover[index] && !isMobileImagesUploaded[index] && (
+                          <Button
+                            loading={loading}
+                            className="ml-3 mb-3"
+                            type="primary"
+                            block
+                            onClick={handleImageAsyncUpload}
+                          >
+                            {formatMessage(commonMessages.ui.upload)}
+                          </Button>
+                        )}
+                      </div>
                     </Form.Item>
 
                     <StyledLinkFormItem
@@ -413,13 +490,6 @@ const CarouselSettings: React.VFC = () => {
             <CraftTextStyleBlock type="paragraph" title={formatMessage(craftPageMessages.label.paragraphStyle)} />
           </Form.Item>
         </>
-      )}
-      {selected && !!(desktopCover.length || mobileCover.length) && !isImagesUploaded && (
-        <StyledSettingButtonWrapper>
-          <Button loading={loading} className="mb-3" type="primary" onClick={handleImageAsyncUpload} block>
-            {formatMessage(commonMessages.ui.save)}
-          </Button>
-        </StyledSettingButtonWrapper>
       )}
     </Form>
   )
