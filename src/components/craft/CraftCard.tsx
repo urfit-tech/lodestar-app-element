@@ -293,7 +293,7 @@ const CardSettings: React.VFC = () => {
       await uploadFile(`images/${appId}/craft/${imageId}`, image, authToken).then(() => {
         setProp(props => {
           props.imageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${imageId}${
-            image.type.startsWith('image') ? '/200' : ''
+            image.type.startsWith('image') ? '/600' : ''
           }`
         })
       })
@@ -308,7 +308,7 @@ const CardSettings: React.VFC = () => {
       await uploadFile(`images/${appId}/craft/${avatarImageId}`, avatarImage, authToken).then(() => {
         setProp(props => {
           props.avatarImageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${avatarImageId}${
-            avatarImage.type.startsWith('image') ? '/100' : ''
+            avatarImage.type.startsWith('image') ? '/400' : ''
           }`
         })
       })
@@ -324,7 +324,7 @@ const CardSettings: React.VFC = () => {
         setProp(props => {
           props.backgroundImageUrl = `https://${
             process.env.REACT_APP_S3_BUCKET
-          }/images/${appId}/craft/${backgroundImageId}${backgroundImage.type.startsWith('image') ? '/300' : ''}`
+          }/images/${appId}/craft/${backgroundImageId}${backgroundImage.type.startsWith('image') ? '/800' : ''}`
         })
       })
       setIsBackgroundImagesUploaded(true)
@@ -502,7 +502,7 @@ const CardSettings: React.VFC = () => {
                     initialCoverUrl={props.avatarImageUrl}
                     onChange={file => {
                       setIsAvatarImagesUploaded(false)
-                      setImage(file)
+                      setAvatarImage(file)
                     }}
                   />
                   {selected && avatarImage && !isAvatarImageUploaded && (
