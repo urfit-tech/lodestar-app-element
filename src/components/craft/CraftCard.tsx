@@ -1,5 +1,5 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Button, Collapse, Form, Input, Radio, Space } from 'antd'
+import { Collapse, Form, Input, Radio, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { v4 as uuid } from 'uuid'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
-import { uploadFile } from '../../helpers/index'
+import { handleError, uploadFile } from '../../helpers/index'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import Card from '../Card'
@@ -206,9 +206,6 @@ const CardSettings: React.VFC = () => {
     props: node.data.props as CraftCardProps,
     selected: node.events.selected,
   }))
-  const [isImageUploaded, setIsImageUploaded] = useState(false)
-  const [isAvatarImageUploaded, setIsAvatarImagesUploaded] = useState(false)
-  const [isBackgroundImageUploaded, setIsBackgroundImagesUploaded] = useState(false)
 
   const [image, setImage] = useState<File | null>(null)
   const [avatarImage, setAvatarImage] = useState<File | null>(null)
@@ -286,51 +283,27 @@ const CardSettings: React.VFC = () => {
       })
       .catch(() => {})
   }
-  const handleImageAsyncUpload = async () => {
-    if (!isImageUploaded && image) {
+  const handleImageUpload: (type?: 'image' | 'avatar' | 'background', file?: File) => void = (type, file) => {
+    if (file && type) {
+      const imageSetConvert = { image: setImage, avatar: setAvatarImage, background: setBackgroundImage }
+      const imagePropConvert = { image: 'imageUrl', avatar: 'avatarImageUrl', background: 'backgroundImageUrl' }
+      const imageSizeConvert = { image: '600', avatar: '400', background: '800' }
       setLoading(true)
       const imageId = uuid()
-      await uploadFile(`images/${appId}/craft/${imageId}`, image, authToken).then(() => {
-        setProp(props => {
-          props.imageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${imageId}${
-            image.type.startsWith('image') ? '/600' : ''
-          }`
+      uploadFile(`images/${appId}/craft/${imageId}`, file, authToken)
+        .then(() => {
+          imageSetConvert[type](file)
+          setProp(props => {
+            props[imagePropConvert[type]] = `https://${
+              process.env.REACT_APP_S3_BUCKET
+            }/images/${appId}/craft/${imageId}${file.type.startsWith('image') ? `/${imageSizeConvert[type]}` : ''}`
+          })
         })
-      })
-      setIsImageUploaded(true)
-      setLoading(false)
+        .catch(handleError)
+        .finally(() => setLoading(false))
     }
   }
-  const handleAvatarImageAsyncUpload = async () => {
-    if (!isAvatarImageUploaded && avatarImage) {
-      setLoading(true)
-      const avatarImageId = uuid()
-      await uploadFile(`images/${appId}/craft/${avatarImageId}`, avatarImage, authToken).then(() => {
-        setProp(props => {
-          props.avatarImageUrl = `https://${process.env.REACT_APP_S3_BUCKET}/images/${appId}/craft/${avatarImageId}${
-            avatarImage.type.startsWith('image') ? '/400' : ''
-          }`
-        })
-      })
-      setIsAvatarImagesUploaded(true)
-      setLoading(false)
-    }
-  }
-  const handleBackgroundImageAsyncUpload = async () => {
-    if (!isBackgroundImageUploaded && backgroundImage) {
-      setLoading(true)
-      const backgroundImageId = uuid()
-      await uploadFile(`images/${appId}/craft/${backgroundImageId}`, backgroundImage, authToken).then(() => {
-        setProp(props => {
-          props.backgroundImageUrl = `https://${
-            process.env.REACT_APP_S3_BUCKET
-          }/images/${appId}/craft/${backgroundImageId}${backgroundImage.type.startsWith('image') ? '/800' : ''}`
-        })
-      })
-      setIsBackgroundImagesUploaded(true)
-      setLoading(false)
-    }
-  }
+
   return (
     <Form
       form={form}
@@ -406,27 +379,12 @@ const CardSettings: React.VFC = () => {
 
               <Form.Item name="image" noStyle={props.imageType !== 'image'}>
                 {props.imageType === 'image' && (
-                  <div className="d-flex align-items-center">
-                    <ImageUploader
-                      file={image}
-                      initialCoverUrl={props?.imageUrl}
-                      onChange={file => {
-                        setIsImageUploaded(false)
-                        setImage(file)
-                      }}
-                    />
-                    {selected && image && !isImageUploaded && (
-                      <Button
-                        loading={loading}
-                        className="ml-3 mb-3"
-                        type="primary"
-                        block
-                        onClick={handleImageAsyncUpload}
-                      >
-                        {formatMessage(commonMessages.ui.upload)}
-                      </Button>
-                    )}
-                  </div>
+                  <ImageUploader
+                    uploading={loading}
+                    file={image}
+                    initialCoverUrl={props?.imageUrl}
+                    onChange={file => handleImageUpload('image', file)}
+                  />
                 )}
               </Form.Item>
             </StyledCollapsePanel>
@@ -496,27 +454,12 @@ const CardSettings: React.VFC = () => {
 
             <Form.Item name="avatarImageUrl" noStyle={props.avatarType !== 'image'}>
               {props.avatarType === 'image' && (
-                <div className="d-flex align-items-center">
-                  <ImageUploader
-                    file={avatarImage}
-                    initialCoverUrl={props.avatarImageUrl}
-                    onChange={file => {
-                      setIsAvatarImagesUploaded(false)
-                      setAvatarImage(file)
-                    }}
-                  />
-                  {selected && avatarImage && !isAvatarImageUploaded && (
-                    <Button
-                      loading={loading}
-                      className="ml-3 mb-3"
-                      type="primary"
-                      block
-                      onClick={handleAvatarImageAsyncUpload}
-                    >
-                      {formatMessage(commonMessages.ui.upload)}
-                    </Button>
-                  )}
-                </div>
+                <ImageUploader
+                  uploading={loading}
+                  file={avatarImage}
+                  initialCoverUrl={props.avatarImageUrl}
+                  onChange={file => handleImageUpload('avatar', file)}
+                />
               )}
             </Form.Item>
 
@@ -575,27 +518,12 @@ const CardSettings: React.VFC = () => {
 
             <Form.Item name="avatarImageUrl" noStyle={props.avatarType !== 'image'}>
               {props.avatarType === 'image' && (
-                <div className="d-flex align-items-center">
-                  <ImageUploader
-                    file={avatarImage}
-                    initialCoverUrl={props.avatarImageUrl}
-                    onChange={file => {
-                      setIsAvatarImagesUploaded(false)
-                      setAvatarImage(file)
-                    }}
-                  />
-                  {selected && avatarImage && !isAvatarImageUploaded && (
-                    <Button
-                      loading={loading}
-                      className="ml-3 mb-3"
-                      type="primary"
-                      block
-                      onClick={handleAvatarImageAsyncUpload}
-                    >
-                      {formatMessage(commonMessages.ui.upload)}
-                    </Button>
-                  )}
-                </div>
+                <ImageUploader
+                  uploading={loading}
+                  file={avatarImage}
+                  initialCoverUrl={props.avatarImageUrl}
+                  onChange={file => handleImageUpload('avatar', file)}
+                />
               )}
             </Form.Item>
 
@@ -681,27 +609,12 @@ const CardSettings: React.VFC = () => {
         noStyle={props.variant !== 'backgroundColor' || props.backgroundType !== 'backgroundImage'}
       >
         {props.variant === 'backgroundColor' && props.backgroundType === 'backgroundImage' && (
-          <div className="d-flex align-items-center">
-            <ImageUploader
-              file={backgroundImage}
-              initialCoverUrl={props.backgroundImageUrl}
-              onChange={file => {
-                setIsBackgroundImagesUploaded(false)
-                setBackgroundImage(file)
-              }}
-            />
-            {selected && backgroundImage && !isBackgroundImageUploaded && (
-              <Button
-                loading={loading}
-                className="ml-3 mb-3"
-                type="primary"
-                block
-                onClick={handleBackgroundImageAsyncUpload}
-              >
-                {formatMessage(commonMessages.ui.upload)}
-              </Button>
-            )}
-          </div>
+          <ImageUploader
+            uploading={loading}
+            file={backgroundImage}
+            initialCoverUrl={props.backgroundImageUrl}
+            onChange={file => handleImageUpload('background', file)}
+          />
         )}
       </Form.Item>
     </Form>

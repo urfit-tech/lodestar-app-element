@@ -1,5 +1,5 @@
 import { UploadOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import { Button, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
@@ -58,12 +58,27 @@ const StyledMask = styled.div`
     background: rgba(0, 0, 0, 0.7);
   }
 `
+const StyledSpinBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 4px;
+  z-index: 2;
+  transition: all 0.6s;
+  background: rgba(0, 0, 0, 0.7);
+`
 
 const ImageUploader: React.FC<{
   file: File | null
   initialCoverUrl?: string | null
+  uploading?: boolean
   onChange?: (file: File) => void
-}> = ({ file, initialCoverUrl, onChange }) => {
+}> = ({ file, initialCoverUrl, uploading, onChange }) => {
   const { formatMessage } = useIntl()
   const [imgSrc, setImgSrc] = useState<string | null>(initialCoverUrl || null)
 
@@ -93,6 +108,11 @@ const ImageUploader: React.FC<{
           fileList={file ? [file] : []}
         />
       </StyledMask>
+      {uploading && (
+        <StyledSpinBlock>
+          <Spin />
+        </StyledSpinBlock>
+      )}
     </StyledWrapper>
   )
 }
