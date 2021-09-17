@@ -329,7 +329,7 @@ const CardSettings: React.VFC = () => {
           props.cardPadding?.pl || 0
         }`,
         variant: props.variant || 'none',
-        outlineColor: props.outlineColor || '#585858',
+        outlineColor: props.outlineColor || '',
         backgroundType: props.backgroundType || 'none',
         solidColor: props.solidColor || '#cccccc',
         backgroundImage: props.backgroundImageUrl || '',
