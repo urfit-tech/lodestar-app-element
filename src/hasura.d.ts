@@ -485,6 +485,20 @@ export interface GET_INSTRUCTOR_COLLECTIONVariables {
 // GraphQL query operation: GET_PUBLISHED_ACTIVITY_COLLECTION
 // ====================================================
 
+export interface GET_PUBLISHED_ACTIVITY_COLLECTION_activity_activity_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface GET_PUBLISHED_ACTIVITY_COLLECTION_activity_activity_categories {
+  __typename: 'activity_category'
+  /**
+   * An object relationship
+   */
+  category: GET_PUBLISHED_ACTIVITY_COLLECTION_activity_activity_categories_category
+}
+
 export interface GET_PUBLISHED_ACTIVITY_COLLECTION_activity_activity_enrollments_aggregate_aggregate {
   __typename: 'activity_enrollment_aggregate_fields'
   count: number | null
@@ -538,6 +552,10 @@ export interface GET_PUBLISHED_ACTIVITY_COLLECTION_activity {
   title: string
   published_at: any | null
   is_participants_visible: boolean
+  /**
+   * An array relationship
+   */
+  activity_categories: GET_PUBLISHED_ACTIVITY_COLLECTION_activity_activity_categories[]
   /**
    * An aggregated array relationship
    */

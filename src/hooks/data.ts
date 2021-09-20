@@ -336,6 +336,12 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
           title
           published_at
           is_participants_visible
+          activity_categories {
+            category {
+              id
+              name
+            }
+          }
           activity_enrollments_aggregate {
             aggregate {
               count
@@ -382,6 +388,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
                 new Date(value.activity_sessions_aggregate.aggregate.max.ended_at),
               participantCount: value.activity_enrollments_aggregate.aggregate?.count || 0,
               totalSeats: value.activity_tickets_aggregate.aggregate?.sum?.count || 0,
+              categories: value.activity_categories.map(v => ({ id: v.category.id, name: v.category.name })),
             }
           : null
       })

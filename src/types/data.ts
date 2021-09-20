@@ -1,3 +1,8 @@
+export type Category = {
+  id: string
+  name: string
+}
+
 export type UserRole = 'app-owner' | 'content-creator' | 'general-member' | 'anonymous'
 
 export type PeriodType = 'D' | 'W' | 'M' | 'Y'
@@ -19,6 +24,7 @@ export type ActivityProps = {
   endedAt: Date | null
   participantCount?: number
   totalSeats?: number
+  categories: Category[]
 }
 
 export type PodcastProgramBriefProps = {

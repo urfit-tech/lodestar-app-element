@@ -28,6 +28,9 @@ export const commonMessages = {
     selectImage: { id: 'common.ui.selectImage', defaultMessage: '選擇圖片' },
     save: { id: 'common.ui.save', defaultMessage: '儲存' },
   }),
+  button: defineMessages({
+    allCategory: { id: 'common.button.allCategory', defaultMessage: '全部分類' },
+  }),
 }
 
 export const productMessages = {
@@ -156,6 +159,9 @@ export const craftPageMessages = {
     dataDisplay: { id: 'craft.label.dataDisplay', defaultMessage: '資料顯示' },
     addItem: { id: 'craft.label.addItem', defaultMessage: '新增項目' },
     specifyDisplayItem: { id: 'craft.label.specifyDisplayItem', defaultMessage: '指定顯示項目' },
+    categorySelector: { id: 'craft.label.categorySelector', defaultMessage: '分類選擇器' },
+    categorySelectorEnabled: { id: 'craft.label.categorySelectorEnabled', defaultMessage: '啟用分類選擇器' },
+    defaultCategoryId: { id: 'craft.label.defaultCategoryId', defaultMessage: '預設分類' },
     choiceData: { id: 'craft.label.choiceData', defaultMessage: '選擇資料' },
     program: { id: 'craft.label.program', defaultMessage: '課程' },
     activity: { id: 'craft.label.activity', defaultMessage: '活動' },
@@ -168,6 +174,10 @@ export const craftPageMessages = {
     ruleOfSort: { id: 'craft.label.ruleOfSort', defaultMessage: '排序規則' },
   }),
   text: defineMessages({
+    chooseCategories: {
+      id: 'craft.text.chooseCategories',
+      defaultMessage: '選擇分類',
+    },
     deleteWarning: {
       id: 'craft.text.deleteWarning',
       defaultMessage: '刪除不可恢復，確定要刪除嗎？',
