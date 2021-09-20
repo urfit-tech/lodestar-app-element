@@ -15,7 +15,10 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.5",
+    "@chakra-ui/react": "^1.6.8",
     "@craftjs/core": "0.1.0-beta.20",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
     "@types/node": "^12.0.0",
     "@types/ramda": "^0.27.10",
     "@types/react": "^17.0.0",
@@ -29,6 +32,7 @@
     "@types/uuid": "^8.3.1",
     "antd": "^4.16.9",
     "axios": "^0.21.1",
+    "framer-motion": "^4",
     "graphql-tag": "^2.10.3",
     "moment": "^2.29.1",
     "node-sass": "^4.14.1",
@@ -46,6 +50,7 @@
     "react-slick": "^0.28.1",
     "styled-components": "^5.1.1",
     "typescript": "4.3.5",
+    "use-query-params": "^1.2.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

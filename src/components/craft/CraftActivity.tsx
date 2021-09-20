@@ -87,11 +87,15 @@ const CraftActivity: UserComponent<{
       </>
     )
 
-  // const selectedActivities = activities.filter()
+  const selectedActivities = activities.filter(
+    activity => !defaultCategoryIds?.some(categoryId => activity.categories.map(c => c.id).indexOf(categoryId) === -1),
+  )
 
   const categories: Category[] = uniqBy(
     category => category.id,
-    unnest(activities.map(activity => activity.categories || [])),
+    unnest(selectedActivities.map(activity => activity.categories || [])).filter(
+      category => !defaultCategoryIds?.includes(category.id),
+    ),
   )
 
   return (
@@ -123,7 +127,7 @@ const CraftActivity: UserComponent<{
       )}
       {children}
       <div className="row">
-        {activities.map(activity => (
+        {selectedActivities.map(activity => (
           <div className="col-12 col-sm-6 col-md-4 col-lg-3">
             <CraftRefBlock
               ref={ref => ref && connect(ref)}
