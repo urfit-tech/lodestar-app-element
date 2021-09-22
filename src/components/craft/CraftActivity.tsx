@@ -10,7 +10,6 @@ import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { StringParam, useQueryParam } from 'use-query-params'
 import ActivityCollectionSelector, { ActivityCollection } from '../../components/ActivityCollectionSelector'
-import { useApp } from '../../contexts/AppContext'
 import hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
 import { commonMessages, craftPageMessages } from '../../helpers/translation'
@@ -38,7 +37,6 @@ const CraftActivity: UserComponent<{
   const [active = null] = useQueryParam('categories', StringParam)
   const [classification = null, setClassification] = useQueryParam('classification', StringParam)
   const apolloClient = useApolloClient()
-  const { id: appId } = useApp()
   const { enabled } = useEditor(state => ({
     enabled: state.options.enabled,
   }))
@@ -59,14 +57,13 @@ const CraftActivity: UserComponent<{
       apolloClient
         .query({
           query: gql`
-            query GET_NEWEST_ACTIVITIES($appId: String!, $limit: Int) {
-              activity(where: { app_id: { _eq: $appId }, published_at: { _is_null: false } }, limit: $limit) {
+            query GET_NEWEST_ACTIVITIES($limit: Int) {
+              activity(where: { published_at: { _is_null: false } }, limit: $limit) {
                 id
               }
             }
           `,
           variables: {
-            appId,
             limit: ids.length > 0 ? ids.length : undefined,
           },
         })
@@ -76,7 +73,7 @@ const CraftActivity: UserComponent<{
     } else {
       setActivityIds(ids.filter(notEmpty) || [])
     }
-  }, [type, ids, apolloClient, appId])
+  }, [type, ids, apolloClient])
 
   if (loadingActivities)
     return (
@@ -101,7 +98,7 @@ const CraftActivity: UserComponent<{
   return (
     <div className="container">
       {withSelector && (
-        <div>
+        <div className="mb-3">
           <StyledButton
             colorScheme="primary"
             variant={classification === null ? 'solid' : 'outline'}
