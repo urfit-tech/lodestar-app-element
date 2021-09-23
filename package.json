@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.5",
-    "@chakra-ui/react": "^1.6.8",
+    "@chakra-ui/react": "1.1.2",
     "@craftjs/core": "0.1.0-beta.20",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
@@ -32,7 +32,7 @@
     "@types/uuid": "^8.3.1",
     "antd": "^4.16.9",
     "axios": "^0.21.1",
-    "framer-motion": "^4",
+    "framer-motion": "^2.9.4",
     "graphql-tag": "^2.10.3",
     "moment": "^2.29.1",
     "node-sass": "^4.14.1",
