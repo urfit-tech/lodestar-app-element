@@ -101,6 +101,8 @@ const generateCustomLayoutStyle = (props: { customStyle?: LayoutProps }) =>
       '12fr'};
       grid-gap: 1.5rem;
       place-items: center;
+      ${props.customStyle.mobile?.alignItems && `align-items:${props.customStyle.mobile.alignItems};`}
+      ${props.customStyle.mobile?.justifyContent && `justify-content:${props.customStyle.mobile.justifyContent};`}
 
       @media (min-width: ${BREAK_POINT}px) {
         grid-gap: 30px;
@@ -108,6 +110,8 @@ const generateCustomLayoutStyle = (props: { customStyle?: LayoutProps }) =>
         (props.customStyle.desktop?.columnAmount &&
           `repeat(${props.customStyle.desktop.columnAmount},${12 / props.customStyle.desktop.columnAmount})fr`) ||
         'repeat(3,4fr)'};
+        ${props.customStyle.desktop?.alignItems && `align-items:${props.customStyle.desktop.alignItems};`}
+        ${props.customStyle.desktop?.justifyContent && `justify-content:${props.customStyle.desktop.justifyContent};`}
       }
     `}
     ${props.customStyle.mobile?.displayAmount &&
@@ -126,6 +130,8 @@ const generateCustomLayoutStyle = (props: { customStyle?: LayoutProps }) =>
         }
       }
     `}
+
+
      ${generateCustomMarginStyle({ customStyle: props.customStyle.mobile?.margin })}
      @media (min-width: ${BREAK_POINT}px) {
       ${generateCustomMarginStyle({ customStyle: props.customStyle.desktop?.margin })}

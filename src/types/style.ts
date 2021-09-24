@@ -47,8 +47,22 @@ export type BackgroundProps = {
 
 export type LayoutProps = {
   type?: 'flex' | 'grid'
-  mobile?: { margin?: MarginProps; columnAmount?: number; columnRatio?: number[]; displayAmount?: number }
-  desktop?: { margin?: MarginProps; columnAmount?: number; columnRatio?: number[]; displayAmount?: number }
+  mobile?: {
+    margin?: MarginProps
+    columnAmount?: number
+    columnRatio?: number[]
+    displayAmount?: number
+    alignItems?: 'start' | 'center' | 'end'
+    justifyContent?: 'start' | 'center' | 'end'
+  }
+  desktop?: {
+    margin?: MarginProps
+    columnAmount?: number
+    columnRatio?: number[]
+    displayAmount?: number
+    alignItems?: 'start' | 'center' | 'end'
+    justifyContent?: 'start' | 'center' | 'end'
+  }
 }
 
 export type CarouselProps = {

@@ -39,6 +39,8 @@ export type CraftLayoutProps = {
   columnAmount: number
   columnRatio: number[]
   displayAmount: number
+  alignItems?: 'start' | 'center' | 'end'
+  justifyContent?: 'start' | 'center' | 'end'
 }
 
 export type CraftPageAdminProps = {
