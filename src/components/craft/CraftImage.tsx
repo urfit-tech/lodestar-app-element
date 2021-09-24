@@ -3,13 +3,12 @@ import React from 'react'
 import StyledImage from '../../components/Image'
 import { CraftBoxModelProps, CraftImageProps } from '../../types/craft'
 import { CraftRefBlock } from '../common'
+import Responsive from '../Responsive'
 
-const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUrl: string }> = ({
-  coverUrl,
-  width,
-  margin,
-  padding,
-}) => {
+const CraftImage: UserComponent<{
+  desktop?: CraftImageProps & CraftBoxModelProps
+  mobile?: CraftImageProps & CraftBoxModelProps
+}> = ({ desktop, mobile }) => {
   const { enabled } = useEditor(state => ({
     enabled: state.options.enabled,
   }))
@@ -24,20 +23,38 @@ const CraftImage: UserComponent<CraftImageProps & CraftBoxModelProps & { coverUr
 
   return (
     <CraftRefBlock ref={ref => ref && connect(drag(ref))} events={{ hovered, selected }} options={{ enabled }}>
-      <StyledImage
-        customStyle={{
-          width,
-          mt: margin?.mt,
-          mr: margin?.mr,
-          mb: margin?.mb,
-          ml: margin?.ml,
-          pt: padding?.pt,
-          pr: padding?.pr,
-          pb: padding?.pb,
-          pl: padding?.pl,
-        }}
-        src={coverUrl}
-      />
+      <Responsive.Default>
+        <StyledImage
+          customStyle={{
+            width: mobile?.width,
+            mt: mobile?.margin?.mt,
+            mr: mobile?.margin?.mr,
+            mb: mobile?.margin?.mb,
+            ml: mobile?.margin?.ml,
+            pt: mobile?.padding?.pt,
+            pr: mobile?.padding?.pr,
+            pb: mobile?.padding?.pb,
+            pl: mobile?.padding?.pl,
+          }}
+          src={mobile?.coverUrl}
+        />
+      </Responsive.Default>
+      <Responsive.Desktop>
+        <StyledImage
+          customStyle={{
+            width: desktop?.width,
+            mt: desktop?.margin?.mt,
+            mr: desktop?.margin?.mr,
+            mb: desktop?.margin?.mb,
+            ml: desktop?.margin?.ml,
+            pt: desktop?.padding?.pt,
+            pr: desktop?.padding?.pr,
+            pb: desktop?.padding?.pb,
+            pl: desktop?.padding?.pl,
+          }}
+          src={desktop?.coverUrl}
+        />
+      </Responsive.Desktop>
     </CraftRefBlock>
   )
 }

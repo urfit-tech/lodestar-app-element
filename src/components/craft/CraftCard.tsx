@@ -77,7 +77,7 @@ const CraftCard: UserComponent<CraftCardProps> = ({
   return (
     <CraftRefBlock
       ref={ref => ref && connect(drag(ref))}
-      style={{ padding: type === 'referrer' ? '10px' : undefined }}
+      style={{ width: '100%', padding: type === 'referrer' ? '10px' : undefined }}
       events={{ hovered, selected }}
       options={{ enabled }}
     >
