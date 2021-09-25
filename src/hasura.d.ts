@@ -85,6 +85,11 @@ export interface GET_APP_app_by_pk_app_settings {
   value: string
 }
 
+export interface GET_APP_app_by_pk_app_hosts {
+  __typename: 'app_host'
+  host: string
+}
+
 export interface GET_APP_app_by_pk {
   __typename: 'app'
   id: string
@@ -103,6 +108,10 @@ export interface GET_APP_app_by_pk {
    * An array relationship
    */
   app_settings: GET_APP_app_by_pk_app_settings[]
+  /**
+   * An array relationship
+   */
+  app_hosts: GET_APP_app_by_pk_app_hosts[]
 }
 
 export interface GET_APP {

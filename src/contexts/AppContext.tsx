@@ -27,6 +27,7 @@ type AppProps = {
   name: string
   title: string | null
   description: string | null
+  host: string
   enabledModules: {
     [key in Module]?: boolean
   }
@@ -50,6 +51,7 @@ const defaultAppProps: AppProps = {
   name: '',
   title: null,
   description: null,
+  host: '',
   enabledModules: {},
   navs: [],
   settings: {},
@@ -106,6 +108,9 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             key
             value
           }
+          app_hosts(order_by: { priority: asc }) {
+            host
+          }
         }
       }
     `,
@@ -126,6 +131,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             name: data.app_by_pk.name || '',
             title: data.app_by_pk.title,
             description: data.app_by_pk.description,
+            host: data.app_by_pk.app_hosts.shift()?.host || window.location.host,
             enabledModules: Object.fromEntries(data.app_by_pk.app_modules.map(v => [v.module_id, true]) || []),
             navs: data.app_by_pk.app_navs.map(appNav => ({
               id: appNav.id,
