@@ -1,22 +1,19 @@
 import { useApolloClient } from '@apollo/react-hooks'
 import { Button } from '@chakra-ui/react'
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import { Collapse, Form, Select, Switch } from 'antd'
-import { useForm } from 'antd/lib/form/Form'
 import gql from 'graphql-tag'
 import { uniqBy, unnest } from 'ramda'
 import React, { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { StringParam, useQueryParam } from 'use-query-params'
-import ActivityCollectionSelector, { ActivityCollection } from '../../components/ActivityCollectionSelector'
 import hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { commonMessages, craftPageMessages } from '../../helpers/translation'
+import { commonMessages } from '../../helpers/translation'
 import { usePublishedActivityCollection } from '../../hooks/data'
-import { Category } from '../../types/data'
+import { ActivityCollection, Category } from '../../types/data'
 import ActivityCard from '../cards/ActivityCard'
-import { AdminHeaderTitle, CraftRefBlock, StyledCollapsePanel, StyledCraftSettingLabel } from '../common'
+import { CraftRefBlock } from '../common'
 import Skeleton from '../Skeleton'
 
 const StyledButton = styled(Button)`
@@ -142,108 +139,6 @@ const CraftActivity: UserComponent<{
       </div>
     </div>
   )
-}
-
-const ActivitySettings: React.VFC = () => {
-  const { formatMessage } = useIntl()
-  const [form] = useForm<{
-    activityCollection: ActivityCollection
-    categorySelectorEnabled: boolean
-    defaultCategoryIds: string[]
-  }>()
-
-  const {
-    actions: { setProp },
-    props,
-  } = useNode(node => ({
-    props: node.data.props,
-    selected: node.events.selected,
-  }))
-
-  return (
-    <Form
-      form={form}
-      layout="vertical"
-      colon={false}
-      requiredMark={false}
-      initialValues={{
-        activityCollection: { type: props.type, ids: props.ids },
-        categorySelectorEnabled: props.withSelector,
-        defaultCategoryIds: props.defaultCategoryIds,
-      }}
-      onValuesChange={() => {
-        form
-          .validateFields()
-          .then(values => {
-            console.log({ values })
-            setProp(props => {
-              props.withSelector = values.categorySelectorEnabled
-              props.defaultCategoryIds = values.defaultCategoryIds || []
-              props.type = values.activityCollection.type
-              props.ids = values.activityCollection.ids
-            })
-          })
-          .catch(() => {})
-      }}
-    >
-      <Collapse
-        className="mt-2 p-0"
-        bordered={false}
-        expandIconPosition="right"
-        ghost
-        defaultActiveKey={['displayItem']}
-      >
-        <StyledCollapsePanel
-          key="displayItem"
-          header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.specifyDisplayItem)}</AdminHeaderTitle>}
-        >
-          <Form.Item name="activityCollection">
-            <ActivityCollectionSelector />
-          </Form.Item>
-        </StyledCollapsePanel>
-        <StyledCollapsePanel
-          key="categorySelector"
-          header={<AdminHeaderTitle>{formatMessage(craftPageMessages.label.categorySelector)}</AdminHeaderTitle>}
-        >
-          <Form.Item
-            name="categorySelectorEnabled"
-            label={
-              <StyledCraftSettingLabel>
-                {formatMessage(craftPageMessages.label.categorySelectorEnabled)}
-              </StyledCraftSettingLabel>
-            }
-          >
-            <Switch />
-          </Form.Item>
-          <Form.Item
-            name="defaultCategoryIds"
-            label={
-              <StyledCraftSettingLabel>
-                {formatMessage(craftPageMessages.label.defaultCategoryId)}
-              </StyledCraftSettingLabel>
-            }
-          >
-            <Select
-              disabled
-              showSearch
-              mode="multiple"
-              allowClear
-              style={{ width: '100%' }}
-              placeholder={formatMessage(craftPageMessages.text.chooseCategories)}
-              optionFilterProp="children"
-              filterOption={(input, option) => option?.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            ></Select>
-          </Form.Item>
-        </StyledCollapsePanel>
-      </Collapse>
-    </Form>
-  )
-}
-
-CraftActivity.craft = {
-  related: {
-    settings: ActivitySettings,
-  },
 }
 
 export default CraftActivity

@@ -1,4 +1,3 @@
-import { message } from 'antd'
 import axios, { AxiosRequestConfig } from 'axios'
 import queryString from 'query-string'
 
@@ -50,9 +49,9 @@ export const uploadFile = async (key: string, file: Blob, authToken: string | nu
 export const handleError = (error: any) => {
   process.env.NODE_ENV === 'development' && console.error(error)
   if (error.response && error.response.data) {
-    return message.error(error.response.data.message)
+    return alert(error.response.data.message)
   }
-  return message.error(error.message)
+  return alert(error.message)
 }
 
 export const notEmpty = <T>(value: T | null | undefined): value is T => {

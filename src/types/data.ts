@@ -27,6 +27,11 @@ export type ActivityProps = {
   categories: Category[]
 }
 
+export type ActivityCollection = {
+  type: 'newest' | 'custom'
+  ids: (string | null)[]
+}
+
 export type PodcastProgramBriefProps = {
   id: string
   coverUrl: string | null

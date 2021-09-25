@@ -1,4 +1,3 @@
-import { Collapse, Input, Slider } from 'antd'
 import styled, { css } from 'styled-components'
 import {
   BorderProps,
@@ -192,14 +191,7 @@ const AdminHeaderTitle = styled.div`
   font-weight: bold;
   letter-spacing: 0.2px;
 `
-const StyledCollapsePanel = styled(Collapse.Panel)`
-  .ant-collapse-header {
-    padding-left: 0px !important;
-  }
-  .ant-collapse-content-box {
-    padding: 0px !important;
-  }
-`
+
 const StyledSettingButtonWrapper = styled.div`
   position: absolute;
   top: 0.5em;
@@ -210,23 +202,6 @@ const StyledCraftSettingLabel = styled.span`
   font-size: 14px;
   letter-spacing: 0.4px;
   font-weight: 500;
-`
-const StyledCraftSlider = styled(Slider)`
-  .ant-slider-track {
-    background-color: ${props => props.theme['@primary-color'] || '#4c5b8f'};
-  }
-`
-const StyledUnderLineInput = styled(Input)`
-  border-color: #d8d8d8;
-  border-style: solid;
-  border-top-width: 0px;
-  border-right-width: 0px;
-  border-bottom-width: 1px;
-  border-left-width: 0px;
-  :hover {
-    border-right-width: 0px !important;
-    border-color: #d8d8d8;
-  }
 `
 const CraftRefBlock = styled.div<{
   options?: { enabled?: boolean }
@@ -255,11 +230,8 @@ export {
   StyledTitle,
   StyledParagraph,
   AdminHeaderTitle,
-  StyledCollapsePanel,
   StyledSettingButtonWrapper,
   StyledCraftSettingLabel,
-  StyledCraftSlider,
-  StyledUnderLineInput,
 }
 export {
   generateCustomTitleStyle,
