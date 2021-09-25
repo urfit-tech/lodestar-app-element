@@ -5,9 +5,12 @@ import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
 import BackgroundSection from '../BackgroundSection'
 import { CraftHoveredMixin, CraftSelectedMixin } from '../common'
 
-const StyledSection = styled(BackgroundSection)<{ craftEvents?: { hovered?: boolean; selected?: boolean } }>`
+const StyledSection = styled(BackgroundSection)<{
+  craftEvents?: { enabled?: boolean; hovered?: boolean; selected?: boolean }
+}>`
   && {
     ${props =>
+      props.craftEvents?.enabled &&
       css`
         cursor: pointer;
         ${props?.craftEvents?.hovered && CraftHoveredMixin}
@@ -59,7 +62,7 @@ const CraftBackground: UserComponent<CraftBackgroundProps> = ({
         backgroundImage: backgroundType === 'backgroundImage' ? coverUrl : undefined,
         backgroundColor: backgroundType === 'solidColor' ? solidColor : undefined,
       }}
-      craftEvents={enabled ? { hovered, selected } : {}}
+      craftEvents={{ enabled, hovered, selected }}
     >
       {children}
     </StyledSection>
