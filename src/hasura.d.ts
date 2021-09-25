@@ -35,6 +35,7 @@ export interface GET_NEWEST_ACTIVITIESVariables {
 export interface GET_APP_currency {
   __typename: 'currency'
   id: string
+  name: string
   label: string
   unit: string
   minor_units: number | null
@@ -85,6 +86,12 @@ export interface GET_APP_app_by_pk_app_settings {
   value: string
 }
 
+export interface GET_APP_app_by_pk_app_secrets {
+  __typename: 'app_secret'
+  key: string
+  value: string
+}
+
 export interface GET_APP_app_by_pk_app_hosts {
   __typename: 'app_host'
   host: string
@@ -108,6 +115,10 @@ export interface GET_APP_app_by_pk {
    * An array relationship
    */
   app_settings: GET_APP_app_by_pk_app_settings[]
+  /**
+   * An array relationship
+   */
+  app_secrets: GET_APP_app_by_pk_app_secrets[]
   /**
    * An array relationship
    */

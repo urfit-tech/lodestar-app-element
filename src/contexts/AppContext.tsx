@@ -2,77 +2,47 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import React, { createContext, useContext, useEffect } from 'react'
 import hasura from '../hasura'
-import { Module } from '../types/data'
+import { AppProps, NavProps } from '../types/app'
 import { useAuth } from './AuthContext'
 
-type NavProps = {
-  id: string
-  block: string
-  position: number
-  label: string
-  icon: string | null
-  href: string
-  external: boolean
-  locale: string
-  tag: string | null
-}
-
-export type AppNavProps = NavProps & {
-  subNavs: NavProps[]
-}
-
-type AppProps = {
+type AppContextProps = AppProps & {
   loading: boolean
-  id: string
-  name: string
-  title: string | null
-  description: string | null
-  host: string
-  enabledModules: {
-    [key in Module]?: boolean
-  }
-  navs: AppNavProps[]
-  settings: {
-    [key: string]: string
-  } & {
-    'payment.perpetual.default_gateway'?: undefined
-    'payment.perpetual.default_gateway_method'?: undefined
-    'payment.subscription.default_gateway'?: undefined
-  }
-  currencyId: string
-  currencies: {
-    [currencyId: string]: { id: string; label: string | null; unit: string | null; minorUnits: number | null }
-  }
+  error?: Error
+  refetch?: () => void
 }
 
-const defaultAppProps: AppProps = {
-  loading: true,
+const defaultAppContextProps: AppContextProps = {
   id: '',
   name: '',
   title: null,
   description: null,
   host: '',
+  hosts: [],
   enabledModules: {},
   navs: [],
   settings: {},
+  secrets: {},
   currencyId: 'TWD',
   currencies: {},
+  loading: true,
 }
 
-const AppContext = createContext<AppProps>(defaultAppProps)
+const AppContext = createContext<AppContextProps>(defaultAppContextProps)
 export const useApp = () => useContext(AppContext)
 
 export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
   const { authToken, refreshToken } = useAuth()
-  const { data } = useQuery<hasura.GET_APP, hasura.GET_APPVariables>(
+  const { data, loading, error, refetch } = useQuery<hasura.GET_APP, hasura.GET_APPVariables>(
     gql`
       query GET_APP($appId: String!) {
         currency {
           id
+          name
           label
           unit
           minor_units
         }
+
         app_by_pk(id: $appId) {
           id
           name
@@ -108,6 +78,10 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             key
             value
           }
+          app_secrets {
+            key
+            value
+          }
           app_hosts(order_by: { priority: asc }) {
             host
           }
@@ -121,21 +95,25 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
   )
 
   const settings = Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || [])
+  const secrets = Object.fromEntries(data?.app_by_pk?.app_secrets.map(v => [v.key, v.value]) || [])
 
-  const app: AppProps = React.useMemo(
+  const app: AppContextProps = React.useMemo(
     () =>
       data?.app_by_pk
         ? {
-            loading: false,
+            loading,
+            error,
+            refetch,
             id: data.app_by_pk.id,
             name: data.app_by_pk.name || '',
             title: data.app_by_pk.title,
             description: data.app_by_pk.description,
             host: data.app_by_pk.app_hosts.shift()?.host || window.location.host,
+            hosts: data?.app_by_pk?.app_hosts.map(v => v.host) || [],
             enabledModules: Object.fromEntries(data.app_by_pk.app_modules.map(v => [v.module_id, true]) || []),
             navs: data.app_by_pk.app_navs.map(appNav => ({
               id: appNav.id,
-              block: appNav.block,
+              block: appNav.block as NavProps['block'],
               position: appNav.position,
               label: appNav.label,
               icon: appNav.icon,
@@ -145,7 +123,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
               tag: appNav.tag,
               subNavs: appNav.sub_app_navs.map(v => ({
                 id: v.id,
-                block: v.block,
+                block: v.block as NavProps['block'],
                 position: v.position,
                 label: v.label,
                 icon: v.icon,
@@ -156,13 +134,22 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
               })),
             })),
             settings,
+            secrets,
             currencyId: settings['currency_id'] || 'TWD',
-            currencies: Object.fromEntries(
-              data.currency.map(v => [v.id, { id: v.id, label: v.label, unit: v.unit, minorUnits: v.minor_units }]),
-            ),
+            currencies:
+              data?.currency.reduce((accumulator, currency) => {
+                accumulator[currency.id] = {
+                  id: currency.id,
+                  name: currency.id === 'LSC' && settings['coin.name'] ? settings['coin.name'] : currency.name,
+                  label: currency.id === 'LSC' && settings['coin.label'] ? settings['coin.label'] : currency.label,
+                  unit: currency.id === 'LSC' && settings['coin.unit'] ? settings['coin.unit'] : currency.unit,
+                  minorUnits: currency.minor_units ? currency.minor_units : 0,
+                }
+                return accumulator
+              }, {} as AppProps['currencies']) || {},
           }
-        : defaultAppProps,
-    [data?.app_by_pk, data?.currency, settings],
+        : defaultAppContextProps,
+    [data?.app_by_pk, data?.currency, error, loading, refetch, secrets, settings],
   )
 
   useEffect(() => {

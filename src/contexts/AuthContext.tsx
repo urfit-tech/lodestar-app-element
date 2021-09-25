@@ -12,7 +12,14 @@ type AuthProps = {
   currentUserRole: UserRole
   currentMemberId: string | null
   authToken: string | null
-  currentMember: { name: string; username: string; email: string; pictureUrl: string } | null
+  currentMember: {
+    id: string
+    name: string
+    username: string
+    email: string
+    pictureUrl: string
+    role: UserRole
+  } | null
   permissions: { [key: string]: boolean }
   refreshToken?: () => Promise<void>
   register?: (data: {
@@ -28,7 +35,7 @@ type AuthProps = {
     providerToken: any
     accountLinkToken?: string
   }) => Promise<void>
-  logout?: () => void
+  logout?: () => Promise<void>
   sendSmsCode?: (data: { phoneNumber: string }) => Promise<void>
   verifySmsCode?: (data: { phoneNumber: string; code: string }) => Promise<void>
 }
@@ -89,10 +96,12 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         currentMemberId: payload && payload.sub,
         authToken,
         currentMember: payload && {
+          id: payload.sub,
           name: payload.name,
           username: payload.username,
           email: payload.email,
           pictureUrl: payload.pictureUrl,
+          role: payload.role,
         },
         permissions: payload?.permissions
           ? payload.permissions.reduce((accumulator: { [key: string]: boolean }, currentValue: string) => {
@@ -136,23 +145,24 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 const currentMemberId = jwt.decode(result.authToken)?.sub
                 const phone = sessionStorage.getItem('phone')
                 if (phone) {
-                  Axios.post(
-                    `${process.env.REACT_APP_GRAPHQL_BASE_ROOT}/v1/graphql`,
-                    {
-                      query: `
+                  process.env.REACT_APP_GRAPHQL_ENDPOINT &&
+                    Axios.post(
+                      process.env.REACT_APP_GRAPHQL_ENDPOINT,
+                      {
+                        query: `
                         mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
                           insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
                             id
                           }
                         }
                     `,
-                      variables: {
-                        currentMemberId,
-                        phone,
+                        variables: {
+                          currentMemberId,
+                          phone,
+                        },
                       },
-                    },
-                    { headers: { Authorization: `Bearer ${result.authToken}` } },
-                  )
+                      { headers: { Authorization: `Bearer ${result.authToken}` } },
+                    )
                 }
 
                 const categoryIds: string[] = JSON.parse(sessionStorage.getItem('categoryIds') || '[]')
@@ -160,10 +170,11 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                   sessionStorage.getItem('memberProperties') || '[]',
                 )
                 if (categoryIds.length) {
-                  Axios.post(
-                    `${process.env.REACT_APP_GRAPHQL_BASE_ROOT}/v1/graphql`,
-                    {
-                      query: `
+                  process.env.REACT_APP_GRAPHQL_ENDPOINT &&
+                    Axios.post(
+                      process.env.REACT_APP_GRAPHQL_ENDPOINT,
+                      {
+                        query: `
                         mutation INSERT_MEMBER_CATEGORIES($memberProperties: [member_property_insert_input!]!, $data: [member_category_insert_input!]!) {
                           insert_member_property(objects: $memberProperties) {
                             affected_rows
@@ -173,41 +184,42 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                           }
                         }
                       `,
-                      variables: {
-                        memberProperties: memberProperties.map(v => ({
-                          member_id: currentMemberId,
-                          property_id: v.propertyId,
-                          value: v.value,
-                        })),
-                        data: categoryIds.map((categoryId, index) => ({
-                          member_id: currentMemberId,
-                          category_id: categoryId,
-                          position: index,
-                        })),
+                        variables: {
+                          memberProperties: memberProperties.map(v => ({
+                            member_id: currentMemberId,
+                            property_id: v.propertyId,
+                            value: v.value,
+                          })),
+                          data: categoryIds.map((categoryId, index) => ({
+                            member_id: currentMemberId,
+                            category_id: categoryId,
+                            position: index,
+                          })),
+                        },
                       },
-                    },
-                    { headers: { Authorization: `Bearer ${result.authToken}` } },
-                  )
+                      { headers: { Authorization: `Bearer ${result.authToken}` } },
+                    )
                 }
                 const star = sessionStorage.getItem('star')
                 if (star) {
-                  Axios.post(
-                    `${process.env.REACT_APP_GRAPHQL_BASE_ROOT}/v1/graphql`,
-                    {
-                      query: `
+                  process.env.REACT_APP_GRAPHQL_ENDPOINT &&
+                    Axios.post(
+                      process.env.REACT_APP_GRAPHQL_ENDPOINT,
+                      {
+                        query: `
                         mutation SET_MEMBER_STAR($memberId: String!, $star: numeric!) {
                           update_member(where: {id: {_eq: $memberId}}, _set: {star: $star}) {
                             affected_rows
                           }
                         }                      
                       `,
-                      variables: {
-                        memberId: currentMemberId,
-                        star: parseInt(star),
+                        variables: {
+                          memberId: currentMemberId,
+                          star: parseInt(star),
+                        },
                       },
-                    },
-                    { headers: { Authorization: `Bearer ${result.authToken}` } },
-                  )
+                      { headers: { Authorization: `Bearer ${result.authToken}` } },
+                    )
                 }
               } catch {}
             } else {

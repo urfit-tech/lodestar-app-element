@@ -46,11 +46,11 @@ const withAuthTokenLink = ({ appId, authToken }: ApolloClientOptions) =>
   )
 
 // create http link:
-const httpLink = createHttpLink({ uri: `${process.env.REACT_APP_GRAPHQL_BASE_ROOT}/v1/graphql` })
+const httpLink = createHttpLink({ uri: process.env.REACT_APP_GRAPHQL_ENDPOINT })
 
 // create ws link
 // const wsLink = new WebSocketLink({
-//   uri: `wss://${new URL(process.env.REACT_APP_GRAPHQL_BASE_ROOT).host}/v1/graphql`,
+//   uri: `wss://${process.env.REACT_APP_GRAPHQL_ENDPOINT}`,
 //   options: {
 //     reconnect: true,
 //   },
