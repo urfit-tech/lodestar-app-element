@@ -1,8 +1,9 @@
+import { Button as ChakraButton } from '@chakra-ui/react'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { ButtonProps } from '../types/style'
 
-const StyledButton = styled.span<ButtonProps>`
+const StyledButton = styled(ChakraButton)<ButtonProps>`
   display: inline-block;
   border-radius: 4px;
   user-select: none;

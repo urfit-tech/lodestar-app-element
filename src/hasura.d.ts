@@ -4,165 +4,6 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: SEARCH_ACTIVITY
-// ====================================================
-
-export interface SEARCH_ACTIVITY_activity {
-  __typename: 'activity'
-  id: any
-  title: string
-}
-
-export interface SEARCH_ACTIVITY {
-  /**
-   * fetch data from the table: "activity"
-   */
-  activity: SEARCH_ACTIVITY_activity[]
-}
-
-export interface SEARCH_ACTIVITYVariables {
-  appId: string
-  searchText: string
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_PROGRAM
-// ====================================================
-
-export interface GET_PROGRAM_contents {
-  __typename: 'program'
-  id: any
-  title: string
-}
-
-export interface GET_PROGRAM {
-  /**
-   * fetch data from the table: "program"
-   */
-  contents: GET_PROGRAM_contents[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_ACTIVITY
-// ====================================================
-
-export interface GET_ACTIVITY_contents {
-  __typename: 'activity'
-  id: any
-  title: string
-}
-
-export interface GET_ACTIVITY {
-  /**
-   * fetch data from the table: "activity"
-   */
-  contents: GET_ACTIVITY_contents[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_PODCAST_PROGRAM
-// ====================================================
-
-export interface GET_PODCAST_PROGRAM_contents {
-  __typename: 'podcast_program'
-  id: any
-  title: string
-}
-
-export interface GET_PODCAST_PROGRAM {
-  /**
-   * fetch data from the table: "podcast_program"
-   */
-  contents: GET_PODCAST_PROGRAM_contents[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_CREATOR
-// ====================================================
-
-export interface GET_CREATOR_contents {
-  __typename: 'creator'
-  id: string | null
-  title: string | null
-}
-
-export interface GET_CREATOR {
-  /**
-   * fetch data from the table: "creator"
-   */
-  contents: GET_CREATOR_contents[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_FUNDING_PROJECT
-// ====================================================
-
-export interface GET_FUNDING_PROJECT_contents {
-  __typename: 'project'
-  id: any
-  title: string
-}
-
-export interface GET_FUNDING_PROJECT {
-  /**
-   * fetch data from the table: "project"
-   */
-  contents: GET_FUNDING_PROJECT_contents[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_PRE_ORDER_PROJECT
-// ====================================================
-
-export interface GET_PRE_ORDER_PROJECT_contents {
-  __typename: 'project'
-  id: any
-  title: string
-}
-
-export interface GET_PRE_ORDER_PROJECT {
-  /**
-   * fetch data from the table: "project"
-   */
-  contents: GET_PRE_ORDER_PROJECT_contents[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL query operation: GET_NEWEST_ACTIVITIES
 // ====================================================
 
@@ -179,8 +20,104 @@ export interface GET_NEWEST_ACTIVITIES {
 }
 
 export interface GET_NEWEST_ACTIVITIESVariables {
-  appId: string
   limit?: number | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_APP
+// ====================================================
+
+export interface GET_APP_currency {
+  __typename: 'currency'
+  id: string
+  label: string
+  unit: string
+  minor_units: number | null
+}
+
+export interface GET_APP_app_by_pk_app_modules {
+  __typename: 'app_module'
+  id: any
+  /**
+   * activity | appointment | blog | invoice | learning_statistics | locale | member_card | merchandise | podcast | program_package | qrcode | social_connect | tempo_delivery | voucher | creator_display
+   */
+  module_id: string
+}
+
+export interface GET_APP_app_by_pk_app_navs_sub_app_navs {
+  __typename: 'app_nav'
+  id: any
+  block: string
+  position: number
+  label: string
+  icon: string | null
+  href: string
+  external: boolean
+  locale: string
+  tag: string | null
+}
+
+export interface GET_APP_app_by_pk_app_navs {
+  __typename: 'app_nav'
+  id: any
+  block: string
+  position: number
+  label: string
+  icon: string | null
+  href: string
+  external: boolean
+  locale: string
+  tag: string | null
+  /**
+   * An array relationship
+   */
+  sub_app_navs: GET_APP_app_by_pk_app_navs_sub_app_navs[]
+}
+
+export interface GET_APP_app_by_pk_app_settings {
+  __typename: 'app_setting'
+  key: string
+  value: string
+}
+
+export interface GET_APP_app_by_pk {
+  __typename: 'app'
+  id: string
+  name: string | null
+  title: string | null
+  description: string | null
+  /**
+   * An array relationship
+   */
+  app_modules: GET_APP_app_by_pk_app_modules[]
+  /**
+   * An array relationship
+   */
+  app_navs: GET_APP_app_by_pk_app_navs[]
+  /**
+   * An array relationship
+   */
+  app_settings: GET_APP_app_by_pk_app_settings[]
+}
+
+export interface GET_APP {
+  /**
+   * fetch data from the table: "currency"
+   */
+  currency: GET_APP_currency[]
+  /**
+   * fetch data from the table: "app" using primary key columns
+   */
+  app_by_pk: GET_APP_app_by_pk | null
+}
+
+export interface GET_APPVariables {
+  appId: string
 }
 
 /* tslint:disable */
