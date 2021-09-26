@@ -1,5 +1,6 @@
 import paletteGenerator from '@bobthered/tailwindcss-palette-generator'
 import { ChakraProvider, extendTheme, useTheme } from '@chakra-ui/react'
+import { ThemeProvider } from 'styled-components'
 import React from 'react'
 import { useApp } from './AppContext'
 
@@ -150,7 +151,19 @@ export const AppThemeProvider: React.FC = ({ children }) => {
       },
     },
   })
-  return <ChakraProvider theme={theme}>{children}</ChakraProvider>
+    const themeVars = Object.keys(settings)
+      .filter(key => key.split('.')[0] === 'theme')
+      .map(key => key.split('.')[1])
+      .reduce((vars: { [key: string]: string }, themeKey: string) => {
+        vars[themeKey] = settings[`theme.${themeKey}`]
+        return vars
+      }, {})
+
+  return <ChakraProvider theme={theme}>
+    <ThemeProvider theme={themeVars}>
+    {children}
+    </ThemeProvider>
+    </ChakraProvider>
 }
 
 export const useAppTheme = useTheme
