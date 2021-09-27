@@ -37,6 +37,7 @@ const PodcastProgramBlock: React.VFC<{
     <>
       {podcastPrograms.map(podcastProgram => (
         <CraftRefBlock
+          key={podcastProgram.id}
           ref={ref => ref && connect(ref)}
           style={{
             width: '100%',

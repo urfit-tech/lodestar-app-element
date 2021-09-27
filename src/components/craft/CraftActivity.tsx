@@ -127,7 +127,7 @@ const CraftActivity: UserComponent<{
       {children}
       <div className="row">
         {selectedActivities.map(activity => (
-          <div className="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div key={activity.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
             <CraftRefBlock
               ref={ref => ref && connect(ref)}
               style={{

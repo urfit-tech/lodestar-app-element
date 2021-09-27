@@ -93,9 +93,8 @@ const InstructorBlock: React.FC<{
       craftEvents={craftEnabled ? { hovered, selected } : {}}
     >
       {instructors.map(v => (
-        <div ref={ref => ref && connect(ref)}>
+        <div key={v.id} ref={ref => ref && connect(ref)}>
           <Instructor
-            key={v.id}
             id={v.id}
             name={v.name}
             abstract={v.abstract}

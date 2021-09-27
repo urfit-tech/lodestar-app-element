@@ -42,6 +42,7 @@ const ProjectBlock: React.VFC<{
     <>
       {projects.map(project => (
         <CraftRefBlock
+          key={project.id}
           ref={ref => ref && connect(ref)}
           style={{
             width: '100%',

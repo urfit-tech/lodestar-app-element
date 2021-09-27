@@ -37,6 +37,7 @@ const ProgramBlock: React.VFC<{
     <>
       {programs.map(program => (
         <CraftRefBlock
+          key={program.id}
           ref={ref => ref && connect(ref)}
           style={{
             width: '100%',
