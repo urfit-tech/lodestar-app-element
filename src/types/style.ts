@@ -99,6 +99,7 @@ export type ImageProps = {
   width?: string
   height?: string
   objectFit?: 'cover' | 'contain' | 'fill'
+  alignSelf?: 'flex-start' | 'flex-end' | 'center'
 } & MarginProps &
   PaddingProps
 

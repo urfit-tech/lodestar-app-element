@@ -29,6 +29,7 @@ const StyledImage = styled.img<{ customStyle?: ImageProps }>`
       width: ${props.customStyle.width};
       height: ${props.customStyle.height};
       object-fit: ${props.customStyle.objectFit};
+      align-self: ${props.customStyle.alignSelf};
     `}
 
   && {

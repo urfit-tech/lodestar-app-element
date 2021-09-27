@@ -85,6 +85,7 @@ export type CraftButtonProps = {
   block: boolean
   variant: 'text' | 'solid' | 'outline'
   color: string
+  align?: 'start' | 'end' | 'center'
   outlineColor?: string
   backgroundColor?: string
   backgroundType?: 'none' | 'solidColor'
