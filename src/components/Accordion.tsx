@@ -66,6 +66,7 @@ const Accordion: React.FC<{
     <div>
       {list.map((v, i) => (
         <StyledAccordion
+          key={v.title + i}
           customStyle={customStyle.card}
           titleHeight={Number(customStyle.title.fontSize) + Number(customStyle.title.mb) + Number(customStyle.title.mt)}
           isActive={activeIndex === i}

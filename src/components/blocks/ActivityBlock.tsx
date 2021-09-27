@@ -36,6 +36,7 @@ const ActivityBlock: React.VFC<{
     <>
       {activities.map(activity => (
         <CraftRefBlock
+          key={activity.id}
           ref={ref => ref && connect(ref)}
           style={{
             width: '100%',
