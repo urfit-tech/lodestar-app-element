@@ -21,6 +21,7 @@ export type CraftCardProps = {
   type: 'feature' | 'featureWithParagraph' | 'referrer' | 'referrerReverse'
   imageType: 'none' | 'image'
   imageUrl: string
+  imageAlign?: 'flex-start' | 'flex-end' | 'center'
   imageMargin?: CraftMarginProps
   imagePadding?: CraftPaddingProps
   title: string
@@ -44,6 +45,7 @@ const CraftCard: UserComponent<CraftCardProps> = ({
   type,
   imageType,
   imageUrl,
+  imageAlign,
   imageMargin,
   imagePadding,
   cardMargin,
@@ -92,9 +94,8 @@ const CraftCard: UserComponent<CraftCardProps> = ({
           ...cardMargin,
           ...cardPadding,
           ...(type === 'referrer' && variant === 'backgroundColor' && backgroundType === 'solidColor'
-            ? { borderBottomLeftRadius: '0' }
+            ? { borderBottomLeftRadius: '0', dropShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' }
             : {}),
-          ...(type === 'referrer' ? { dropShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' } : {}),
         }}
       >
         {type === 'referrerReverse' && (
@@ -109,6 +110,7 @@ const CraftCard: UserComponent<CraftCardProps> = ({
         <Card.Image
           src={imageType === 'image' ? imageUrl : undefined}
           customStyle={{
+            alignSelf: imageAlign,
             ...imageMargin,
             ...imagePadding,
           }}

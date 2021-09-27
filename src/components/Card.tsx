@@ -70,9 +70,9 @@ const StyledCard = styled.div<{ isDark?: boolean; customStyle: { direction: 'row
   transition: 0.3s;
   user-select: none;
   ${props =>
-    props.customStyle?.backgroundColor &&
+    props.customStyle.backgroundColor &&
     css`
-      background-color: ${props.customStyle?.backgroundColor};
+      background-color: ${props.customStyle.backgroundColor};
     `};
   ${props =>
     props.customStyle.backgroundImage &&
@@ -88,8 +88,14 @@ const StyledCard = styled.div<{ isDark?: boolean; customStyle: { direction: 'row
           border: 1px solid ${props.customStyle.borderColor || 'white'};
         `
       : ''}
-  ${props => (props.customStyle.shadow ? `filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1));` : ``)}
-  ${props => (props.customStyle.dropShadow ? `filter: drop-shadow(${props.customStyle.dropShadow});` : ``)}
+  ${props =>
+    props.customStyle.shadow && props.customStyle.backgroundColor
+      ? `filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1));`
+      : ``}
+  ${props =>
+    props.customStyle.dropShadow && props.customStyle.backgroundColor
+      ? `filter: drop-shadow(${props.customStyle.dropShadow});`
+      : ``}
   ${props => props.customStyle.overflow && `overflow: ${props.customStyle.overflow};`}
   
   && {
