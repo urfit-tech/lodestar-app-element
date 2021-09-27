@@ -5,11 +5,14 @@ import Button from '../../components/Button'
 import { CraftButtonProps } from '../../types/craft'
 import { CraftHoveredMixin, CraftSelectedMixin } from '../common'
 
-const StyledButtonWrapper = styled.div<{ block: boolean; craftEvents?: { hovered?: boolean; selected?: boolean } }>`
-  ${props => (props.block ? 'display:block; width:100%;' : 'display:inline-block;')}
+const StyledButtonWrapper = styled.div<{
+  align?: CraftButtonProps['align']
+  craftEvents?: { hovered?: boolean; selected?: boolean }
+}>`
   ${props => props?.craftEvents?.hovered && CraftHoveredMixin}
   ${props => props?.craftEvents?.selected && CraftSelectedMixin}
-  text-align: center;
+  ${props => props?.align && `text-align:${props?.align};`}
+  width:100%;
 `
 
 const CraftButton: UserComponent<CraftButtonProps> = ({
@@ -20,6 +23,7 @@ const CraftButton: UserComponent<CraftButtonProps> = ({
   block,
   variant,
   color,
+  align,
   outlineColor,
   backgroundColor,
   backgroundType,
@@ -39,8 +43,8 @@ const CraftButton: UserComponent<CraftButtonProps> = ({
   return (
     <StyledButtonWrapper
       ref={ref => ref && connect(drag(ref))}
-      block={block}
       craftEvents={enabled ? { selected, hovered } : {}}
+      align={align}
     >
       <Button
         variant={variant}

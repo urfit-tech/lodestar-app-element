@@ -31,7 +31,7 @@ const StyledButton = styled(ChakraButton)<ButtonProps>`
   ${props =>
     props.block &&
     css`
-      width: 100%;
+      width: 100% !important;
       display: block;
     `}
 `
