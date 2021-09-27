@@ -29,6 +29,68 @@ export interface GET_NEWEST_ACTIVITIESVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_NEWEST_CREATOR
+// ====================================================
+
+export interface GET_NEWEST_CREATOR_creator {
+  __typename: 'creator'
+  id: string | null
+}
+
+export interface GET_NEWEST_CREATOR {
+  /**
+   * fetch data from the table: "creator"
+   */
+  creator: GET_NEWEST_CREATOR_creator[]
+}
+
+export interface GET_NEWEST_CREATORVariables {
+  limit?: number | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_PUBLISHED_CREATOR
+// ====================================================
+
+export interface GET_PUBLISHED_CREATOR_creator_member {
+  __typename: 'member_public'
+  title: string | null
+  abstract: string | null
+}
+
+export interface GET_PUBLISHED_CREATOR_creator {
+  __typename: 'creator'
+  id: string | null
+  name: string | null
+  picture_url: string | null
+  /**
+   * An object relationship
+   */
+  member: GET_PUBLISHED_CREATOR_creator_member | null
+}
+
+export interface GET_PUBLISHED_CREATOR {
+  /**
+   * fetch data from the table: "creator"
+   */
+  creator: GET_PUBLISHED_CREATOR_creator[]
+}
+
+export interface GET_PUBLISHED_CREATORVariables {
+  ids: string[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_APP
 // ====================================================
 
