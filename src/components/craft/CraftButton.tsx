@@ -49,8 +49,8 @@ const CraftButton: UserComponent<CraftButtonProps> = ({
       <Button
         variant={variant}
         color={color}
-        outlineColor={outlineColor}
-        backgroundColor={backgroundType === 'solidColor' ? backgroundColor : undefined}
+        outlineColor={outlineColor || 'transparent'}
+        backgroundColor={backgroundType === 'solidColor' ? backgroundColor : 'none'}
         size={size}
         block={block}
         link={link}

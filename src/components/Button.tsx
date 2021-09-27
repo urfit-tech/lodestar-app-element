@@ -17,8 +17,9 @@ const StyledButton = styled(ChakraButton)<ButtonProps>`
   }
 
   color: ${props => props.color || '#585858'};
-  ${props => props.backgroundColor && `background-color: ${props.backgroundColor}`};
-  ${props => props.outlineColor && `border: solid 1px ${props.outlineColor}`};
+  ${props => props.backgroundColor && `background: ${props.backgroundColor} !important`};
+  ${props => props.backgroundColor && `background-color: ${props.backgroundColor} `};
+  ${props => props.outlineColor && `border: solid 1px ${props.outlineColor} !important`};
 
   ${props =>
     props.size === 'lg'
