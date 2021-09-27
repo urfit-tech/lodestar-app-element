@@ -95,7 +95,12 @@ const CraftActivity: UserComponent<{
   return (
     <div className="container">
       {withSelector && (
-        <div className="mb-3">
+        <CraftRefBlock
+          className="mb-3"
+          ref={ref => ref && connect(ref)}
+          events={{ hovered, selected }}
+          options={{ enabled }}
+        >
           <StyledButton
             colorScheme="primary"
             variant={classification === null ? 'solid' : 'outline'}
@@ -117,7 +122,7 @@ const CraftActivity: UserComponent<{
                 {category.name}
               </StyledButton>
             ))}
-        </div>
+        </CraftRefBlock>
       )}
       {children}
       <div className="row">
@@ -127,7 +132,7 @@ const CraftActivity: UserComponent<{
               ref={ref => ref && connect(ref)}
               style={{
                 width: '100%',
-                marginBottom: '12px',
+                marginBottom: '30px',
               }}
               events={{ hovered, selected }}
               options={{ enabled }}
