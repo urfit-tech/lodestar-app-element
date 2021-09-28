@@ -14,20 +14,22 @@ import { CustomRatioImage } from '../Image'
 import Layout from '../Layout'
 
 const StyledCreatorName = styled.h2`
+  ${MultiLineTruncationMixin}
   color: var(--gray-darker);
   font-weight: bold;
   font-size: 20px;
   line-height: 1.5;
-  height: calc(20px * 1.5);
+  height: calc(20px * 1.5 * 2);
   letter-spacing: 0.77px;
 `
 
 const StyledCreatorTitle = styled.h3`
+  ${MultiLineTruncationMixin}
   color: var(--gray-darker);
   font-weight: 500;
   font-size: 14px;
   line-height: 1.5;
-  height: calc(14px * 1.5);
+  height: calc(14px * 1.5 * 2);
   letter-spacing: 0.18px;
 `
 
@@ -35,7 +37,7 @@ const StyledCreatorAbstract = styled.p`
   ${MultiLineTruncationMixin}
   ${CommonTextMixin}
   line-height: 1.5;
-  height: calc(14px * 1.5);
+  height: calc(14px * 1.5 * 2);
 `
 
 const CraftCreator: UserComponent<{
