@@ -7,37 +7,31 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { CommonTextMixin, MultiLineTruncationMixin } from '../../helpers/style'
+import { CommonTextMixin } from '../../helpers/style'
 import DefaultAvatar from '../../images/default-avatar.svg'
 import { CraftRefBlock } from '../common'
 import { CustomRatioImage } from '../Image'
 import Layout from '../Layout'
 
 const StyledCreatorName = styled.h2`
-  ${MultiLineTruncationMixin}
   color: var(--gray-darker);
   font-weight: bold;
   font-size: 20px;
   line-height: 1.5;
-  height: calc(20px * 1.5 * 2);
   letter-spacing: 0.77px;
 `
 
 const StyledCreatorTitle = styled.h3`
-  ${MultiLineTruncationMixin}
   color: var(--gray-darker);
   font-weight: 500;
   font-size: 14px;
   line-height: 1.5;
-  height: calc(14px * 1.5 * 2);
   letter-spacing: 0.18px;
 `
 
 const StyledCreatorAbstract = styled.p`
-  ${MultiLineTruncationMixin}
   ${CommonTextMixin}
   line-height: 1.5;
-  height: calc(14px * 1.5 * 2);
 `
 
 const CraftCreator: UserComponent<{
@@ -93,6 +87,11 @@ const CraftCreator: UserComponent<{
     )
   }
 
+  const sortedCreator =
+    type === 'custom'
+      ? creatorIds.map(creatorId => creators.find(creator => creator.id === creatorId)).filter(notEmpty)
+      : creators
+
   return (
     <Layout
       customStyle={{
@@ -111,7 +110,7 @@ const CraftCreator: UserComponent<{
         },
       }}
     >
-      {creators.map(creator => (
+      {sortedCreator.map(creator => (
         <CraftRefBlock
           key={creator.id}
           ref={ref => ref && connect(ref)}
