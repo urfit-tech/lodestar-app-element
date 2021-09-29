@@ -9,6 +9,28 @@ body {
   font-family: 'Roboto', 'Noto Sans TC', sans-serif !important;
 }
 
+// custom component
+
+.lh-1 {
+  line-height: 1;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
 // color palette
 :root {
   --success: #4ed1b3;
