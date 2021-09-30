@@ -101,12 +101,14 @@ const CraftCreator: UserComponent<{
           columnAmount: 1,
           columnRatio: [1],
           displayAmount: ids.length,
+          alignItems: 'start',
         },
         desktop: {
           margin: { ml: '20', mr: '20' },
           columnAmount: 5,
           columnRatio: [1, 1, 1, 1, 1],
           displayAmount: ids.length,
+          alignItems: 'start',
         },
       }}
     >
