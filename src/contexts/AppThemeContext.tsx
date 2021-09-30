@@ -76,6 +76,15 @@ export const AppThemeProvider: React.FC = ({ children }) => {
           }),
         },
       },
+      Select: {
+        variants: {
+          outline: () => ({
+            field: {
+              borderColor: '#ccc',
+            },
+          }),
+        },
+      },
       Textarea: {
         variants: {
           outline: () => ({
