@@ -164,10 +164,15 @@ export const AppThemeProvider: React.FC = ({ children }) => {
   const themeVars = Object.keys(settings)
     .filter(key => key.split('.')[0] === 'theme')
     .map(key => key.split('.')[1])
-    .reduce((vars: { [key: string]: string }, themeKey: string) => {
-      vars[themeKey] = settings[`theme.${themeKey}`]
-      return vars
-    }, {})
+    .reduce(
+      (vars: { [key: string]: string }, themeKey: string) => {
+        vars[themeKey] = settings[`theme.${themeKey}`]
+        return vars
+      },
+      {
+        '@primary-color': '#2d313a',
+      },
+    )
 
   return (
     <ChakraProvider theme={theme}>
