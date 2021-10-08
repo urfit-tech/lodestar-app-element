@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { SimpleGrid } from '@chakra-ui/react'
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import gql from 'graphql-tag'
-import { repeat, sum } from 'ramda'
+import { sum } from 'ramda'
 import React, { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import { DeepPick } from 'ts-deep-pick'
@@ -12,8 +12,6 @@ import { notEmpty } from '../../helpers'
 import { CraftCollectionBaseOptions } from '../../types/craft'
 import { Program, ProgramRole } from '../../types/program'
 import { PlanPeriod } from '../../types/shared'
-import ProgramCard from '../cards/ProgramCard'
-import { CraftRefBlock } from '../common'
 
 type CraftProgramCollectionProps = CraftCollectionBaseOptions & {
   options:
@@ -61,7 +59,7 @@ const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
   const { loading, programs } = useProgramCollection(options)
   return (
     <SimpleGrid columns={columns} spacing={gutter}>
-      {loading && repeat(<ProgramCard loading />, 12)}
+      {/* {loading && repeat(<ProgramCard loading />, 12)}
       {programs.map(program => (
         <CraftRefBlock
           ref={ref => ref && connect(ref)}
@@ -86,7 +84,7 @@ const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
             period={program.plans[0]?.period || null}
           />
         </CraftRefBlock>
-      ))}
+      ))} */}
     </SimpleGrid>
   )
 }

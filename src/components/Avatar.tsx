@@ -1,4 +1,3 @@
-import { Skeleton, SkeletonCircle } from '@chakra-ui/skeleton'
 import React from 'react'
 import styled from 'styled-components'
 import { usePublicMember } from '../hooks/data'
@@ -84,7 +83,7 @@ export const MultiAvatar: React.FC<
 
   return (
     <div className="d-flex align-items-center">
-      {loading ? (
+      {/* {loading ? (
         <>
           <SkeletonCircle className="mr-3" />
           <Skeleton width={Math.random() * 100 + 50} height={4} />
@@ -97,7 +96,7 @@ export const MultiAvatar: React.FC<
           {props.renderText?.(member, props.onClick) ||
             (props.withName && <MemberName className="ml-3">{member?.name}</MemberName>)}
         </>
-      )}
+      )} */}
     </div>
   )
 }

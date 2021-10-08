@@ -1,16 +1,9 @@
-import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
-import EmptyCover from '../../images/empty-cover.png'
 import { CurrentPrice } from '../../types/data'
 import { PlanPeriod } from '../../types/shared'
-import { MultiAvatar } from '../Avatar'
-import Card from '../Card'
-import { CustomRatioImage } from '../Image'
-import PriceLabel from '../label/PriceLabel'
 
 const StyledTitle = styled.div`
   ${MultiLineTruncationMixin}
@@ -50,7 +43,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
 
   return (
     <div>
-      <InstructorPlaceHolder>
+      {/* <InstructorPlaceHolder>
         {loading ? (
           <MultiAvatar loading memberIdList={[]} />
         ) : (
@@ -101,6 +94,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
           </Card.MetaBlock>
         </Card.ContentBlock>
       </Card>
+     */}
     </div>
   )
 }
