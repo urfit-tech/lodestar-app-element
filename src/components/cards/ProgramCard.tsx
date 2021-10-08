@@ -29,6 +29,16 @@ const InstructorPlaceHolder = styled.div`
 export type ProgramCardProps = (
   | {
       loading: true
+      id?: never
+      title?: never
+      abstract?: never
+      totalDuration?: never
+      coverUrl?: never
+      instructorIds?: never
+      period?: never
+      listPrice?: never
+      salePrice?: never
+      soldAt?: never
     }
   | ({
       loading?: never
@@ -44,8 +54,19 @@ export type ProgramCardProps = (
   craftEnabled?: boolean
 }
 
-const ProgramCard: React.VFC<ProgramCardProps> = props => {
-  const { loading, craftEnabled } = props
+const ProgramCard: React.VFC<ProgramCardProps> = ({
+  loading,
+  instructorIds = [],
+  craftEnabled,
+  id,
+  coverUrl,
+  title,
+  abstract,
+  listPrice = 0,
+  salePrice,
+  period,
+  totalDuration,
+}) => {
   const history = useHistory()
 
   return (
@@ -55,7 +76,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
           <MultiAvatar loading memberIdList={[]} />
         ) : (
           <MultiAvatar
-            memberIdList={props.instructorIds}
+            memberIdList={instructorIds}
             withName
             onClick={instructorId => !craftEnabled && history.push(`/creators/${instructorId}?tabkey=introduction`)}
           />
@@ -71,17 +92,17 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
           p: '0',
           overflow: 'hidden',
         }}
-        onClick={() => !craftEnabled && !loading && `/programs/${props.id}/contents`}
+        onClick={() => !craftEnabled && !loading && `/programs/${id}/contents`}
       >
         {loading ? (
           <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
         ) : (
-          <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+          <CustomRatioImage width="100%" ratio={9 / 16} src={coverUrl || EmptyCover} />
         )}
         <Card.ContentBlock>
-          {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{props.title}</StyledTitle>}
+          {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{title}</StyledTitle>}
           <Card.Description>
-            {loading ? <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} /> : props.abstract}
+            {loading ? <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} /> : abstract}
           </Card.Description>
           <Card.MetaBlock className="d-flex flex-row-reverse justify-content-between align-items-center">
             <div>
@@ -90,14 +111,14 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
               ) : (
                 <PriceLabel
                   variant="inline"
-                  listPrice={props.listPrice}
-                  salePrice={props.salePrice}
-                  periodAmount={props.period?.amount}
-                  periodType={props.period?.type}
+                  listPrice={listPrice}
+                  salePrice={salePrice}
+                  periodAmount={period?.amount}
+                  periodType={period?.type}
                 />
               )}
             </div>
-            <div>{loading ? <SkeletonText /> : durationFormatter(props.totalDuration)}</div>
+            <div>{loading ? <SkeletonText /> : durationFormatter(totalDuration)}</div>
           </Card.MetaBlock>
         </Card.ContentBlock>
       </Card>

@@ -72,13 +72,24 @@ export const MultiAvatar: React.FC<
   } & (
     | {
         loading: true
+        shape?: never
+        size?: never
+        withName?: never
+        renderAvatar?: never
+        renderText?: never
+        onClick?: never
       }
-    | ({
+    | {
         loading?: never
-      } & AvatarProps)
+        shape?: 'circle' | 'square'
+        size?: number | 'default' | 'small' | 'large'
+        withName: boolean
+        renderAvatar?: (member: MemberPublicProps | null, onClick?: (memberId: string) => void) => React.ReactNode
+        renderText?: (member: MemberPublicProps | null, onClick?: (memberId: string) => void) => React.ReactNode
+        onClick?: (instructorId: string) => void
+      }
   )
-> = props => {
-  const { loading, memberIdList } = props
+> = ({ loading, memberIdList, size, shape, withName, renderAvatar, renderText, onClick }) => {
   const memberId = memberIdList[0]
   const { member } = usePublicMember(memberId)
 
@@ -91,11 +102,8 @@ export const MultiAvatar: React.FC<
         </>
       ) : (
         <>
-          {props.renderAvatar?.(member, props.onClick) || (
-            <AvatarImage src={member?.pictureUrl} shape={props.shape} size={props.size} />
-          )}
-          {props.renderText?.(member, props.onClick) ||
-            (props.withName && <MemberName className="ml-3">{member?.name}</MemberName>)}
+          {renderAvatar?.(member, onClick) || <AvatarImage src={member?.pictureUrl} shape={shape} size={size} />}
+          {renderText?.(member, onClick) || (withName && <MemberName className="ml-3">{member?.name}</MemberName>)}
         </>
       )}
     </div>
