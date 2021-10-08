@@ -14393,6 +14393,13 @@ tryer@^1.0.1:
   resolved "https://registry.yarnpkg.com/tryer/-/tryer-1.0.1.tgz#f2c85406800b9b0f74c9f7465b81eaad241252f8"
   integrity sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==
 
+ts-deep-pick@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/ts-deep-pick/-/ts-deep-pick-0.2.2.tgz#004219c60d997cac2b1d8bb9db024b84643ef0b5"
+  integrity sha512-DFR0THXKY8Hil84r4vx5Ofb7zVryHCBfv/vYcgbDyymmivdB1vUcBwbYsDzP3j9pwnQqVFNZZplYu628STrXAA==
+  dependencies:
+    ts-typetools "^0.6.1"
+
 ts-invariant@^0.4.0, ts-invariant@^0.4.4:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.4.4.tgz#97a523518688f93aafad01b0e80eb803eb2abd86"
@@ -14429,6 +14436,11 @@ ts-toolbelt@^6.15.1:
   version "6.15.5"
   resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-6.15.5.tgz#cb3b43ed725cb63644782c64fbcad7d8f28c0a83"
   integrity sha512-FZIXf1ksVyLcfr7M317jbB67XFJhOO1YqdTcuGaq9q5jLUoTikukZ+98TPjKiP2jC5CgmYdWWYs0s2nLSU0/1A==
+
+ts-typetools@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/ts-typetools/-/ts-typetools-0.6.1.tgz#3827d1d06ef7dd578a43effd963378f0458036c2"
+  integrity sha512-A4TcVw40hKKgdK22M6vDvqEmzxuE21uyeGuFBHzgl9USRmmQRnvwY9fURIQfdP8pXV6wIq6O4g3kr3/O3Yl0hA==
 
 tsconfig-paths@^3.11.0:
   version "3.11.0"

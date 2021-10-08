@@ -2,7 +2,7 @@ import { useApolloClient, useQuery } from '@apollo/react-hooks'
 import { Skeleton } from '@chakra-ui/react'
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { gql } from 'graphql-tag'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import hasura from '../../hasura'
@@ -38,7 +38,7 @@ const CraftCreator: UserComponent<{
   type: 'newest' | 'custom'
   ids: (string | null)[]
 }> = ({ type, ids }) => {
-  const apolloClient = useApolloClient()
+  const apolloClient = useMemo(useApolloClient, [])
   const { enabled } = useEditor(state => ({
     enabled: state.options.enabled,
   }))

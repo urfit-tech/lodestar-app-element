@@ -1,9 +1,10 @@
+import { SkeletonText } from '@chakra-ui/react'
 import { useNode } from '@craftjs/core'
 import React from 'react'
 import { usePublishedProgramCollection } from '../../hooks/data'
+import { PlanPeriod } from '../../types/shared'
 import ProgramCard from '../cards/ProgramCard'
 import { CraftRefBlock } from '../common'
-import Skeleton from '../Skeleton'
 
 const ProgramBlock: React.VFC<{
   customContentIds?: string[]
@@ -22,14 +23,7 @@ const ProgramBlock: React.VFC<{
     ids: customContentIds,
   })
 
-  if (loadingPrograms)
-    return (
-      <>
-        <Skeleton height="20px" className="my-1" />
-        <Skeleton height="20px" className="my-1" />
-        <Skeleton height="20px" className="my-1" />
-      </>
-    )
+  if (loadingPrograms) return <SkeletonText noOfLines={3} />
 
   if (programs.length === 0 || errorPrograms) return null
 
@@ -45,7 +39,27 @@ const ProgramBlock: React.VFC<{
           events={{ hovered, selected }}
           options={{ enabled: craftEnabled }}
         >
-          <ProgramCard key={program.id} program={program} craftEnabled={craftEnabled} />
+          <ProgramCard
+            key={program.id}
+            craftEnabled={craftEnabled}
+            id={program.id}
+            title={program.title}
+            abstract={program.abstract || ''}
+            totalDuration={program.totalDuration || 0}
+            coverUrl={program.coverUrl}
+            instructorIds={program.roles.map(programRole => programRole.id)}
+            listPrice={program.listPrice || 0}
+            salePrice={program.salePrice}
+            soldAt={program.soldAt}
+            period={program.plans
+              .filter(programPlan => programPlan.periodAmount && programPlan.periodType)
+              .reduce((accum, v) => {
+                if (!accum) {
+                  accum = { amount: v.periodAmount, type: v.periodType }
+                }
+                return accum
+              }, null as PlanPeriod | null)}
+          />
         </CraftRefBlock>
       ))}
     </>

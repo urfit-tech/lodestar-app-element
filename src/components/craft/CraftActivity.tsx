@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/react'
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import gql from 'graphql-tag'
 import { uniqBy, unnest } from 'ramda'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { StringParam, useQueryParam } from 'use-query-params'
@@ -33,7 +33,7 @@ const CraftActivity: UserComponent<{
   const { formatMessage } = useIntl()
   const [active = null] = useQueryParam('categories', StringParam)
   const [classification = null, setClassification] = useQueryParam('classification', StringParam)
-  const apolloClient = useApolloClient()
+  const apolloClient = useMemo(useApolloClient, [])
   const { enabled } = useEditor(state => ({
     enabled: state.options.enabled,
   }))

@@ -145,6 +145,7 @@ const Avatar: React.VFC<{
 const Card: React.FC<{
   isDark?: boolean
   customStyle: { direction: 'row' | 'column' } & CardProps
+  onClick?: () => void
 }> & {
   Image: typeof Image
   Title: typeof StyleCardTitle

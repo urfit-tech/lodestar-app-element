@@ -9,6 +9,12 @@ export type PeriodType = 'D' | 'W' | 'M' | 'Y'
 
 export type ProjectType = 'on-sale' | 'pre-order' | 'funding'
 
+export type CurrentPrice = {
+  listPrice: number
+  salePrice: number | null
+  soldAt: Date | null
+}
+
 export type MemberPublicProps = {
   id: string
   pictureUrl: string | null
@@ -54,11 +60,8 @@ export type ProgramBriefProps = {
   publishedAt: Date | null
   isSubscription: boolean
   isPrivate: boolean
-  listPrice: number | null
-  salePrice: number | null
-  soldAt: Date | null
   totalDuration?: number
-}
+} & CurrentPrice
 
 export type ProgramRoleProps = {
   id: string

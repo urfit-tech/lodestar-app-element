@@ -1,11 +1,13 @@
+import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
 import EmptyCover from '../../images/empty-cover.png'
-import { ProgramBriefProps, ProgramPlanProps, ProgramRoleProps } from '../../types/data'
-import MemberAvatar from '../Avatar'
+import { CurrentPrice } from '../../types/data'
+import { PlanPeriod } from '../../types/shared'
+import { MultiAvatar } from '../Avatar'
 import Card from '../Card'
 import { CustomRatioImage } from '../Image'
 import PriceLabel from '../label/PriceLabel'
@@ -24,73 +26,93 @@ const InstructorPlaceHolder = styled.div`
   height: 2rem;
 `
 
-export type ProgramCardProps = {
-  program: ProgramBriefProps & {
-    roles: ProgramRoleProps[]
-    plans: ProgramPlanProps[]
-  }
+export type ProgramCardProps = (
+  | {
+      loading: true
+    }
+  | ({
+      loading?: never
+      id: string
+      title: string
+      abstract: string
+      totalDuration: number
+      coverUrl: string | null
+      instructorIds: string[]
+      period: PlanPeriod | null
+    } & CurrentPrice)
+) & {
   craftEnabled?: boolean
 }
 
-const ProgramCard: React.VFC<ProgramCardProps> = ({ program, craftEnabled }) => {
-  const instructorId = program.roles.length > 0 && program.roles[0].memberId
-  const listPrice =
-    program.isSubscription && program.plans.length > 0 ? program.plans[0].listPrice : program.listPrice || 0
-  const salePrice =
-    program.isSubscription && program.plans.length > 0 && (program.plans[0].soldAt?.getTime() || 0) > Date.now()
-      ? program.plans[0].salePrice
-      : (program.soldAt?.getTime() || 0) > Date.now()
-      ? program.salePrice
-      : undefined
-  const periodAmount = program.isSubscription && program.plans.length > 0 ? program.plans[0].periodAmount : null
-  const periodType = program.isSubscription && program.plans.length > 0 ? program.plans[0].periodType : null
+const ProgramCard: React.VFC<ProgramCardProps> = props => {
+  const { loading, craftEnabled } = props
+  const history = useHistory()
 
   return (
-    <>
+    <div>
       <InstructorPlaceHolder>
-        <Link
-          onClick={craftEnabled ? e => e.preventDefault() : undefined}
-          to={instructorId ? `/creators/${instructorId}?tabkey=introduction` : `/creators`}
-        >
-          <MemberAvatar memberId={instructorId || ''} withName />
-        </Link>
+        {loading ? (
+          <MultiAvatar loading memberIdList={[]} />
+        ) : (
+          <MultiAvatar
+            memberIdList={props.instructorIds}
+            withName
+            onClick={instructorId => !craftEnabled && history.push(`/creators/${instructorId}?tabkey=introduction`)}
+          />
+        )}
       </InstructorPlaceHolder>
 
-      <Link onClick={craftEnabled ? e => e.preventDefault() : undefined} to={`/programs/${program.id}/contents`}>
-        <Card
-          customStyle={{
-            direction: 'column',
-            bordered: false,
-            shadow: true,
-            backgroundColor: 'white',
-            p: '0',
-            overflow: 'hidden',
-          }}
-        >
-          <CustomRatioImage width="100%" ratio={9 / 16} src={program.coverUrl || EmptyCover} />
-          <Card.ContentBlock>
-            <StyledTitle>{program.title}</StyledTitle>
-            <Card.Description>{program.abstract}</Card.Description>
-            <Card.MetaBlock className="d-flex flex-row-reverse justify-content-between align-items-center">
-              <div>
+      <Card
+        customStyle={{
+          direction: 'column',
+          bordered: false,
+          shadow: true,
+          backgroundColor: 'white',
+          p: '0',
+          overflow: 'hidden',
+        }}
+        onClick={() => !craftEnabled && !loading && `/programs/${props.id}/contents`}
+      >
+        {loading ? (
+          <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+        ) : (
+          <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+        )}
+        <Card.ContentBlock>
+          {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{props.title}</StyledTitle>}
+          <Card.Description>
+            {loading ? <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} /> : props.abstract}
+          </Card.Description>
+          <Card.MetaBlock className="d-flex flex-row-reverse justify-content-between align-items-center">
+            <div>
+              {loading ? (
+                <Skeleton width="10" height={4} />
+              ) : (
                 <PriceLabel
                   variant="inline"
-                  listPrice={listPrice}
-                  salePrice={salePrice}
-                  periodAmount={periodAmount}
-                  periodType={periodType || undefined}
+                  listPrice={props.listPrice}
+                  salePrice={props.salePrice}
+                  periodAmount={props.period?.amount}
+                  periodType={props.period?.type}
                 />
-              </div>
-
-              {!program.isSubscription && !!program.totalDuration && (
-                <div>{durationFormatter(program.totalDuration)}</div>
               )}
-            </Card.MetaBlock>
-          </Card.ContentBlock>
-        </Card>
-      </Link>
-    </>
+            </div>
+            <div>{loading ? <SkeletonText /> : durationFormatter(props.totalDuration)}</div>
+          </Card.MetaBlock>
+        </Card.ContentBlock>
+      </Card>
+    </div>
   )
+}
+
+export function withReviews<P>(
+  WrappedComponent: React.ComponentType<P & { reviews: string[] }>,
+  options?: { limit: number },
+) {
+  const ComponentWithReview: React.VFC<P> = props => {
+    return <WrappedComponent {...props} reviews={[]}></WrappedComponent>
+  }
+  return ComponentWithReview
 }
 
 export default ProgramCard

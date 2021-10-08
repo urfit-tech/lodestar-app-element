@@ -1,3 +1,4 @@
+import { Skeleton, SkeletonCircle } from '@chakra-ui/skeleton'
 import React from 'react'
 import styled from 'styled-components'
 import { usePublicMember } from '../hooks/data'
@@ -37,21 +38,25 @@ const MemberName = styled.span`
 `
 
 type AvatarProps = {
-  memberId: string
   shape?: 'circle' | 'square'
   size?: number | 'default' | 'small' | 'large'
   withName?: boolean
-  renderAvatar?: (member: MemberPublicProps | null) => React.ReactNode
-  renderText?: (member: MemberPublicProps | null) => React.ReactNode
+  renderAvatar?: (member: MemberPublicProps | null, onClick?: (memberId: string) => void) => React.ReactNode
+  renderText?: (member: MemberPublicProps | null, onClick?: (memberId: string) => void) => React.ReactNode
+  onClick?: (memberId: string) => void
 }
 
-const Avatar: React.FC<AvatarProps> & {
+const Avatar: React.FC<
+  AvatarProps & {
+    memberId: string
+  }
+> & {
   Image: typeof AvatarImage
-} = ({ memberId, shape, size, withName, renderAvatar, renderText }) => {
+} = ({ memberId, shape, size, withName, renderAvatar, renderText, onClick }) => {
   const { member } = usePublicMember(memberId)
 
   return (
-    <div className="d-flex align-items-center">
+    <div className="d-flex align-items-center" onClick={() => onClick?.(memberId)}>
       {renderAvatar ? renderAvatar(member) : <AvatarImage src={member?.pictureUrl} shape={shape} size={size} />}
       {renderText && renderText(member)}
       {withName && <MemberName className="ml-3">{member?.name}</MemberName>}
@@ -60,5 +65,41 @@ const Avatar: React.FC<AvatarProps> & {
 }
 
 Avatar.Image = AvatarImage
+
+export const MultiAvatar: React.FC<
+  {
+    memberIdList: string[]
+  } & (
+    | {
+        loading: true
+      }
+    | ({
+        loading?: never
+      } & AvatarProps)
+  )
+> = props => {
+  const { loading, memberIdList } = props
+  const memberId = memberIdList[0]
+  const { member } = usePublicMember(memberId)
+
+  return (
+    <div className="d-flex align-items-center">
+      {loading ? (
+        <>
+          <SkeletonCircle className="mr-3" />
+          <Skeleton width={Math.random() * 100 + 50} height={4} />
+        </>
+      ) : (
+        <>
+          {props.renderAvatar?.(member, props.onClick) || (
+            <AvatarImage src={member?.pictureUrl} shape={props.shape} size={props.size} />
+          )}
+          {props.renderText?.(member, props.onClick) ||
+            (props.withName && <MemberName className="ml-3">{member?.name}</MemberName>)}
+        </>
+      )}
+    </div>
+  )
+}
 
 export default Avatar
