@@ -15,7 +15,7 @@ import { PlanPeriod } from '../../types/shared'
 import ProgramCard from '../cards/ProgramCard'
 import { CraftRefBlock } from '../common'
 
-type CraftProgramCollectionProps = CraftCollectionBaseOptions & {
+export type CraftProgramCollectionProps = CraftCollectionBaseOptions & {
   options:
     | {
         source: 'custom'
@@ -291,8 +291,20 @@ const useProgramCollection = (options: CraftProgramCollectionProps['options']) =
         })),
       })) || []
     )
-  }, [queryResult])
+  }, [options, queryResult])
   return { loading, programs }
+}
+
+const withReviews = (options?: {}) => <T extends object>(WrappedComponent: React.VFC<T & { reviews: string[] }>) => {
+  const ComponentWithReviews: React.VFC<T> = props => {
+    return React.createElement(WrappedComponent, { ...props, reviews: [] })
+  }
+  return ComponentWithReviews
+}
+
+const PowerfulProgramCard = withReviews()(ProgramCard)
+const Foo = () => {
+  return <PowerfulProgramCard loading />
 }
 
 export default CraftProgramCollection
