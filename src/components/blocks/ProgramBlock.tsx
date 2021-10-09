@@ -1,6 +1,5 @@
 import { SkeletonText } from '@chakra-ui/react'
 import { useNode } from '@craftjs/core'
-import React from 'react'
 import { usePublishedProgramCollection } from '../../hooks/data'
 import { PlanPeriod } from '../../types/shared'
 import ProgramCard from '../cards/ProgramCard'

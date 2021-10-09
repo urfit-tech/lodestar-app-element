@@ -1,5 +1,4 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import React from 'react'
 import { StyledParagraph, StyledTitle } from '../../components/common'
 import { CraftParagraphProps, CraftTitleProps } from '../../types/craft'
 import { CraftRefBlock } from '../common'

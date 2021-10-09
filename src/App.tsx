@@ -5,10 +5,12 @@ import { QueryParamProvider } from 'use-query-params'
 import * as CraftResolvers from './components/craft'
 import { LodestarAppProvider } from './contexts/LodestarAppContext'
 import ProgramCollectionPage from './pages/ProgramCollectionPage'
+import ProgramContentCollectionPage from './pages/ProgramContentCollectionPage'
 
 const routes = [
   { name: 'Home', path: '/', render: () => null },
   { name: 'Program collection', path: '/programs', component: ProgramCollectionPage },
+  { name: 'Program content collection', path: '/program-contents', component: ProgramContentCollectionPage },
 ]
 const App: React.VFC = () => {
   const [editing, setEditing] = useState(false)

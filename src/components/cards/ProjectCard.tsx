@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { Circle } from 'rc-progress'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'

@@ -1,6 +1,6 @@
 import moment from 'moment'
 import 'moment/locale/zh-tw'
-import React, { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { IntlProvider } from 'react-intl'
 import { useApp } from './AppContext'
 

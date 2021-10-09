@@ -1,5 +1,4 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import React from 'react'
 import styled from 'styled-components'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import Card from '../Card'

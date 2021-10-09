@@ -1,5 +1,4 @@
 import { useNode } from '@craftjs/core'
-import React from 'react'
 import styled from 'styled-components'
 import { useInstructorCollection } from '../../hooks/data'
 import AngleThinLeft from '../../images/icons/angle-thin-left.svg'

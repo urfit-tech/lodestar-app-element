@@ -1,6 +1,5 @@
 import paletteGenerator from '@bobthered/tailwindcss-palette-generator'
 import { ChakraProvider, extendTheme, useTheme } from '@chakra-ui/react'
-import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import '../styles.scss'
 import { useApp } from './AppContext'

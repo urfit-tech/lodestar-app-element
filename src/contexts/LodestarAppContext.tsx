@@ -1,4 +1,4 @@
-import React from 'react'
+import { createContext } from 'react'
 import { ApiProvider } from './ApiContext'
 import { AppProvider } from './AppContext'
 import { AppThemeProvider } from './AppThemeContext'
@@ -6,7 +6,7 @@ import { AuthProvider } from './AuthContext'
 import { LanguageProvider } from './LanguageContext'
 
 export const LodestarAppProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
-  const LodestarAppContext = React.createContext({ appId })
+  const LodestarAppContext = createContext({ appId })
   return (
     <LodestarAppContext.Provider value={{ appId }}>
       <AuthProvider appId={appId}>

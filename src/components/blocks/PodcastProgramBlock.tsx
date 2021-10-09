@@ -1,5 +1,4 @@
 import { useNode } from '@craftjs/core'
-import React from 'react'
 import { usePublishedPodcastProgramCollection } from '../../hooks/data'
 import PodcastProgramCard from '../cards/PodcastProgramCard'
 import { CraftRefBlock } from '../common'

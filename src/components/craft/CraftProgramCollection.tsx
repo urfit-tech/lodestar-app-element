@@ -3,7 +3,7 @@ import { Button, SimpleGrid } from '@chakra-ui/react'
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import gql from 'graphql-tag'
 import { repeat, sum, uniqBy } from 'ramda'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { DeepPick } from 'ts-deep-pick'
@@ -347,18 +347,6 @@ const useProgramCollection = (options: CraftProgramCollectionProps['options']) =
     )
   }, [options, queryResult])
   return { loading, programs }
-}
-
-const withReviews = (options?: {}) => <T extends object>(WrappedComponent: React.VFC<T & { reviews: string[] }>) => {
-  const ComponentWithReviews: React.VFC<T> = props => {
-    return React.createElement(WrappedComponent, { ...props, reviews: [] })
-  }
-  return ComponentWithReviews
-}
-
-const PowerfulProgramCard = withReviews()(ProgramCard)
-const Foo = () => {
-  return <PowerfulProgramCard loading />
 }
 
 export default CraftProgramCollection

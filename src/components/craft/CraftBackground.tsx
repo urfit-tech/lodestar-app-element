@@ -1,5 +1,4 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import React from 'react'
 import styled, { css } from 'styled-components'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
 import BackgroundSection from '../BackgroundSection'

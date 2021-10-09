@@ -1,5 +1,4 @@
 import { Button as ChakraButton } from '@chakra-ui/react'
-import React from 'react'
 import styled, { css } from 'styled-components'
 import { ButtonProps } from '../types/style'
 

@@ -1,5 +1,4 @@
 import { useNode } from '@craftjs/core'
-import React from 'react'
 import { useProjectCollection } from '../../hooks/data'
 import { ProjectType } from '../../types/data'
 import ProjectCard from '../cards/ProjectCard'

@@ -1,5 +1,4 @@
 import { useNode } from '@craftjs/core'
-import React from 'react'
 import { usePublishedActivityCollection } from '../../hooks/data'
 import ActivityCard from '../cards/ActivityCard'
 import { CraftRefBlock } from '../common'

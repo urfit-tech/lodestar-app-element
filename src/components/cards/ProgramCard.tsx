@@ -1,5 +1,4 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
-import React from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'

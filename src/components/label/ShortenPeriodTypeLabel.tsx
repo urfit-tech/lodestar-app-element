@@ -1,4 +1,3 @@
-import React from 'react'
 import { useIntl } from 'react-intl'
 import { commonMessages } from '../../helpers/translation'
 import { PeriodType } from '../../types/data'

@@ -1,3 +1,4 @@
+import React from 'react'
 import MediaQuery, { MediaQueryProps } from 'react-responsive'
 
 const Responsive = {

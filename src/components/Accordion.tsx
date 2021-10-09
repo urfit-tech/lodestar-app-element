@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ReactComponent as AngleRightIcon } from '../images/icons/angle-right.svg'
 import { CardProps, ParagraphProps, TitleProps } from '../types/style'

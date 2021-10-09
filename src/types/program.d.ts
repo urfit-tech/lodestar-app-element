@@ -22,11 +22,24 @@ export type ProgramContentSection = {
   id: string
   title: string
   contents: ProgramContent[]
+  program: Omit<Program, 'contentSections'>
 }
 
 export type ProgramContent = {
   id: string
   title: string
+  duration: number
+  progress: number
+  lastProgress: number
+  contentSection: Omit<ProgramContentSection, 'contents'>
+  videos: Attachment[]
+  attachments: Attachment[]
+}
+
+export type Attachment = {
+  id: string
+  name: string
+  size: number
   duration: number
 }
 

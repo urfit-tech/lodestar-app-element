@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { generateCustomLayoutStyle } from '../components/common/index'
 import { LayoutProps } from '../types/style'

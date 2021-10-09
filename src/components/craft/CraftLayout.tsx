@@ -1,5 +1,4 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import React from 'react'
 import { CraftLayoutProps } from '../../types/craft'
 import { CraftRefBlock } from '../common'
 import Layout from '../Layout'

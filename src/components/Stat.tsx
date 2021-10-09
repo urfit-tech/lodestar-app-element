@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { TitleProps } from '../types/style'
 import { generateCustomTitleStyle, StyledParagraph } from './common'

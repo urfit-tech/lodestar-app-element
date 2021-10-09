@@ -1,5 +1,4 @@
 import { useEditor, UserComponent } from '@craftjs/core'
-import React from 'react'
 import ProgramBlock from '../blocks/ProgramBlock'
 
 const CraftProgram: UserComponent<{

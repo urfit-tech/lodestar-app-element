@@ -1,7 +1,7 @@
 import Axios from 'axios'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
-import React, { useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
 import { handleError } from '../helpers'
 import { UserRole } from '../types/data'
@@ -50,7 +50,7 @@ const defaultAuthContext: AuthProps = {
   permissions: {},
 }
 
-const AuthContext = React.createContext<AuthProps>(defaultAuthContext)
+const AuthContext = createContext<AuthProps>(defaultAuthContext)
 export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) => {

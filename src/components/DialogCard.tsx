@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { CardProps, ParagraphProps, TitleProps } from '../types/style'
 import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph } from './common'

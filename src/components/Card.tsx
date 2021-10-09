@@ -1,4 +1,3 @@
-import React from 'react'
 import styled, { css } from 'styled-components'
 import { MultiLineTruncationMixin } from '../helpers/style'
 import DefaultAvatar from '../images/icons/avatar.svg'

@@ -91,6 +91,31 @@ export interface GET_PUBLISHED_CREATORVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_RECENT_PROGRAM_PROGRESS
+// ====================================================
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress {
+  __typename: 'program_content_progress'
+  program_content_id: any
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS {
+  /**
+   * fetch data from the table: "program_content_progress"
+   */
+  program_content_progress: GET_RECENT_PROGRAM_PROGRESS_program_content_progress[]
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESSVariables {
+  limit?: number | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_APP
 // ====================================================
 
@@ -371,6 +396,76 @@ export interface GET_PROGRAM_COLLECTIONVariables {
   whereClause?: program_bool_exp | null
   limit?: number | null
   orderByClause?: program_order_by[] | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_PROGRAM_CONTENT_COLLECTION
+// ====================================================
+
+export interface GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_section_program {
+  __typename: 'program'
+  id: any
+  cover_url: string | null
+}
+
+export interface GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_section {
+  __typename: 'program_content_section'
+  /**
+   * An object relationship
+   */
+  program: GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_section_program
+}
+
+export interface GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_progress {
+  __typename: 'program_content_progress'
+  id: any
+  progress: any
+  last_progress: any
+}
+
+export interface GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_videos {
+  __typename: 'program_content_video'
+  attachment_id: any
+}
+
+export interface GET_PROGRAM_CONTENT_COLLECTION_program_content {
+  __typename: 'program_content'
+  id: any
+  title: string
+  /**
+   * sec
+   */
+  duration: any | null
+  /**
+   * An object relationship
+   */
+  program_content_section: GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_section
+  /**
+   * An array relationship
+   */
+  program_content_progress: GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_progress[]
+  /**
+   * An array relationship
+   */
+  program_content_videos: GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_videos[]
+}
+
+export interface GET_PROGRAM_CONTENT_COLLECTION {
+  /**
+   * fetch data from the table: "program_content"
+   */
+  program_content: GET_PROGRAM_CONTENT_COLLECTION_program_content[]
+}
+
+export interface GET_PROGRAM_CONTENT_COLLECTIONVariables {
+  whereClause?: program_content_bool_exp | null
+  limit?: number | null
+  orderByClause?: program_content_order_by[] | null
 }
 
 /* tslint:disable */
@@ -927,6 +1022,63 @@ export interface programFields {
    * An array relationship
    */
   program_content_sections: programFields_program_content_sections[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: programContentFields
+// ====================================================
+
+export interface programContentFields_program_content_section_program {
+  __typename: 'program'
+  id: any
+  cover_url: string | null
+}
+
+export interface programContentFields_program_content_section {
+  __typename: 'program_content_section'
+  /**
+   * An object relationship
+   */
+  program: programContentFields_program_content_section_program
+}
+
+export interface programContentFields_program_content_progress {
+  __typename: 'program_content_progress'
+  id: any
+  progress: any
+  last_progress: any
+}
+
+export interface programContentFields_program_content_videos {
+  __typename: 'program_content_video'
+  attachment_id: any
+}
+
+export interface programContentFields {
+  __typename: 'program_content'
+  id: any
+  title: string
+  /**
+   * sec
+   */
+  duration: any | null
+  /**
+   * An object relationship
+   */
+  program_content_section: programContentFields_program_content_section
+  /**
+   * An array relationship
+   */
+  program_content_progress: programContentFields_program_content_progress[]
+  /**
+   * An array relationship
+   */
+  program_content_videos: programContentFields_program_content_videos[]
 }
 
 /* tslint:disable */
@@ -1916,6 +2068,32 @@ export interface appointment_period_bool_exp {
 }
 
 /**
+ * order by aggregate values of table "appointment_plan"
+ */
+export interface appointment_plan_aggregate_order_by {
+  avg?: appointment_plan_avg_order_by | null
+  count?: order_by | null
+  max?: appointment_plan_max_order_by | null
+  min?: appointment_plan_min_order_by | null
+  stddev?: appointment_plan_stddev_order_by | null
+  stddev_pop?: appointment_plan_stddev_pop_order_by | null
+  stddev_samp?: appointment_plan_stddev_samp_order_by | null
+  sum?: appointment_plan_sum_order_by | null
+  var_pop?: appointment_plan_var_pop_order_by | null
+  var_samp?: appointment_plan_var_samp_order_by | null
+  variance?: appointment_plan_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_avg_order_by {
+  duration?: order_by | null
+  price?: order_by | null
+  reservation_amount?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "appointment_plan". All fields are combined with a logical 'AND'.
  */
 export interface appointment_plan_bool_exp {
@@ -1942,6 +2120,107 @@ export interface appointment_plan_bool_exp {
   support_locales?: jsonb_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_max_order_by {
+  created_at?: order_by | null
+  creator_id?: order_by | null
+  currency_id?: order_by | null
+  description?: order_by | null
+  duration?: order_by | null
+  id?: order_by | null
+  phone?: order_by | null
+  price?: order_by | null
+  published_at?: order_by | null
+  reservation_amount?: order_by | null
+  reservation_type?: order_by | null
+  title?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_min_order_by {
+  created_at?: order_by | null
+  creator_id?: order_by | null
+  currency_id?: order_by | null
+  description?: order_by | null
+  duration?: order_by | null
+  id?: order_by | null
+  phone?: order_by | null
+  price?: order_by | null
+  published_at?: order_by | null
+  reservation_amount?: order_by | null
+  reservation_type?: order_by | null
+  title?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_stddev_order_by {
+  duration?: order_by | null
+  price?: order_by | null
+  reservation_amount?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_stddev_pop_order_by {
+  duration?: order_by | null
+  price?: order_by | null
+  reservation_amount?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_stddev_samp_order_by {
+  duration?: order_by | null
+  price?: order_by | null
+  reservation_amount?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_sum_order_by {
+  duration?: order_by | null
+  price?: order_by | null
+  reservation_amount?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_var_pop_order_by {
+  duration?: order_by | null
+  price?: order_by | null
+  reservation_amount?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_var_samp_order_by {
+  duration?: order_by | null
+  price?: order_by | null
+  reservation_amount?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "appointment_plan"
+ */
+export interface appointment_plan_variance_order_by {
+  duration?: order_by | null
+  price?: order_by | null
+  reservation_amount?: order_by | null
 }
 
 /**
@@ -2489,6 +2768,29 @@ export interface currency_bool_exp {
 }
 
 /**
+ * ordering options when selecting data from "currency"
+ */
+export interface currency_order_by {
+  appointment_plans_aggregate?: appointment_plan_aggregate_order_by | null
+  id?: order_by | null
+  label?: order_by | null
+  minor_units?: order_by | null
+  name?: order_by | null
+  order_products_aggregate?: order_product_aggregate_order_by | null
+  program_plans_aggregate?: program_plan_aggregate_order_by | null
+  unit?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "exercise"
+ */
+export interface exercise_aggregate_order_by {
+  count?: order_by | null
+  max?: exercise_max_order_by | null
+  min?: exercise_min_order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "exercise". All fields are combined with a logical 'AND'.
  */
 export interface exercise_bool_exp {
@@ -2503,6 +2805,28 @@ export interface exercise_bool_exp {
   program_content?: program_content_bool_exp | null
   program_content_id?: uuid_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "exercise"
+ */
+export interface exercise_max_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "exercise"
+ */
+export interface exercise_min_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
 }
 
 /**
@@ -3676,6 +4000,31 @@ export interface order_payment_status_bool_exp {
 }
 
 /**
+ * order by aggregate values of table "order_product"
+ */
+export interface order_product_aggregate_order_by {
+  avg?: order_product_avg_order_by | null
+  count?: order_by | null
+  max?: order_product_max_order_by | null
+  min?: order_product_min_order_by | null
+  stddev?: order_product_stddev_order_by | null
+  stddev_pop?: order_product_stddev_pop_order_by | null
+  stddev_samp?: order_product_stddev_samp_order_by | null
+  sum?: order_product_sum_order_by | null
+  var_pop?: order_product_var_pop_order_by | null
+  var_samp?: order_product_var_samp_order_by | null
+  variance?: order_product_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "order_product"
+ */
+export interface order_product_avg_order_by {
+  accumulated_errors?: order_by | null
+  price?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "order_product". All fields are combined with a logical 'AND'.
  */
 export interface order_product_bool_exp {
@@ -3717,6 +4066,98 @@ export interface order_product_file_bool_exp {
   order_product?: order_product_bool_exp | null
   order_product_id?: uuid_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "order_product"
+ */
+export interface order_product_max_order_by {
+  accumulated_errors?: order_by | null
+  created_at?: order_by | null
+  currency_id?: order_by | null
+  description?: order_by | null
+  ended_at?: order_by | null
+  id?: order_by | null
+  name?: order_by | null
+  order_id?: order_by | null
+  price?: order_by | null
+  product_id?: order_by | null
+  started_at?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "order_product"
+ */
+export interface order_product_min_order_by {
+  accumulated_errors?: order_by | null
+  created_at?: order_by | null
+  currency_id?: order_by | null
+  description?: order_by | null
+  ended_at?: order_by | null
+  id?: order_by | null
+  name?: order_by | null
+  order_id?: order_by | null
+  price?: order_by | null
+  product_id?: order_by | null
+  started_at?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "order_product"
+ */
+export interface order_product_stddev_order_by {
+  accumulated_errors?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "order_product"
+ */
+export interface order_product_stddev_pop_order_by {
+  accumulated_errors?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "order_product"
+ */
+export interface order_product_stddev_samp_order_by {
+  accumulated_errors?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "order_product"
+ */
+export interface order_product_sum_order_by {
+  accumulated_errors?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "order_product"
+ */
+export interface order_product_var_pop_order_by {
+  accumulated_errors?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "order_product"
+ */
+export interface order_product_var_samp_order_by {
+  accumulated_errors?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "order_product"
+ */
+export interface order_product_variance_order_by {
+  accumulated_errors?: order_by | null
+  price?: order_by | null
 }
 
 /**
@@ -4393,6 +4834,15 @@ export interface post_variance_order_by {
 }
 
 /**
+ * order by aggregate values of table "practice"
+ */
+export interface practice_aggregate_order_by {
+  count?: order_by | null
+  max?: practice_max_order_by | null
+  min?: practice_min_order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "practice_attachment". All fields are combined with a logical 'AND'.
  */
 export interface practice_attachment_bool_exp {
@@ -4445,6 +4895,36 @@ export interface practice_issue_bool_exp {
   issue_id?: uuid_comparison_exp | null
   practice?: practice_bool_exp | null
   practice_id?: uuid_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "practice"
+ */
+export interface practice_max_order_by {
+  cover_url?: order_by | null
+  created_at?: order_by | null
+  description?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  program_content_id?: order_by | null
+  reviewed_at?: order_by | null
+  title?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "practice"
+ */
+export interface practice_min_order_by {
+  cover_url?: order_by | null
+  created_at?: order_by | null
+  description?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  program_content_id?: order_by | null
+  reviewed_at?: order_by | null
+  title?: order_by | null
+  updated_at?: order_by | null
 }
 
 /**
@@ -4852,6 +5332,32 @@ export interface program_category_variance_order_by {
 }
 
 /**
+ * order by aggregate values of table "program_content"
+ */
+export interface program_content_aggregate_order_by {
+  avg?: program_content_avg_order_by | null
+  count?: order_by | null
+  max?: program_content_max_order_by | null
+  min?: program_content_min_order_by | null
+  stddev?: program_content_stddev_order_by | null
+  stddev_pop?: program_content_stddev_pop_order_by | null
+  stddev_samp?: program_content_stddev_samp_order_by | null
+  sum?: program_content_sum_order_by | null
+  var_pop?: program_content_var_pop_order_by | null
+  var_samp?: program_content_var_samp_order_by | null
+  variance?: program_content_variance_order_by | null
+}
+
+/**
+ * order by aggregate values of table "program_content_attachment"
+ */
+export interface program_content_attachment_aggregate_order_by {
+  count?: order_by | null
+  max?: program_content_attachment_max_order_by | null
+  min?: program_content_attachment_min_order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "program_content_attachment". All fields are combined with a logical 'AND'.
  */
 export interface program_content_attachment_bool_exp {
@@ -4870,6 +5376,38 @@ export interface program_content_attachment_bool_exp {
 }
 
 /**
+ * order by max() on columns of table "program_content_attachment"
+ */
+export interface program_content_attachment_max_order_by {
+  app_id?: order_by | null
+  attachment_id?: order_by | null
+  created_at?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_content_attachment"
+ */
+export interface program_content_attachment_min_order_by {
+  app_id?: order_by | null
+  attachment_id?: order_by | null
+  created_at?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by avg() on columns of table "program_content"
+ */
+export interface program_content_avg_order_by {
+  duration?: order_by | null
+  list_price?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "program_content_body". All fields are combined with a logical 'AND'.
  */
 export interface program_content_body_bool_exp {
@@ -4881,6 +5419,17 @@ export interface program_content_body_bool_exp {
   id?: uuid_comparison_exp | null
   program_contents?: program_content_bool_exp | null
   type?: String_comparison_exp | null
+}
+
+/**
+ * ordering options when selecting data from "program_content_body"
+ */
+export interface program_content_body_order_by {
+  data?: order_by | null
+  description?: order_by | null
+  id?: order_by | null
+  program_contents_aggregate?: program_content_aggregate_order_by | null
+  type?: order_by | null
 }
 
 /**
@@ -4963,6 +5512,15 @@ export interface program_content_enrollment_min_order_by {
 }
 
 /**
+ * order by aggregate values of table "program_content_material"
+ */
+export interface program_content_material_aggregate_order_by {
+  count?: order_by | null
+  max?: program_content_material_max_order_by | null
+  min?: program_content_material_min_order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "program_content_material". All fields are combined with a logical 'AND'.
  */
 export interface program_content_material_bool_exp {
@@ -4978,6 +5536,109 @@ export interface program_content_material_bool_exp {
 }
 
 /**
+ * order by max() on columns of table "program_content_material"
+ */
+export interface program_content_material_max_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_content_material"
+ */
+export interface program_content_material_min_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by max() on columns of table "program_content"
+ */
+export interface program_content_max_order_by {
+  abstract?: order_by | null
+  content_body_id?: order_by | null
+  content_section_id?: order_by | null
+  content_type?: order_by | null
+  created_at?: order_by | null
+  duration?: order_by | null
+  id?: order_by | null
+  list_price?: order_by | null
+  notified_at?: order_by | null
+  position?: order_by | null
+  published_at?: order_by | null
+  sale_price?: order_by | null
+  sold_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_content"
+ */
+export interface program_content_min_order_by {
+  abstract?: order_by | null
+  content_body_id?: order_by | null
+  content_section_id?: order_by | null
+  content_type?: order_by | null
+  created_at?: order_by | null
+  duration?: order_by | null
+  id?: order_by | null
+  list_price?: order_by | null
+  notified_at?: order_by | null
+  position?: order_by | null
+  published_at?: order_by | null
+  sale_price?: order_by | null
+  sold_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * ordering options when selecting data from "program_content"
+ */
+export interface program_content_order_by {
+  abstract?: order_by | null
+  content_body_id?: order_by | null
+  content_section_id?: order_by | null
+  content_type?: order_by | null
+  created_at?: order_by | null
+  duration?: order_by | null
+  enrollments_aggregate?: program_content_enrollment_aggregate_order_by | null
+  exercises_aggregate?: exercise_aggregate_order_by | null
+  id?: order_by | null
+  is_notify_update?: order_by | null
+  list_price?: order_by | null
+  metadata?: order_by | null
+  notified_at?: order_by | null
+  position?: order_by | null
+  practices_aggregate?: practice_aggregate_order_by | null
+  program_content_attachments_aggregate?: program_content_attachment_aggregate_order_by | null
+  program_content_body?: program_content_body_order_by | null
+  program_content_materials_aggregate?: program_content_material_aggregate_order_by | null
+  program_content_plans_aggregate?: program_content_plan_aggregate_order_by | null
+  program_content_progress_aggregate?: program_content_progress_aggregate_order_by | null
+  program_content_section?: program_content_section_order_by | null
+  program_content_type?: program_content_type_order_by | null
+  program_content_videos_aggregate?: program_content_video_aggregate_order_by | null
+  published_at?: order_by | null
+  sale_free?: program_content_sale_free_order_by | null
+  sale_price?: order_by | null
+  sold_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "program_content_plan"
+ */
+export interface program_content_plan_aggregate_order_by {
+  count?: order_by | null
+  max?: program_content_plan_max_order_by | null
+  min?: program_content_plan_min_order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "program_content_plan". All fields are combined with a logical 'AND'.
  */
 export interface program_content_plan_bool_exp {
@@ -4989,6 +5650,49 @@ export interface program_content_plan_bool_exp {
   program_content_id?: uuid_comparison_exp | null
   program_plan?: program_plan_bool_exp | null
   program_plan_id?: uuid_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "program_content_plan"
+ */
+export interface program_content_plan_max_order_by {
+  id?: order_by | null
+  program_content_id?: order_by | null
+  program_plan_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_content_plan"
+ */
+export interface program_content_plan_min_order_by {
+  id?: order_by | null
+  program_content_id?: order_by | null
+  program_plan_id?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "program_content_progress"
+ */
+export interface program_content_progress_aggregate_order_by {
+  avg?: program_content_progress_avg_order_by | null
+  count?: order_by | null
+  max?: program_content_progress_max_order_by | null
+  min?: program_content_progress_min_order_by | null
+  stddev?: program_content_progress_stddev_order_by | null
+  stddev_pop?: program_content_progress_stddev_pop_order_by | null
+  stddev_samp?: program_content_progress_stddev_samp_order_by | null
+  sum?: program_content_progress_sum_order_by | null
+  var_pop?: program_content_progress_var_pop_order_by | null
+  var_samp?: program_content_progress_var_samp_order_by | null
+  variance?: program_content_progress_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_avg_order_by {
+  last_progress?: order_by | null
+  progress?: order_by | null
 }
 
 /**
@@ -5140,6 +5844,88 @@ export interface program_content_progress_enrollment_variance_order_by {
 }
 
 /**
+ * order by max() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_max_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  last_progress?: order_by | null
+  member_id?: order_by | null
+  program_content_id?: order_by | null
+  progress?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_min_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  last_progress?: order_by | null
+  member_id?: order_by | null
+  program_content_id?: order_by | null
+  progress?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_stddev_order_by {
+  last_progress?: order_by | null
+  progress?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_stddev_pop_order_by {
+  last_progress?: order_by | null
+  progress?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_stddev_samp_order_by {
+  last_progress?: order_by | null
+  progress?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_sum_order_by {
+  last_progress?: order_by | null
+  progress?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_var_pop_order_by {
+  last_progress?: order_by | null
+  progress?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_var_samp_order_by {
+  last_progress?: order_by | null
+  progress?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "program_content_progress"
+ */
+export interface program_content_progress_variance_order_by {
+  last_progress?: order_by | null
+  progress?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "program_content_sale_free". All fields are combined with a logical 'AND'.
  */
 export interface program_content_sale_free_bool_exp {
@@ -5155,6 +5941,21 @@ export interface program_content_sale_free_bool_exp {
   program_id?: uuid_comparison_exp | null
   program_plan?: program_plan_bool_exp | null
   program_plan_id?: uuid_comparison_exp | null
+}
+
+/**
+ * ordering options when selecting data from "program_content_sale_free"
+ */
+export interface program_content_sale_free_order_by {
+  is_sale_free_by_program?: order_by | null
+  is_sale_free_by_program_content?: order_by | null
+  is_sale_free_by_program_plan?: order_by | null
+  program?: program_order_by | null
+  program_content?: program_content_order_by | null
+  program_content_id?: order_by | null
+  program_id?: order_by | null
+  program_plan?: program_plan_order_by | null
+  program_plan_id?: order_by | null
 }
 
 /**
@@ -5220,6 +6021,19 @@ export interface program_content_section_min_order_by {
 }
 
 /**
+ * ordering options when selecting data from "program_content_section"
+ */
+export interface program_content_section_order_by {
+  description?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  program?: program_order_by | null
+  program_contents_aggregate?: program_content_aggregate_order_by | null
+  program_id?: order_by | null
+  title?: order_by | null
+}
+
+/**
  * order by stddev() on columns of table "program_content_section"
  */
 export interface program_content_section_stddev_order_by {
@@ -5269,6 +6083,46 @@ export interface program_content_section_variance_order_by {
 }
 
 /**
+ * order by stddev() on columns of table "program_content"
+ */
+export interface program_content_stddev_order_by {
+  duration?: order_by | null
+  list_price?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "program_content"
+ */
+export interface program_content_stddev_pop_order_by {
+  duration?: order_by | null
+  list_price?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "program_content"
+ */
+export interface program_content_stddev_samp_order_by {
+  duration?: order_by | null
+  list_price?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "program_content"
+ */
+export interface program_content_sum_order_by {
+  duration?: order_by | null
+  list_price?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "program_content_type". All fields are combined with a logical 'AND'.
  */
 export interface program_content_type_bool_exp {
@@ -5278,6 +6132,54 @@ export interface program_content_type_bool_exp {
   id?: uuid_comparison_exp | null
   program_content?: program_content_bool_exp | null
   type?: String_comparison_exp | null
+}
+
+/**
+ * ordering options when selecting data from "program_content_type"
+ */
+export interface program_content_type_order_by {
+  id?: order_by | null
+  program_content?: program_content_order_by | null
+  type?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "program_content"
+ */
+export interface program_content_var_pop_order_by {
+  duration?: order_by | null
+  list_price?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "program_content"
+ */
+export interface program_content_var_samp_order_by {
+  duration?: order_by | null
+  list_price?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "program_content"
+ */
+export interface program_content_variance_order_by {
+  duration?: order_by | null
+  list_price?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "program_content_video"
+ */
+export interface program_content_video_aggregate_order_by {
+  count?: order_by | null
+  max?: program_content_video_max_order_by | null
+  min?: program_content_video_min_order_by | null
 }
 
 /**
@@ -5294,6 +6196,28 @@ export interface program_content_video_bool_exp {
   program_content?: program_content_bool_exp | null
   program_content_id?: uuid_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "program_content_video"
+ */
+export interface program_content_video_max_order_by {
+  attachment_id?: order_by | null
+  created_at?: order_by | null
+  id?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_content_video"
+ */
+export interface program_content_video_min_order_by {
+  attachment_id?: order_by | null
+  created_at?: order_by | null
+  id?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
 }
 
 /**
@@ -5754,6 +6678,15 @@ export interface program_plan_bool_exp {
 }
 
 /**
+ * order by aggregate values of table "program_plan_enrollment"
+ */
+export interface program_plan_enrollment_aggregate_order_by {
+  count?: order_by | null
+  max?: program_plan_enrollment_max_order_by | null
+  min?: program_plan_enrollment_min_order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "program_plan_enrollment". All fields are combined with a logical 'AND'.
  */
 export interface program_plan_enrollment_bool_exp {
@@ -5768,6 +6701,28 @@ export interface program_plan_enrollment_bool_exp {
   program_plan_id?: uuid_comparison_exp | null
   started_at?: timestamptz_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "program_plan_enrollment"
+ */
+export interface program_plan_enrollment_max_order_by {
+  ended_at?: order_by | null
+  member_id?: order_by | null
+  program_plan_id?: order_by | null
+  started_at?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_plan_enrollment"
+ */
+export interface program_plan_enrollment_min_order_by {
+  ended_at?: order_by | null
+  member_id?: order_by | null
+  program_plan_id?: order_by | null
+  started_at?: order_by | null
+  updated_at?: order_by | null
 }
 
 /**
@@ -5808,6 +6763,37 @@ export interface program_plan_min_order_by {
   period_amount?: order_by | null
   period_type?: order_by | null
   program_id?: order_by | null
+  published_at?: order_by | null
+  sale_price?: order_by | null
+  sold_at?: order_by | null
+  started_at?: order_by | null
+  title?: order_by | null
+  type?: order_by | null
+}
+
+/**
+ * ordering options when selecting data from "program_plan"
+ */
+export interface program_plan_order_by {
+  auto_renewed?: order_by | null
+  created_at?: order_by | null
+  currency?: currency_order_by | null
+  currency_id?: order_by | null
+  description?: order_by | null
+  discount_down_price?: order_by | null
+  ended_at?: order_by | null
+  gains?: order_by | null
+  group_buying_people?: order_by | null
+  id?: order_by | null
+  is_countdown_timer_visible?: order_by | null
+  is_participants_visible?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  period_type?: order_by | null
+  program?: program_order_by | null
+  program_content_permissions_aggregate?: program_content_plan_aggregate_order_by | null
+  program_id?: order_by | null
+  program_plan_enrollments_aggregate?: program_plan_enrollment_aggregate_order_by | null
   published_at?: order_by | null
   sale_price?: order_by | null
   sold_at?: order_by | null

@@ -1,5 +1,4 @@
 import { Skeleton, SkeletonCircle } from '@chakra-ui/skeleton'
-import React from 'react'
 import styled from 'styled-components'
 import { usePublicMember } from '../hooks/data'
 import DefaultAvatar from '../images/icons/avatar.svg'

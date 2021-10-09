@@ -1,5 +1,5 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import React from 'react'
+import { Children } from 'react'
 import { isFragment } from 'react-is'
 import Carousel from '../../components/Carousel'
 import { CraftMarginProps } from '../../types/craft'
@@ -41,7 +41,7 @@ const CraftCarouselContainer: UserComponent<CraftCarouselContainerProps> = ({ de
   let child = children
 
   // validate top level dom is only one fragment
-  if (React.Children.count(children) === 1 && isFragment(children)) {
+  if (Children.count(children) === 1 && isFragment(children)) {
     const { children: fragmentChildren } = children.props
     child = fragmentChildren
   }

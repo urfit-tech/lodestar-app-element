@@ -1,5 +1,4 @@
 import { useEditor, UserComponent } from '@craftjs/core'
-import React from 'react'
 import PodcastProgramBlock from '../blocks/PodcastProgramBlock'
 
 const CraftPodcastProgram: UserComponent<{

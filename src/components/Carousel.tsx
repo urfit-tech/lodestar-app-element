@@ -1,4 +1,3 @@
-import React from 'react'
 import Slider, { Settings } from 'react-slick'
 import styled from 'styled-components'
 import { generateCustomMarginStyle } from '../components/common/index'

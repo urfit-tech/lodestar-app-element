@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import React, { createContext, useContext, useEffect } from 'react'
+import { createContext, useContext, useEffect, useMemo } from 'react'
 import hasura from '../hasura'
 import { AppProps, NavProps } from '../types/app'
 import { useAuth } from './AuthContext'
@@ -97,7 +97,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
   const settings = Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || [])
   const secrets = Object.fromEntries(data?.app_by_pk?.app_secrets.map(v => [v.key, v.value]) || [])
 
-  const app: AppContextProps = React.useMemo(
+  const app: AppContextProps = useMemo(
     () =>
       data?.app_by_pk
         ? {

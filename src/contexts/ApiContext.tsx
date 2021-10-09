@@ -1,6 +1,5 @@
 import { ApolloProvider } from '@apollo/react-hooks'
 import { useToast } from '@chakra-ui/toast'
-import React from 'react'
 import { createApolloClient } from '../helpers/apollo'
 import { useAuth } from './AuthContext'
 

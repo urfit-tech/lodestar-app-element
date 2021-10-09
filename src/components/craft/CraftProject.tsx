@@ -1,5 +1,4 @@
 import { useEditor, UserComponent } from '@craftjs/core'
-import React from 'react'
 import { ProjectType } from '../../types/data'
 import ProjectBlock from '../blocks/ProjectBlock'
 
