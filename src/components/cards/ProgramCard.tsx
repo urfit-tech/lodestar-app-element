@@ -63,6 +63,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
       </InstructorPlaceHolder>
 
       <Card
+        className="cursor-pointer"
         customStyle={{
           direction: 'column',
           bordered: false,
@@ -71,7 +72,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
           p: '0',
           overflow: 'hidden',
         }}
-        onClick={() => !craftEnabled && !loading && `/programs/${props.id}/contents`}
+        onClick={() => !craftEnabled && !loading && history.push(`/programs/${props.id}/contents`)}
       >
         {loading ? (
           <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />

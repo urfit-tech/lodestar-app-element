@@ -1,3 +1,4 @@
+import { Category } from './data'
 import { Member, PlanPeriod } from './shared'
 
 export type Program = {
@@ -14,6 +15,7 @@ export type Program = {
   roles: ProgramRole[]
   plans: ProgramPlan[]
   contentSections: ProgramContentSection[]
+  categories: Category[]
 }
 
 export type ProgramContentSection = {

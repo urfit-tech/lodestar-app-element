@@ -1,20 +1,32 @@
 import { useQuery } from '@apollo/react-hooks'
-import { SimpleGrid } from '@chakra-ui/react'
+import { Button, SimpleGrid } from '@chakra-ui/react'
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import gql from 'graphql-tag'
-import { repeat, sum } from 'ramda'
+import { repeat, sum, uniqBy } from 'ramda'
 import React, { useMemo } from 'react'
 import { useIntl } from 'react-intl'
+import styled from 'styled-components'
 import { DeepPick } from 'ts-deep-pick'
+import { StringParam, useQueryParam } from 'use-query-params'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
+import { commonMessages } from '../../helpers/translation'
 import { CraftCollectionBaseOptions } from '../../types/craft'
+import { Category } from '../../types/data'
 import { Program, ProgramRole } from '../../types/program'
 import { PlanPeriod } from '../../types/shared'
 import ProgramCard from '../cards/ProgramCard'
 import { CraftRefBlock } from '../common'
 
+const StyledButton = styled(Button)`
+  && {
+    height: 2.75rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    border-radius: 2rem;
+  }
+`
 export type CraftProgramCollectionProps = CraftCollectionBaseOptions & {
   options:
     | {
@@ -42,10 +54,12 @@ export type CraftProgramCollectionProps = CraftCollectionBaseOptions & {
 const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
   options,
   gutter = 4,
-  columns = [1, 2, null, 4],
+  gap = 8,
+  columns = [1, 2, 4],
   withSelector,
   children,
 }) => {
+  const [activeCategoryId, setActive] = useQueryParam('active', StringParam)
   const { formatMessage } = useIntl()
   const { enabled } = useEditor(state => ({
     enabled: state.options.enabled,
@@ -59,35 +73,67 @@ const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
     hovered: node.events.hovered,
   }))
   const { loading, programs } = useProgramCollection(options)
+  const filteredPrograms = programs.filter(
+    program =>
+      !withSelector || !activeCategoryId || program.categories.map(category => category.id).includes(activeCategoryId),
+  )
+  const categories = uniqBy((category: Category) => category.id)(
+    filteredPrograms
+      .flatMap(program => program.categories)
+      .filter(category => options.source === 'custom' || !options.defaultCategoryIds?.includes(category.id)),
+  )
   return (
-    <SimpleGrid columns={columns} spacing={gutter}>
-      {loading && repeat(<ProgramCard loading />, 12)}
-      {programs.map(program => (
+    <div>
+      {withSelector && (
         <CraftRefBlock
+          className="mb-3"
           ref={ref => ref && connect(ref)}
-          style={{
-            width: '100%',
-            marginBottom: '30px',
-          }}
           events={{ hovered, selected }}
           options={{ enabled }}
         >
-          <ProgramCard
-            craftEnabled={enabled}
-            id={program.id}
-            title={program.title}
-            abstract={program.abstract || ''}
-            totalDuration={program.totalDuration || 0}
-            coverUrl={program.coverUrl}
-            instructorIds={program.roles.map(programRole => programRole.member.id)}
-            listPrice={program.listPrice || 0}
-            salePrice={program.salePrice}
-            soldAt={program.soldAt}
-            period={program.plans[0]?.period || null}
-          />
+          <StyledButton
+            colorScheme="primary"
+            variant={!activeCategoryId ? 'solid' : 'outline'}
+            className="mb-2"
+            onClick={(e: Event) => (enabled ? e.preventDefault() : setActive(null))}
+          >
+            {formatMessage(commonMessages.button.allCategory)}
+          </StyledButton>
+          {categories.map(category => (
+            <StyledButton
+              key={category.id}
+              colorScheme="primary"
+              variant={activeCategoryId === category.id ? 'solid' : 'outline'}
+              className="ml-2 mb-2"
+              onClick={(e: Event) => (enabled ? e.preventDefault() : setActive(category.id))}
+            >
+              {category.name}
+            </StyledButton>
+          ))}
         </CraftRefBlock>
-      ))}
-    </SimpleGrid>
+      )}
+      {children}
+      <SimpleGrid columns={columns} spacingX={gutter} spacingY={gap}>
+        {loading && repeat(<ProgramCard loading />, 4)}
+        {filteredPrograms.map(program => (
+          <CraftRefBlock ref={ref => ref && connect(ref)} events={{ hovered, selected }} options={{ enabled }}>
+            <ProgramCard
+              craftEnabled={enabled}
+              id={program.id}
+              title={program.title}
+              abstract={program.abstract || ''}
+              totalDuration={program.totalDuration || 0}
+              coverUrl={program.coverUrl}
+              instructorIds={program.roles.map(programRole => programRole.member.id)}
+              listPrice={program.listPrice || 0}
+              salePrice={program.salePrice}
+              soldAt={program.soldAt}
+              period={program.plans[0]?.period || null}
+            />
+          </CraftRefBlock>
+        ))}
+      </SimpleGrid>
+    </div>
   )
 }
 
@@ -100,6 +146,12 @@ const programFields = gql`
     list_price
     sale_price
     sold_at
+    program_categories {
+      category {
+        id
+        name
+      }
+    }
     program_roles(where: { name: { _eq: "instructor" } }) {
       id
       name
@@ -247,6 +299,7 @@ const useProgramCollection = (options: CraftProgramCollectionProps['options']) =
     | 'salePrice'
     | 'soldAt'
     | 'plans'
+    | 'categories'
   >[] = useMemo(() => {
     const data =
       options.source === 'custom'
@@ -289,6 +342,7 @@ const useProgramCollection = (options: CraftProgramCollectionProps['options']) =
                 } as PlanPeriod)
               : null,
         })),
+        categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
       })) || []
     )
   }, [options, queryResult])

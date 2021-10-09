@@ -143,6 +143,7 @@ const Avatar: React.VFC<{
 )
 
 const Card: React.FC<{
+  className?: string
   isDark?: boolean
   customStyle: { direction: 'row' | 'column' } & CardProps
   onClick?: () => void

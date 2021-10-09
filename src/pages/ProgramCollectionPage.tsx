@@ -16,12 +16,13 @@ const ProgramCollectionPage: React.VFC = () => {
       />
       <hr />
       <CraftProgramCollection
-        columns={[1, 5]}
+        withSelector
+        gap={[8, 16]}
+        columns={[1, 3, 5]}
         options={{
           source: 'publishedAt',
           asc: true,
-          limit: 5,
-          defaultCategoryIds: ['286b4906-0550-4c56-a16b-ce88fe516690', 'd4778f83-6891-4e41-8c04-82db7195b85e'],
+          defaultCategoryIds: ['286b4906-0550-4c56-a16b-ce88fe516690'],
         }}
       />
       <hr />

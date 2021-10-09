@@ -211,6 +211,20 @@ export interface GET_APPVariables {
 // GraphQL query operation: GET_PROGRAM_COLLECTION
 // ====================================================
 
+export interface GET_PROGRAM_COLLECTION_program_program_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface GET_PROGRAM_COLLECTION_program_program_categories {
+  __typename: 'program_category'
+  /**
+   * An object relationship
+   */
+  category: GET_PROGRAM_COLLECTION_program_program_categories_category
+}
+
 export interface GET_PROGRAM_COLLECTION_program_program_roles {
   __typename: 'program_role'
   id: any
@@ -324,6 +338,10 @@ export interface GET_PROGRAM_COLLECTION_program {
   list_price: any | null
   sale_price: any | null
   sold_at: any | null
+  /**
+   * An array relationship
+   */
+  program_categories: GET_PROGRAM_COLLECTION_program_program_categories[]
   /**
    * An array relationship
    */
@@ -762,6 +780,20 @@ export interface GET_PUBLISHED_ACTIVITY_COLLECTIONVariables {
 // GraphQL fragment: programFields
 // ====================================================
 
+export interface programFields_program_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface programFields_program_categories {
+  __typename: 'program_category'
+  /**
+   * An object relationship
+   */
+  category: programFields_program_categories_category
+}
+
 export interface programFields_program_roles {
   __typename: 'program_role'
   id: any
@@ -875,6 +907,10 @@ export interface programFields {
   list_price: any | null
   sale_price: any | null
   sold_at: any | null
+  /**
+   * An array relationship
+   */
+  program_categories: programFields_program_categories[]
   /**
    * An array relationship
    */

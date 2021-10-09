@@ -2,6 +2,7 @@ import { ResponsiveValue } from '@chakra-ui/styled-system'
 
 export type CraftCollectionBaseOptions = {
   gutter?: ResponsiveValue<number>
+  gap?: ResponsiveValue<number>
   columns?: ResponsiveValue<number>
 }
 

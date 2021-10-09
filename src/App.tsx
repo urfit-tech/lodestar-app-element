@@ -1,5 +1,5 @@
 import { Editor, Frame } from '@craftjs/core'
-import React from 'react'
+import { useState } from 'react'
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 import { QueryParamProvider } from 'use-query-params'
 import * as CraftResolvers from './components/craft'
@@ -11,17 +11,27 @@ const routes = [
   { name: 'Program collection', path: '/programs', component: ProgramCollectionPage },
 ]
 const App: React.VFC = () => {
+  const [editing, setEditing] = useState(false)
   if (!process.env.REACT_APP_ID) {
     return <div>REACT_APP_ID is undefined</div>
   }
   return (
     <LodestarAppProvider appId={process.env.REACT_APP_ID}>
-      <Editor resolver={CraftResolvers}>
+      <Editor enabled={editing} resolver={CraftResolvers}>
         <Frame>
           <BrowserRouter>
             <QueryParamProvider ReactRouterRoute={Route}>
               <div className="p-5">
-                <ul>
+                <label htmlFor="editing">
+                  <input
+                    className="mr-1"
+                    type="checkbox"
+                    checked={editing}
+                    onChange={e => setEditing(Boolean(e.target.checked))}
+                  />
+                  <span>Editing</span>
+                </label>
+                <ul className="pl-3">
                   {routes.map(route => (
                     <Link key={route.path} to={route.path}>
                       <li>{route.name}</li>
