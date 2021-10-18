@@ -57,3 +57,11 @@ export const handleError = (error: any) => {
 export const notEmpty = <T>(value: T | null | undefined): value is T => {
   return value !== null && value !== undefined
 }
+
+export const rgba = (hexCode: string, alpha: number) => {
+  const hexColor = (hexCode || '#2d313a').replace('#', '')
+  const r = parseInt(hexColor.slice(0, 2), 16)
+  const g = parseInt(hexColor.slice(2, 4), 16)
+  const b = parseInt(hexColor.slice(4, 6), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
