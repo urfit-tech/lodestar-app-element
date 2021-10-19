@@ -10,9 +10,9 @@ import { DeepPick } from 'ts-deep-pick/lib'
 import { useAuth } from '../../contexts/AuthContext'
 import { getProgramContentCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { CraftCollectionBaseOptions } from '../../types/craft'
 import { ProgramContent } from '../../types/program'
 import { CraftRefBlock } from '../common'
+import { CollectionLayout } from '../common/Collection'
 import { BREAK_POINT } from '../common/Responsive'
 import ProgramContentCard from '../program/ProgramContentCard'
 
@@ -26,7 +26,7 @@ const StyledWelcome = styled.h3`
   }
 `
 
-export type CraftProgramContentCollectionProps = CraftCollectionBaseOptions & {
+export type CraftProgramContentCollectionProps = CollectionLayout & {
   options: {
     source: 'custom'
     idList: string[]
@@ -145,8 +145,10 @@ const useProgramContentCollection = (options: CraftProgramContentCollectionProps
   return { loading, programContents }
 }
 
-const withRecentProgramContentIdList = (WrappedComponent: React.VFC<CraftProgramContentCollectionProps>) => {
-  const Component: React.VFC<Omit<CraftProgramContentCollectionProps, 'options'> & { limit?: number }> = props => {
+const withRecentProgramContentIdList = <T extends CraftProgramContentCollectionProps>(
+  WrappedComponent: React.VFC<T>,
+) => {
+  const Component: React.VFC<CollectionLayout & { limit?: number }> = props => {
     const { data } = useQuery<hasura.GET_RECENT_PROGRAM_PROGRESS, hasura.GET_RECENT_PROGRAM_PROGRESSVariables>(
       gql`
         query GET_RECENT_PROGRAM_PROGRESS($limit: Int) {
@@ -158,7 +160,8 @@ const withRecentProgramContentIdList = (WrappedComponent: React.VFC<CraftProgram
       { variables: { limit: props.limit } },
     )
     const idList: string[] = data?.program_content_progress.map(pcp => pcp.program_content_id) || []
-    return createElement(WrappedComponent, { ...props, options: { source: 'custom', idList } })
+    const wrappedProps = { ...props, options: { source: 'custom', idList } } as T
+    return createElement(WrappedComponent, wrappedProps)
   }
   return Component
 }

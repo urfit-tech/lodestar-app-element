@@ -4,8 +4,7 @@ import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
 import EmptyCover from '../../images/empty-cover.png'
-import { CurrentPrice } from '../../types/data'
-import { PlanPeriod } from '../../types/shared'
+import { ProgramProps } from '../../types/program'
 import { MultiAvatar } from '../Avatar'
 import Card from '../Card'
 import { CustomRatioImage } from '../Image'
@@ -24,27 +23,8 @@ const InstructorPlaceHolder = styled.div`
   margin-bottom: 1rem;
   height: 2rem;
 `
-
-export type ProgramCardProps = (
-  | {
-      loading: true
-    }
-  | ({
-      loading?: never
-      id: string
-      title: string
-      abstract: string
-      totalDuration: number
-      coverUrl: string | null
-      instructorIds: string[]
-      period: PlanPeriod | null
-    } & CurrentPrice)
-) & {
-  craftEnabled?: boolean
-}
-
-const ProgramCard: React.VFC<ProgramCardProps> = props => {
-  const { loading, craftEnabled } = props
+const ProgramCard: React.VFC<ProgramProps> = props => {
+  const { loading } = props
   const history = useHistory()
 
   return (
@@ -56,7 +36,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
           <MultiAvatar
             memberIdList={props.instructorIds}
             withName
-            onClick={instructorId => !craftEnabled && history.push(`/creators/${instructorId}?tabkey=introduction`)}
+            onClick={instructorId => !props.editing && history.push(`/creators/${instructorId}?tabkey=introduction`)}
           />
         )}
       </InstructorPlaceHolder>
@@ -71,7 +51,7 @@ const ProgramCard: React.VFC<ProgramCardProps> = props => {
           p: '0',
           overflow: 'hidden',
         }}
-        onClick={() => !craftEnabled && !loading && history.push(`/programs/${props.id}/contents`)}
+        onClick={() => !loading && !props.editing && history.push(`/programs/${props.id}/contents`)}
       >
         {loading ? (
           <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />

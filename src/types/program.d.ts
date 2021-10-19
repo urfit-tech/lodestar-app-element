@@ -57,3 +57,17 @@ export type ProgramPlan = {
   autoRenewed: boolean
   period: PlanPeriod | null
 }
+
+export type ProgramProps =
+  | { loading: true }
+  | ({
+      id: string
+      title: string
+      abstract: string
+      totalDuration: number
+      coverUrl: string | null
+      instructorIds: string[]
+      period: PlanPeriod | null
+      editing?: boolean
+      loading?: never
+    } & CurrentPrice)
