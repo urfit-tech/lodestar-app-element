@@ -1,3 +1,4 @@
+import { DeepPick } from 'ts-deep-pick/lib'
 import { Category, CurrentPrice } from './data'
 import { Member, PlanPeriod } from './shared'
 
@@ -22,7 +23,7 @@ export type ProgramContentSection = {
   id: string
   title: string
   contents: ProgramContent[]
-  program: Omit<Program, 'contentSections'>
+  program: DeepPick<Program, '!contentSections'>
 }
 
 export type ProgramContent = {
@@ -31,7 +32,7 @@ export type ProgramContent = {
   duration: number
   progress: number
   lastProgress: number
-  contentSection: Omit<ProgramContentSection, 'contents'>
+  contentSection: DeepPick<ProgramContentSection, '!contents'>
   videos: Attachment[]
   attachments: Attachment[]
 }
