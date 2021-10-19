@@ -1,4 +1,4 @@
-import { Category } from './data'
+import { Category, CurrentPrice } from './data'
 import { Member, PlanPeriod } from './shared'
 
 export type Program = {
@@ -71,3 +71,15 @@ export type ProgramProps =
       editing?: boolean
       loading?: never
     } & CurrentPrice)
+
+export type ProgramContentProps =
+  | { loading: true }
+  | {
+      loading?: never
+      title: string
+      type: 'video' | 'text' | null
+      coverUrl: string | null
+      duration: number
+      progress: number
+      editing?: boolean
+    }

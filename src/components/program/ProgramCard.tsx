@@ -1,4 +1,5 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
+import { useNode } from '@craftjs/core'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
@@ -7,6 +8,7 @@ import EmptyCover from '../../images/empty-cover.png'
 import { ProgramProps } from '../../types/program'
 import { MultiAvatar } from '../Avatar'
 import Card from '../Card'
+import { CraftRefBlock } from '../common'
 import { CustomRatioImage } from '../Image'
 import PriceLabel from '../label/PriceLabel'
 
@@ -26,9 +28,20 @@ const InstructorPlaceHolder = styled.div`
 const ProgramCard: React.VFC<ProgramProps> = props => {
   const { loading } = props
   const history = useHistory()
-
+  const {
+    connectors: { connect },
+    selected,
+    hovered,
+  } = useNode(node => ({
+    selected: node.events.selected,
+    hovered: node.events.hovered,
+  }))
   return (
-    <div>
+    <CraftRefBlock
+      ref={ref => ref && connect(ref)}
+      events={{ hovered, selected }}
+      options={{ enabled: !props.loading && props.editing }}
+    >
       <InstructorPlaceHolder>
         {loading ? (
           <MultiAvatar loading memberIdList={[]} />
@@ -81,7 +94,7 @@ const ProgramCard: React.VFC<ProgramProps> = props => {
           </Card.MetaBlock>
         </Card.ContentBlock>
       </Card>
-    </div>
+    </CraftRefBlock>
   )
 }
 

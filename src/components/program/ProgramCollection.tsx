@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/react-hooks'
+import { useEditor } from '@craftjs/core'
 import gql from 'graphql-tag'
 import { sum, uniqBy } from 'ramda'
 import { useMemo } from 'react'
@@ -13,7 +14,7 @@ import { PlanPeriod } from '../../types/shared'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionBaseProps } from '../common/Collection'
 
-type ProgramCollectionProps = CollectionBaseProps<
+type ProgramCollectionOptions =
   | {
       source: 'custom'
       idList: string[]
@@ -36,9 +37,8 @@ type ProgramCollectionProps = CollectionBaseProps<
       defaultTagNames?: string[]
       defaultCategoryIds?: string[]
       withSelector?: boolean
-    },
-  ProgramProps
->
+    }
+type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions, ProgramProps>
 
 const ProgramCollection: React.FC<ProgramCollectionProps> = ({
   element,
@@ -46,11 +46,12 @@ const ProgramCollection: React.FC<ProgramCollectionProps> = ({
   options,
   children,
 }) => {
-  // 0. show loading collection
-  // 1. fetch id list and count -> show loading element and count
-  // 2. fetch element data
   const [activeCategoryId, setActive] = useQueryParam('active', StringParam)
   const { loading, programs } = useProgramCollection(options)
+  const { editing } = useEditor(state => ({
+    editing: state.options.enabled,
+  }))
+
   const filteredPrograms = programs.filter(
     program =>
       !options.withSelector ||
@@ -87,6 +88,7 @@ const ProgramCollection: React.FC<ProgramCollectionProps> = ({
           salePrice: program.salePrice,
           soldAt: program.soldAt,
           period: program.plans[0]?.period || null,
+          editing,
         })),
       })}
     </div>
@@ -161,7 +163,7 @@ const programFields = gql`
     }
   }
 `
-const useProgramCollection = (options: ProgramCollectionProps['options']) => {
+const useProgramCollection = (options: ProgramCollectionOptions) => {
   const variables: hasura.GET_PROGRAM_COLLECTIONVariables = {
     limit: undefined,
     orderByClause: [],

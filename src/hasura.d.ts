@@ -94,9 +94,60 @@ export interface GET_PUBLISHED_CREATORVariables {
 // GraphQL query operation: GET_RECENT_PROGRAM_PROGRESS
 // ====================================================
 
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section_program {
+  __typename: 'program'
+  id: any
+  cover_url: string | null
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section {
+  __typename: 'program_content_section'
+  /**
+   * An object relationship
+   */
+  program: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section_program
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_progress {
+  __typename: 'program_content_progress'
+  id: any
+  progress: any
+  last_progress: any
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_videos {
+  __typename: 'program_content_video'
+  attachment_id: any
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content {
+  __typename: 'program_content'
+  id: any
+  title: string
+  /**
+   * sec
+   */
+  duration: any | null
+  /**
+   * An object relationship
+   */
+  program_content_section: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section
+  /**
+   * An array relationship
+   */
+  program_content_progress: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_progress[]
+  /**
+   * An array relationship
+   */
+  program_content_videos: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_videos[]
+}
+
 export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress {
   __typename: 'program_content_progress'
-  program_content_id: any
+  /**
+   * An object relationship
+   */
+  program_content: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content
 }
 
 export interface GET_RECENT_PROGRAM_PROGRESS {
