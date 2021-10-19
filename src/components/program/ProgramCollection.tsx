@@ -38,7 +38,7 @@ type ProgramCollectionOptions =
       defaultCategoryIds?: string[]
       withSelector?: boolean
     }
-type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions, ProgramProps>
+export type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions, ProgramProps>
 
 const ProgramCollection: UserComponent<ProgramCollectionProps> = ({
   element,
