@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/react-hooks'
-import { useEditor } from '@craftjs/core'
+import { useEditor, UserComponent } from '@craftjs/core'
 import gql from 'graphql-tag'
 import { sum } from 'ramda'
 import { useState } from 'react'
@@ -21,7 +21,7 @@ type ProgramContentCollectionOptions =
     }
 type ProgramContentCollectionProps = CollectionBaseProps<ProgramContentCollectionOptions, ProgramContentProps>
 
-const ProgramContentCollection: React.FC<ProgramContentCollectionProps> = ({
+const ProgramContentCollection: UserComponent<ProgramContentCollectionProps> = ({
   element,
   options,
   layout = { gutter: 8, gap: 8, columns: [1, 2, 4] },
