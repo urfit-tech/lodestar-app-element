@@ -99,3 +99,29 @@ export type Attachment = {
   size: number
   duration: number
 }
+
+export type Activity = {
+  id: string
+  title: string
+  coverUrl: string | null
+  isParticipantVisible: boolean
+  publishedAt: Date | null
+  categories: Category[]
+  sessions: ActivitySession[]
+  tickets: ActivityTicket[]
+  totalParticipants: number
+}
+
+export type ActivitySession = {
+  id: string
+  startedAt: Date
+  endedAt: Date
+  totalParticipants: number
+}
+
+export type ActivityTicket = {
+  id: string
+  sessions: ActivitySession[]
+  participants: Member[]
+  limit: number
+}

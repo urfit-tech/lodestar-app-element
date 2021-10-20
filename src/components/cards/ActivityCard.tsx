@@ -8,7 +8,7 @@ import { productMessages } from '../../helpers/translation'
 import EmptyCover from '../../images/empty-cover.png'
 import { ReactComponent as CalendarOIcon } from '../../images/icons/calendar-alt-o.svg'
 import { ReactComponent as UserOIcon } from '../../images/icons/user-o.svg'
-import { ActivityProps } from '../../types/activity'
+import { ActivityElementProps } from '../../types/element'
 import { CustomRatioImage } from '../common/Image'
 import Card from './Card'
 
@@ -23,9 +23,13 @@ const StyledMeta = styled.div`
   letter-spacing: 0.18px;
 `
 
-const ActivityCard: React.VFC<ActivityProps> = props => {
-  const { loading } = props
+const ActivityCard: React.VFC<ActivityElementProps> = props => {
+  const { loading, errors } = props
   const { formatMessage } = useIntl()
+
+  if (errors) {
+    return <div>{JSON.stringify(errors)}</div>
+  }
 
   const startDate = !loading && props.startedAt ? moment(props.startedAt).format('YYYY-MM-DD(dd)') : ''
   const endDate = !loading && props.endedAt ? moment(props.endedAt).format('YYYY-MM-DD(dd)') : ''

@@ -5,7 +5,6 @@ import { sum } from 'ramda'
 import { DeepPick } from 'ts-deep-pick/lib'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
-import { Activity } from '../types/activity'
 import { Member, PeriodType, PodcastProgram, Program, Project } from '../types/data'
 
 export const usePublishedProgramCollection = (options: { ids?: string[]; limit?: number }) => {
@@ -411,7 +410,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
     { variables: { ids: options?.ids } },
   )
 
-  const activities: DeepPick<Activity, '*'>[] =
+  const activities =
     options?.ids
       .map(id => {
         const value = data?.activity.find(v => v.id === id)

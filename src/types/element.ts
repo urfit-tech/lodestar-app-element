@@ -1,4 +1,4 @@
-import { PeriodType, Project } from './data'
+import { Category, PeriodType, Project } from './data'
 
 export type ElementProps<P> =
   | { loading: true; errors?: never }
@@ -62,4 +62,16 @@ export type ProjectElementProps = ElementProps<{
   isCountdownTimerVisible: boolean
   totalSales: number
   enrollmentCount: number
+}>
+
+export type ActivityElementProps = ElementProps<{
+  id: string
+  coverUrl: string | null
+  title: string
+  isParticipantsVisible: boolean
+  startedAt: Date | null
+  endedAt: Date | null
+  participantCount?: number
+  totalSeats?: number
+  categories: Category[]
 }>
