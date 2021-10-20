@@ -1,8 +1,9 @@
 import { Skeleton, SkeletonCircle } from '@chakra-ui/skeleton'
 import styled from 'styled-components'
+import { DeepPick } from 'ts-deep-pick/lib'
 import { usePublicMember } from '../../hooks/data'
 import DefaultAvatar from '../../images/icons/avatar.svg'
-import { MemberPublicProps } from '../../types/data'
+import { Member } from '../../types/data'
 
 type AvatarImageProps = {
   src?: string | null
@@ -40,8 +41,14 @@ type AvatarProps = {
   shape?: 'circle' | 'square'
   size?: number | 'default' | 'small' | 'large'
   withName?: boolean
-  renderAvatar?: (member: MemberPublicProps | null, onClick?: (memberId: string) => void) => React.ReactNode
-  renderText?: (member: MemberPublicProps | null, onClick?: (memberId: string) => void) => React.ReactNode
+  renderAvatar?: (
+    member: DeepPick<Member, 'id' | 'name' | 'pictureUrl'> | null,
+    onClick?: (memberId: string) => void,
+  ) => React.ReactNode
+  renderText?: (
+    member: DeepPick<Member, 'id' | 'name' | 'pictureUrl'> | null,
+    onClick?: (memberId: string) => void,
+  ) => React.ReactNode
   onClick?: (memberId: string) => void
 }
 

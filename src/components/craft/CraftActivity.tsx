@@ -11,7 +11,7 @@ import hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
 import { commonMessages } from '../../helpers/translation'
 import { usePublishedActivityCollection } from '../../hooks/data'
-import { ActivityCollection, Category } from '../../types/data'
+import { Category } from '../../types/data'
 import ActivityCard from '../cards/ActivityCard'
 import { CraftRefBlock } from '../common'
 import Skeleton from '../common/Skeleton'
@@ -24,6 +24,12 @@ const StyledButton = styled(Button)`
     border-radius: 2rem;
   }
 `
+
+type ActivityCollection = {
+  type: 'newest' | 'custom'
+  ids: (string | null)[]
+}
+
 const CraftActivity: UserComponent<{
   withSelector?: boolean
   defaultCategoryIds: string[]

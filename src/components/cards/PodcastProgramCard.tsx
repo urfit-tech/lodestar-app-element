@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFullFormatter } from '../../helpers/index'
 import EmptyCover from '../../images/empty-cover.png'
-import { PodcastProgramBriefProps } from '../../types/data'
+import { PodcastProgramElementProps } from '../../types/element'
 import Avatar from '../common/Avatar'
 import { CustomRatioImage } from '../common/Image'
 import Responsive, { BREAK_POINT } from '../common/Responsive'
@@ -60,14 +60,17 @@ const StyledDuration = styled.div`
   font-size: 12px;
   letter-spacing: 0.58px;
 `
-export type PodcastProgramCardProps = {
-  podcastProgram: PodcastProgramBriefProps
-  craftEnabled?: boolean
-}
 
-const PodcastProgramCard: React.VFC<PodcastProgramCardProps> = ({ podcastProgram, craftEnabled }) => {
+const PodcastProgramCard: React.VFC<PodcastProgramElementProps> = props => {
+  const { loading, errors } = props
+  if (errors) {
+    return <div>{JSON.stringify(errors)}</div>
+  }
   return (
-    <Link to={`/podcasts/${podcastProgram.id}`} onClick={craftEnabled ? e => e.preventDefault() : undefined}>
+    <Link
+      to={loading ? `#!` : `/podcasts/${props.id}`}
+      onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
+    >
       <Card
         customStyle={{
           direction: 'row',
@@ -80,23 +83,29 @@ const PodcastProgramCard: React.VFC<PodcastProgramCardProps> = ({ podcastProgram
       >
         <StyledCoverBlock>
           <Responsive.Default>
-            <CustomRatioImage width="88px" ratio={1} src={podcastProgram.coverUrl || EmptyCover} />
+            <CustomRatioImage width="88px" ratio={1} src={(!loading && props.coverUrl) || EmptyCover} />
           </Responsive.Default>
           <Responsive.Desktop>
-            <CustomRatioImage width="140px" ratio={1} src={podcastProgram.coverUrl || EmptyCover} />
+            <CustomRatioImage width="140px" ratio={1} src={(!loading && props.coverUrl) || EmptyCover} />
           </Responsive.Desktop>
-          <StyledDuration>{durationFullFormatter(podcastProgram.durationSecond)}</StyledDuration>
+          <StyledDuration>{!loading && durationFullFormatter(props.durationSecond)}</StyledDuration>
         </StyledCoverBlock>
         <StyledContentBlock className="flex-grow-1 d-flex flex-column justify-content-between">
-          <StyledTitle>{podcastProgram.title}</StyledTitle>
+          <StyledTitle>{!loading && props.title}</StyledTitle>
           <StyledDescription className="d-flex justify-content-between align-items-center">
             <div className="d-none d-lg-flex align-items-center">
-              <Avatar.Image src={podcastProgram.instructor?.avatarUrl} size={36} className="mr-2" />
-              <span>{podcastProgram.instructor?.name}</span>
+              {!loading && <Avatar.Image src={props.instructor?.avatarUrl} size={36} className="mr-2" />}
+              <span>{!loading && props.instructor?.name}</span>
             </div>
 
             <div className="text-right">
-              <PriceLabel variant="inline" listPrice={podcastProgram.listPrice} salePrice={podcastProgram.salePrice} />
+              {!loading && (
+                <PriceLabel
+                  variant="inline"
+                  listPrice={props.listPrice || props.currentPrice}
+                  salePrice={props.currentPrice}
+                />
+              )}
             </div>
           </StyledDescription>
         </StyledContentBlock>

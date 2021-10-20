@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/react-hooks'
 import { useEditor } from '@craftjs/core'
 import gql from 'graphql-tag'
+import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
 import { useMemo } from 'react'
 import { DeepPick } from 'ts-deep-pick/lib'
@@ -8,11 +9,10 @@ import { StringParam, useQueryParam } from 'use-query-params'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { Category, CurrentPrice } from '../../types/data'
-import { Program, ProgramRole } from '../../types/program'
-import { PlanPeriod } from '../../types/shared'
+import { Category, PeriodType, ProductRole, Program } from '../../types/data'
+import { ProgramElementProps } from '../../types/element'
+import Collection, { CollectionBaseProps } from '../collections/Collection'
 import CategorySelector from '../common/CategorySelector'
-import Collection, { CollectionBaseProps, CollectionElementProps } from '../common/Collection'
 
 export type ProgramCollectionOptions =
   | {
@@ -39,22 +39,8 @@ export type ProgramCollectionOptions =
       withSelector?: boolean
     }
 
-export type ProgramCollectionElementProps = CollectionElementProps<
-  {
-    id: string
-    title: string
-    abstract: string
-    totalDuration: number
-    coverUrl: string | null
-    instructorIds: string[]
-    period: PlanPeriod | null
-    editing?: boolean
-    loading?: boolean
-  } & CurrentPrice
->
-
 export type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions> & {
-  element: React.ElementType<ProgramCollectionElementProps>
+  element: React.ElementType<ProgramElementProps>
 }
 
 const ProgramCollection: React.FC<ProgramCollectionProps> = ({
@@ -101,10 +87,10 @@ const ProgramCollection: React.FC<ProgramCollectionProps> = ({
           totalDuration: program.totalDuration || 0,
           coverUrl: program.coverUrl,
           instructorIds: program.roles.map(programRole => programRole.member.id),
-          listPrice: program.listPrice || 0,
-          salePrice: program.salePrice,
-          soldAt: program.soldAt,
-          period: program.plans[0]?.period || null,
+          listPrice: program.soldAt && moment() < moment(program.soldAt) ? program.listPrice : undefined,
+          currentPrice:
+            program.soldAt && moment() < moment(program.soldAt) ? program.salePrice || 0 : program.listPrice,
+          period: program.plans[0]?.period || undefined,
           editing,
         })),
       })}
@@ -273,7 +259,7 @@ const useProgramCollection = (options: ProgramCollectionOptions) => {
     | 'listPrice'
     | 'salePrice'
     | 'soldAt'
-    | 'plans'
+    | 'plans.[].!title'
     | 'categories'
   >[] = useMemo(() => {
     const data =
@@ -297,7 +283,7 @@ const useProgramCollection = (options: ProgramCollectionOptions) => {
         ),
         roles: p.program_roles.map(pr => ({
           id: pr.id,
-          name: pr.name as ProgramRole['name'],
+          name: pr.name as ProductRole['name'],
           member: { id: pr.member_id },
         })),
         listPrice: p.list_price,
@@ -311,10 +297,10 @@ const useProgramCollection = (options: ProgramCollectionOptions) => {
           autoRenewed: pp.auto_renewed || false,
           period:
             pp.period_amount && pp.period_type
-              ? ({
-                  amount: pp.period_amount,
-                  type: pp.period_type,
-                } as PlanPeriod)
+              ? {
+                  amount: Number(pp.period_amount),
+                  type: pp.period_type as PeriodType,
+                }
               : null,
         })),
         categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),

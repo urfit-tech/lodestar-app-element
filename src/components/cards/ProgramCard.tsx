@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
 import EmptyCover from '../../images/empty-cover.png'
-import { ProgramCollectionElementProps } from '../collections/ProgramCollection'
+import { ProgramElementProps } from '../../types/element'
 import { MultiAvatar } from '../common/Avatar'
 import { CustomRatioImage } from '../common/Image'
 import PriceLabel from '../labels/PriceLabel'
@@ -23,9 +23,12 @@ const InstructorPlaceHolder = styled.div`
   margin-bottom: 1rem;
   height: 2rem;
 `
-const ProgramCard: React.FC<ProgramCollectionElementProps> = props => {
-  const { loading } = props
+const ProgramCard: React.FC<ProgramElementProps> = props => {
+  const { loading, errors } = props
   const history = useHistory()
+  if (errors) {
+    return <div>{JSON.stringify(errors)}</div>
+  }
   return (
     <div>
       <InstructorPlaceHolder>
@@ -69,8 +72,8 @@ const ProgramCard: React.FC<ProgramCollectionElementProps> = props => {
               ) : (
                 <PriceLabel
                   variant="inline"
-                  listPrice={props.listPrice}
-                  salePrice={props.salePrice}
+                  listPrice={props.listPrice || props.currentPrice}
+                  salePrice={props.currentPrice}
                   periodAmount={props.period?.amount}
                   periodType={props.period?.type}
                 />

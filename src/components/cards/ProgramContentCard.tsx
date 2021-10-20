@@ -4,7 +4,7 @@ import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import PlayIcon from '../../images/play-circle.svg'
 import TextIcon from '../../images/text.svg'
-import { ProgramContentCollectionElementProps } from '../collections/ProgramContentCollection'
+import { ProgramContentElementProps } from '../../types/element'
 import { CustomRatioImage } from '../common/Image'
 import ProgressBar from '../common/ProgressBar'
 import { BREAK_POINT } from '../common/Responsive'
@@ -97,8 +97,11 @@ const StyledProgressBar = styled(ProgressBar)`
   }
 `
 
-const ProgramContentCard: React.FC<ProgramContentCollectionElementProps> = props => {
-  const { loading } = props
+const ProgramContentCard: React.FC<ProgramContentElementProps> = props => {
+  const { loading, errors } = props
+  if (errors) {
+    return <div>{JSON.stringify(errors)}</div>
+  }
   return (
     <StyledProgramContentCard>
       <div className="d-flex overflow-hidden">

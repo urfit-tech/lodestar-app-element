@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
-import { ProgramCollectionElementProps } from '../collections/ProgramCollection'
+import { ProgramElementProps } from '../../types/element'
 import PriceLabel from '../labels/PriceLabel'
 import Card from './Card'
 
@@ -17,10 +17,13 @@ const StyledTitle = styled.div`
   letter-spacing: 0.8px;
 `
 
-const ProgramSecondaryCard: React.FC<ProgramCollectionElementProps> = props => {
-  const { loading } = props
+const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
+  const { loading, errors } = props
   const history = useHistory()
 
+  if (errors) {
+    return <div>{JSON.stringify(errors)}</div>
+  }
   return (
     <Card
       className="cursor-pointer"
@@ -46,8 +49,8 @@ const ProgramSecondaryCard: React.FC<ProgramCollectionElementProps> = props => {
             ) : (
               <PriceLabel
                 variant="inline"
-                listPrice={props.listPrice}
-                salePrice={props.salePrice}
+                listPrice={props.listPrice || props.currentPrice}
+                salePrice={props.currentPrice}
                 periodAmount={props.period?.amount}
                 periodType={props.period?.type}
               />

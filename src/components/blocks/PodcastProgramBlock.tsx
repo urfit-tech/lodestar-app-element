@@ -1,4 +1,5 @@
 import { useNode } from '@craftjs/core'
+import moment from 'moment'
 import { usePublishedPodcastProgramCollection } from '../../hooks/data'
 import PodcastProgramCard from '../cards/PodcastProgramCard'
 import { CraftRefBlock } from '../common'
@@ -44,7 +45,26 @@ const PodcastProgramBlock: React.VFC<{
           events={{ hovered, selected }}
           options={{ enabled: craftEnabled }}
         >
-          <PodcastProgramCard key={podcastProgram.id} podcastProgram={podcastProgram} craftEnabled={craftEnabled} />
+          <PodcastProgramCard
+            key={podcastProgram.id}
+            id={podcastProgram.id}
+            title={podcastProgram.title}
+            coverUrl={podcastProgram.coverUrl}
+            durationSecond={podcastProgram.totalDuration}
+            instructor={{
+              name: podcastProgram.roles[0].member.name,
+              avatarUrl: podcastProgram.roles[0].member.pictureUrl,
+            }}
+            listPrice={
+              podcastProgram.soldAt && moment() < moment(podcastProgram.soldAt) ? podcastProgram.listPrice : null
+            }
+            currentPrice={
+              podcastProgram.soldAt && moment() < moment(podcastProgram.soldAt)
+                ? podcastProgram.salePrice || 0
+                : podcastProgram.listPrice
+            }
+            editing={craftEnabled}
+          />
         </CraftRefBlock>
       ))}
     </>

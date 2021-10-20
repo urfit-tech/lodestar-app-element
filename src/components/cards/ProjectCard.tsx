@@ -8,7 +8,7 @@ import { projectMessages } from '../../helpers/translation'
 import EmptyCover from '../../images/empty-cover.png'
 import { ReactComponent as CalendarAltOIcon } from '../../images/icons/calendar-alt-o.svg'
 import { ReactComponent as UserOIcon } from '../../images/icons/user-o.svg'
-import { ProjectBasicProps } from '../../types/data'
+import { ProjectElementProps } from '../../types/element'
 import { CustomRatioImage } from '../common/Image'
 import PriceLabel from '../labels/PriceLabel'
 import Card from './Card'
@@ -26,17 +26,20 @@ const StyledPercent = styled.div`
   transform: translateX(-50%) translateY(-50%);
   color: var(--gray-darker);
 `
-export type ProjectCardProps = {
-  project: ProjectBasicProps
-  craftEnabled?: boolean
-}
-
-const ProjectCard: React.VFC<ProjectCardProps> = ({ project, craftEnabled }) => {
+const ProjectCard: React.VFC<ProjectElementProps> = props => {
+  const { loading, errors } = props
   const { formatMessage } = useIntl()
   const theme = useContext(ThemeContext)
 
+  if (errors) {
+    return <div>{JSON.stringify(errors)}</div>
+  }
+
   return (
-    <Link to={`/projects/${project.id}`} onClick={craftEnabled ? e => e.preventDefault() : undefined}>
+    <Link
+      to={loading ? `#!` : `/projects/${props.id}`}
+      onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
+    >
       <Card
         customStyle={{
           direction: 'column',
@@ -47,38 +50,39 @@ const ProjectCard: React.VFC<ProjectCardProps> = ({ project, craftEnabled }) => 
           overflow: 'hidden',
         }}
       >
-        <CustomRatioImage width="100%" ratio={9 / 16} src={project.previewUrl || project.coverUrl || EmptyCover} />
+        {!loading && (
+          <CustomRatioImage width="100%" ratio={9 / 16} src={props.previewUrl || props.coverUrl || EmptyCover} />
+        )}
         <Card.ContentBlock>
           <Card.Title
             style={{ height: '3rem' }}
             customStyle={{ fontSize: '18', textAlign: 'left', fontWeight: 'bold', color: '' }}
             className="mb-3"
           >
-            {project.title}
+            {!loading && props.title}
           </Card.Title>
-          <Card.Description className="mb-3">{project.abstract}</Card.Description>
+          <Card.Description className="mb-3">{!loading && props.abstract}</Card.Description>
           <Card.MetaBlock className="d-flex align-items-end justify-content-between">
             <StyledCircleWrapper>
-              {project.type === 'funding' && (
+              {!loading && props.type === 'funding' && (
                 <StyledPercent>
-                  {!project.targetAmount
+                  {!props.targetAmount
                     ? 0
                     : Math.floor(
-                        ((project.targetUnit === 'participants' ? project.enrollmentCount : project.totalSales) * 100) /
-                          project.targetAmount,
+                        ((props.targetUnit === 'participants' ? props.enrollmentCount : props.totalSales) * 100) /
+                          props.targetAmount,
                       )}
                   %
                 </StyledPercent>
               )}
-              {project.type === 'funding' ? (
+              {!loading && props.type === 'funding' ? (
                 <Circle
                   percent={
-                    !project.targetAmount
+                    !props.targetAmount
                       ? 0
                       : Math.floor(
-                          ((project.targetUnit === 'participants' ? project.enrollmentCount : project.totalSales) *
-                            100) /
-                            project.targetAmount,
+                          ((props.targetUnit === 'participants' ? props.enrollmentCount : props.totalSales) * 100) /
+                            props.targetAmount,
                         )
                   }
                   style={{ width: 50 }}
@@ -87,40 +91,40 @@ const ProjectCard: React.VFC<ProjectCardProps> = ({ project, craftEnabled }) => 
                   strokeWidth={12}
                   strokeColor={theme['@primary-color']}
                 />
-              ) : project.isParticipantsVisible ? (
+              ) : !loading && props.isParticipantsVisible ? (
                 <div className="d-flex align-items-center">
                   <UserOIcon />
-                  {formatMessage(projectMessages.text.people, { count: project.enrollmentCount })}
+                  {formatMessage(projectMessages.text.people, { count: loading ? 0 : props.enrollmentCount })}
                 </div>
               ) : null}
             </StyledCircleWrapper>
 
             <div className="text-right">
-              {project.type === 'funding' && (
+              {!loading && props.type === 'funding' && (
                 <StyledLabel>
-                  {project.targetUnit === 'participants' &&
-                    formatMessage(projectMessages.text.totalParticipants, { count: project.enrollmentCount })}
-                  {project.targetUnit === 'funds' && <PriceLabel listPrice={project.totalSales || 0} />}
+                  {props.targetUnit === 'participants' &&
+                    formatMessage(projectMessages.text.totalParticipants, { count: props.enrollmentCount })}
+                  {props.targetUnit === 'funds' && <PriceLabel listPrice={props.totalSales || 0} />}
                 </StyledLabel>
               )}
-              {project.isCountdownTimerVisible && project.expiredAt && (
+              {!loading && props.isCountdownTimerVisible && props.expiredAt && (
                 <>
-                  {moment().isAfter(project.expiredAt) ? (
+                  {moment().isAfter(props.expiredAt) ? (
                     <div className="d-flex align-items-center justify-content-end">
                       <CalendarAltOIcon className="mr-1" />
-                      {project.type === 'funding'
+                      {props.type === 'funding'
                         ? formatMessage(projectMessages.label.isExpiredFunding)
                         : formatMessage(projectMessages.label.isExpired)}
                     </div>
                   ) : (
                     <StyledLabel className="d-flex align-items-center">
                       <CalendarAltOIcon className="mr-1" />
-                      {project.type === 'funding'
+                      {props.type === 'funding'
                         ? formatMessage(projectMessages.text.fundingCountDownDays, {
-                            days: moment(project.expiredAt).diff(new Date(), 'days'),
+                            days: moment(props.expiredAt).diff(new Date(), 'days'),
                           })
                         : formatMessage(projectMessages.text.preOrderCountDownDays, {
-                            days: moment(project.expiredAt).diff(new Date(), 'days'),
+                            days: moment(props.expiredAt).diff(new Date(), 'days'),
                           })}
                     </StyledLabel>
                   )}
