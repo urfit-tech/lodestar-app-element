@@ -20,8 +20,8 @@ const Collection =
     return (
       <SimpleGrid spacingX={options.layout.gutter} spacingY={options.layout.gap} columns={options.layout.columns}>
         {options.loading
-          ? repeat(createElement(Component, { loading: true } as ElementProps<P>))(4)
-          : options.propsList.map(props => createElement(Component, props))}
+          ? repeat(createElement<ElementProps<P>>(Component, { loading: true }))(4)
+          : options.propsList.map(props => createElement<ElementProps<P>>(Component, props))}
       </SimpleGrid>
     )
   }
