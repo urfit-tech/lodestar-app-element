@@ -9,7 +9,7 @@ import * as hasura from '../../hasura'
 import { ProgramContent, ProgramContentProps } from '../../types/program'
 import Collection, { CollectionBaseProps } from '../common/Collection'
 
-type ProgramContentCollectionOptions =
+export type ProgramContentCollectionOptions =
   | {
       source: 'custom'
       idList: string[]
@@ -19,7 +19,7 @@ type ProgramContentCollectionOptions =
       watchedAt?: Date
       limit?: number
     }
-type ProgramContentCollectionProps = CollectionBaseProps<ProgramContentCollectionOptions, ProgramContentProps>
+export type ProgramContentCollectionProps = CollectionBaseProps<ProgramContentCollectionOptions, ProgramContentProps>
 
 const ProgramContentCollection: UserComponent<ProgramContentCollectionProps> = ({
   element,

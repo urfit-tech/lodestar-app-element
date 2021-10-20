@@ -14,7 +14,7 @@ import { PlanPeriod } from '../../types/shared'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionBaseProps } from '../common/Collection'
 
-type ProgramCollectionOptions =
+export type ProgramCollectionOptions =
   | {
       source: 'custom'
       idList: string[]
