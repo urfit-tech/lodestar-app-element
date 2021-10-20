@@ -10,8 +10,7 @@ export type CollectionLayout = {
 
 type CollectionElementBaseProps = { loading: true } | { loading?: never; editing?: boolean }
 
-export type CollectionBaseProps<T extends { source: string }, P extends CollectionElementBaseProps> = {
-  element: React.ElementType<P>
+export type CollectionBaseProps<T extends { source: string }> = {
   layout?: CollectionLayout
   options: T
 }

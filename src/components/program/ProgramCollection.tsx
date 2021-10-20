@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/react-hooks'
-import { useEditor, UserComponent } from '@craftjs/core'
+import { useEditor } from '@craftjs/core'
 import gql from 'graphql-tag'
 import { sum, uniqBy } from 'ramda'
 import { useMemo } from 'react'
@@ -38,9 +38,11 @@ export type ProgramCollectionOptions =
       defaultCategoryIds?: string[]
       withSelector?: boolean
     }
-export type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions, ProgramProps>
+export type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions> & {
+  element: React.ElementType<ProgramProps>
+}
 
-const ProgramCollection: UserComponent<ProgramCollectionProps> = ({
+const ProgramCollection: React.FC<ProgramCollectionProps> = ({
   element,
   layout = { columns: [1, 2, 4], gap: 8, gutter: 8 },
   options,

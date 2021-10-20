@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/react-hooks'
-import { useEditor, UserComponent } from '@craftjs/core'
+import { useEditor } from '@craftjs/core'
 import gql from 'graphql-tag'
 import { sum } from 'ramda'
 import { useState } from 'react'
@@ -19,9 +19,11 @@ export type ProgramContentCollectionOptions =
       watchedAt?: Date
       limit?: number
     }
-export type ProgramContentCollectionProps = CollectionBaseProps<ProgramContentCollectionOptions, ProgramContentProps>
+export type ProgramContentCollectionProps = CollectionBaseProps<ProgramContentCollectionOptions> & {
+  element: React.ElementType<ProgramContentProps>
+}
 
-const ProgramContentCollection: UserComponent<ProgramContentCollectionProps> = ({
+const ProgramContentCollection: React.FC<ProgramContentCollectionProps> = ({
   element,
   options,
   layout = { gutter: 8, gap: 8, columns: [1, 2, 4] },
