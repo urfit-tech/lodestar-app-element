@@ -8,11 +8,11 @@ import { StringParam, useQueryParam } from 'use-query-params'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { Category } from '../../types/data'
-import { Program, ProgramProps, ProgramRole } from '../../types/program'
+import { Category, CurrentPrice } from '../../types/data'
+import { Program, ProgramRole } from '../../types/program'
 import { PlanPeriod } from '../../types/shared'
 import CategorySelector from '../common/CategorySelector'
-import Collection, { CollectionBaseProps } from '../common/Collection'
+import Collection, { CollectionBaseProps, CollectionElementProps } from '../common/Collection'
 
 export type ProgramCollectionOptions =
   | {
@@ -38,8 +38,23 @@ export type ProgramCollectionOptions =
       defaultCategoryIds?: string[]
       withSelector?: boolean
     }
+
+export type ProgramCollectionElementProps = CollectionElementProps<
+  {
+    id: string
+    title: string
+    abstract: string
+    totalDuration: number
+    coverUrl: string | null
+    instructorIds: string[]
+    period: PlanPeriod | null
+    editing?: boolean
+    loading?: boolean
+  } & CurrentPrice
+>
+
 export type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions> & {
-  element: React.ElementType<ProgramProps>
+  element: React.ElementType<ProgramCollectionElementProps>
 }
 
 const ProgramCollection: React.FC<ProgramCollectionProps> = ({

@@ -8,7 +8,7 @@ export type CollectionLayout = {
   columns?: ResponsiveValue<number>
 }
 
-type CollectionElementBaseProps = { loading: true } | { loading?: never; editing?: boolean }
+export type CollectionElementProps<P> = { loading: true } | (P & { loading?: never; editing?: boolean })
 
 export type CollectionBaseProps<T extends { source: string }> = {
   layout?: CollectionLayout
@@ -16,12 +16,12 @@ export type CollectionBaseProps<T extends { source: string }> = {
 }
 
 const Collection =
-  <P extends CollectionElementBaseProps>(Component: React.ElementType<P>) =>
+  <P extends object>(Component: React.ElementType<CollectionElementProps<P>>) =>
   (options: { loading?: boolean; layout: CollectionLayout; propsList: P[] }) => {
     return (
       <SimpleGrid spacingX={options.layout.gutter} spacingY={options.layout.gap} columns={options.layout.columns}>
         {options.loading
-          ? repeat(createElement(Component, { loading: true } as P))(4)
+          ? repeat(createElement(Component, { loading: true } as CollectionElementProps<P>))(4)
           : options.propsList.map(props => createElement(Component, props))}
       </SimpleGrid>
     )

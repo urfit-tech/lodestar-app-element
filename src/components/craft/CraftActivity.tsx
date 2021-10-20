@@ -12,7 +12,7 @@ import { notEmpty } from '../../helpers'
 import { commonMessages } from '../../helpers/translation'
 import { usePublishedActivityCollection } from '../../hooks/data'
 import { ActivityCollection, Category } from '../../types/data'
-import ActivityCard from '../cards/ActivityCard'
+import ActivityCard from '../activity/ActivityCard'
 import { CraftRefBlock } from '../common'
 import Skeleton from '../Skeleton'
 
@@ -137,7 +137,19 @@ const CraftActivity: UserComponent<{
               events={{ hovered, selected }}
               options={{ enabled }}
             >
-              <ActivityCard key={activity.id} activity={activity} craftEnabled={enabled} />
+              <ActivityCard
+                key={activity.id}
+                editing={enabled}
+                id={activity.id}
+                coverUrl={activity.coverUrl}
+                title={activity.title}
+                isParticipantsVisible={activity.isParticipantsVisible}
+                startedAt={activity.startedAt}
+                endedAt={activity.endedAt}
+                participantCount={activity.participantCount}
+                totalSeats={activity.totalSeats}
+                categories={activity.categories}
+              />
             </CraftRefBlock>
           </div>
         ))}

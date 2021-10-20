@@ -1,10 +1,11 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { sum } from 'ramda'
+import { DeepPick } from 'ts-deep-pick/lib'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
+import { Activity } from '../types/activity'
 import {
-  ActivityProps,
   MemberPublicProps,
   PeriodType,
   PodcastProgramBriefProps,
@@ -370,7 +371,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
     { variables: { ids: options?.ids } },
   )
 
-  const activities: ActivityProps[] =
+  const activities: DeepPick<Activity, '*'>[] =
     options?.ids
       .map(id => {
         const value = data?.activity.find(v => v.id === id)

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { getProgramContentCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { ProgramContent, ProgramContentProps } from '../../types/program'
+import { ProgramContent } from '../../types/program'
 import Collection, { CollectionBaseProps } from '../common/Collection'
 
 export type ProgramContentCollectionOptions =
@@ -19,8 +19,21 @@ export type ProgramContentCollectionOptions =
       watchedAt?: Date
       limit?: number
     }
+
+export type ProgramContentCollectionElementProps =
+  | { loading: true }
+  | {
+      loading?: never
+      title: string
+      type: 'video' | 'text' | null
+      coverUrl: string | null
+      duration: number
+      progress: number
+      editing?: boolean
+    }
+
 export type ProgramContentCollectionProps = CollectionBaseProps<ProgramContentCollectionOptions> & {
-  element: React.ElementType<ProgramContentProps>
+  element: React.ElementType<ProgramContentCollectionElementProps>
 }
 
 const ProgramContentCollection: React.FC<ProgramContentCollectionProps> = ({

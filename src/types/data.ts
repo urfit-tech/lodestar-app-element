@@ -21,18 +21,6 @@ export type MemberPublicProps = {
   name: string | null
 }
 
-export type ActivityProps = {
-  id: string
-  coverUrl: string | null
-  title: string
-  isParticipantsVisible: boolean
-  startedAt: Date | null
-  endedAt: Date | null
-  participantCount?: number
-  totalSeats?: number
-  categories: Category[]
-}
-
 export type ActivityCollection = {
   type: 'newest' | 'custom'
   ids: (string | null)[]

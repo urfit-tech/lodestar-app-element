@@ -1,3 +1,4 @@
+import { useNode } from '@craftjs/core'
 import styled, { css } from 'styled-components'
 import {
   BorderProps,
@@ -224,15 +225,33 @@ const CraftSelectedMixin = css`
   border: 2px solid cornflowerblue;
 `
 
-export { CraftHoveredMixin, CraftSelectedMixin }
-export {
-  CraftRefBlock,
-  StyledTitle,
-  StyledParagraph,
-  AdminHeaderTitle,
-  StyledSettingButtonWrapper,
-  StyledCraftSettingLabel,
+// FIXME: why cannot use <P extends {editing?:boolean}> directly?
+// FIXME: only accept for FC and CC, not VFC
+const Craftize = <P, T extends P & { editing?: boolean }>(WrappedComponent: React.ComponentType<P>) => {
+  const Component: React.ComponentType<T> = props => {
+    const {
+      connectors: { connect },
+      selected,
+      hovered,
+    } = useNode(node => ({
+      selected: node.events.selected,
+      hovered: node.events.hovered,
+    }))
+    return (
+      <CraftRefBlock
+        ref={ref => ref && connect(ref)}
+        events={{ hovered, selected }}
+        options={{ enabled: props.editing }}
+      >
+        <WrappedComponent {...props} />
+      </CraftRefBlock>
+    )
+  }
+  return Component
 }
+
+export { CraftHoveredMixin, CraftSelectedMixin, CraftRefBlock, Craftize }
+export { StyledTitle, StyledParagraph, AdminHeaderTitle, StyledSettingButtonWrapper, StyledCraftSettingLabel }
 export {
   generateCustomTitleStyle,
   generateCustomParagraphStyle,

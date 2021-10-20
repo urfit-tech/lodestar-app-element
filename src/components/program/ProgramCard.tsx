@@ -1,16 +1,14 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
-import { useNode } from '@craftjs/core'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
 import EmptyCover from '../../images/empty-cover.png'
-import { ProgramProps } from '../../types/program'
 import { MultiAvatar } from '../Avatar'
 import Card from '../Card'
-import { CraftRefBlock } from '../common'
 import { CustomRatioImage } from '../Image'
 import PriceLabel from '../label/PriceLabel'
+import { ProgramCollectionElementProps } from './ProgramCollection'
 
 const StyledTitle = styled.div`
   ${MultiLineTruncationMixin}
@@ -25,23 +23,11 @@ const InstructorPlaceHolder = styled.div`
   margin-bottom: 1rem;
   height: 2rem;
 `
-const ProgramCard: React.VFC<ProgramProps> = props => {
+const ProgramCard: React.FC<ProgramCollectionElementProps> = props => {
   const { loading } = props
   const history = useHistory()
-  const {
-    connectors: { connect },
-    selected,
-    hovered,
-  } = useNode(node => ({
-    selected: node.events.selected,
-    hovered: node.events.hovered,
-  }))
   return (
-    <CraftRefBlock
-      ref={ref => ref && connect(ref)}
-      events={{ hovered, selected }}
-      options={{ enabled: !props.loading && props.editing }}
-    >
+    <div>
       <InstructorPlaceHolder>
         {loading ? (
           <MultiAvatar loading memberIdList={[]} />
@@ -94,7 +80,7 @@ const ProgramCard: React.VFC<ProgramProps> = props => {
           </Card.MetaBlock>
         </Card.ContentBlock>
       </Card>
-    </CraftRefBlock>
+    </div>
   )
 }
 

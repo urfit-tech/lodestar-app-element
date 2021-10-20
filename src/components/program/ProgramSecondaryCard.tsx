@@ -3,9 +3,9 @@ import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
-import { ProgramProps } from '../../types/program'
 import Card from '../Card'
 import PriceLabel from '../label/PriceLabel'
+import { ProgramCollectionElementProps } from './ProgramCollection'
 
 const StyledTitle = styled.div`
   ${MultiLineTruncationMixin}
@@ -16,11 +16,8 @@ const StyledTitle = styled.div`
   font-weight: bold;
   letter-spacing: 0.8px;
 `
-const InstructorPlaceHolder = styled.div`
-  margin-bottom: 1rem;
-  height: 2rem;
-`
-const ProgramSecondaryCard: React.VFC<ProgramProps> = props => {
+
+const ProgramSecondaryCard: React.FC<ProgramCollectionElementProps> = props => {
   const { loading } = props
   const history = useHistory()
 

@@ -4,10 +4,10 @@ import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import PlayIcon from '../../images/play-circle.svg'
 import TextIcon from '../../images/text.svg'
-import { ProgramContentProps } from '../../types/program'
 import { CustomRatioImage } from '../common/Image'
 import ProgressBar from '../common/ProgressBar'
 import { BREAK_POINT } from '../common/Responsive'
+import { ProgramContentCollectionElementProps } from './ProgramContentCollection'
 
 const StyledProgramContentCard = styled.div`
   position: relative;
@@ -97,7 +97,7 @@ const StyledProgressBar = styled(ProgressBar)`
   }
 `
 
-const ProgramContentCard: React.FC<ProgramContentProps> = props => {
+const ProgramContentCard: React.FC<ProgramContentCollectionElementProps> = props => {
   const { loading } = props
   return (
     <StyledProgramContentCard>

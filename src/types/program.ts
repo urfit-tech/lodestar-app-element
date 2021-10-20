@@ -1,4 +1,4 @@
-import { Category, CurrentPrice } from './data'
+import { Category } from './data'
 import { Member, PlanPeriod } from './shared'
 
 export type Program = {
@@ -57,29 +57,3 @@ export type ProgramPlan = {
   autoRenewed: boolean
   period: PlanPeriod | null
 }
-
-export type ProgramProps =
-  | { loading: true }
-  | ({
-      id: string
-      title: string
-      abstract: string
-      totalDuration: number
-      coverUrl: string | null
-      instructorIds: string[]
-      period: PlanPeriod | null
-      editing?: boolean
-      loading?: never
-    } & CurrentPrice)
-
-export type ProgramContentProps =
-  | { loading: true }
-  | {
-      loading?: never
-      title: string
-      type: 'video' | 'text' | null
-      coverUrl: string | null
-      duration: number
-      progress: number
-      editing?: boolean
-    }
