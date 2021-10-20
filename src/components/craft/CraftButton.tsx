@@ -1,7 +1,7 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import styled from 'styled-components'
-import Button from '../../components/Button'
 import { CraftButtonProps } from '../../types/craft'
+import Button from '../buttons/Button'
 import { CraftHoveredMixin, CraftSelectedMixin } from '../common'
 
 const StyledButtonWrapper = styled.div<{

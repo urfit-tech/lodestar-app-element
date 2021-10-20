@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { CardProps, ParagraphProps, TitleProps } from '../types/style'
-import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph } from './common'
+import { CardProps, ParagraphProps, TitleProps } from '../../types/style'
+import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph } from '../common'
 
 const StyledSlideTitle = styled.h3<{ customStyle: TitleProps }>`
   display: flex;

@@ -1,5 +1,5 @@
-import ProgramContentCard from '../components/program/ProgramContentCard'
-import ProgramContentCollection from '../components/program/ProgramContentCollection'
+import ProgramContentCard from '../components/cards/ProgramContentCard'
+import ProgramContentCollection from '../components/collections/ProgramContentCollection'
 
 const ProgramContentCollectionPage: React.VFC = () => {
   return (

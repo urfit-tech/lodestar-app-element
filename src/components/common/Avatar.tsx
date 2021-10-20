@@ -1,8 +1,8 @@
 import { Skeleton, SkeletonCircle } from '@chakra-ui/skeleton'
 import styled from 'styled-components'
-import { usePublicMember } from '../hooks/data'
-import DefaultAvatar from '../images/icons/avatar.svg'
-import { MemberPublicProps } from '../types/data'
+import { usePublicMember } from '../../hooks/data'
+import DefaultAvatar from '../../images/icons/avatar.svg'
+import { MemberPublicProps } from '../../types/data'
 
 type AvatarImageProps = {
   src?: string | null

@@ -3,9 +3,9 @@ import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
-import Card from '../Card'
-import PriceLabel from '../label/PriceLabel'
-import { ProgramCollectionElementProps } from './ProgramCollection'
+import { ProgramCollectionElementProps } from '../collections/ProgramCollection'
+import PriceLabel from '../labels/PriceLabel'
+import Card from './Card'
 
 const StyledTitle = styled.div`
   ${MultiLineTruncationMixin}

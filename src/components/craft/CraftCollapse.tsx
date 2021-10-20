@@ -1,6 +1,6 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
-import Accordion from '../AccordionSingle'
+import Accordion from '../accordions/AccordionSingle'
 import { CraftRefBlock } from '../common'
 
 export type CraftCollapseProps = {

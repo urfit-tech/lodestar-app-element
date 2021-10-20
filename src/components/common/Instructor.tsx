@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import DefaultAvatar from '../images/icons/avatar.svg'
-import { ParagraphProps, TitleProps } from '../types/style'
-import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
+import { generateCustomParagraphStyle, generateCustomTitleStyle } from '.'
+import DefaultAvatar from '../../images/icons/avatar.svg'
+import { ParagraphProps, TitleProps } from '../../types/style'
 
 const StyledInstructorBlock = styled.div`
   padding: 1rem;

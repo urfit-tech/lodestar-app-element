@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { durationFullFormatter } from '../../helpers/index'
 import EmptyCover from '../../images/empty-cover.png'
 import { PodcastProgramBriefProps } from '../../types/data'
-import Avatar from '../Avatar'
-import Card from '../Card'
-import { CustomRatioImage } from '../Image'
-import PriceLabel from '../label/PriceLabel'
-import Responsive, { BREAK_POINT } from '../Responsive'
+import Avatar from '../common/Avatar'
+import { CustomRatioImage } from '../common/Image'
+import Responsive, { BREAK_POINT } from '../common/Responsive'
+import PriceLabel from '../labels/PriceLabel'
+import Card from './Card'
 
 const StyledContentBlock = styled.div`
   padding: 0.75rem;

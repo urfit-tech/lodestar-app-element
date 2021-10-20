@@ -2,7 +2,7 @@ import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import styled from 'styled-components'
 import { CraftBoxModelProps, CraftImageProps, CraftParagraphProps, CraftTitleProps } from '../../types/craft'
 import { CraftRefBlock } from '../common'
-import Stat from '../Stat'
+import Stat from '../common/Stat'
 
 const StatisticsWrapper = styled.div`
   width: fit-content;

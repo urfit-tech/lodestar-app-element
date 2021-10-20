@@ -4,11 +4,11 @@ import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { MultiLineTruncationMixin } from '../../helpers/style'
 import EmptyCover from '../../images/empty-cover.png'
-import { MultiAvatar } from '../Avatar'
-import Card from '../Card'
-import { CustomRatioImage } from '../Image'
-import PriceLabel from '../label/PriceLabel'
-import { ProgramCollectionElementProps } from './ProgramCollection'
+import { ProgramCollectionElementProps } from '../collections/ProgramCollection'
+import { MultiAvatar } from '../common/Avatar'
+import { CustomRatioImage } from '../common/Image'
+import PriceLabel from '../labels/PriceLabel'
+import Card from './Card'
 
 const StyledTitle = styled.div`
   ${MultiLineTruncationMixin}

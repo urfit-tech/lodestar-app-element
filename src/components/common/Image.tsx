@@ -1,5 +1,7 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { generateCustomMarginStyle, generateCustomPaddingStyle } from '.'
 import DefaultAvatar from '../../images/default-avatar.svg'
+import { ImageProps } from '../../types/style'
 
 type AvatarImageProps = {
   src?: string | null
@@ -38,4 +40,21 @@ export const CustomRatioImage = styled.div<CustomRatioImageProps>`
   ${props =>
     props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : ''};
   opacity: ${props => props.disabled && 0.4};
+`
+
+export const StyledImage = styled.img<{ customStyle?: ImageProps }>`
+  width: fit-content;
+  ${props =>
+    props.customStyle &&
+    css`
+      width: ${props.customStyle.width};
+      height: ${props.customStyle.height};
+      object-fit: ${props.customStyle.objectFit};
+      align-self: ${props.customStyle.alignSelf};
+    `}
+
+  && {
+    ${generateCustomMarginStyle}
+    ${generateCustomPaddingStyle}
+  }
 `

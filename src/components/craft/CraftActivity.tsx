@@ -12,9 +12,9 @@ import { notEmpty } from '../../helpers'
 import { commonMessages } from '../../helpers/translation'
 import { usePublishedActivityCollection } from '../../hooks/data'
 import { ActivityCollection, Category } from '../../types/data'
-import ActivityCard from '../activity/ActivityCard'
+import ActivityCard from '../cards/ActivityCard'
 import { CraftRefBlock } from '../common'
-import Skeleton from '../Skeleton'
+import Skeleton from '../common/Skeleton'
 
 const StyledButton = styled(Button)`
   && {

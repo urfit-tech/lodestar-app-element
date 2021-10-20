@@ -1,8 +1,8 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import styled, { css } from 'styled-components'
 import { CraftMarginProps, CraftPaddingProps } from '../../types/craft'
-import BackgroundSection from '../BackgroundSection'
 import { CraftHoveredMixin, CraftSelectedMixin } from '../common'
+import BackgroundSection from '../common/BackgroundSection'
 
 const StyledSection = styled(BackgroundSection)<{
   craftEvents?: { enabled?: boolean; hovered?: boolean; selected?: boolean }

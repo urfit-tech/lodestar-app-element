@@ -9,8 +9,8 @@ import EmptyCover from '../../images/empty-cover.png'
 import { ReactComponent as CalendarOIcon } from '../../images/icons/calendar-alt-o.svg'
 import { ReactComponent as UserOIcon } from '../../images/icons/user-o.svg'
 import { ActivityProps } from '../../types/activity'
-import Card from '../Card'
-import { CustomRatioImage } from '../Image'
+import { CustomRatioImage } from '../common/Image'
+import Card from './Card'
 
 const StyledTitle = styled.div`
   ${CommonTitleMixin}

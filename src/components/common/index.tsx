@@ -9,7 +9,7 @@ import {
   ParagraphProps,
   TitleProps,
 } from '../../types/style'
-import { BREAK_POINT } from '../Responsive'
+import { BREAK_POINT } from '../common/Responsive'
 
 const generateCustomTitleStyle = (props: { customStyle?: TitleProps }) =>
   props.customStyle &&

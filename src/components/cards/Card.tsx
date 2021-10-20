@@ -1,15 +1,15 @@
 import styled, { css } from 'styled-components'
-import { MultiLineTruncationMixin } from '../helpers/style'
-import DefaultAvatar from '../images/icons/avatar.svg'
-import { CardProps, ParagraphProps, TitleProps } from '../types/style'
+import { MultiLineTruncationMixin } from '../../helpers/style'
+import DefaultAvatar from '../../images/icons/avatar.svg'
+import { CardProps, ParagraphProps, TitleProps } from '../../types/style'
 import {
   generateCustomBorderStyle,
   generateCustomMarginStyle,
   generateCustomPaddingStyle,
   generateCustomParagraphStyle,
   generateCustomTitleStyle,
-} from './common'
-import Image from './Image'
+} from '../common'
+import { StyledImage } from '../common/Image'
 
 const StyleCardTitle = styled.h3<{ customStyle?: TitleProps; isDark?: boolean }>`
   font-family: NotoSansCJKtc;
@@ -147,7 +147,7 @@ const Card: React.FC<{
   customStyle: { direction: 'row' | 'column' } & CardProps
   onClick?: () => void
 }> & {
-  Image: typeof Image
+  Image: typeof StyledImage
   Title: typeof StyleCardTitle
   Content: typeof StyledCardContent
   ContentBlock: typeof StyledContentBlock
@@ -158,7 +158,7 @@ const Card: React.FC<{
   return <StyledCard {...props}>{children}</StyledCard>
 }
 
-Card.Image = Image
+Card.Image = StyledImage
 Card.Title = StyleCardTitle
 Card.Content = StyledCardContent
 Card.ContentBlock = StyledContentBlock

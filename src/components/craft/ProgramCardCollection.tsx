@@ -1,9 +1,9 @@
 import { UserComponent } from '@craftjs/core'
+import ProgramCard from '../cards/ProgramCard'
+import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
+import ProgramCollection, { ProgramCollectionOptions } from '../collections/ProgramCollection'
 import { Craftize } from '../common'
 import { CollectionBaseProps } from '../common/Collection'
-import ProgramCard from '../program/ProgramCard'
-import ProgramCollection, { ProgramCollectionOptions } from '../program/ProgramCollection'
-import ProgramSecondaryCard from '../program/ProgramSecondaryCard'
 
 export type ProgramCardCollectionProps = CollectionBaseProps<ProgramCollectionOptions> & {
   variant?: 'primary' | 'secondary'

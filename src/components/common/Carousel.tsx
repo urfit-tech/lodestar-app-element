@@ -1,9 +1,9 @@
 import Slider, { Settings } from 'react-slick'
 import styled from 'styled-components'
-import { generateCustomMarginStyle } from '../components/common/index'
-import { CarouselProps } from '../types/style'
-import DialogCard from './DialogCard'
-import ReferrerCard from './ReferrerCard'
+import { generateCustomMarginStyle } from '.'
+import { CarouselProps } from '../../types/style'
+import DialogCard from '../cards/DialogCard'
+import ReferrerCard from '../cards/ReferrerCard'
 import { BREAK_POINT } from './Responsive'
 import Slide from './Slide'
 

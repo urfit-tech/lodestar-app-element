@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { ParagraphProps, TitleProps } from '../types/style'
+import { ParagraphProps, TitleProps } from '../../types/style'
 
 const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
   font-family: NotoSansCJKtc;

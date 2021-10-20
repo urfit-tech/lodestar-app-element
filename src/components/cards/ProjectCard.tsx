@@ -9,9 +9,9 @@ import EmptyCover from '../../images/empty-cover.png'
 import { ReactComponent as CalendarAltOIcon } from '../../images/icons/calendar-alt-o.svg'
 import { ReactComponent as UserOIcon } from '../../images/icons/user-o.svg'
 import { ProjectBasicProps } from '../../types/data'
-import Card from '../Card'
-import { CustomRatioImage } from '../Image'
-import PriceLabel from '../label/PriceLabel'
+import { CustomRatioImage } from '../common/Image'
+import PriceLabel from '../labels/PriceLabel'
+import Card from './Card'
 
 const StyledLabel = styled.div`
   color: ${props => props.theme['@primary-color']};

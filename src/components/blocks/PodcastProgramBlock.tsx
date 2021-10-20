@@ -2,7 +2,7 @@ import { useNode } from '@craftjs/core'
 import { usePublishedPodcastProgramCollection } from '../../hooks/data'
 import PodcastProgramCard from '../cards/PodcastProgramCard'
 import { CraftRefBlock } from '../common'
-import Skeleton from '../Skeleton'
+import Skeleton from '../common/Skeleton'
 
 const PodcastProgramBlock: React.VFC<{
   customContentIds?: string[]

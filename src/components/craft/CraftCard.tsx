@@ -1,7 +1,7 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import styled from 'styled-components'
 import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
-import Card from '../Card'
+import Card from '../cards/Card'
 import { CraftRefBlock } from '../common'
 
 const StyledTriangle = styled.div`

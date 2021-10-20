@@ -3,7 +3,7 @@ import { useProjectCollection } from '../../hooks/data'
 import { ProjectType } from '../../types/data'
 import ProjectCard from '../cards/ProjectCard'
 import { CraftRefBlock } from '../common'
-import Skeleton from '../Skeleton'
+import Skeleton from '../common/Skeleton'
 
 const ProjectBlock: React.VFC<{
   projectType?: ProjectType

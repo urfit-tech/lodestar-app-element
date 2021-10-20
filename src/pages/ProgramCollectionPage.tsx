@@ -1,6 +1,6 @@
-import ProgramCard from '../components/program/ProgramCard'
-import ProgramCollection from '../components/program/ProgramCollection'
-import ProgramSecondaryCard from '../components/program/ProgramSecondaryCard'
+import ProgramCard from '../components/cards/ProgramCard'
+import ProgramSecondaryCard from '../components/cards/ProgramSecondaryCard'
+import ProgramCollection from '../components/collections/ProgramCollection'
 
 const ProgramCollectionPage: React.VFC = () => {
   return (
