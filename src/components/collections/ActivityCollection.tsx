@@ -28,10 +28,9 @@ export type ActivityCollectionOptions =
       withSelector?: boolean
     }
 
-export type ActivityCollectionProps = CollectionBaseProps<ActivityCollectionOptions> & {
+type ActivityCollectionProps = CollectionBaseProps<ActivityCollectionOptions> & {
   element: React.ElementType<ActivityElementProps>
 }
-
 const ActivityCollection: React.FC<ActivityCollectionProps> = ({
   element,
   layout = { columns: [1, 2, 4], gap: 8, gutter: 8 },

@@ -21,7 +21,7 @@ export type ProgramContentCollectionOptions =
       limit?: number
     }
 
-export type ProgramContentCollectionProps = CollectionBaseProps<ProgramContentCollectionOptions> & {
+type ProgramContentCollectionProps = CollectionBaseProps<ProgramContentCollectionOptions> & {
   element: React.ElementType<ProgramContentElementProps>
 }
 

@@ -23,7 +23,7 @@ const StyledMeta = styled.div`
   letter-spacing: 0.18px;
 `
 
-const ActivityCard: React.VFC<ActivityElementProps> = props => {
+const ActivityCard: React.FC<ActivityElementProps> = props => {
   const { loading, errors } = props
   const { formatMessage } = useIntl()
 

@@ -39,7 +39,7 @@ export type ProgramCollectionOptions =
       withSelector?: boolean
     }
 
-export type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions> & {
+type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions> & {
   element: React.ElementType<ProgramElementProps>
 }
 
