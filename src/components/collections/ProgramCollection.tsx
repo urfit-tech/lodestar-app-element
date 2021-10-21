@@ -286,7 +286,7 @@ const useProgramCollection = (options: ProgramCollectionOptions) => {
           name: pr.name as ProductRole['name'],
           member: { id: pr.member_id },
         })),
-        listPrice: p.list_price,
+        listPrice: p.list_price || 0,
         salePrice: p.sale_price,
         soldAt: p.sold_at,
         plans: p.program_plans.map(pp => ({
