@@ -216,3 +216,13 @@ export const craftPageMessages = {
     },
   }),
 }
+
+export const checkoutMessages = {
+  coupon: defineMessages({
+    fromNow: { id: 'checkout.coupon.fromNow', defaultMessage: '即日起' },
+    noPeriod: { id: 'common.period.no', defaultMessage: '無使用期限' },
+  }),
+  content: defineMessages({
+    discountDirectly: { id: 'checkout.discount.directly', defaultMessage: '直接折抵' },
+  }),
+}

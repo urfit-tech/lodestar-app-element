@@ -5,6 +5,7 @@ import { sum } from 'ramda'
 import { DeepPick } from 'ts-deep-pick/lib'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
+import { CouponProps } from '../types/checkout'
 import { Member, PeriodType, PodcastProgram, Program, Project } from '../types/data'
 
 export const usePublishedProgramCollection = (options: { ids?: string[]; limit?: number }) => {
@@ -439,5 +440,89 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
     errorActivities: error,
     refetchActivities: refetch,
     activities,
+  }
+}
+
+export const useCouponCollection = (memberId: string) => {
+  const { loading, error, data, refetch } = useQuery<
+    hasura.GET_COUPON_COLLECTION,
+    hasura.GET_COUPON_COLLECTIONVariables
+  >(
+    gql`
+      query GET_COUPON_COLLECTION($memberId: String!) {
+        coupon(where: { member_id: { _eq: $memberId } }) {
+          id
+          status {
+            outdated
+            used
+          }
+          coupon_code {
+            code
+            coupon_plan {
+              id
+              title
+              amount
+              type
+              constraint
+              started_at
+              ended_at
+              description
+              scope
+              coupon_plan_products {
+                id
+                product_id
+              }
+            }
+          }
+        }
+      }
+    `,
+    { variables: { memberId } },
+  )
+
+  const coupons: CouponProps[] =
+    loading || error || !data
+      ? []
+      : data.coupon.map(coupon => ({
+          id: coupon.id,
+          status: {
+            used: coupon.status?.used || false,
+            outdated: coupon.status?.outdated || false,
+          },
+          couponCode: {
+            code: coupon.coupon_code.code,
+            couponPlan: {
+              id: coupon.coupon_code.coupon_plan.id,
+              startedAt: coupon.coupon_code.coupon_plan.started_at
+                ? new Date(coupon.coupon_code.coupon_plan.started_at)
+                : null,
+              endedAt: coupon.coupon_code.coupon_plan.ended_at
+                ? new Date(coupon.coupon_code.coupon_plan.ended_at)
+                : null,
+              type:
+                coupon.coupon_code.coupon_plan.type === 1
+                  ? 'cash'
+                  : coupon.coupon_code.coupon_plan.type === 2
+                  ? 'percent'
+                  : 'cash',
+              constraint: coupon.coupon_code.coupon_plan.constraint,
+              amount: coupon.coupon_code.coupon_plan.amount,
+              title: coupon.coupon_code.coupon_plan.title,
+              description: coupon.coupon_code.coupon_plan.description,
+              count: 0,
+              remaining: 0,
+              scope: coupon.coupon_code.coupon_plan.scope,
+              productIds: coupon.coupon_code.coupon_plan.coupon_plan_products.map(
+                couponPlanProduct => couponPlanProduct.product_id,
+              ),
+            },
+          },
+        }))
+
+  return {
+    loadingCoupons: loading,
+    errorCoupons: error,
+    coupons,
+    refetchCoupons: refetch,
   }
 }

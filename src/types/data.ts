@@ -11,6 +11,7 @@ export type Category = {
 }
 
 export type PeriodType = 'D' | 'W' | 'M' | 'Y'
+
 export type ProductPlan = {
   id: string
   title: string

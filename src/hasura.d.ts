@@ -610,6 +610,31 @@ export interface GET_ACTIVITY_COLLECTIONVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_ENROLLED_CARD_IDS
+// ====================================================
+
+export interface GET_ENROLLED_CARD_IDS_card_enrollment {
+  __typename: 'card_enrollment'
+  card_id: any | null
+}
+
+export interface GET_ENROLLED_CARD_IDS {
+  /**
+   * fetch data from the table: "card_enrollment"
+   */
+  card_enrollment: GET_ENROLLED_CARD_IDS_card_enrollment[]
+}
+
+export interface GET_ENROLLED_CARD_IDSVariables {
+  memberId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_PUBLISHED_PROGRAM_COLLECTION
 // ====================================================
 
@@ -1000,6 +1025,80 @@ export interface GET_PUBLISHED_ACTIVITY_COLLECTION {
 
 export interface GET_PUBLISHED_ACTIVITY_COLLECTIONVariables {
   ids?: any[] | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_COUPON_COLLECTION
+// ====================================================
+
+export interface GET_COUPON_COLLECTION_coupon_status {
+  __typename: 'coupon_status'
+  outdated: boolean | null
+  used: boolean | null
+}
+
+export interface GET_COUPON_COLLECTION_coupon_coupon_code_coupon_plan_coupon_plan_products {
+  __typename: 'coupon_plan_product'
+  id: any
+  product_id: string
+}
+
+export interface GET_COUPON_COLLECTION_coupon_coupon_code_coupon_plan {
+  __typename: 'coupon_plan'
+  id: any
+  title: string
+  amount: any
+  /**
+   * 1 - cash / 2 - percent
+   */
+  type: number
+  constraint: any | null
+  started_at: any | null
+  ended_at: any | null
+  description: string | null
+  scope: any | null
+  /**
+   * An array relationship
+   */
+  coupon_plan_products: GET_COUPON_COLLECTION_coupon_coupon_code_coupon_plan_coupon_plan_products[]
+}
+
+export interface GET_COUPON_COLLECTION_coupon_coupon_code {
+  __typename: 'coupon_code'
+  code: string
+  /**
+   * An object relationship
+   */
+  coupon_plan: GET_COUPON_COLLECTION_coupon_coupon_code_coupon_plan
+}
+
+export interface GET_COUPON_COLLECTION_coupon {
+  __typename: 'coupon'
+  id: any
+  /**
+   * An object relationship
+   */
+  status: GET_COUPON_COLLECTION_coupon_status | null
+  /**
+   * An object relationship
+   */
+  coupon_code: GET_COUPON_COLLECTION_coupon_coupon_code
+}
+
+export interface GET_COUPON_COLLECTION {
+  /**
+   * fetch data from the table: "coupon"
+   */
+  coupon: GET_COUPON_COLLECTION_coupon[]
+}
+
+export interface GET_COUPON_COLLECTIONVariables {
+  memberId: string
 }
 
 /* tslint:disable */
