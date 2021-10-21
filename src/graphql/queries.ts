@@ -22,6 +22,18 @@ export const getProgramContentCollectionQuery = (programContentFields: DocumentN
   }
   ${programContentFields}
 `
+export const getProgramPackageCollectionQuery = (programPackageFields: DocumentNode) => gql`
+  query GET_PROGRAM_PACKAGE_COLLECTION(
+    $whereClause: program_package_bool_exp
+    $limit: Int
+    $orderByClause: [program_package_order_by!]
+  ) {
+    program_package(where: $whereClause, limit: $limit, order_by: $orderByClause) {
+      ...programPackageFields
+    }
+  }
+  ${programPackageFields}
+`
 
 export const getActivityCollectionQuery = (activityFields: DocumentNode) => gql`
   query GET_ACTIVITY_COLLECTION($whereClause: activity_bool_exp, $limit: Int, $orderByClause: [activity_order_by!]) {

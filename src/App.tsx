@@ -6,11 +6,13 @@ import * as CraftResolvers from './components/craft'
 import { LodestarAppProvider } from './contexts/LodestarAppContext'
 import ProgramCollectionPage from './pages/ProgramCollectionPage'
 import ProgramContentCollectionPage from './pages/ProgramContentCollectionPage'
+import ProgramPackagePage from './pages/ProgramPackagePage'
 
 const routes = [
   { name: 'Home', path: '/', render: () => null },
   { name: 'Program collection', path: '/programs', component: ProgramCollectionPage },
   { name: 'Program content collection', path: '/program-contents', component: ProgramContentCollectionPage },
+  { name: 'Program package', path: '/program-package', component: ProgramPackagePage },
 ]
 const App: React.VFC = () => {
   const [editing, setEditing] = useState(false)

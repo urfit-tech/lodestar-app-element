@@ -30,9 +30,16 @@ export type ProgramContentElementProps = ElementProps<{
 
 export type ProgramPackageElementProps = ElementProps<{
   title: string
-  coverUrl: string | null
   totalPrograms: number
   totalDuration: number
+  currentPrice: number
+  link?: string
+  coverUrl?: string
+  listPrice?: number
+  period?: {
+    amount: number
+    type: PeriodType
+  }
 }>
 
 export type PodcastProgramElementProps = ElementProps<{

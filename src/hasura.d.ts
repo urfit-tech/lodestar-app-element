@@ -525,6 +525,110 @@ export interface GET_PROGRAM_CONTENT_COLLECTIONVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_PROGRAM_PACKAGE_COLLECTION
+// ====================================================
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate_sum {
+  __typename: 'program_content_sum_fields'
+  duration: any | null
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate {
+  __typename: 'program_content_aggregate_fields'
+  sum: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate_sum | null
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections_program_contents_aggregate {
+  __typename: 'program_content_aggregate'
+  aggregate: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate | null
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections {
+  __typename: 'program_content_section'
+  /**
+   * An aggregated array relationship
+   */
+  program_contents_aggregate: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections_program_contents_aggregate
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program {
+  __typename: 'program'
+  /**
+   * An array relationship
+   */
+  program_content_sections: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections[]
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs {
+  __typename: 'program_package_program'
+  /**
+   * An object relationship
+   */
+  program: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_plans {
+  __typename: 'program_package_plan'
+  list_price: any
+  sale_price: any | null
+  sold_at: any | null
+  period_amount: any
+  period_type: string
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_categories {
+  __typename: 'program_package_category'
+  /**
+   * An object relationship
+   */
+  category: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_categories_category
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package {
+  __typename: 'program_package'
+  id: any
+  title: string
+  cover_url: string | null
+  /**
+   * An array relationship
+   */
+  program_package_programs: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs[]
+  /**
+   * An array relationship
+   */
+  program_package_plans: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_plans[]
+  /**
+   * An array relationship
+   */
+  program_package_categories: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_categories[]
+  published_at: any | null
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTION {
+  /**
+   * fetch data from the table: "program_package"
+   */
+  program_package: GET_PROGRAM_PACKAGE_COLLECTION_program_package[]
+}
+
+export interface GET_PROGRAM_PACKAGE_COLLECTIONVariables {
+  whereClause?: program_package_bool_exp | null
+  limit?: number | null
+  orderByClause?: program_package_order_by[] | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_ACTIVITY_COLLECTION
 // ====================================================
 
@@ -602,31 +706,6 @@ export interface GET_ACTIVITY_COLLECTIONVariables {
   whereClause?: activity_bool_exp | null
   limit?: number | null
   orderByClause?: activity_order_by[] | null
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_ENROLLED_CARD_IDS
-// ====================================================
-
-export interface GET_ENROLLED_CARD_IDS_card_enrollment {
-  __typename: 'card_enrollment'
-  card_id: any | null
-}
-
-export interface GET_ENROLLED_CARD_IDS {
-  /**
-   * fetch data from the table: "card_enrollment"
-   */
-  card_enrollment: GET_ENROLLED_CARD_IDS_card_enrollment[]
-}
-
-export interface GET_ENROLLED_CARD_IDSVariables {
-  memberId: string
 }
 
 /* tslint:disable */
@@ -1386,6 +1465,97 @@ export interface programContentFields {
    * An array relationship
    */
   program_content_videos: programContentFields_program_content_videos[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: programPackageFields
+// ====================================================
+
+export interface programPackageFields_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate_sum {
+  __typename: 'program_content_sum_fields'
+  duration: any | null
+}
+
+export interface programPackageFields_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate {
+  __typename: 'program_content_aggregate_fields'
+  sum: programPackageFields_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate_sum | null
+}
+
+export interface programPackageFields_program_package_programs_program_program_content_sections_program_contents_aggregate {
+  __typename: 'program_content_aggregate'
+  aggregate: programPackageFields_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate | null
+}
+
+export interface programPackageFields_program_package_programs_program_program_content_sections {
+  __typename: 'program_content_section'
+  /**
+   * An aggregated array relationship
+   */
+  program_contents_aggregate: programPackageFields_program_package_programs_program_program_content_sections_program_contents_aggregate
+}
+
+export interface programPackageFields_program_package_programs_program {
+  __typename: 'program'
+  /**
+   * An array relationship
+   */
+  program_content_sections: programPackageFields_program_package_programs_program_program_content_sections[]
+}
+
+export interface programPackageFields_program_package_programs {
+  __typename: 'program_package_program'
+  /**
+   * An object relationship
+   */
+  program: programPackageFields_program_package_programs_program
+}
+
+export interface programPackageFields_program_package_plans {
+  __typename: 'program_package_plan'
+  list_price: any
+  sale_price: any | null
+  sold_at: any | null
+  period_amount: any
+  period_type: string
+}
+
+export interface programPackageFields_program_package_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface programPackageFields_program_package_categories {
+  __typename: 'program_package_category'
+  /**
+   * An object relationship
+   */
+  category: programPackageFields_program_package_categories_category
+}
+
+export interface programPackageFields {
+  __typename: 'program_package'
+  id: any
+  title: string
+  cover_url: string | null
+  /**
+   * An array relationship
+   */
+  program_package_programs: programPackageFields_program_package_programs[]
+  /**
+   * An array relationship
+   */
+  program_package_plans: programPackageFields_program_package_plans[]
+  /**
+   * An array relationship
+   */
+  program_package_categories: programPackageFields_program_package_categories[]
+  published_at: any | null
 }
 
 /* tslint:disable */
@@ -7346,6 +7516,30 @@ export interface program_package_bool_exp {
 }
 
 /**
+ * order by aggregate values of table "program_package_category"
+ */
+export interface program_package_category_aggregate_order_by {
+  avg?: program_package_category_avg_order_by | null
+  count?: order_by | null
+  max?: program_package_category_max_order_by | null
+  min?: program_package_category_min_order_by | null
+  stddev?: program_package_category_stddev_order_by | null
+  stddev_pop?: program_package_category_stddev_pop_order_by | null
+  stddev_samp?: program_package_category_stddev_samp_order_by | null
+  sum?: program_package_category_sum_order_by | null
+  var_pop?: program_package_category_var_pop_order_by | null
+  var_samp?: program_package_category_var_samp_order_by | null
+  variance?: program_package_category_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "program_package_category"
+ */
+export interface program_package_category_avg_order_by {
+  position?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "program_package_category". All fields are combined with a logical 'AND'.
  */
 export interface program_package_category_bool_exp {
@@ -7358,6 +7552,75 @@ export interface program_package_category_bool_exp {
   position?: Int_comparison_exp | null
   program_package?: program_package_bool_exp | null
   program_package_id?: uuid_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "program_package_category"
+ */
+export interface program_package_category_max_order_by {
+  category_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  program_package_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_package_category"
+ */
+export interface program_package_category_min_order_by {
+  category_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  program_package_id?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "program_package_category"
+ */
+export interface program_package_category_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "program_package_category"
+ */
+export interface program_package_category_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "program_package_category"
+ */
+export interface program_package_category_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "program_package_category"
+ */
+export interface program_package_category_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "program_package_category"
+ */
+export interface program_package_category_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "program_package_category"
+ */
+export interface program_package_category_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "program_package_category"
+ */
+export interface program_package_category_variance_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -7386,6 +7649,53 @@ export interface program_package_min_order_by {
   id?: order_by | null
   published_at?: order_by | null
   title?: order_by | null
+}
+
+/**
+ * ordering options when selecting data from "program_package"
+ */
+export interface program_package_order_by {
+  app?: app_order_by | null
+  app_id?: order_by | null
+  cover_url?: order_by | null
+  created_at?: order_by | null
+  creator?: member_public_order_by | null
+  creator_id?: order_by | null
+  description?: order_by | null
+  id?: order_by | null
+  program_package_categories_aggregate?: program_package_category_aggregate_order_by | null
+  program_package_plans_aggregate?: program_package_plan_aggregate_order_by | null
+  program_package_programs_aggregate?: program_package_program_aggregate_order_by | null
+  published_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "program_package_plan"
+ */
+export interface program_package_plan_aggregate_order_by {
+  avg?: program_package_plan_avg_order_by | null
+  count?: order_by | null
+  max?: program_package_plan_max_order_by | null
+  min?: program_package_plan_min_order_by | null
+  stddev?: program_package_plan_stddev_order_by | null
+  stddev_pop?: program_package_plan_stddev_pop_order_by | null
+  stddev_samp?: program_package_plan_stddev_samp_order_by | null
+  sum?: program_package_plan_sum_order_by | null
+  var_pop?: program_package_plan_var_pop_order_by | null
+  var_samp?: program_package_plan_var_samp_order_by | null
+  variance?: program_package_plan_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_avg_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
 }
 
 /**
@@ -7426,6 +7736,121 @@ export interface program_package_plan_enrollment_bool_exp {
   member_id?: String_comparison_exp | null
   program_package_plan?: program_package_plan_bool_exp | null
   program_package_plan_id?: uuid_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_max_order_by {
+  created_at?: order_by | null
+  description?: order_by | null
+  discount_down_price?: order_by | null
+  id?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  period_type?: order_by | null
+  position?: order_by | null
+  program_package_id?: order_by | null
+  published_at?: order_by | null
+  sale_price?: order_by | null
+  sold_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_min_order_by {
+  created_at?: order_by | null
+  description?: order_by | null
+  discount_down_price?: order_by | null
+  id?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  period_type?: order_by | null
+  position?: order_by | null
+  program_package_id?: order_by | null
+  published_at?: order_by | null
+  sale_price?: order_by | null
+  sold_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_stddev_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_stddev_pop_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_stddev_samp_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_sum_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_var_pop_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_var_samp_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "program_package_plan"
+ */
+export interface program_package_plan_variance_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
 }
 
 /**

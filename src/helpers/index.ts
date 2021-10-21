@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import moment from 'moment'
 import queryString from 'query-string'
+import { ProductPlan } from '../types/data'
 
 export const durationFullFormatter = (seconds: number) => {
   if (seconds >= 3600) {
@@ -68,3 +69,12 @@ export const rgba = (hexCode: string, alpha: number) => {
 }
 
 export const dateFormatter = (value: Date, format?: string) => moment(value).format(format || `YYYY/MM/DD HH:mm`)
+
+export const getCurrentPrice = (plan: Partial<ProductPlan>) =>
+  (plan.soldAt && moment() < moment(plan.soldAt) ? plan.salePrice : plan.listPrice) || 0
+
+export const findCheapestPlan = (plans: Partial<ProductPlan>[]) =>
+  plans.reduce(
+    (accum, plan) => (accum === null ? plan : getCurrentPrice(plan) < getCurrentPrice(accum) ? plan : accum),
+    null as Partial<ProductPlan> | null,
+  )

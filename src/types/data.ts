@@ -94,6 +94,17 @@ export type ProgramContent = {
   attachments: Attachment[]
 }
 
+export type ProgramPackage = {
+  id: string
+  title: string
+  coverUrl: string | null
+  programs: Program[]
+  plans: ProductPlan[]
+  createdAt: Date
+  publishedAt: Date | null
+  categories: Category[]
+}
+
 export type Attachment = {
   id: string
   name: string
