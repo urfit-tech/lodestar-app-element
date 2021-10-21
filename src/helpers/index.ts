@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios'
+import moment from 'moment'
 import queryString from 'query-string'
 
 export const durationFullFormatter = (seconds: number) => {
@@ -65,3 +66,5 @@ export const rgba = (hexCode: string, alpha: number) => {
   const b = parseInt(hexColor.slice(4, 6), 16)
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
+
+export const dateFormatter = (value: Date, format?: string) => moment(value).format(format || `YYYY/MM/DD HH:mm`)
