@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { useInstructorCollection } from '../../hooks/data'
 import AngleThinLeft from '../../images/icons/angle-thin-left.svg'
 import AngleThinRight from '../../images/icons/angle-thin-right.svg'
-import Carousel from '../Carousel'
 import { CraftHoveredMixin, CraftSelectedMixin } from '../common'
-import Instructor from '../Instructor'
-import { BREAK_POINT } from '../Responsive'
-import Skeleton from '../Skeleton'
+import Carousel from '../common/Carousel'
+import Instructor from '../common/Instructor'
+import { BREAK_POINT } from '../common/Responsive'
+import Skeleton from '../common/Skeleton'
 
 const StyledCarousel = styled(Carousel)<{ craftEvents?: { hovered?: boolean; selected?: boolean } }>`
   && {

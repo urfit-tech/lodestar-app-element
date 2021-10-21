@@ -1,10 +1,10 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { Children } from 'react'
 import { isFragment } from 'react-is'
-import Carousel from '../../components/Carousel'
+import Carousel from '../../components/common/Carousel'
 import { CraftMarginProps } from '../../types/craft'
 import { CraftRefBlock } from '../common'
-import { BREAK_POINT } from '../Responsive'
+import { BREAK_POINT } from '../common/Responsive'
 
 type CarouselContainerProps = {
   margin: CraftMarginProps

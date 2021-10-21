@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
-import { BackgroundProps } from '../types/style'
-import { generateCustomMarginStyle, generateCustomPaddingStyle, StyledTitle as Title } from './common'
+import { generateCustomMarginStyle, generateCustomPaddingStyle, StyledTitle as Title } from '.'
+import { BackgroundProps } from '../../types/style'
 
 export const StyledLink = styled(Link)`
   margin-top: 40px;

@@ -1,9 +1,10 @@
-import { Heading } from '@chakra-ui/react'
+import { Heading, Skeleton } from '@chakra-ui/react'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import PlayIcon from '../../images/play-circle.svg'
 import TextIcon from '../../images/text.svg'
+import { ProgramContentElementProps } from '../../types/element'
 import { CustomRatioImage } from '../common/Image'
 import ProgressBar from '../common/ProgressBar'
 import { BREAK_POINT } from '../common/Responsive'
@@ -96,20 +97,20 @@ const StyledProgressBar = styled(ProgressBar)`
   }
 `
 
-const ProgramContentCard: React.FC<{
-  title: string
-  type: 'video' | 'text' | null
-  coverUrl: string | null
-  duration: number
-  progress: number
-}> = ({ title, coverUrl, duration, progress, type }) => {
+const ProgramContentCard: React.FC<ProgramContentElementProps> = props => {
+  const { loading, errors } = props
+  if (errors) {
+    return <div>{JSON.stringify(errors)}</div>
+  }
   return (
     <StyledProgramContentCard>
       <div className="d-flex overflow-hidden">
         <StyledCover className="flex-shrink-0">
-          {type === 'video' ? (
+          {loading ? (
+            <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+          ) : props.type === 'video' ? (
             <>
-              <CustomRatioImage src={coverUrl || EmptyCover} ratio={2 / 3} width={'100%'} />
+              <CustomRatioImage src={props.coverUrl || EmptyCover} ratio={2 / 3} width={'100%'} />
               <StyledPlayIcon src={PlayIcon} />
             </>
           ) : (
@@ -122,8 +123,8 @@ const ProgramContentCard: React.FC<{
           )}
         </StyledCover>
         <StyledInfo className="d-flex flex-column justify-content-between p-3">
-          <StyledHeading as="h4">{title}</StyledHeading>
-          <StyledDuration>{durationFormatter(duration)}</StyledDuration>
+          <StyledHeading as="h4">{loading ? '---' : props.title}</StyledHeading>
+          <StyledDuration>{loading ? '---' : durationFormatter(props.duration)}</StyledDuration>
           <div className="d-none d-lg-flex">
             {/* <CustomRatioImage
               src={role.pictureUrl || EmptyCover}
@@ -136,7 +137,7 @@ const ProgramContentCard: React.FC<{
           </div>
         </StyledInfo>
       </div>
-      <StyledProgressBar noPercent percent={progress} />
+      {!loading && <StyledProgressBar noPercent percent={props.progress} />}
     </StyledProgramContentCard>
   )
 }

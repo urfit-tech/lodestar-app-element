@@ -1,8 +1,8 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
-import StyledImage from '../../components/Image'
+import { StyledImage } from '../../components/common/Image'
 import { CraftBoxModelProps, CraftImageProps } from '../../types/craft'
 import { CraftRefBlock } from '../common'
-import Responsive from '../Responsive'
+import Responsive from '../common/Responsive'
 
 const CraftImage: UserComponent<{
   desktop?: CraftImageProps & CraftBoxModelProps

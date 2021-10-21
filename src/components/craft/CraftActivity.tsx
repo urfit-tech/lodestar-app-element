@@ -11,10 +11,10 @@ import hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
 import { commonMessages } from '../../helpers/translation'
 import { usePublishedActivityCollection } from '../../hooks/data'
-import { ActivityCollection, Category } from '../../types/data'
+import { Category } from '../../types/data'
 import ActivityCard from '../cards/ActivityCard'
 import { CraftRefBlock } from '../common'
-import Skeleton from '../Skeleton'
+import Skeleton from '../common/Skeleton'
 
 const StyledButton = styled(Button)`
   && {
@@ -24,6 +24,12 @@ const StyledButton = styled(Button)`
     border-radius: 2rem;
   }
 `
+
+type ActivityCollection = {
+  type: 'newest' | 'custom'
+  ids: (string | null)[]
+}
+
 const CraftActivity: UserComponent<{
   withSelector?: boolean
   defaultCategoryIds: string[]
@@ -137,7 +143,19 @@ const CraftActivity: UserComponent<{
               events={{ hovered, selected }}
               options={{ enabled }}
             >
-              <ActivityCard key={activity.id} activity={activity} craftEnabled={enabled} />
+              <ActivityCard
+                key={activity.id}
+                editing={enabled}
+                id={activity.id}
+                coverUrl={activity.coverUrl}
+                title={activity.title}
+                isParticipantsVisible={activity.isParticipantsVisible}
+                startedAt={activity.startedAt}
+                endedAt={activity.endedAt}
+                participantCount={activity.participantCount}
+                totalSeats={activity.totalSeats}
+                categories={activity.categories}
+              />
             </CraftRefBlock>
           </div>
         ))}

@@ -1,3 +1,4 @@
+import { Skeleton } from '@chakra-ui/react'
 import moment from 'moment'
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
@@ -7,9 +8,9 @@ import { productMessages } from '../../helpers/translation'
 import EmptyCover from '../../images/empty-cover.png'
 import { ReactComponent as CalendarOIcon } from '../../images/icons/calendar-alt-o.svg'
 import { ReactComponent as UserOIcon } from '../../images/icons/user-o.svg'
-import { ActivityProps } from '../../types/data'
-import Card from '../Card'
-import { CustomRatioImage } from '../Image'
+import { ActivityElementProps } from '../../types/element'
+import { CustomRatioImage } from '../common/Image'
+import Card from './Card'
 
 const StyledTitle = styled.div`
   ${CommonTitleMixin}
@@ -22,19 +23,22 @@ const StyledMeta = styled.div`
   letter-spacing: 0.18px;
 `
 
-export type ActivityCardProps = {
-  activity: ActivityProps
-  craftEnabled?: boolean
-}
-
-const ActivityCard: React.VFC<ActivityCardProps> = ({ activity, craftEnabled }) => {
+const ActivityCard: React.FC<ActivityElementProps> = props => {
+  const { loading, errors } = props
   const { formatMessage } = useIntl()
 
-  const startDate = activity.startedAt ? moment(activity.startedAt).format('YYYY-MM-DD(dd)') : ''
-  const endDate = activity.endedAt ? moment(activity.endedAt).format('YYYY-MM-DD(dd)') : ''
+  if (errors) {
+    return <div>{JSON.stringify(errors)}</div>
+  }
+
+  const startDate = !loading && props.startedAt ? moment(props.startedAt).format('YYYY-MM-DD(dd)') : ''
+  const endDate = !loading && props.endedAt ? moment(props.endedAt).format('YYYY-MM-DD(dd)') : ''
 
   return (
-    <Link to={`/activities/${activity.id}`} onClick={craftEnabled ? e => e.preventDefault() : undefined}>
+    <Link
+      to={loading ? '#!' : `/activities/${props.id}`}
+      onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
+    >
       <Card
         customStyle={{
           direction: 'column',
@@ -45,19 +49,23 @@ const ActivityCard: React.VFC<ActivityCardProps> = ({ activity, craftEnabled }) 
           overflow: 'hidden',
         }}
       >
-        <CustomRatioImage width="100%" ratio={9 / 16} src={activity.coverUrl || EmptyCover} />
+        {loading ? (
+          <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+        ) : (
+          <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+        )}
 
         <Card.ContentBlock>
-          <StyledTitle>{activity.title}</StyledTitle>
+          <StyledTitle>{loading ? '---' : props.title}</StyledTitle>
           <StyledMeta className="mb-2">
-            {activity.isParticipantsVisible && (
+            {!loading && props.isParticipantsVisible && (
               <div className="d-flex align-items-center">
                 <UserOIcon />
                 <span className="ml-2">
                   {formatMessage(productMessages.activity.content.remaining)}
-                  {activity.participantCount && activity.totalSeats
-                    ? activity.totalSeats - activity.participantCount
-                    : activity.totalSeats}
+                  {props.participantCount && props.totalSeats
+                    ? props.totalSeats - props.participantCount
+                    : props.totalSeats}
                 </span>
               </div>
             )}

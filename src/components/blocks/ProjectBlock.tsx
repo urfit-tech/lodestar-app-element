@@ -1,12 +1,12 @@
 import { useNode } from '@craftjs/core'
 import { useProjectCollection } from '../../hooks/data'
-import { ProjectType } from '../../types/data'
+import { Project } from '../../types/data'
 import ProjectCard from '../cards/ProjectCard'
 import { CraftRefBlock } from '../common'
-import Skeleton from '../Skeleton'
+import Skeleton from '../common/Skeleton'
 
 const ProjectBlock: React.VFC<{
-  projectType?: ProjectType
+  projectType?: Project['type']
   customContentIds?: string[]
   categoryId?: string
   craftEnabled?: boolean
@@ -49,7 +49,23 @@ const ProjectBlock: React.VFC<{
           events={{ hovered, selected }}
           options={{ enabled: craftEnabled }}
         >
-          <ProjectCard key={project.id} project={project} craftEnabled={craftEnabled} />
+          <ProjectCard
+            key={project.id}
+            id={project.id}
+            title={project.title}
+            abstract={project.abstract}
+            coverUrl={project.coverUrl}
+            previewUrl={project.previewUrl}
+            type={project.type}
+            targetAmount={project.target.amount}
+            targetUnit={project.target.unit}
+            expiredAt={project.expiredAt}
+            isParticipantsVisible={project.isParticipantsVisible}
+            isCountdownTimerVisible={project.isCountdownTimerVisible}
+            totalSales={project.totalSales}
+            enrollmentCount={project.enrollmentCount}
+            editing={craftEnabled}
+          />
         </CraftRefBlock>
       ))}
     </>

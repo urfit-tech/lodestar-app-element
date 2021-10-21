@@ -22,3 +22,12 @@ export const getProgramContentCollectionQuery = (programContentFields: DocumentN
   }
   ${programContentFields}
 `
+
+export const getActivityCollectionQuery = (activityFields: DocumentNode) => gql`
+  query GET_ACTIVITY_COLLECTION($whereClause: activity_bool_exp, $limit: Int, $orderByClause: [activity_order_by!]) {
+    activity(where: $whereClause, limit: $limit, order_by: $orderByClause) {
+      ...activityFields
+    }
+  }
+  ${activityFields}
+`

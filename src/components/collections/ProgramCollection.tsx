@@ -1,138 +1,99 @@
 import { useQuery } from '@apollo/react-hooks'
-import { Button, SimpleGrid } from '@chakra-ui/react'
-import { useEditor, useNode, UserComponent } from '@craftjs/core'
+import { useEditor } from '@craftjs/core'
 import gql from 'graphql-tag'
-import { repeat, sum, uniqBy } from 'ramda'
+import moment from 'moment'
+import { sum, uniqBy } from 'ramda'
 import { useMemo } from 'react'
-import { useIntl } from 'react-intl'
-import styled from 'styled-components'
-import { DeepPick } from 'ts-deep-pick'
+import { DeepPick } from 'ts-deep-pick/lib'
 import { StringParam, useQueryParam } from 'use-query-params'
 import { getProgramCollectionQuery } from '../../graphql/queries'
-import hasura from '../../hasura'
+import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { commonMessages } from '../../helpers/translation'
-import { CraftCollectionBaseOptions } from '../../types/craft'
-import { Category } from '../../types/data'
-import { Program, ProgramRole } from '../../types/program'
-import { PlanPeriod } from '../../types/shared'
-import ProgramCard from '../cards/ProgramCard'
-import { CraftRefBlock } from '../common'
+import { Category, PeriodType, ProductRole, Program } from '../../types/data'
+import { ProgramElementProps } from '../../types/element'
+import Collection, { CollectionBaseProps } from '../collections/Collection'
+import CategorySelector from '../common/CategorySelector'
 
-const StyledButton = styled(Button)`
-  && {
-    height: 2.75rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    border-radius: 2rem;
-  }
-`
-export type CraftProgramCollectionProps = CraftCollectionBaseOptions & {
-  options:
-    | {
-        source: 'custom'
-        idList: string[]
-      }
-    | {
-        source: 'publishedAt'
-        limit?: number
-        asc?: boolean
-        defaultTagNames?: string[]
-        defaultCategoryIds?: string[]
-      }
-    | {
-        source: 'currentPrice'
-        limit?: number
-        asc?: boolean
-        min?: number
-        max?: number
-        defaultTagNames?: string[]
-        defaultCategoryIds?: string[]
-      }
-  withSelector?: boolean
+export type ProgramCollectionOptions =
+  | {
+      source: 'custom'
+      idList: string[]
+      withSelector?: boolean
+    }
+  | {
+      source: 'publishedAt'
+      limit?: number
+      asc?: boolean
+      defaultTagNames?: string[]
+      defaultCategoryIds?: string[]
+      withSelector?: boolean
+    }
+  | {
+      source: 'currentPrice'
+      limit?: number
+      asc?: boolean
+      min?: number
+      max?: number
+      defaultTagNames?: string[]
+      defaultCategoryIds?: string[]
+      withSelector?: boolean
+    }
+
+type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions> & {
+  element: React.ElementType<ProgramElementProps>
 }
-const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
+
+const ProgramCollection: React.FC<ProgramCollectionProps> = ({
+  element,
+  layout = { columns: [1, 2, 4], gap: 8, gutter: 8 },
   options,
-  gutter = 4,
-  gap = 8,
-  columns = [1, 2, 4],
-  withSelector,
   children,
 }) => {
   const [activeCategoryId, setActive] = useQueryParam('active', StringParam)
-  const { formatMessage } = useIntl()
-  const { enabled } = useEditor(state => ({
-    enabled: state.options.enabled,
-  }))
-  const {
-    connectors: { connect },
-    selected,
-    hovered,
-  } = useNode(node => ({
-    selected: node.events.selected,
-    hovered: node.events.hovered,
-  }))
   const { loading, programs } = useProgramCollection(options)
+  const { editing } = useEditor(state => ({
+    editing: state.options.enabled,
+  }))
+
   const filteredPrograms = programs.filter(
     program =>
-      !withSelector || !activeCategoryId || program.categories.map(category => category.id).includes(activeCategoryId),
+      !options.withSelector ||
+      !activeCategoryId ||
+      program.categories.map(category => category.id).includes(activeCategoryId),
   )
   const categories = uniqBy((category: Category) => category.id)(
-    filteredPrograms
+    programs
       .flatMap(program => program.categories)
       .filter(category => options.source === 'custom' || !options.defaultCategoryIds?.includes(category.id)),
   )
+
   return (
     <div>
-      {withSelector && (
-        <CraftRefBlock
-          className="mb-3"
-          ref={ref => ref && connect(ref)}
-          events={{ hovered, selected }}
-          options={{ enabled }}
-        >
-          <StyledButton
-            colorScheme="primary"
-            variant={!activeCategoryId ? 'solid' : 'outline'}
-            className="mb-2"
-            onClick={(e: Event) => (enabled ? e.preventDefault() : setActive(null))}
-          >
-            {formatMessage(commonMessages.button.allCategory)}
-          </StyledButton>
-          {categories.map(category => (
-            <StyledButton
-              key={category.id}
-              colorScheme="primary"
-              variant={activeCategoryId === category.id ? 'solid' : 'outline'}
-              className="ml-2 mb-2"
-              onClick={(e: Event) => (enabled ? e.preventDefault() : setActive(category.id))}
-            >
-              {category.name}
-            </StyledButton>
-          ))}
-        </CraftRefBlock>
+      {options.withSelector && (
+        <CategorySelector
+          categories={categories}
+          activeCategoryId={activeCategoryId || null}
+          onActive={categoryId => setActive(categoryId)}
+        />
       )}
       {children}
-      <SimpleGrid columns={columns} spacingX={gutter} spacingY={gap}>
-        {loading && repeat(<ProgramCard loading />, 4)}
-        {filteredPrograms.map(program => (
-          <CraftRefBlock ref={ref => ref && connect(ref)} events={{ hovered, selected }} options={{ enabled }}>
-            <ProgramCard
-              craftEnabled={enabled}
-              id={program.id}
-              title={program.title}
-              abstract={program.abstract || ''}
-              totalDuration={program.totalDuration || 0}
-              coverUrl={program.coverUrl}
-              instructorIds={program.roles.map(programRole => programRole.member.id)}
-              listPrice={program.listPrice || 0}
-              salePrice={program.salePrice}
-              soldAt={program.soldAt}
-              period={program.plans[0]?.period || null}
-            />
-          </CraftRefBlock>
-        ))}
-      </SimpleGrid>
+      {Collection(element)({
+        loading,
+        layout,
+        propsList: filteredPrograms.map(program => ({
+          id: program.id,
+          title: program.title,
+          abstract: program.abstract || '',
+          totalDuration: program.totalDuration || 0,
+          coverUrl: program.coverUrl,
+          instructorIds: program.roles.map(programRole => programRole.member.id),
+          listPrice: program.soldAt && moment() < moment(program.soldAt) ? program.listPrice : undefined,
+          currentPrice:
+            program.soldAt && moment() < moment(program.soldAt) ? program.salePrice || 0 : program.listPrice,
+          period: program.plans[0]?.period || undefined,
+          editing,
+        })),
+      })}
     </div>
   )
 }
@@ -205,7 +166,7 @@ const programFields = gql`
     }
   }
 `
-const useProgramCollection = (options: CraftProgramCollectionProps['options']) => {
+const useProgramCollection = (options: ProgramCollectionOptions) => {
   const variables: hasura.GET_PROGRAM_COLLECTIONVariables = {
     limit: undefined,
     orderByClause: [],
@@ -298,7 +259,7 @@ const useProgramCollection = (options: CraftProgramCollectionProps['options']) =
     | 'listPrice'
     | 'salePrice'
     | 'soldAt'
-    | 'plans'
+    | 'plans.[].!title'
     | 'categories'
   >[] = useMemo(() => {
     const data =
@@ -322,10 +283,10 @@ const useProgramCollection = (options: CraftProgramCollectionProps['options']) =
         ),
         roles: p.program_roles.map(pr => ({
           id: pr.id,
-          name: pr.name as ProgramRole['name'],
+          name: pr.name as ProductRole['name'],
           member: { id: pr.member_id },
         })),
-        listPrice: p.list_price,
+        listPrice: p.list_price || 0,
         salePrice: p.sale_price,
         soldAt: p.sold_at,
         plans: p.program_plans.map(pp => ({
@@ -336,10 +297,10 @@ const useProgramCollection = (options: CraftProgramCollectionProps['options']) =
           autoRenewed: pp.auto_renewed || false,
           period:
             pp.period_amount && pp.period_type
-              ? ({
-                  amount: pp.period_amount,
-                  type: pp.period_type,
-                } as PlanPeriod)
+              ? {
+                  amount: Number(pp.period_amount),
+                  type: pp.period_type as PeriodType,
+                }
               : null,
         })),
         categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
@@ -349,4 +310,4 @@ const useProgramCollection = (options: CraftProgramCollectionProps['options']) =
   return { loading, programs }
 }
 
-export default CraftProgramCollection
+export default ProgramCollection

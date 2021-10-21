@@ -1,7 +1,7 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { CraftLayoutProps } from '../../types/craft'
 import { CraftRefBlock } from '../common'
-import Layout from '../Layout'
+import Layout from '../common/Layout'
 
 const CraftLayout: UserComponent<{
   desktop: CraftLayoutProps

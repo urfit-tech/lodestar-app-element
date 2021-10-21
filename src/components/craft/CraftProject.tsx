@@ -1,10 +1,10 @@
 import { useEditor, UserComponent } from '@craftjs/core'
-import { ProjectType } from '../../types/data'
+import { Project } from '../../types/data'
 import ProjectBlock from '../blocks/ProjectBlock'
 
 const CraftProject: UserComponent<{
   customContentIds?: string[]
-  projectType?: ProjectType
+  projectType?: Project['type']
 }> = ({ projectType, customContentIds }) => {
   const { enabled } = useEditor(state => ({
     enabled: state.options.enabled,

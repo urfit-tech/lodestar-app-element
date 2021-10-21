@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { generateCustomLayoutStyle } from '../components/common/index'
-import { LayoutProps } from '../types/style'
+import { generateCustomLayoutStyle } from '.'
+import { LayoutProps } from '../../types/style'
 
 const StyledLayout = styled.div<{ customStyle: LayoutProps }>`
   && {

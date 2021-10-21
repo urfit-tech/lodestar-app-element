@@ -1,19 +1,11 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import moment from 'moment'
 import { sum } from 'ramda'
+import { DeepPick } from 'ts-deep-pick/lib'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
-import {
-  ActivityProps,
-  MemberPublicProps,
-  PeriodType,
-  PodcastProgramBriefProps,
-  ProgramBriefProps,
-  ProgramPlanProps,
-  ProgramRoleProps,
-  ProjectBasicProps,
-  ProjectType,
-} from '../types/data'
+import { Member, PeriodType, PodcastProgram, Program, Project } from '../types/data'
 
 export const usePublishedProgramCollection = (options: { ids?: string[]; limit?: number }) => {
   const { loading, error, data, refetch } = useQuery<
@@ -72,35 +64,54 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
     },
   )
 
-  const programs: (ProgramBriefProps & {
-    roles: ProgramRoleProps[]
-    plans: ProgramPlanProps[]
-  })[] =
+  const programs: DeepPick<
+    Program,
+    | 'id'
+    | 'coverUrl'
+    | 'title'
+    | 'abstract'
+    | 'publishedAt'
+    | 'isPrivate'
+    | 'listPrice'
+    | 'salePrice'
+    | 'soldAt'
+    | 'roles.[].id'
+    | 'roles.[].member.id'
+    | 'plans.[].id'
+    | 'plans.[].listPrice'
+    | 'plans.[].salePrice'
+    | 'plans.[].soldAt'
+    | 'plans.[].period.amount'
+    | 'plans.[].period.type'
+    | 'totalDuration'
+  >[] =
     loading || error || !data
       ? []
       : data.program.map(program => ({
           id: program.id,
           coverUrl: program.cover_url,
           title: program.title,
-          abstract: program.abstract,
+          abstract: program.abstract || '',
           publishedAt: program.published_at && new Date(program.published_at),
-          isSubscription: program.is_subscription,
-          isSoldOut: program.is_sold_out,
           isPrivate: program.is_private,
           listPrice: program.list_price,
           salePrice: program.sale_price,
           soldAt: program.sold_at && new Date(program.sold_at),
           roles: program.program_roles.map(programRole => ({
             id: programRole.id,
-            memberId: programRole.member_id,
+            member: {
+              id: programRole.member_id,
+            },
           })),
           plans: program.program_plans.map(programPlan => ({
             id: programPlan.id,
             listPrice: programPlan.list_price,
             salePrice: programPlan.sale_price,
             soldAt: programPlan.sold_at && new Date(programPlan.sold_at),
-            periodAmount: programPlan.period_amount,
-            periodType: programPlan.period_type as PeriodType,
+            period: {
+              amount: programPlan.period_amount,
+              type: programPlan.period_type as PeriodType,
+            },
           })),
           totalDuration: sum(
             program.program_content_sections.map(
@@ -120,7 +131,7 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
 export const useProjectCollection = (options?: {
   ids?: string[]
   categoryId?: string
-  projectType?: ProjectType
+  projectType?: Project['type']
   limit?: number
 }) => {
   const condition: hasura.GET_PROJECT_COLLECTIONVariables['condition'] = {
@@ -164,16 +175,32 @@ export const useProjectCollection = (options?: {
     { variables: { condition } },
   )
 
-  const projects: ProjectBasicProps[] =
+  const projects: DeepPick<
+    Project,
+    | 'id'
+    | 'type'
+    | 'title'
+    | 'coverUrl'
+    | 'previewUrl'
+    | 'abstract'
+    | 'target'
+    | 'expiredAt'
+    | 'isParticipantsVisible'
+    | 'isCountdownTimerVisible'
+    | 'totalSales'
+    | 'enrollmentCount'
+  >[] =
     data?.project.map(v => ({
       id: v.id,
-      type: v.type,
+      type: v.type as Project['type'],
       title: v.title,
       coverUrl: v.cover_url,
       previewUrl: v.preview_url,
-      abstract: v.abstract,
-      targetAmount: v.target_amount,
-      targetUnit: v.target_unit as ProjectBasicProps['targetUnit'],
+      abstract: v.abstract || '',
+      target: {
+        amount: v.target_amount,
+        unit: v.target_unit as Project['target']['unit'],
+      },
       expiredAt: v.expired_at ? new Date(v.expired_at) : null,
       isParticipantsVisible: v.is_participants_visible,
       isCountdownTimerVisible: v.is_countdown_timer_visible,
@@ -218,20 +245,33 @@ export const usePublishedPodcastProgramCollection = (options?: { ids?: string[];
     { variables: { limit: options?.limit } },
   )
 
-  const podcastPrograms: PodcastProgramBriefProps[] =
+  const podcastPrograms: DeepPick<
+    PodcastProgram,
+    | 'id'
+    | 'coverUrl'
+    | 'title'
+    | 'totalDuration'
+    | 'roles.[].member.id'
+    | 'roles.[].member.name'
+    | 'roles.[].member.pictureUrl'
+    | 'listPrice'
+    | 'salePrice'
+    | 'soldAt'
+  >[] =
     data?.podcast_program.map(v => ({
       id: v.id,
       coverUrl: v.cover_url,
       title: v.title,
-      durationSecond: v.duration_second,
-      instructor: v.podcast_program_roles[0]?.member
-        ? {
-            id: v.podcast_program_roles[0]?.member.id || '',
-            avatarUrl: v.podcast_program_roles[0]?.member.picture_url,
-            name: v.podcast_program_roles[0]?.member.name || v.podcast_program_roles[0]?.member.username || '',
-          }
-        : null,
+      totalDuration: v.duration_second,
+      roles: v.podcast_program_roles.map(ppr => ({
+        member: {
+          id: ppr.member?.id || '',
+          name: ppr.member?.name || ppr.member?.username || '',
+          pictureUrl: ppr.member?.picture_url || null,
+        },
+      })),
       listPrice: v.list_price,
+      soldAt: moment(v.sold_at).toDate(),
       salePrice: v.sold_at && new Date(v.sold_at).getTime() > Date.now() ? v.sale_price : undefined,
     })) || []
 
@@ -258,7 +298,7 @@ export const usePublicMember = (memberId: string) => {
     { variables: { memberId } },
   )
 
-  const member: MemberPublicProps | null =
+  const member: DeepPick<Member, 'id' | 'pictureUrl' | 'name'> | null =
     loading || error || !data || !data.member_public[0]
       ? null
       : {
@@ -370,7 +410,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
     { variables: { ids: options?.ids } },
   )
 
-  const activities: ActivityProps[] =
+  const activities =
     options?.ids
       .map(id => {
         const value = data?.activity.find(v => v.id === id)

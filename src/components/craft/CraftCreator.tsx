@@ -10,8 +10,8 @@ import { notEmpty } from '../../helpers'
 import { CommonTextMixin } from '../../helpers/style'
 import DefaultAvatar from '../../images/default-avatar.svg'
 import { CraftRefBlock } from '../common'
-import { CustomRatioImage } from '../Image'
-import Layout from '../Layout'
+import { CustomRatioImage } from '../common/Image'
+import Layout from '../common/Layout'
 
 const StyledCreatorName = styled.h2`
   color: var(--gray-darker);

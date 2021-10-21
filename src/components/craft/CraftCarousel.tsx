@@ -1,8 +1,8 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import { useHistory } from 'react-router-dom'
-import Carousel from '../../components/Carousel'
 import { CraftTextStyleProps } from '../../types/craft'
 import { CraftRefBlock } from '../common'
+import Carousel from '../common/Carousel'
 
 export type CraftCarouselProps = {
   type: 'normal' | 'simply'

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import styled, { css } from 'styled-components'
+import { CardProps, ParagraphProps, TitleProps } from '../../types/style'
+import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph as Paragraph } from '../common'
 import { ReactComponent as AngleRightIcon } from '../images/icons/angle-right.svg'
-import { CardProps, ParagraphProps, TitleProps } from '../types/style'
-import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph as Paragraph } from './common'
 
 const StyledAction = styled.div<{ isActive: boolean }>`
   font-size: 20px;

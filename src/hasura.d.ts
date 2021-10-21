@@ -4,6 +4,82 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_RECENT_PROGRAM_PROGRESS
+// ====================================================
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section_program {
+  __typename: 'program'
+  id: any
+  cover_url: string | null
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section {
+  __typename: 'program_content_section'
+  /**
+   * An object relationship
+   */
+  program: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section_program
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_progress {
+  __typename: 'program_content_progress'
+  id: any
+  progress: any
+  last_progress: any
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_videos {
+  __typename: 'program_content_video'
+  attachment_id: any
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content {
+  __typename: 'program_content'
+  id: any
+  title: string
+  /**
+   * sec
+   */
+  duration: any | null
+  /**
+   * An object relationship
+   */
+  program_content_section: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section
+  /**
+   * An array relationship
+   */
+  program_content_progress: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_progress[]
+  /**
+   * An array relationship
+   */
+  program_content_videos: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_videos[]
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress {
+  __typename: 'program_content_progress'
+  /**
+   * An object relationship
+   */
+  program_content: GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESS {
+  /**
+   * fetch data from the table: "program_content_progress"
+   */
+  program_content_progress: GET_RECENT_PROGRAM_PROGRESS_program_content_progress[]
+}
+
+export interface GET_RECENT_PROGRAM_PROGRESSVariables {
+  limit?: number | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_NEWEST_ACTIVITIES
 // ====================================================
 
@@ -83,31 +159,6 @@ export interface GET_PUBLISHED_CREATOR {
 
 export interface GET_PUBLISHED_CREATORVariables {
   ids: string[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_RECENT_PROGRAM_PROGRESS
-// ====================================================
-
-export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress {
-  __typename: 'program_content_progress'
-  program_content_id: any
-}
-
-export interface GET_RECENT_PROGRAM_PROGRESS {
-  /**
-   * fetch data from the table: "program_content_progress"
-   */
-  program_content_progress: GET_RECENT_PROGRAM_PROGRESS_program_content_progress[]
-}
-
-export interface GET_RECENT_PROGRAM_PROGRESSVariables {
-  limit?: number | null
 }
 
 /* tslint:disable */
@@ -466,6 +517,91 @@ export interface GET_PROGRAM_CONTENT_COLLECTIONVariables {
   whereClause?: program_content_bool_exp | null
   limit?: number | null
   orderByClause?: program_content_order_by[] | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_ACTIVITY_COLLECTION
+// ====================================================
+
+export interface GET_ACTIVITY_COLLECTION_activity_activity_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface GET_ACTIVITY_COLLECTION_activity_activity_categories {
+  __typename: 'activity_category'
+  /**
+   * An object relationship
+   */
+  category: GET_ACTIVITY_COLLECTION_activity_activity_categories_category
+}
+
+export interface GET_ACTIVITY_COLLECTION_activity_activity_enrollments_aggregate_aggregate {
+  __typename: 'activity_enrollment_aggregate_fields'
+  count: number | null
+}
+
+export interface GET_ACTIVITY_COLLECTION_activity_activity_enrollments_aggregate {
+  __typename: 'activity_enrollment_aggregate'
+  aggregate: GET_ACTIVITY_COLLECTION_activity_activity_enrollments_aggregate_aggregate | null
+}
+
+export interface GET_ACTIVITY_COLLECTION_activity_activity_sessions {
+  __typename: 'activity_session'
+  started_at: any
+  ended_at: any
+}
+
+export interface GET_ACTIVITY_COLLECTION_activity_activity_tickets {
+  __typename: 'activity_ticket'
+  /**
+   * unlimited as 99999999
+   */
+  count: number
+}
+
+export interface GET_ACTIVITY_COLLECTION_activity {
+  __typename: 'activity'
+  id: any
+  cover_url: string | null
+  title: string
+  published_at: any | null
+  is_participants_visible: boolean
+  /**
+   * An array relationship
+   */
+  activity_categories: GET_ACTIVITY_COLLECTION_activity_activity_categories[]
+  /**
+   * An aggregated array relationship
+   */
+  activity_enrollments_aggregate: GET_ACTIVITY_COLLECTION_activity_activity_enrollments_aggregate
+  /**
+   * An array relationship
+   */
+  activity_sessions: GET_ACTIVITY_COLLECTION_activity_activity_sessions[]
+  /**
+   * An array relationship
+   */
+  activity_tickets: GET_ACTIVITY_COLLECTION_activity_activity_tickets[]
+}
+
+export interface GET_ACTIVITY_COLLECTION {
+  /**
+   * fetch data from the table: "activity"
+   */
+  activity: GET_ACTIVITY_COLLECTION_activity[]
+}
+
+export interface GET_ACTIVITY_COLLECTIONVariables {
+  whereClause?: activity_bool_exp | null
+  limit?: number | null
+  orderByClause?: activity_order_by[] | null
 }
 
 /* tslint:disable */
@@ -872,6 +1008,78 @@ export interface GET_PUBLISHED_ACTIVITY_COLLECTIONVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: activityFields
+// ====================================================
+
+export interface activityFields_activity_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface activityFields_activity_categories {
+  __typename: 'activity_category'
+  /**
+   * An object relationship
+   */
+  category: activityFields_activity_categories_category
+}
+
+export interface activityFields_activity_enrollments_aggregate_aggregate {
+  __typename: 'activity_enrollment_aggregate_fields'
+  count: number | null
+}
+
+export interface activityFields_activity_enrollments_aggregate {
+  __typename: 'activity_enrollment_aggregate'
+  aggregate: activityFields_activity_enrollments_aggregate_aggregate | null
+}
+
+export interface activityFields_activity_sessions {
+  __typename: 'activity_session'
+  started_at: any
+  ended_at: any
+}
+
+export interface activityFields_activity_tickets {
+  __typename: 'activity_ticket'
+  /**
+   * unlimited as 99999999
+   */
+  count: number
+}
+
+export interface activityFields {
+  __typename: 'activity'
+  id: any
+  cover_url: string | null
+  title: string
+  published_at: any | null
+  is_participants_visible: boolean
+  /**
+   * An array relationship
+   */
+  activity_categories: activityFields_activity_categories[]
+  /**
+   * An aggregated array relationship
+   */
+  activity_enrollments_aggregate: activityFields_activity_enrollments_aggregate
+  /**
+   * An array relationship
+   */
+  activity_sessions: activityFields_activity_sessions[]
+  /**
+   * An array relationship
+   */
+  activity_tickets: activityFields_activity_tickets[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: programFields
 // ====================================================
 
@@ -1221,6 +1429,30 @@ export interface activity_bool_exp {
 }
 
 /**
+ * order by aggregate values of table "activity_category"
+ */
+export interface activity_category_aggregate_order_by {
+  avg?: activity_category_avg_order_by | null
+  count?: order_by | null
+  max?: activity_category_max_order_by | null
+  min?: activity_category_min_order_by | null
+  stddev?: activity_category_stddev_order_by | null
+  stddev_pop?: activity_category_stddev_pop_order_by | null
+  stddev_samp?: activity_category_stddev_samp_order_by | null
+  sum?: activity_category_sum_order_by | null
+  var_pop?: activity_category_var_pop_order_by | null
+  var_samp?: activity_category_var_samp_order_by | null
+  variance?: activity_category_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "activity_category"
+ */
+export interface activity_category_avg_order_by {
+  position?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "activity_category". All fields are combined with a logical 'AND'.
  */
 export interface activity_category_bool_exp {
@@ -1233,6 +1465,84 @@ export interface activity_category_bool_exp {
   category_id?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   position?: Int_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "activity_category"
+ */
+export interface activity_category_max_order_by {
+  activity_id?: order_by | null
+  category_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "activity_category"
+ */
+export interface activity_category_min_order_by {
+  activity_id?: order_by | null
+  category_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "activity_category"
+ */
+export interface activity_category_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "activity_category"
+ */
+export interface activity_category_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "activity_category"
+ */
+export interface activity_category_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "activity_category"
+ */
+export interface activity_category_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "activity_category"
+ */
+export interface activity_category_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "activity_category"
+ */
+export interface activity_category_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "activity_category"
+ */
+export interface activity_category_variance_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "activity_enrollment"
+ */
+export interface activity_enrollment_aggregate_order_by {
+  count?: order_by | null
+  max?: activity_enrollment_max_order_by | null
+  min?: activity_enrollment_min_order_by | null
 }
 
 /**
@@ -1253,6 +1563,34 @@ export interface activity_enrollment_bool_exp {
   member_name?: String_comparison_exp | null
   member_phone?: String_comparison_exp | null
   order_log_id?: String_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "activity_enrollment"
+ */
+export interface activity_enrollment_max_order_by {
+  activity_id?: order_by | null
+  activity_session_id?: order_by | null
+  activity_ticket_id?: order_by | null
+  member_email?: order_by | null
+  member_id?: order_by | null
+  member_name?: order_by | null
+  member_phone?: order_by | null
+  order_log_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "activity_enrollment"
+ */
+export interface activity_enrollment_min_order_by {
+  activity_id?: order_by | null
+  activity_session_id?: order_by | null
+  activity_ticket_id?: order_by | null
+  member_email?: order_by | null
+  member_id?: order_by | null
+  member_name?: order_by | null
+  member_phone?: order_by | null
+  order_log_id?: order_by | null
 }
 
 /**
@@ -1284,6 +1622,55 @@ export interface activity_min_order_by {
 }
 
 /**
+ * ordering options when selecting data from "activity"
+ */
+export interface activity_order_by {
+  activity_categories_aggregate?: activity_category_aggregate_order_by | null
+  activity_enrollments_aggregate?: activity_enrollment_aggregate_order_by | null
+  activity_sessions_aggregate?: activity_session_aggregate_order_by | null
+  activity_tags_aggregate?: activity_tag_aggregate_order_by | null
+  activity_tickets_aggregate?: activity_ticket_aggregate_order_by | null
+  app?: app_order_by | null
+  app_id?: order_by | null
+  cover_url?: order_by | null
+  description?: order_by | null
+  id?: order_by | null
+  is_participants_visible?: order_by | null
+  organizer?: member_public_order_by | null
+  organizer_id?: order_by | null
+  package_items_aggregate?: package_item_aggregate_order_by | null
+  position?: order_by | null
+  published_at?: order_by | null
+  session_ticket_enrollment_count_aggregate?: activity_session_ticket_enrollment_count_aggregate_order_by | null
+  support_locales?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "activity_session"
+ */
+export interface activity_session_aggregate_order_by {
+  avg?: activity_session_avg_order_by | null
+  count?: order_by | null
+  max?: activity_session_max_order_by | null
+  min?: activity_session_min_order_by | null
+  stddev?: activity_session_stddev_order_by | null
+  stddev_pop?: activity_session_stddev_pop_order_by | null
+  stddev_samp?: activity_session_stddev_samp_order_by | null
+  sum?: activity_session_sum_order_by | null
+  var_pop?: activity_session_var_pop_order_by | null
+  var_samp?: activity_session_var_samp_order_by | null
+  variance?: activity_session_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "activity_session"
+ */
+export interface activity_session_avg_order_by {
+  threshold?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "activity_session". All fields are combined with a logical 'AND'.
  */
 export interface activity_session_bool_exp {
@@ -1307,6 +1694,64 @@ export interface activity_session_bool_exp {
 }
 
 /**
+ * order by max() on columns of table "activity_session"
+ */
+export interface activity_session_max_order_by {
+  activity_id?: order_by | null
+  description?: order_by | null
+  ended_at?: order_by | null
+  id?: order_by | null
+  location?: order_by | null
+  online_link?: order_by | null
+  started_at?: order_by | null
+  threshold?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "activity_session"
+ */
+export interface activity_session_min_order_by {
+  activity_id?: order_by | null
+  description?: order_by | null
+  ended_at?: order_by | null
+  id?: order_by | null
+  location?: order_by | null
+  online_link?: order_by | null
+  started_at?: order_by | null
+  threshold?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "activity_session"
+ */
+export interface activity_session_stddev_order_by {
+  threshold?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "activity_session"
+ */
+export interface activity_session_stddev_pop_order_by {
+  threshold?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "activity_session"
+ */
+export interface activity_session_stddev_samp_order_by {
+  threshold?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "activity_session"
+ */
+export interface activity_session_sum_order_by {
+  threshold?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "activity_session_ticket". All fields are combined with a logical 'AND'.
  */
 export interface activity_session_ticket_bool_exp {
@@ -1322,6 +1767,31 @@ export interface activity_session_ticket_bool_exp {
 }
 
 /**
+ * order by aggregate values of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_aggregate_order_by {
+  avg?: activity_session_ticket_enrollment_count_avg_order_by | null
+  count?: order_by | null
+  max?: activity_session_ticket_enrollment_count_max_order_by | null
+  min?: activity_session_ticket_enrollment_count_min_order_by | null
+  stddev?: activity_session_ticket_enrollment_count_stddev_order_by | null
+  stddev_pop?: activity_session_ticket_enrollment_count_stddev_pop_order_by | null
+  stddev_samp?: activity_session_ticket_enrollment_count_stddev_samp_order_by | null
+  sum?: activity_session_ticket_enrollment_count_sum_order_by | null
+  var_pop?: activity_session_ticket_enrollment_count_var_pop_order_by | null
+  var_samp?: activity_session_ticket_enrollment_count_var_samp_order_by | null
+  variance?: activity_session_ticket_enrollment_count_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_avg_order_by {
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "activity_session_ticket_enrollment_count". All fields are combined with a logical 'AND'.
  */
 export interface activity_session_ticket_enrollment_count_bool_exp {
@@ -1333,6 +1803,103 @@ export interface activity_session_ticket_enrollment_count_bool_exp {
   activity_offline_session_ticket_count?: numeric_comparison_exp | null
   activity_online_session_ticket_count?: numeric_comparison_exp | null
   activity_session_id?: uuid_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_max_order_by {
+  activity_id?: order_by | null
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+  activity_session_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_min_order_by {
+  activity_id?: order_by | null
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+  activity_session_id?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_stddev_order_by {
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_stddev_pop_order_by {
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_stddev_samp_order_by {
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_sum_order_by {
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_var_pop_order_by {
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_var_samp_order_by {
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "activity_session_ticket_enrollment_count"
+ */
+export interface activity_session_ticket_enrollment_count_variance_order_by {
+  activity_offline_session_ticket_count?: order_by | null
+  activity_online_session_ticket_count?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "activity_session"
+ */
+export interface activity_session_var_pop_order_by {
+  threshold?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "activity_session"
+ */
+export interface activity_session_var_samp_order_by {
+  threshold?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "activity_session"
+ */
+export interface activity_session_variance_order_by {
+  threshold?: order_by | null
 }
 
 /**
@@ -1364,6 +1931,30 @@ export interface activity_sum_order_by {
 }
 
 /**
+ * order by aggregate values of table "activity_tag"
+ */
+export interface activity_tag_aggregate_order_by {
+  avg?: activity_tag_avg_order_by | null
+  count?: order_by | null
+  max?: activity_tag_max_order_by | null
+  min?: activity_tag_min_order_by | null
+  stddev?: activity_tag_stddev_order_by | null
+  stddev_pop?: activity_tag_stddev_pop_order_by | null
+  stddev_samp?: activity_tag_stddev_samp_order_by | null
+  sum?: activity_tag_sum_order_by | null
+  var_pop?: activity_tag_var_pop_order_by | null
+  var_samp?: activity_tag_var_samp_order_by | null
+  variance?: activity_tag_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "activity_tag"
+ */
+export interface activity_tag_avg_order_by {
+  position?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "activity_tag". All fields are combined with a logical 'AND'.
  */
 export interface activity_tag_bool_exp {
@@ -1376,6 +1967,100 @@ export interface activity_tag_bool_exp {
   position?: Int_comparison_exp | null
   tag?: tag_bool_exp | null
   tag_name?: String_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "activity_tag"
+ */
+export interface activity_tag_max_order_by {
+  activity_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  tag_name?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "activity_tag"
+ */
+export interface activity_tag_min_order_by {
+  activity_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  tag_name?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "activity_tag"
+ */
+export interface activity_tag_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "activity_tag"
+ */
+export interface activity_tag_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "activity_tag"
+ */
+export interface activity_tag_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "activity_tag"
+ */
+export interface activity_tag_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "activity_tag"
+ */
+export interface activity_tag_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "activity_tag"
+ */
+export interface activity_tag_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "activity_tag"
+ */
+export interface activity_tag_variance_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "activity_ticket"
+ */
+export interface activity_ticket_aggregate_order_by {
+  avg?: activity_ticket_avg_order_by | null
+  count?: order_by | null
+  max?: activity_ticket_max_order_by | null
+  min?: activity_ticket_min_order_by | null
+  stddev?: activity_ticket_stddev_order_by | null
+  stddev_pop?: activity_ticket_stddev_pop_order_by | null
+  stddev_samp?: activity_ticket_stddev_samp_order_by | null
+  sum?: activity_ticket_sum_order_by | null
+  var_pop?: activity_ticket_var_pop_order_by | null
+  var_samp?: activity_ticket_var_samp_order_by | null
+  variance?: activity_ticket_variance_order_by | null
+}
+
+/**
+ * order by avg() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_avg_order_by {
+  count?: order_by | null
+  price?: order_by | null
 }
 
 /**
@@ -1415,6 +2100,92 @@ export interface activity_ticket_enrollment_bool_exp {
   order_log?: order_log_bool_exp | null
   order_log_id?: String_comparison_exp | null
   order_product_id?: uuid_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_max_order_by {
+  activity_id?: order_by | null
+  count?: order_by | null
+  currency_id?: order_by | null
+  description?: order_by | null
+  ended_at?: order_by | null
+  id?: order_by | null
+  price?: order_by | null
+  started_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_min_order_by {
+  activity_id?: order_by | null
+  count?: order_by | null
+  currency_id?: order_by | null
+  description?: order_by | null
+  ended_at?: order_by | null
+  id?: order_by | null
+  price?: order_by | null
+  started_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by stddev() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_stddev_order_by {
+  count?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_stddev_pop_order_by {
+  count?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_stddev_samp_order_by {
+  count?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_sum_order_by {
+  count?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_var_pop_order_by {
+  count?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_var_samp_order_by {
+  count?: order_by | null
+  price?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "activity_ticket"
+ */
+export interface activity_ticket_variance_order_by {
+  count?: order_by | null
+  price?: order_by | null
 }
 
 /**
@@ -3391,6 +4162,28 @@ export interface member_public_bool_exp {
 }
 
 /**
+ * ordering options when selecting data from "member_public"
+ */
+export interface member_public_order_by {
+  abstract?: order_by | null
+  app_id?: order_by | null
+  created_at?: order_by | null
+  description?: order_by | null
+  email?: order_by | null
+  id?: order_by | null
+  member_specialities_aggregate?: member_speciality_aggregate_order_by | null
+  metadata?: order_by | null
+  name?: order_by | null
+  picture_url?: order_by | null
+  role?: order_by | null
+  roles?: order_by | null
+  tag_names?: order_by | null
+  title?: order_by | null
+  username?: order_by | null
+  zoom_user_id?: order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "member_shop". All fields are combined with a logical 'AND'.
  */
 export interface member_shop_bool_exp {
@@ -3429,6 +4222,15 @@ export interface member_social_bool_exp {
 }
 
 /**
+ * order by aggregate values of table "member_speciality"
+ */
+export interface member_speciality_aggregate_order_by {
+  count?: order_by | null
+  max?: member_speciality_max_order_by | null
+  min?: member_speciality_min_order_by | null
+}
+
+/**
  * Boolean expression to filter rows from the table "member_speciality". All fields are combined with a logical 'AND'.
  */
 export interface member_speciality_bool_exp {
@@ -3442,6 +4244,28 @@ export interface member_speciality_bool_exp {
   tag?: tag_bool_exp | null
   tag_name?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * order by max() on columns of table "member_speciality"
+ */
+export interface member_speciality_max_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  tag_name?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "member_speciality"
+ */
+export interface member_speciality_min_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  tag_name?: order_by | null
+  updated_at?: order_by | null
 }
 
 /**

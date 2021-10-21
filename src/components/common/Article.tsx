@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { ParagraphProps, TitleProps } from '../types/style'
-import { generateCustomParagraphStyle, generateCustomTitleStyle } from './common'
+import { generateCustomParagraphStyle, generateCustomTitleStyle } from '.'
+import { ParagraphProps, TitleProps } from '../../types/style'
 import { BREAK_POINT } from './Responsive'
 
 const StyledDescriptionTitle = styled.h3<{ customStyle: TitleProps }>`
