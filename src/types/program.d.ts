@@ -1,6 +1,8 @@
 import { Category } from './data'
 import { Member, PlanPeriod } from './shared'
 
+export type PeriodType = 'D' | 'W' | 'M' | 'Y'
+
 export type Program = {
   id: string
   title: string
