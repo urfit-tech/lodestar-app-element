@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { commonMessages } from '../../helpers/translation'
+import { useCurrency } from '../../hooks/util'
 import { PeriodType } from '../../types/data'
 import ShortenPeriodTypeLabel from './ShortenPeriodTypeLabel'
 
@@ -45,25 +46,19 @@ type PriceLabelOptions = {
 const PriceLabel: React.VFC<
   PriceLabelOptions & {
     variant?: 'default' | 'inline' | 'full-detail'
-    render?: React.VFC<PriceLabelOptions & { formatPrice: (price: number) => string }>
+    render?: React.VFC<PriceLabelOptions & { formatCurrency: (price: number) => string }>
     noFreeText?: boolean
   }
 > = ({ variant, render, noFreeText, ...options }) => {
   const { listPrice, salePrice, downPrice, currencyId, coinUnit, periodAmount, periodType } = options
-  const { locale, formatMessage } = useIntl()
+  const { formatMessage } = useIntl()
+  const { formatCurrency } = useCurrency(currencyId, coinUnit)
 
   const displayPrice = salePrice || listPrice
   const firstPeriodPrice = displayPrice - (downPrice || 0)
 
-  const formatPrice = (price: number) => {
-    if (currencyId === 'LSC') {
-      return price + (coinUnit || 'Coins')
-    }
-    return price.toLocaleString(locale, { style: 'currency', currency: currencyId || 'TWD', minimumFractionDigits: 0 })
-  }
-
   if (render) {
-    return render({ ...options, formatPrice })
+    return render({ ...options, formatCurrency })
   }
 
   const periodElem = !!periodType && (
@@ -80,7 +75,7 @@ const PriceLabel: React.VFC<
           <div>
             {formatMessage(commonMessages.label.firstPeriod)}
             {firstPeriodPrice === 0 && !noFreeText && formatMessage(commonMessages.label.free)}
-            {formatPrice(firstPeriodPrice)}
+            {formatCurrency(firstPeriodPrice)}
           </div>
         )}
 
@@ -88,7 +83,7 @@ const PriceLabel: React.VFC<
           <SalePrice>
             {!!downPrice && formatMessage(commonMessages.label.fromSecondPeriod)}
             {salePrice === 0 && !noFreeText && formatMessage(commonMessages.label.free)}
-            {formatPrice(salePrice)}
+            {formatCurrency(salePrice)}
             <span style={{ fontSize: '16px' }}>{periodElem}</span>
           </SalePrice>
         )}
@@ -100,7 +95,7 @@ const PriceLabel: React.VFC<
             ? formatMessage(commonMessages.label.fromSecondPeriod)
             : ''}
           {listPrice === 0 && !noFreeText && formatMessage(commonMessages.label.free)}
-          {formatPrice(listPrice)}
+          {formatCurrency(listPrice)}
           <span style={{ fontSize: '16px' }}>{periodElem}</span>
         </ListPrice>
       </FullDetailPrice>
@@ -111,12 +106,12 @@ const PriceLabel: React.VFC<
     return (
       <InlinePrice>
         <span>
-          {formatPrice(listPrice)}
+          {formatCurrency(listPrice)}
           {periodElem}
         </span>
         {typeof salePrice === 'number' && (
           <span>
-            {formatPrice(salePrice)}
+            {formatCurrency(salePrice)}
             {periodElem}
           </span>
         )}
@@ -124,7 +119,7 @@ const PriceLabel: React.VFC<
     )
   }
 
-  return <>{formatPrice(listPrice)}</>
+  return <>{formatCurrency(listPrice)}</>
 }
 
 export default PriceLabel

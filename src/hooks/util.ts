@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { useApp } from '../contexts/AppContext'
 import LanguageContext from '../contexts/LanguageContext'
 
-export const useCurrency = (currencyId?: string) => {
+export const useCurrency = (currencyId?: string, coinUnit?: string) => {
   const { locale } = useContext(LanguageContext)
   const { currencies, settings } = useApp()
 
@@ -11,7 +11,7 @@ export const useCurrency = (currencyId?: string) => {
     const currency = currencies[currentCurrencyId]
 
     if (currentCurrencyId === 'LSC') {
-      return value + ' ' + settings['coin.unit']
+      return value + ' ' + settings['coin.unit'] || coinUnit || 'Coins'
     }
 
     return (
