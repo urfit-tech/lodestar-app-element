@@ -12,6 +12,7 @@ import {
   PublishedAtActivityCollection,
 } from '../collections/ActivityCollection'
 import { CollectionLayout } from '../collections/Collection'
+import { Craftize } from '../common'
 import CategorySelector from '../common/CategorySelector'
 
 export type CraftActivityCollectionProps = {
@@ -34,21 +35,21 @@ const CraftActivityCollection: UserComponent<CraftActivityCollectionProps> = ({
     editing: state.options.enabled,
   }))
 
-  // variant -> card / tile
-  const element = variant === 'card' ? ActivityCard : ActivityCard
-
   // options.source -> xxx collection
   const CraftCollection = useMemo(() => {
+    // variant -> card / tile
+    const craftElement = Craftize(variant === 'card' ? ActivityCard : ActivityCard)
+
     let ElementCollection: ActivityElementCollection
     switch (sourceOptions.source) {
       case 'publishedAt':
-        ElementCollection = PublishedAtActivityCollection(element)(sourceOptions)
+        ElementCollection = PublishedAtActivityCollection(craftElement)(sourceOptions)
         break
       case 'custom':
-        ElementCollection = CustomActivityCollection(element)(sourceOptions)
+        ElementCollection = CustomActivityCollection(craftElement)(sourceOptions)
         break
       default:
-        ElementCollection = PublishedAtActivityCollection(element)(sourceOptions)
+        ElementCollection = PublishedAtActivityCollection(craftElement)(sourceOptions)
         break
     }
     return (
@@ -77,7 +78,7 @@ const CraftActivityCollection: UserComponent<CraftActivityCollectionProps> = ({
         }
       />
     )
-  }, [activeCategoryId, editing, element, layout, sourceOptions, withSelector])
+  }, [activeCategoryId, editing, variant, layout, sourceOptions, withSelector])
 
   return (
     <div>

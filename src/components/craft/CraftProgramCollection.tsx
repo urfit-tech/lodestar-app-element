@@ -13,6 +13,7 @@ import {
   ProgramElementCollection,
   PublishedAtProgramCollection,
 } from '../collections/ProgramCollection'
+import { Craftize } from '../common'
 import CategorySelector from '../common/CategorySelector'
 
 export type CraftProgramCollectionProps = {
@@ -35,24 +36,23 @@ const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
     editing: state.options.enabled,
   }))
 
-  // variant -> card / tile
-  const element = variant === 'card' ? ProgramCard : ProgramCard
-
   // options.source -> xxx collection
+  // variant -> card / tile
   const CraftCollection = useMemo(() => {
+    const craftElement = Craftize(variant === 'card' ? ProgramCard : ProgramCard)
     let ElementCollection: ProgramElementCollection
     switch (sourceOptions.source) {
       case 'publishedAt':
-        ElementCollection = PublishedAtProgramCollection(element)(sourceOptions)
+        ElementCollection = PublishedAtProgramCollection(craftElement)(sourceOptions)
         break
       case 'currentPrice':
-        ElementCollection = CurrentPriceProgramCollection(element)(sourceOptions)
+        ElementCollection = CurrentPriceProgramCollection(craftElement)(sourceOptions)
         break
       case 'custom':
-        ElementCollection = CustomProgramCollection(element)(sourceOptions)
+        ElementCollection = CustomProgramCollection(craftElement)(sourceOptions)
         break
       default:
-        ElementCollection = PublishedAtProgramCollection(element)(sourceOptions)
+        ElementCollection = PublishedAtProgramCollection(craftElement)(sourceOptions)
     }
     return (
       <ElementCollection
@@ -80,7 +80,7 @@ const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
         }}
       />
     )
-  }, [activeCategoryId, editing, element, layout, sourceOptions, withSelector])
+  }, [activeCategoryId, editing, layout, sourceOptions, variant, withSelector])
 
   return (
     <div>

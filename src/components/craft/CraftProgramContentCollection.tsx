@@ -8,6 +8,7 @@ import {
   ProgramContentElementCollection,
   RecentWatchedProgramContentCollection,
 } from '../collections/ProgramContentCollection'
+import { Craftize } from '../common'
 
 export type CraftProgramContentCollectionProps = {
   sourceOptions: CustomSourceOptions | RecentWatchedSourceOptions
@@ -25,24 +26,23 @@ const CraftProgramContentCollection: UserComponent<CraftProgramContentCollection
     editing: state.options.enabled,
   }))
 
-  // variant -> card / tile
-  const element = variant === 'card' ? ProgramContentCard : ProgramContentCard
-
   // options.source -> xxx collection
   const CraftCollection = useMemo(() => {
+    // variant -> card / tile
+    const craftElement = Craftize(variant === 'card' ? ProgramContentCard : ProgramContentCard)
     let ElementCollection: ProgramContentElementCollection
     switch (sourceOptions.source) {
       case 'recentWatched':
-        ElementCollection = RecentWatchedProgramContentCollection(element)(sourceOptions)
+        ElementCollection = RecentWatchedProgramContentCollection(craftElement)(sourceOptions)
         break
       case 'custom':
-        ElementCollection = CustomProgramContentCollection(element)(sourceOptions)
+        ElementCollection = CustomProgramContentCollection(craftElement)(sourceOptions)
         break
       default:
-        ElementCollection = RecentWatchedProgramContentCollection(element)(sourceOptions)
+        ElementCollection = RecentWatchedProgramContentCollection(craftElement)(sourceOptions)
     }
     return <ElementCollection editing={editing} layout={layout} />
-  }, [editing, element, layout, sourceOptions])
+  }, [editing, variant, layout, sourceOptions])
 
   return CraftCollection
 }

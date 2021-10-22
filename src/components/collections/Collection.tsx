@@ -39,6 +39,7 @@ const Collection = <P extends PropsWithUiState<unknown>, D>(options: CollectionO
     useEffect(() => {
       onLoad?.(data)
     }, [data, onLoad])
+    console.log({ editing })
     return (
       <SimpleGrid spacingX={layout.gutter} spacingY={layout.gap} columns={layout.columns}>
         {options.loading

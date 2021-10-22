@@ -12,6 +12,7 @@ import {
   ProgramPackageElementCollection,
   PublishedAtProgramPackageCollection,
 } from '../collections/ProgramPackageCollection'
+import { Craftize } from '../common'
 import CategorySelector from '../common/CategorySelector'
 
 export type CraftProgramPackageCollectionProps = {
@@ -34,21 +35,20 @@ const CraftProgramPackageCollection: UserComponent<CraftProgramPackageCollection
     editing: state.options.enabled,
   }))
 
-  // variant -> card / tile
-  const element = variant === 'card' ? ProgramPackageCard : ProgramPackageCard
-
   // options.source -> xxx collection
   const CraftCollection = useMemo(() => {
+    // variant -> card / tile
+    const craftElement = Craftize(variant === 'card' ? ProgramPackageCard : ProgramPackageCard)
     let ElementCollection: ProgramPackageElementCollection
     switch (sourceOptions.source) {
       case 'publishedAt':
-        ElementCollection = PublishedAtProgramPackageCollection(element)(sourceOptions)
+        ElementCollection = PublishedAtProgramPackageCollection(craftElement)(sourceOptions)
         break
       case 'custom':
-        ElementCollection = CustomProgramPackageCollection(element)(sourceOptions)
+        ElementCollection = CustomProgramPackageCollection(craftElement)(sourceOptions)
         break
       default:
-        ElementCollection = PublishedAtProgramPackageCollection(element)(sourceOptions)
+        ElementCollection = PublishedAtProgramPackageCollection(craftElement)(sourceOptions)
     }
     return (
       <ElementCollection
@@ -76,7 +76,7 @@ const CraftProgramPackageCollection: UserComponent<CraftProgramPackageCollection
         }}
       />
     )
-  }, [activeCategoryId, editing, element, layout, sourceOptions, withSelector])
+  }, [activeCategoryId, editing, variant, layout, sourceOptions, withSelector])
 
   return (
     <div>
