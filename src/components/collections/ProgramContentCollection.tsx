@@ -147,5 +147,3 @@ const programContentFields = gql`
     }
   }
 `
-
-export default ProgramContentCollection

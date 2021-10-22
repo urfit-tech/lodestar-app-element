@@ -165,5 +165,3 @@ const programPackageFields = gql`
     published_at
   }
 `
-
-export default ProgramPackageCollection

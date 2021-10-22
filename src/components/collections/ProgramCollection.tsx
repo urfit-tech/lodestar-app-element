@@ -269,5 +269,3 @@ const programFields = gql`
     }
   }
 `
-
-export default ProgramCollection
