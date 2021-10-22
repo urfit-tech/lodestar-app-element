@@ -10,14 +10,14 @@ import {
 } from '../collections/ProgramContentCollection'
 
 export type CraftProgramContentCollectionProps = {
-  variant: 'card' | 'tile'
   sourceOptions: CustomSourceOptions | RecentWatchedSourceOptions
+  variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
 }
 
 const CraftProgramContentCollection: UserComponent<CraftProgramContentCollectionProps> = ({
-  variant,
+  variant = 'card',
   layout,
   sourceOptions,
 }) => {

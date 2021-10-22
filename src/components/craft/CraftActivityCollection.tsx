@@ -15,14 +15,14 @@ import { CollectionLayout } from '../collections/Collection'
 import CategorySelector from '../common/CategorySelector'
 
 export type CraftActivityCollectionProps = {
-  variant: 'card' | 'tile'
   sourceOptions: CustomSourceOptions | PublishedAtSourceOptions
+  variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
 }
 
 const CraftActivityCollection: UserComponent<CraftActivityCollectionProps> = ({
-  variant,
+  variant = 'card',
   layout,
   sourceOptions,
   withSelector = false,

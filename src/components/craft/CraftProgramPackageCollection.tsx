@@ -15,14 +15,14 @@ import {
 import CategorySelector from '../common/CategorySelector'
 
 export type CraftProgramPackageCollectionProps = {
-  variant: 'card' | 'tile'
   sourceOptions: CustomSourceOptions | PublishedAtSourceOptions
+  variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
 }
 
 const CraftProgramPackageCollection: UserComponent<CraftProgramPackageCollectionProps> = ({
-  variant,
+  variant = 'card',
   layout,
   sourceOptions,
   withSelector = false,
