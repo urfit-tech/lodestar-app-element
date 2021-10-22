@@ -1,4 +1,4 @@
-import { useEditor } from '@craftjs/core'
+import { useEditor, UserComponent } from '@craftjs/core'
 import { useMemo } from 'react'
 import { CustomSourceOptions, RecentWatchedSourceOptions } from '../../types/options'
 import ProgramContentCard from '../cards/ProgramContentCard'
@@ -16,7 +16,7 @@ type CraftProgramContentCollectionProps = {
   withSelector?: boolean
 }
 
-const CraftProgramContentCollection: React.FC<CraftProgramContentCollectionProps> = ({
+const CraftProgramContentCollection: UserComponent<CraftProgramContentCollectionProps> = ({
   variant,
   layout,
   sourceOptions,

@@ -1,4 +1,4 @@
-import { useEditor } from '@craftjs/core'
+import { useEditor, UserComponent } from '@craftjs/core'
 import { uniqBy } from 'ramda'
 import { useMemo, useState } from 'react'
 import { StringParam } from 'serialize-query-params'
@@ -22,7 +22,7 @@ type CraftProgramCollectionProps = {
   withSelector?: boolean
 }
 
-const CraftProgramCollection: React.FC<CraftProgramCollectionProps> = ({
+const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
   variant,
   layout,
   sourceOptions,
