@@ -20,6 +20,7 @@ export type Module =
   | 'sharing_code'
   | 'referrer'
   | 'group_buying'
+  | 'group_buying_ticket'
   | 'learning_statistics'
   | 'member_note'
   | 'member_property'
