@@ -1,4 +1,5 @@
 import ProgramPackageCard from '../components/cards/ProgramPackageCard'
+import CraftProgramPackageCollection from '../components/craft/CraftProgramPackageCollection'
 
 const ProgramPackagePage: React.VFC = () => {
   return (
@@ -11,7 +12,7 @@ const ProgramPackagePage: React.VFC = () => {
         totalPrograms={3}
         currentPrice={19800}
       />
-      {/* <ProgramPackageCardCollection options={{ source: 'publishedAt' }} /> */}
+      <CraftProgramPackageCollection variant="card" sourceOptions={{ source: 'publishedAt' }} />
     </div>
   )
 }

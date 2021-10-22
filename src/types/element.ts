@@ -1,6 +1,7 @@
 import { Category, PeriodType, Project } from './data'
 
-export type ElementProps<P> =
+type ElementProps<P> = PropsWithUiState<P>
+export type PropsWithUiState<P> =
   | { loading: true; errors?: never }
   | { loading?: never; errors: Error[] }
   | (P & { loading?: never; errors?: never; editing?: boolean })

@@ -26,7 +26,7 @@ const StyledPercent = styled.div`
   transform: translateX(-50%) translateY(-50%);
   color: var(--gray-darker);
 `
-const ProjectCard: React.VFC<ProjectElementProps> = props => {
+const ProjectCard: React.FC<ProjectElementProps> = props => {
   const { loading, errors } = props
   const { formatMessage } = useIntl()
   const theme = useContext(ThemeContext)

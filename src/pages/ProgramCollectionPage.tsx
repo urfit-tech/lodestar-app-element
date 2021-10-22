@@ -1,13 +1,11 @@
-import ProgramCard from '../components/cards/ProgramCard'
-import ProgramSecondaryCard from '../components/cards/ProgramSecondaryCard'
-import ProgramCollection from '../components/collections/ProgramCollection'
+import CraftProgramCollection from '../components/craft/CraftProgramCollection'
 
-const ProgramCollectionPage: React.VFC = () => {
+const CraftProgramCollectionPage: React.VFC = () => {
   return (
     <div className="container">
-      <ProgramCollection
-        element={ProgramCard}
-        options={{
+      <CraftProgramCollection
+        variant="card"
+        sourceOptions={{
           source: 'currentPrice',
           min: 100,
           max: 1000,
@@ -17,28 +15,28 @@ const ProgramCollectionPage: React.VFC = () => {
         }}
       />
       <hr />
-      <ProgramCollection
-        element={ProgramCard}
+      <CraftProgramCollection
+        variant="card"
         layout={{
           gap: [8, 16],
           gutter: 10,
           columns: [1, 3, 5],
         }}
-        options={{
+        withSelector
+        sourceOptions={{
           source: 'publishedAt',
           asc: true,
           defaultCategoryIds: ['286b4906-0550-4c56-a16b-ce88fe516690'],
-          withSelector: true,
         }}
       />
       <hr />
-      <ProgramCollection
-        element={ProgramSecondaryCard}
+      <CraftProgramCollection
+        variant="tile"
         layout={{
           gap: 12,
           columns: 2,
         }}
-        options={{
+        sourceOptions={{
           source: 'custom',
           idList: [
             'fa0c97e9-475e-43b6-b7ed-67f8e27ab4c6',
@@ -51,4 +49,4 @@ const ProgramCollectionPage: React.VFC = () => {
   )
 }
 
-export default ProgramCollectionPage
+export default CraftProgramCollectionPage

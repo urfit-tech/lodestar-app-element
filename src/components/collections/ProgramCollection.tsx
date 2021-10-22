@@ -1,102 +1,205 @@
 import { useQuery } from '@apollo/react-hooks'
-import { useEditor } from '@craftjs/core'
 import gql from 'graphql-tag'
 import moment from 'moment'
-import { sum, uniqBy } from 'ramda'
-import { useMemo } from 'react'
+import { sum } from 'ramda'
 import { DeepPick } from 'ts-deep-pick/lib'
-import { StringParam, useQueryParam } from 'use-query-params'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { Category, PeriodType, ProductRole, Program } from '../../types/data'
+import { PeriodType, ProductRole, Program } from '../../types/data'
 import { ProgramElementProps } from '../../types/element'
-import Collection, { CollectionBaseProps } from '../collections/Collection'
-import CategorySelector from '../common/CategorySelector'
+import { CurrentPriceSourceOptions, CustomSourceOptions, PublishedAtSourceOptions } from '../../types/options'
+import Collection, { ElementCollection } from '../collections/Collection'
 
-export type ProgramCollectionOptions =
-  | {
-      source: 'custom'
-      idList: string[]
-      withSelector?: boolean
-    }
-  | {
-      source: 'publishedAt'
-      limit?: number
-      asc?: boolean
-      defaultTagNames?: string[]
-      defaultCategoryIds?: string[]
-      withSelector?: boolean
-    }
-  | {
-      source: 'currentPrice'
-      limit?: number
-      asc?: boolean
-      min?: number
-      max?: number
-      defaultTagNames?: string[]
-      defaultCategoryIds?: string[]
-      withSelector?: boolean
-    }
+type ProgramData = DeepPick<
+  Program,
+  | 'id'
+  | 'title'
+  | 'abstract'
+  | 'coverUrl'
+  | 'totalDuration'
+  | 'roles.[].name'
+  | 'roles.[].member.id'
+  | 'listPrice'
+  | 'salePrice'
+  | 'soldAt'
+  | 'plans.[].!title'
+  | 'categories'
+>
+type ProgramCollectionData = ProgramData[]
+type ProgramCollection<T> = (
+  Element: React.ElementType<ProgramElementProps>,
+) => (options: T) => ProgramElementCollection
+export type ProgramElementCollection = ElementCollection<ProgramData>
 
-type ProgramCollectionProps = CollectionBaseProps<ProgramCollectionOptions> & {
-  element: React.ElementType<ProgramElementProps>
+export const CustomProgramCollection: ProgramCollection<CustomSourceOptions> = Element => options => {
+  const ProgramElementCollection: ProgramElementCollection = props => {
+    const { data, loading } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+      getProgramCollectionQuery(programFields),
+      {
+        variables: {
+          limit: undefined,
+          orderByClause: [],
+          whereClause: {
+            id: { _in: options.idList },
+            is_private: { _eq: false },
+            published_at: { _is_null: false },
+          },
+        },
+      },
+    )
+    const orderedData = {
+      ...data,
+      program: options.idList
+        .filter(programId => data?.program.find(p => p.id === programId))
+        .map(programId => data?.program.find(p => p.id === programId))
+        .filter(notEmpty),
+    }
+    const ElementCollection = Collection({
+      Element,
+      data: data ? composeCollectionData(orderedData) : [],
+      mapDataToProps: program => (loading ? { loading } : mapProgramToProps(program)),
+    })
+    return <ElementCollection {...props} />
+  }
+  return ProgramElementCollection
 }
 
-const ProgramCollection: React.FC<ProgramCollectionProps> = ({
-  element,
-  layout = { columns: [1, 2, 4], gap: 8, gutter: 8 },
-  options,
-  children,
-}) => {
-  const [activeCategoryId, setActive] = useQueryParam('active', StringParam)
-  const { loading, programs } = useProgramCollection(options)
-  const { editing } = useEditor(state => ({
-    editing: state.options.enabled,
+export const PublishedAtProgramCollection: ProgramCollection<PublishedAtSourceOptions> = Element => options => {
+  const ProgramElementCollection: ProgramElementCollection = props => {
+    const { data, loading } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+      getProgramCollectionQuery(programFields),
+      {
+        variables: {
+          limit: options.limit,
+          orderByClause: [{ published_at: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
+          whereClause: {
+            is_private: { _eq: false },
+            published_at: { _is_null: false },
+            program_categories: options.defaultCategoryIds?.length
+              ? {
+                  category_id: {
+                    _in: options.defaultCategoryIds,
+                  },
+                }
+              : undefined,
+            program_tags: options.defaultTagNames?.length
+              ? {
+                  tag_name: {
+                    _in: options.defaultTagNames,
+                  },
+                }
+              : undefined,
+          },
+        },
+      },
+    )
+    const ElementCollection = Collection({
+      Element,
+      data: data ? composeCollectionData(data) : [],
+      mapDataToProps: program => (loading ? { loading } : mapProgramToProps(program)),
+    })
+    return <ElementCollection {...props} />
+  }
+  return ProgramElementCollection
+}
+
+export const CurrentPriceProgramCollection: ProgramCollection<CurrentPriceSourceOptions> = Element => options => {
+  const ProgramElementCollection: ProgramElementCollection = props => {
+    const { data, loading } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+      getProgramCollectionQuery(programFields),
+      {
+        variables: {
+          limit: options.limit,
+          orderByClause: [
+            { sale_price: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
+            { list_price: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
+          ],
+          whereClause: {
+            is_private: { _eq: false },
+            published_at: { _is_null: false },
+            program_categories: options.defaultCategoryIds?.length
+              ? {
+                  category_id: {
+                    _in: options.defaultCategoryIds,
+                  },
+                }
+              : undefined,
+            program_tags: options.defaultTagNames?.length
+              ? {
+                  tag_name: {
+                    _in: options.defaultTagNames,
+                  },
+                }
+              : undefined,
+            _or: [
+              {
+                _and: [
+                  { _or: [{ sold_at: { _lte: 'now()' } }, { sold_at: { _is_null: true } }] },
+                  { list_price: { _gte: options.min, _lte: options.max } },
+                ],
+              },
+              { _and: [{ sold_at: { _gt: 'now()' } }, { sale_price: { _gte: options.min, _lte: options.max } }] },
+            ],
+          },
+        },
+      },
+    )
+    const ElementCollection = Collection({
+      Element,
+      data: data ? composeCollectionData(data) : [],
+      mapDataToProps: program => (loading ? { loading } : mapProgramToProps(program)),
+    })
+    return <ElementCollection {...props} />
+  }
+  return ProgramElementCollection
+}
+
+const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramCollectionData =>
+  data.program.map(p => ({
+    id: p.id,
+    title: p.title,
+    abstract: p.abstract || '',
+    coverUrl: p.cover_url,
+    totalDuration: sum(
+      p.program_content_sections.map(pcs => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0),
+    ),
+    roles: p.program_roles.map(pr => ({
+      id: pr.id,
+      name: pr.name as ProductRole['name'],
+      member: { id: pr.member_id },
+    })),
+    listPrice: p.list_price || 0,
+    salePrice: p.sale_price,
+    soldAt: p.sold_at,
+    plans: p.program_plans.map(pp => ({
+      id: pp.id,
+      listPrice: pp.list_price,
+      salePrice: pp.sale_price,
+      soldAt: pp.sold_at,
+      autoRenewed: pp.auto_renewed || false,
+      period:
+        pp.period_amount && pp.period_type
+          ? {
+              amount: Number(pp.period_amount),
+              type: pp.period_type as PeriodType,
+            }
+          : null,
+    })),
+    categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
   }))
 
-  const filteredPrograms = programs.filter(
-    program =>
-      !options.withSelector ||
-      !activeCategoryId ||
-      program.categories.map(category => category.id).includes(activeCategoryId),
-  )
-  const categories = uniqBy((category: Category) => category.id)(
-    programs
-      .flatMap(program => program.categories)
-      .filter(category => options.source === 'custom' || !options.defaultCategoryIds?.includes(category.id)),
-  )
-
-  return (
-    <div>
-      {options.withSelector && (
-        <CategorySelector
-          categories={categories}
-          activeCategoryId={activeCategoryId || null}
-          onActive={categoryId => setActive(categoryId)}
-        />
-      )}
-      {children}
-      {Collection(element)({
-        loading,
-        layout,
-        propsList: filteredPrograms.map(program => ({
-          id: program.id,
-          title: program.title,
-          abstract: program.abstract || '',
-          totalDuration: program.totalDuration || 0,
-          coverUrl: program.coverUrl,
-          instructorIds: program.roles.map(programRole => programRole.member.id),
-          listPrice: program.soldAt && moment() < moment(program.soldAt) ? program.listPrice : undefined,
-          currentPrice:
-            program.soldAt && moment() < moment(program.soldAt) ? program.salePrice || 0 : program.listPrice,
-          period: program.plans[0]?.period || undefined,
-          editing,
-        })),
-      })}
-    </div>
-  )
-}
+const mapProgramToProps = (program: ProgramData) => ({
+  id: program.id,
+  title: program.title,
+  abstract: program.abstract || '',
+  totalDuration: program.totalDuration || 0,
+  coverUrl: program.coverUrl,
+  instructorIds: program.roles.map(programRole => programRole.member.id),
+  listPrice: program.soldAt && moment() < moment(program.soldAt) ? program.listPrice : undefined,
+  currentPrice: program.soldAt && moment() < moment(program.soldAt) ? program.salePrice || 0 : program.listPrice,
+  period: program.plans[0]?.period || undefined,
+})
 
 const programFields = gql`
   fragment programFields on program {
@@ -166,148 +269,5 @@ const programFields = gql`
     }
   }
 `
-const useProgramCollection = (options: ProgramCollectionOptions) => {
-  const variables: hasura.GET_PROGRAM_COLLECTIONVariables = {
-    limit: undefined,
-    orderByClause: [],
-    whereClause: {
-      is_private: { _eq: false },
-      published_at: { _is_null: false },
-    },
-  }
-  switch (options.source) {
-    case 'publishedAt':
-      variables.limit = options.limit
-      variables.orderByClause = [
-        ...(variables.orderByClause || []),
-        { published_at: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
-      ]
-      variables.whereClause = {
-        ...variables.whereClause,
-        program_categories: options.defaultCategoryIds?.length
-          ? {
-              category_id: {
-                _in: options.defaultCategoryIds,
-              },
-            }
-          : undefined,
-        program_tags: options.defaultTagNames?.length
-          ? {
-              tag_name: {
-                _in: options.defaultTagNames,
-              },
-            }
-          : undefined,
-      }
-      break
-    case 'currentPrice':
-      variables.limit = options.limit
-      variables.orderByClause = [
-        ...(variables.orderByClause || []),
-        { sale_price: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
-        { list_price: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
-      ]
-      variables.whereClause = {
-        ...variables.whereClause,
-        program_categories: options.defaultCategoryIds?.length
-          ? {
-              category_id: {
-                _in: options.defaultCategoryIds,
-              },
-            }
-          : undefined,
-        program_tags: options.defaultTagNames?.length
-          ? {
-              tag_name: {
-                _in: options.defaultTagNames,
-              },
-            }
-          : undefined,
-        _or: [
-          {
-            _and: [
-              { _or: [{ sold_at: { _lte: 'now()' } }, { sold_at: { _is_null: true } }] },
-              { list_price: { _gte: options.min, _lte: options.max } },
-            ],
-          },
-          { _and: [{ sold_at: { _gt: 'now()' } }, { sale_price: { _gte: options.min, _lte: options.max } }] },
-        ],
-      }
-      break
-    case 'custom':
-      variables.whereClause = {
-        ...variables.whereClause,
-        id: { _in: options.idList },
-      }
-      break
-  }
-
-  const { data: queryResult, loading } = useQuery<
-    hasura.GET_PROGRAM_COLLECTION,
-    hasura.GET_PROGRAM_COLLECTIONVariables
-  >(getProgramCollectionQuery(programFields), { variables })
-
-  const programs: DeepPick<
-    Program,
-    | 'id'
-    | 'title'
-    | 'abstract'
-    | 'coverUrl'
-    | 'totalDuration'
-    | 'roles.[].name'
-    | 'roles.[].member.id'
-    | 'listPrice'
-    | 'salePrice'
-    | 'soldAt'
-    | 'plans.[].!title'
-    | 'categories'
-  >[] = useMemo(() => {
-    const data =
-      options.source === 'custom'
-        ? {
-            ...queryResult,
-            program: options.idList
-              .filter(programId => queryResult?.program.find(p => p.id === programId))
-              .map(programId => queryResult?.program.find(p => p.id === programId))
-              .filter(notEmpty),
-          }
-        : queryResult
-    return (
-      data?.program.map(p => ({
-        id: p.id,
-        title: p.title,
-        abstract: p.abstract || '',
-        coverUrl: p.cover_url,
-        totalDuration: sum(
-          p.program_content_sections.map(pcs => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0),
-        ),
-        roles: p.program_roles.map(pr => ({
-          id: pr.id,
-          name: pr.name as ProductRole['name'],
-          member: { id: pr.member_id },
-        })),
-        listPrice: p.list_price || 0,
-        salePrice: p.sale_price,
-        soldAt: p.sold_at,
-        plans: p.program_plans.map(pp => ({
-          id: pp.id,
-          listPrice: pp.list_price,
-          salePrice: pp.sale_price,
-          soldAt: pp.sold_at,
-          autoRenewed: pp.auto_renewed || false,
-          period:
-            pp.period_amount && pp.period_type
-              ? {
-                  amount: Number(pp.period_amount),
-                  type: pp.period_type as PeriodType,
-                }
-              : null,
-        })),
-        categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
-      })) || []
-    )
-  }, [options, queryResult])
-  return { loading, programs }
-}
 
 export default ProgramCollection
