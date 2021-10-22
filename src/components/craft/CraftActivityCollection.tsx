@@ -14,7 +14,7 @@ import {
 import { CollectionLayout } from '../collections/Collection'
 import CategorySelector from '../common/CategorySelector'
 
-type CraftActivityCollectionProps = {
+export type CraftActivityCollectionProps = {
   variant: 'card' | 'tile'
   sourceOptions: CustomSourceOptions | PublishedAtSourceOptions
   layout?: CollectionLayout

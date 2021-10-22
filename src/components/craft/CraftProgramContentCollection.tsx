@@ -9,7 +9,7 @@ import {
   RecentWatchedProgramContentCollection,
 } from '../collections/ProgramContentCollection'
 
-type CraftProgramContentCollectionProps = {
+export type CraftProgramContentCollectionProps = {
   variant: 'card' | 'tile'
   sourceOptions: CustomSourceOptions | RecentWatchedSourceOptions
   layout?: CollectionLayout

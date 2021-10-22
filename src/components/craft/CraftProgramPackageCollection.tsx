@@ -14,7 +14,7 @@ import {
 } from '../collections/ProgramPackageCollection'
 import CategorySelector from '../common/CategorySelector'
 
-type CraftProgramPackageCollectionProps = {
+export type CraftProgramPackageCollectionProps = {
   variant: 'card' | 'tile'
   sourceOptions: CustomSourceOptions | PublishedAtSourceOptions
   layout?: CollectionLayout
