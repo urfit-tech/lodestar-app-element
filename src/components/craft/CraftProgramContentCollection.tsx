@@ -1,4 +1,4 @@
-import { useEditor, UserComponent } from '@craftjs/core'
+import { UserComponent } from '@craftjs/core'
 import { useMemo } from 'react'
 import { CustomSourceOptions, RecentWatchedSourceOptions } from '../../types/options'
 import ProgramContentCard from '../cards/ProgramContentCard'
@@ -22,10 +22,6 @@ const CraftProgramContentCollection: UserComponent<CraftProgramContentCollection
   layout,
   sourceOptions,
 }) => {
-  const { editing } = useEditor(state => ({
-    editing: state.options.enabled,
-  }))
-
   // options.source -> xxx collection
   const CraftCollection = useMemo(() => {
     // variant -> card / tile
@@ -41,8 +37,8 @@ const CraftProgramContentCollection: UserComponent<CraftProgramContentCollection
       default:
         ElementCollection = RecentWatchedProgramContentCollection(craftElement)(sourceOptions)
     }
-    return <ElementCollection editing={editing} layout={layout} />
-  }, [editing, variant, layout, sourceOptions])
+    return <ElementCollection layout={layout} />
+  }, [variant, layout, sourceOptions])
 
   return CraftCollection
 }

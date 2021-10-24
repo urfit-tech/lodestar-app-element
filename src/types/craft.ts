@@ -35,7 +35,8 @@ export type CraftBorderProps = {
 }
 
 export type CraftLayoutProps = {
-  margin: CraftMarginProps
+  margin?: CraftMarginProps
+  padding?: CraftPaddingProps
   columnAmount: number
   columnRatio: number[]
   displayAmount: number

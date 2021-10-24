@@ -1,4 +1,4 @@
-import { useNode } from '@craftjs/core'
+import { useEditor, useNode } from '@craftjs/core'
 import styled, { css } from 'styled-components'
 import {
   BorderProps,
@@ -130,11 +130,13 @@ const generateCustomLayoutStyle = (props: { customStyle?: LayoutProps }) =>
         }
       }
     `}
-
-
      ${generateCustomMarginStyle({ customStyle: props.customStyle.mobile?.margin })}
      @media (min-width: ${BREAK_POINT}px) {
       ${generateCustomMarginStyle({ customStyle: props.customStyle.desktop?.margin })}
+    }
+    ${generateCustomPaddingStyle({ customStyle: props.customStyle.mobile?.padding })}
+    @media (min-width: ${BREAK_POINT}px) {
+      ${generateCustomPaddingStyle({ customStyle: props.customStyle.desktop?.padding })}
     }
   `
 const generateCustomBorderStyle = (props: { customStyle?: BorderProps }) =>
@@ -229,6 +231,9 @@ const CraftSelectedMixin = css`
 // FIXME: only accept for FC and CC, not VFC
 const Craftize = <P, T extends P & { editing?: boolean }>(WrappedComponent: React.ComponentType<P>) => {
   const Component: React.ComponentType<T> = props => {
+    const { editing } = useEditor(state => ({
+      editing: state.options.enabled,
+    }))
     const {
       connectors: { connect },
       selected,
@@ -238,12 +243,8 @@ const Craftize = <P, T extends P & { editing?: boolean }>(WrappedComponent: Reac
       hovered: node.events.hovered,
     }))
     return (
-      <CraftRefBlock
-        ref={ref => ref && connect(ref)}
-        events={{ hovered, selected }}
-        options={{ enabled: props.editing }}
-      >
-        <WrappedComponent {...props} />
+      <CraftRefBlock ref={ref => ref && connect(ref)} events={{ hovered, selected }} options={{ enabled: editing }}>
+        <WrappedComponent {...props} editing={editing} />
       </CraftRefBlock>
     )
   }

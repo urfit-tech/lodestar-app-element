@@ -49,6 +49,7 @@ export type LayoutProps = {
   type?: 'flex' | 'grid'
   mobile?: {
     margin?: MarginProps
+    padding?: PaddingProps
     columnAmount?: number
     columnRatio?: number[]
     displayAmount?: number
@@ -57,6 +58,7 @@ export type LayoutProps = {
   }
   desktop?: {
     margin?: MarginProps
+    padding?: PaddingProps
     columnAmount?: number
     columnRatio?: number[]
     displayAmount?: number

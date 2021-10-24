@@ -1,4 +1,4 @@
-import { useEditor, UserComponent } from '@craftjs/core'
+import { UserComponent } from '@craftjs/core'
 import { uniqBy } from 'ramda'
 import { useMemo, useState } from 'react'
 import { StringParam } from 'serialize-query-params'
@@ -32,10 +32,6 @@ const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
 }) => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
   const [categories, setCategories] = useState<Category[]>([])
-  const { editing } = useEditor(state => ({
-    editing: state.options.enabled,
-  }))
-
   // options.source -> xxx collection
   // variant -> card / tile
   const CraftCollection = useMemo(() => {
@@ -56,7 +52,6 @@ const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
     }
     return (
       <ElementCollection
-        editing={editing}
         layout={layout}
         transform={data =>
           data.filter(
@@ -80,7 +75,7 @@ const CraftProgramCollection: UserComponent<CraftProgramCollectionProps> = ({
         }}
       />
     )
-  }, [activeCategoryId, editing, layout, sourceOptions, variant, withSelector])
+  }, [activeCategoryId, layout, sourceOptions, variant, withSelector])
 
   return (
     <div>
