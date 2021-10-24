@@ -71,16 +71,7 @@ const PodcastProgramCard: React.FC<PodcastProgramElementProps> = props => {
       to={loading ? `#!` : `/podcasts/${props.id}`}
       onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
     >
-      <Card
-        customStyle={{
-          direction: 'row',
-          bordered: false,
-          shadow: true,
-          p: '0',
-          backgroundColor: 'white',
-          overflow: 'hidden',
-        }}
-      >
+      <Card className={props.className}>
         <StyledCoverBlock>
           <Responsive.Default>
             <CustomRatioImage width="88px" ratio={1} src={(!loading && props.coverUrl) || EmptyCover} />
@@ -88,7 +79,7 @@ const PodcastProgramCard: React.FC<PodcastProgramElementProps> = props => {
           <Responsive.Desktop>
             <CustomRatioImage width="140px" ratio={1} src={(!loading && props.coverUrl) || EmptyCover} />
           </Responsive.Desktop>
-          <StyledDuration>{!loading && durationFullFormatter(props.durationSecond)}</StyledDuration>
+          <StyledDuration>{!loading && durationFullFormatter(props.durationSecond || 0)}</StyledDuration>
         </StyledCoverBlock>
         <StyledContentBlock className="flex-grow-1 d-flex flex-column justify-content-between">
           <StyledTitle>{!loading && props.title}</StyledTitle>
@@ -102,7 +93,7 @@ const PodcastProgramCard: React.FC<PodcastProgramElementProps> = props => {
               {!loading && (
                 <PriceLabel
                   variant="inline"
-                  listPrice={props.listPrice || props.currentPrice}
+                  listPrice={props.listPrice || props.currentPrice || 0}
                   salePrice={props.currentPrice}
                 />
               )}

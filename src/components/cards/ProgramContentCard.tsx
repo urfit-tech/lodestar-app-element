@@ -137,7 +137,7 @@ const ProgramContentCard: React.FC<ProgramContentElementProps> = props => {
           </div>
         </StyledInfo>
       </div>
-      {!loading && <StyledProgressBar noPercent percent={props.progress} />}
+      {!loading && <StyledProgressBar noPercent percent={props.progress || 0} />}
     </StyledProgramContentCard>
   )
 }

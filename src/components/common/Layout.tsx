@@ -1,22 +1,26 @@
 import styled from 'styled-components'
 import { generateCustomLayoutStyle } from '.'
+import { ElementComponent } from '../../types/element'
 import { LayoutProps } from '../../types/style'
 
-const StyledLayout = styled.div<{ customStyle: LayoutProps }>`
+const StyledLayout = styled.div<{ customStyle?: LayoutProps }>`
   && {
     ${generateCustomLayoutStyle}
   }
 `
 
-const Layout: React.FC<{
-  children: React.ReactNode | React.ReactNode[]
+const Layout: ElementComponent<{
   className?: string
-  customStyle: LayoutProps
-}> = ({ children, className, customStyle, ...props }) => {
+  customStyle?: LayoutProps
+}> = props => {
+  const { children, loading, errors } = props
   return (
-    <StyledLayout customStyle={customStyle} className={className} {...props}>
-      {children}
-    </StyledLayout>
+    (!loading && !errors && (
+      <StyledLayout customStyle={props.customStyle} className={props.className}>
+        {children}
+      </StyledLayout>
+    )) ||
+    null
   )
 }
 

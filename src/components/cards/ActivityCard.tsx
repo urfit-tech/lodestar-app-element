@@ -23,6 +23,15 @@ const StyledMeta = styled.div`
   letter-spacing: 0.18px;
 `
 
+const StyledCard = styled(Card)({
+  flexDirection: 'column',
+  border: 'none',
+  boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)',
+  padding: '0',
+  backgroundColor: 'white',
+  overflow: 'hidden',
+})
+
 const ActivityCard: React.FC<ActivityElementProps> = props => {
   const { loading, errors } = props
   const { formatMessage } = useIntl()
@@ -39,23 +48,14 @@ const ActivityCard: React.FC<ActivityElementProps> = props => {
       to={loading ? '#!' : `/activities/${props.id}`}
       onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
     >
-      <Card
-        customStyle={{
-          direction: 'column',
-          bordered: false,
-          shadow: true,
-          p: '0',
-          backgroundColor: 'white',
-          overflow: 'hidden',
-        }}
-      >
+      <StyledCard>
         {loading ? (
           <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
         ) : (
           <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
         )}
 
-        <Card.ContentBlock>
+        <Card.Content>
           <StyledTitle>{loading ? '---' : props.title}</StyledTitle>
           <StyledMeta className="mb-2">
             {!loading && props.isParticipantsVisible && (
@@ -79,8 +79,8 @@ const ActivityCard: React.FC<ActivityElementProps> = props => {
               </span>
             ) : null}
           </StyledMeta>
-        </Card.ContentBlock>
-      </Card>
+        </Card.Content>
+      </StyledCard>
     </Link>
   )
 }

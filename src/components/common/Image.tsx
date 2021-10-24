@@ -1,7 +1,8 @@
-import styled, { css } from 'styled-components'
-import { generateCustomMarginStyle, generateCustomPaddingStyle } from '.'
+import styled from 'styled-components'
 import DefaultAvatar from '../../images/default-avatar.svg'
+import { ElementComponent } from '../../types/element'
 import { ImageProps } from '../../types/style'
+import Responsive from './Responsive'
 
 type AvatarImageProps = {
   src?: string | null
@@ -42,19 +43,27 @@ export const CustomRatioImage = styled.div<CustomRatioImageProps>`
   opacity: ${props => props.disabled && 0.4};
 `
 
-export const StyledImage = styled.img<{ customStyle?: ImageProps }>`
+export const StyledImage = styled.img`
   width: fit-content;
-  ${props =>
-    props.customStyle &&
-    css`
-      width: ${props.customStyle.width};
-      height: ${props.customStyle.height};
-      object-fit: ${props.customStyle.objectFit};
-      align-self: ${props.customStyle.alignSelf};
-    `}
-
-  && {
-    ${generateCustomMarginStyle}
-    ${generateCustomPaddingStyle}
-  }
 `
+
+const Image: ElementComponent<{
+  desktop?: ImageProps
+  mobile?: ImageProps
+}> = props => {
+  if (props.loading || props.errors) {
+    return null
+  }
+  return (
+    <>
+      <Responsive.Default>
+        <StyledImage src={props.mobile?.src} />
+      </Responsive.Default>
+      <Responsive.Desktop>
+        <StyledImage src={props.desktop?.src} />
+      </Responsive.Desktop>
+    </>
+  )
+}
+
+export default Image

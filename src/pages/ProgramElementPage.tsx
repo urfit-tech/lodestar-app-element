@@ -1,17 +1,23 @@
-import CraftProgramCollection from '../components/craft/CraftProgramCollection'
+import { CraftProgramCollection } from '../components/common/CraftElement'
 
-const CraftProgramCollectionPage: React.VFC = () => {
+const ProgramElementPage: React.VFC = () => {
   return (
     <div className="container">
       <CraftProgramCollection
+        withSelector
         variant="card"
         sourceOptions={{
           source: 'currentPrice',
-          min: 100,
+          // min: 10,
           max: 1000,
           asc: true,
           limit: 3,
           defaultTagNames: ['教學', 'tag_1'],
+        }}
+        customStyle={{
+          '.program .content': {
+            backgroundColor: 'red',
+          },
         }}
       />
       <hr />
@@ -49,4 +55,4 @@ const CraftProgramCollectionPage: React.VFC = () => {
   )
 }
 
-export default CraftProgramCollectionPage
+export default ProgramElementPage

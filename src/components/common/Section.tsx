@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { generateCustomMarginStyle, generateCustomPaddingStyle, StyledTitle as Title } from '.'
+import { ElementComponent } from '../../types/element'
 import { BackgroundProps } from '../../types/style'
 
 export const StyledLink = styled(Link)`
@@ -58,4 +59,35 @@ const StyledSection = styled.section<{ customStyle?: BackgroundProps }>`
   }
 `
 
-export default StyledSection
+export type SectionProps =
+  | {
+      backgroundType: 'none'
+    }
+  | { backgroundType: 'solidColor'; solidColor: string }
+  | { backgroundType: 'backgroundImage'; coverUrl: string | null }
+
+const Section: ElementComponent<SectionProps> = props => {
+  if (props.loading || props.errors) {
+    return null
+  }
+
+  return (
+    <StyledSection
+      customStyle={
+        props.backgroundType === 'solidColor'
+          ? {
+              backgroundColor: props.solidColor,
+            }
+          : props.backgroundType === 'backgroundImage'
+          ? {
+              backgroundImage: props.coverUrl || undefined,
+            }
+          : {}
+      }
+    >
+      {props.children}
+    </StyledSection>
+  )
+}
+
+export default Section

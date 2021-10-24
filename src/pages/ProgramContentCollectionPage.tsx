@@ -1,15 +1,15 @@
-import CraftProgramContentCollection from '../components/craft/CraftProgramContentCollection'
+// import CraftProgramContentCollection from '../components/craft/CraftProgramContentCollection'
 
 const ProgramContentCollectionPage: React.VFC = () => {
   return (
     <div className="container">
-      <CraftProgramContentCollection
+      {/* <CraftProgramContentCollection
         variant="card"
         sourceOptions={{
           source: 'recentWatched',
           limit: 3,
         }}
-      />
+      /> */}
     </div>
   )
 }

@@ -98,6 +98,7 @@ export type ButtonProps = {
 }
 
 export type ImageProps = {
+  src?: string
   width?: string
   height?: string
   objectFit?: 'cover' | 'contain' | 'fill'

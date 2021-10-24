@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { generateCustomTitleStyle, StyledParagraph } from '.'
+import { ElementComponent } from '../../types/element'
 import { TitleProps } from '../../types/style'
 import { StyledImage } from './Image'
 
@@ -13,7 +14,7 @@ const StyledDigit = styled.div<{ isDark?: boolean; customStyle?: TitleProps }>`
   }
 `
 
-const Stat: React.FC & {
+const Stat: ElementComponent & {
   Image: typeof StyledImage
   Digit: typeof StyledDigit
   Content: typeof StyledParagraph

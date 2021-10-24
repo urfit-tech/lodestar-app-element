@@ -20,15 +20,7 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
   }
   return (
     <Card
-      className={!loading && props.link ? 'cursor-pointer' : ''}
-      customStyle={{
-        direction: 'column',
-        bordered: false,
-        shadow: true,
-        backgroundColor: 'white',
-        p: '0',
-        overflow: 'hidden',
-      }}
+      className={!loading && props.link ? `cursor-pointer ${props.className}` : props.className}
       onClick={() => !loading && !props.editing && props.link && history.push(props.link)}
     >
       {loading ? (
@@ -36,7 +28,7 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
       ) : (
         <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
       )}
-      <Card.ContentBlock>
+      <Card.Content>
         {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <Card.Title>{props.title}</Card.Title>}
         <Card.Description>
           {loading ? (
@@ -54,7 +46,7 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
             ) : (
               <PriceLabel
                 variant="inline"
-                listPrice={props.listPrice || props.currentPrice}
+                listPrice={props.listPrice || props.currentPrice || 0}
                 salePrice={props.currentPrice}
                 periodAmount={props.period?.amount}
                 periodType={props.period?.type}
@@ -62,7 +54,7 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
             )}
           </div>
         </Card.MetaBlock>
-      </Card.ContentBlock>
+      </Card.Content>
     </Card>
   )
 }

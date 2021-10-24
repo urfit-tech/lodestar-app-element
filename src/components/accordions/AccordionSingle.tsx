@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ReactComponent as AngleRightIcon } from '../../images/icons/angle-right.svg'
-import { CardProps, ParagraphProps, TitleProps } from '../../types/style'
-import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph as Paragraph } from '../common'
+import { ElementComponent } from '../../types/element'
+import { ParagraphProps, TitleProps } from '../../types/style'
+import { generateCustomTitleStyle } from '../common'
+import Paragraph from '../common/Paragraph'
 
 const StyledAction = styled.div<{ isActive?: boolean }>`
   font-size: 20px;
@@ -15,20 +17,20 @@ const StyledAction = styled.div<{ isActive?: boolean }>`
   transition: transform 0.3s ease-in-out;
 `
 
-const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
+const StyledTitle = styled.h3<{ customStyle?: TitleProps }>`
   line-height: 1.5;
   && {
     ${generateCustomTitleStyle}
   }
 `
 
-const StyledParagraph = styled(Paragraph)<{ isActive?: boolean; customStyle: ParagraphProps }>`
+const StyledParagraph = styled(Paragraph)<{ isActive?: boolean; customStyle?: ParagraphProps }>`
   && {
     transition: 0.5s;
     ${props =>
       props.isActive
         ? css`
-            margin-top: ${props.customStyle.mt} !important;
+            margin-top: ${props.customStyle?.mt} !important;
             height: fit-content;
           `
         : `margin-top: 0 !important; height:0; overflow:hidden;`};
@@ -45,66 +47,38 @@ const StyledAccordionHeader = styled.header`
   line-height: 1;
 `
 
-const StyledAccordion = styled.article<{ titleHeight: number; customStyle: CardProps; isActive?: boolean }>`
+const StyledAccordion = styled.article`
   border-radius: 4px;
   padding: 1.25rem;
   overflow: hidden;
-
-  && {
-    ${generateCustomCardStyle}
-    ${props =>
-      props.customStyle?.backgroundColor &&
-      css`
-        background-color: ${props.customStyle?.backgroundColor};
-      `};
-    ${props =>
-      props.customStyle.backgroundImage &&
-      css`
-        background-image: url(${props.customStyle.backgroundImage});
-        background-size: cover;
-        background-position: center;
-      `}
-    ${props =>
-      props.customStyle.bordered &&
-      css`
-        border: ${props.customStyle.borderColor ? `1px solid ${props.customStyle.borderColor}` : 'none'};
-      `}
-  }
 `
 
-const Accordion: React.FC<{
+const Accordion: ElementComponent<{
   title: string
   description: string
-  customStyle: {
-    title: TitleProps
-    paragraph: ParagraphProps
-    card: CardProps
-  }
   isActive?: boolean
   onClick?: () => void
-}> = ({ title, description, customStyle }) => {
+}> = props => {
   const [isActive, setAsActive] = useState(false)
 
+  if (props.loading || props.errors) {
+    return null
+  }
+
   return (
-    <StyledAccordion
-      customStyle={customStyle.card}
-      titleHeight={Number(customStyle.title.fontSize) + Number(customStyle.title.mb) + Number(customStyle.title.mt)}
-      isActive={isActive}
-    >
+    <StyledAccordion className={props.className}>
       <StyledAccordionHeader
         onClick={() => setAsActive(active => !active)}
         className="d-flex justify-content-between align-items-center"
       >
-        <StyledTitle className="flex-grow-1" customStyle={customStyle.title}>
-          {title}
-        </StyledTitle>
-        <StyledAction isActive={isActive}>
+        <div className="flex-grow-1">
+          <StyledTitle>{props.title}</StyledTitle>
+        </div>
+        <StyledAction isActive={props.isActive}>
           <AngleRightIcon />
         </StyledAction>
       </StyledAccordionHeader>
-      <StyledParagraph isActive={isActive} customStyle={customStyle.paragraph}>
-        {description}
-      </StyledParagraph>
+      <StyledParagraph isActive={props.isActive}>{props.description}</StyledParagraph>
     </StyledAccordion>
   )
 }

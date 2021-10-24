@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { generateCustomParagraphStyle, generateCustomTitleStyle } from '.'
+import { ElementComponent } from '../../types/element'
 import { ParagraphProps, TitleProps } from '../../types/style'
 
 const SliderWrapper = styled.div`
@@ -81,18 +82,18 @@ const StyledCoverButton = styled.div`
   }
 `
 
-const Slide: React.FC<{
+const Slide: ElementComponent<{
   srcDesktop: string
   srcMobile: string
   title?: string
   subtitle?: string
   onClick?: () => void
   buttonText?: React.ReactElement | string
-  customStyle: {
-    title?: TitleProps
-    paragraph?: ParagraphProps
+}> = props => {
+  if (props.loading || props.errors) {
+    return null
   }
-}> = ({ srcDesktop, srcMobile, title, subtitle, buttonText, onClick, customStyle }) => {
+  const { srcDesktop, srcMobile, title, subtitle, buttonText, onClick } = props
   return (
     <SliderWrapper>
       <StyledCoverBackground
@@ -103,16 +104,8 @@ const Slide: React.FC<{
       >
         <div className="container">
           <div className="col-12 col-md-10 col-lg-6 mx-auto">
-            {title && (
-              <StyledCoverHeading customStyle={customStyle.title} className="mb-3">
-                {title}
-              </StyledCoverHeading>
-            )}
-            {subtitle && (
-              <StyledParagraph customStyle={customStyle.paragraph} className="mb-4">
-                {subtitle}
-              </StyledParagraph>
-            )}
+            {title && <StyledCoverHeading className="mb-3">{title}</StyledCoverHeading>}
+            {subtitle && <StyledParagraph className="mb-4">{subtitle}</StyledParagraph>}
           </div>
           {buttonText && <StyledCoverButton>{buttonText}</StyledCoverButton>}
         </div>

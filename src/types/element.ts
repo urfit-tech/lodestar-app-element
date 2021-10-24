@@ -1,10 +1,15 @@
 import { Category, PeriodType, Project } from './data'
 
-type ElementProps<P> = PropsWithUiState<P>
-export type PropsWithUiState<P> =
-  | { loading: true; errors?: never }
-  | { loading?: never; errors: Error[] }
-  | (P & { loading?: never; errors?: never; editing?: boolean })
+export type PropsWithState<P> = { editing?: boolean } & (
+  | ({ loading: true; errors?: never } & Partial<P>)
+  | ({ loading?: never; errors: Error[] } & Partial<P>)
+  | ({ loading?: never; errors?: never } & P)
+)
+export type ElementBaseProps<P> = P & { className?: string }
+export type ElementProps<P> = ElementBaseProps<PropsWithState<P>>
+export type ElementComponent<P = {}> = React.ComponentType<ElementProps<P>>
+
+export type TextElementProps = ElementProps<{ content: string; as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' }>
 
 export type ProgramElementProps = ElementProps<{
   id: string
@@ -82,4 +87,12 @@ export type ActivityElementProps = ElementProps<{
   participantCount?: number
   totalSeats?: number
   categories: Category[]
+}>
+
+export type MemberElementProps = ElementProps<{
+  id: string | null
+  name: TextElementProps
+  abstract?: TextElementProps
+  avatarUrl?: string | null
+  description?: string
 }>

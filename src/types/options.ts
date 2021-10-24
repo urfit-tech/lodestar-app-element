@@ -27,3 +27,11 @@ export type RecentWatchedSourceOptions = SourceOptions<
     limit?: number
   }
 >
+
+export type RoleSourceOptions = SourceOptions<
+  'role',
+  {
+    role: 'app-owner' | 'content-creator' | 'member' | 'author'
+    limit?: number
+  }
+>

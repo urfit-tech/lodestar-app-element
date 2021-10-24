@@ -1,15 +1,20 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
-import { sum } from 'ramda'
+import { sum, uniqBy } from 'ramda'
+import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
+import { useQueryParam } from 'use-query-params'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { PeriodType, ProductRole, Program } from '../../types/data'
-import { ProgramElementProps } from '../../types/element'
+import { Category, PeriodType, ProductRole, Program } from '../../types/data'
+import { ElementComponent } from '../../types/element'
 import { CurrentPriceSourceOptions, CustomSourceOptions, PublishedAtSourceOptions } from '../../types/options'
-import Collection, { ElementCollection } from '../collections/Collection'
+import ProgramCard from '../cards/ProgramCard'
+import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
+import Collection, { CollectionLayout, ContextCollection } from '../collections/Collection'
+import CategorySelector from '../common/CategorySelector'
 
 type ProgramData = DeepPick<
   Program,
@@ -26,15 +31,102 @@ type ProgramData = DeepPick<
   | 'plans.[].!title'
   | 'categories'
 >
-type ProgramCollectionData = ProgramData[]
-type ProgramCollection<T> = (
-  Element: React.ElementType<ProgramElementProps>,
-) => (options: T) => ProgramElementCollection
-export type ProgramElementCollection = ElementCollection<ProgramData>
+type ProgramContextCollection = ContextCollection<ProgramData>
 
-export const CustomProgramCollection: ProgramCollection<CustomSourceOptions> = Element => options => {
-  const ProgramElementCollection: ProgramElementCollection = props => {
-    const { data, loading } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+export type ProgramCollectionProps = {
+  sourceOptions: CustomSourceOptions | PublishedAtSourceOptions | CurrentPriceSourceOptions
+  variant?: 'card' | 'tile'
+  layout?: CollectionLayout
+  withSelector?: boolean
+}
+const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
+  const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
+
+  const { loading, errors, children } = props
+  if (loading || errors) {
+    return null
+  }
+
+  const ElementCollection = Collection(props.variant === 'card' ? ProgramCard : ProgramSecondaryCard)
+  let ContextCollection: ProgramContextCollection
+  switch (props.sourceOptions.source) {
+    case 'publishedAt':
+      ContextCollection = collectPublishedAtCollection(props.sourceOptions)
+      break
+    case 'currentPrice':
+      ContextCollection = collectCurrentPriceCollection(props.sourceOptions)
+      break
+    case 'custom':
+      ContextCollection = collectCustomCollection(props.sourceOptions)
+      break
+    default:
+      ContextCollection = collectPublishedAtCollection(props.sourceOptions)
+  }
+
+  return (
+    <ContextCollection>
+      {ctx => {
+        const categories =
+          ctx.loading || ctx.errors
+            ? []
+            : uniqBy((category: Category) => category.id)(
+                ctx.data
+                  ?.flatMap(d => d.categories)
+                  .filter(
+                    category =>
+                      props.sourceOptions.source === 'custom' ||
+                      !props.sourceOptions.defaultCategoryIds?.includes(category.id),
+                  ) || [],
+              )
+        const filter = (d: ProgramData) =>
+          !props.withSelector ||
+          !activeCategoryId ||
+          d.categories.map(category => category.id).includes(activeCategoryId)
+        return (
+          <div className={props.className}>
+            {props.withSelector && (
+              <CategorySelector
+                categories={categories}
+                activeCategoryId={activeCategoryId || null}
+                onActive={categoryId => setActive(categoryId)}
+              />
+            )}
+            {children}
+            {ctx.loading ? (
+              <ElementCollection layout={props.layout} loading />
+            ) : ctx.errors ? (
+              <ElementCollection layout={props.layout} errors={ctx.errors} />
+            ) : (
+              <ElementCollection
+                layout={props.layout}
+                data={ctx.data?.filter(filter) || []}
+                renderElement={(program, ProgramElement) => (
+                  <ProgramElement
+                    id={program.id}
+                    title={program.title}
+                    abstract={program.abstract || ''}
+                    totalDuration={program.totalDuration || 0}
+                    coverUrl={program.coverUrl}
+                    instructorIds={program.roles.map(programRole => programRole.member.id)}
+                    listPrice={program.soldAt && moment() < moment(program.soldAt) ? program.listPrice : undefined}
+                    currentPrice={
+                      program.soldAt && moment() < moment(program.soldAt) ? program.salePrice || 0 : program.listPrice
+                    }
+                    period={program.plans[0]?.period || undefined}
+                  />
+                )}
+              />
+            )}
+          </div>
+        )
+      }}
+    </ContextCollection>
+  )
+}
+
+const collectCustomCollection = (options: CustomSourceOptions) => {
+  const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
+    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),
       {
         variables: {
@@ -55,19 +147,18 @@ export const CustomProgramCollection: ProgramCollection<CustomSourceOptions> = E
         .map(programId => data?.program.find(p => p.id === programId))
         .filter(notEmpty),
     }
-    const ElementCollection = Collection({
-      Element,
-      data: data ? composeCollectionData(orderedData) : [],
-      mapDataToProps: program => (loading ? { loading } : mapProgramToProps(program)),
+    return children({
+      loading,
+      errors: error && [new Error(error.message)],
+      data: data && composeCollectionData(orderedData),
     })
-    return <ElementCollection {...props} />
   }
   return ProgramElementCollection
 }
 
-export const PublishedAtProgramCollection: ProgramCollection<PublishedAtSourceOptions> = Element => options => {
-  const ProgramElementCollection: ProgramElementCollection = props => {
-    const { data, loading } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+const collectPublishedAtCollection = (options: PublishedAtSourceOptions) => {
+  const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
+    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),
       {
         variables: {
@@ -94,19 +185,18 @@ export const PublishedAtProgramCollection: ProgramCollection<PublishedAtSourceOp
         },
       },
     )
-    const ElementCollection = Collection({
-      Element,
-      data: data ? composeCollectionData(data) : [],
-      mapDataToProps: program => (loading ? { loading } : mapProgramToProps(program)),
+    return children({
+      loading,
+      errors: error && [new Error(error.message)],
+      data: data && composeCollectionData(data),
     })
-    return <ElementCollection {...props} />
   }
   return ProgramElementCollection
 }
 
-export const CurrentPriceProgramCollection: ProgramCollection<CurrentPriceSourceOptions> = Element => options => {
-  const ProgramElementCollection: ProgramElementCollection = props => {
-    const { data, loading } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+const collectCurrentPriceCollection = (options: CurrentPriceSourceOptions) => {
+  const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
+    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),
       {
         variables: {
@@ -145,17 +235,16 @@ export const CurrentPriceProgramCollection: ProgramCollection<CurrentPriceSource
         },
       },
     )
-    const ElementCollection = Collection({
-      Element,
-      data: data ? composeCollectionData(data) : [],
-      mapDataToProps: program => (loading ? { loading } : mapProgramToProps(program)),
+    return children({
+      loading,
+      errors: error && [new Error(error.message)],
+      data: data && composeCollectionData(data),
     })
-    return <ElementCollection {...props} />
   }
   return ProgramElementCollection
 }
 
-const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramCollectionData =>
+const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData[] =>
   data.program.map(p => ({
     id: p.id,
     title: p.title,
@@ -188,18 +277,6 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramColl
     })),
     categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
   }))
-
-const mapProgramToProps = (program: ProgramData) => ({
-  id: program.id,
-  title: program.title,
-  abstract: program.abstract || '',
-  totalDuration: program.totalDuration || 0,
-  coverUrl: program.coverUrl,
-  instructorIds: program.roles.map(programRole => programRole.member.id),
-  listPrice: program.soldAt && moment() < moment(program.soldAt) ? program.listPrice : undefined,
-  currentPrice: program.soldAt && moment() < moment(program.soldAt) ? program.salePrice || 0 : program.listPrice,
-  period: program.plans[0]?.period || undefined,
-})
 
 const programFields = gql`
   fragment programFields on program {
@@ -269,3 +346,5 @@ const programFields = gql`
     }
   }
 `
+
+export default ProgramCollection

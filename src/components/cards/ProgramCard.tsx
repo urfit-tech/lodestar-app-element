@@ -1,4 +1,5 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
+import classNames from 'classnames'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
@@ -23,6 +24,11 @@ const InstructorPlaceHolder = styled.div`
   margin-bottom: 1rem;
   height: 2rem;
 `
+const StyledCard = styled(Card)`
+  background-color: white;
+  padding: 0;
+  overflow: hidden;
+`
 const ProgramCard: React.FC<ProgramElementProps> = props => {
   const { loading, errors } = props
   const history = useHistory()
@@ -43,16 +49,9 @@ const ProgramCard: React.FC<ProgramElementProps> = props => {
         )}
       </InstructorPlaceHolder>
 
-      <Card
-        className="cursor-pointer"
-        customStyle={{
-          direction: 'column',
-          bordered: false,
-          shadow: true,
-          backgroundColor: 'white',
-          p: '0',
-          overflow: 'hidden',
-        }}
+      <StyledCard
+        className={classNames('program', 'cursor-pointer', props.className)}
+        shadowed
         onClick={() => !loading && !props.editing && history.push(`/programs/${props.id}/contents`)}
       >
         {loading ? (
@@ -60,19 +59,19 @@ const ProgramCard: React.FC<ProgramElementProps> = props => {
         ) : (
           <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
         )}
-        <Card.ContentBlock>
+        <Card.Content className="content">
           {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{props.title}</StyledTitle>}
-          <Card.Description>
+          <Card.Description className="description">
             {loading ? <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} /> : props.abstract}
           </Card.Description>
-          <Card.MetaBlock className="d-flex flex-row-reverse justify-content-between align-items-center">
+          <Card.MetaBlock className="metadata d-flex flex-row-reverse justify-content-between align-items-center">
             <div>
               {loading ? (
                 <Skeleton width="10" height={4} />
               ) : (
                 <PriceLabel
                   variant="inline"
-                  listPrice={props.listPrice || props.currentPrice}
+                  listPrice={props.listPrice || props.currentPrice || 0}
                   salePrice={props.currentPrice}
                   periodAmount={props.period?.amount}
                   periodType={props.period?.type}
@@ -81,8 +80,8 @@ const ProgramCard: React.FC<ProgramElementProps> = props => {
             </div>
             <div>{loading ? <SkeletonText /> : durationFormatter(props.totalDuration)}</div>
           </Card.MetaBlock>
-        </Card.ContentBlock>
-      </Card>
+        </Card.Content>
+      </StyledCard>
     </div>
   )
 }

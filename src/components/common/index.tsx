@@ -1,4 +1,3 @@
-import { useEditor, useNode } from '@craftjs/core'
 import styled, { css } from 'styled-components'
 import {
   BorderProps,
@@ -206,52 +205,7 @@ const StyledCraftSettingLabel = styled.span`
   letter-spacing: 0.4px;
   font-weight: 500;
 `
-const CraftRefBlock = styled.div<{
-  options?: { enabled?: boolean }
-  events?: { hovered?: boolean; selected?: boolean }
-}>`
-  ${props =>
-    props?.options?.enabled &&
-    css`
-      cursor: pointer;
-      ${props?.events?.hovered && CraftHoveredMixin}
-      ${props?.events?.selected && CraftSelectedMixin}
-    `}
-`
-const CraftHoveredMixin = css`
-  border-radius: 2px;
-  border: 1px dashed cornflowerblue;
-`
-const CraftSelectedMixin = css`
-  border-radius: 2px;
-  border: 2px solid cornflowerblue;
-`
 
-// FIXME: why cannot use <P extends {editing?:boolean}> directly?
-// FIXME: only accept for FC and CC, not VFC
-const Craftize = <P, T extends P & { editing?: boolean }>(WrappedComponent: React.ComponentType<P>) => {
-  const Component: React.ComponentType<T> = props => {
-    const { editing } = useEditor(state => ({
-      editing: state.options.enabled,
-    }))
-    const {
-      connectors: { connect },
-      selected,
-      hovered,
-    } = useNode(node => ({
-      selected: node.events.selected,
-      hovered: node.events.hovered,
-    }))
-    return (
-      <CraftRefBlock ref={ref => ref && connect(ref)} events={{ hovered, selected }} options={{ enabled: editing }}>
-        <WrappedComponent {...props} editing={editing} />
-      </CraftRefBlock>
-    )
-  }
-  return Component
-}
-
-export { CraftHoveredMixin, CraftSelectedMixin, CraftRefBlock, Craftize }
 export { StyledTitle, StyledParagraph, AdminHeaderTitle, StyledSettingButtonWrapper, StyledCraftSettingLabel }
 export {
   generateCustomTitleStyle,

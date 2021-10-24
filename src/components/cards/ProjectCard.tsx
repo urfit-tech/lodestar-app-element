@@ -40,23 +40,13 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
       to={loading ? `#!` : `/projects/${props.id}`}
       onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
     >
-      <Card
-        customStyle={{
-          direction: 'column',
-          bordered: false,
-          shadow: true,
-          p: '0',
-          backgroundColor: 'white',
-          overflow: 'hidden',
-        }}
-      >
+      <Card className={props.className}>
         {!loading && (
           <CustomRatioImage width="100%" ratio={9 / 16} src={props.previewUrl || props.coverUrl || EmptyCover} />
         )}
-        <Card.ContentBlock>
+        <Card.Content>
           <Card.Title
-            style={{ height: '3rem' }}
-            customStyle={{ fontSize: '18', textAlign: 'left', fontWeight: 'bold', color: '' }}
+            style={{ height: '3rem', fontSize: '18', textAlign: 'left', fontWeight: 'bold', color: '' }}
             className="mb-3"
           >
             {!loading && props.title}
@@ -69,7 +59,8 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
                   {!props.targetAmount
                     ? 0
                     : Math.floor(
-                        ((props.targetUnit === 'participants' ? props.enrollmentCount : props.totalSales) * 100) /
+                        (((props.targetUnit === 'participants' ? props.enrollmentCount : props.totalSales) || 0) *
+                          100) /
                           props.targetAmount,
                       )}
                   %
@@ -81,7 +72,8 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
                     !props.targetAmount
                       ? 0
                       : Math.floor(
-                          ((props.targetUnit === 'participants' ? props.enrollmentCount : props.totalSales) * 100) /
+                          (((props.targetUnit === 'participants' ? props.enrollmentCount : props.totalSales) || 0) *
+                            100) /
                             props.targetAmount,
                         )
                   }
@@ -132,7 +124,7 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
               )}
             </div>
           </Card.MetaBlock>
-        </Card.ContentBlock>
+        </Card.Content>
       </Card>
     </Link>
   )

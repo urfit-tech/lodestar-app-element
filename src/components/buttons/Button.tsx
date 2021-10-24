@@ -1,5 +1,6 @@
 import { Button as ChakraButton } from '@chakra-ui/react'
 import styled, { css } from 'styled-components'
+import { ElementComponent } from '../../types/element'
 import { ButtonProps } from '../../types/style'
 
 const StyledButton = styled(ChakraButton)<ButtonProps>`
@@ -36,12 +37,15 @@ const StyledButton = styled(ChakraButton)<ButtonProps>`
     `}
 `
 
-const Button: React.FC<ButtonProps & { craftEnabled?: boolean }> = ({ craftEnabled, children, ...props }) => {
-  return (
+const Button: ElementComponent<ButtonProps> = props => {
+  const { loading, errors, editing, children } = props
+  return loading || errors ? (
+    <StyledButton>{children}</StyledButton>
+  ) : (
     <StyledButton
       {...props}
       onClick={() => {
-        if (craftEnabled) {
+        if (editing) {
           return
         }
         if (props.link && !props.openNewTab) {

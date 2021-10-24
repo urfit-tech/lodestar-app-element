@@ -1,46 +1,30 @@
-import styled, { css } from 'styled-components'
+import classNames from 'classnames'
+import styled from 'styled-components'
 import { MultiLineTruncationMixin } from '../../helpers/style'
 import DefaultAvatar from '../../images/icons/avatar.svg'
-import { CardProps, ParagraphProps, TitleProps } from '../../types/style'
-import {
-  generateCustomBorderStyle,
-  generateCustomMarginStyle,
-  generateCustomPaddingStyle,
-  generateCustomParagraphStyle,
-  generateCustomTitleStyle,
-} from '../common'
+import { ElementComponent } from '../../types/element'
 import { StyledImage } from '../common/Image'
 
-const StyleCardTitle = styled.h3<{ customStyle?: TitleProps; isDark?: boolean }>`
+export type CardProps = {
+  variant?: 'dark'
+  shadowed?: boolean
+  bordered?: boolean
+  horizontal?: boolean
+  onClick?: () => void
+}
+
+const CardTitle = styled.h3<{ variant?: 'dark' }>`
   font-family: NotoSansCJKtc;
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.2px;
-  color: ${props => (props.isDark ? 'white' : 'var(--gray-darker)')};
-
-  && {
-    ${generateCustomTitleStyle}
-  }
+  color: ${props => (props.variant ? 'white' : 'var(--gray-darker)')};
 `
-const StyledContentBlock = styled.div`
+const CardContent = styled.div`
+  width: 100%;
   padding: 1.25rem;
 `
-const StyledCardContent = styled.p<{ customStyle?: ParagraphProps }>`
-  font-weight: ${props =>
-    props.customStyle &&
-    (props.customStyle.fontWeight === 'bold'
-      ? 800
-      : props.customStyle.fontWeight === 'normal'
-      ? 500
-      : props.customStyle.fontWeight === 'lighter'
-      ? 200
-      : 500)};
-
-  && {
-    ${generateCustomParagraphStyle}
-  }
-`
-const StyledDescription = styled.div`
+const CardDescription = styled.p`
   ${MultiLineTruncationMixin}
   margin-bottom: 12px;
   height: 3em;
@@ -48,60 +32,24 @@ const StyledDescription = styled.div`
   font-size: 14px;
   letter-spacing: 0.4px;
 `
-const StyledMetaBlock = styled.div`
+const CardMetaBlock = styled.div`
   color: var(--gray-dark);
   font-size: 14px;
   line-height: 1.5rem;
 `
-const StyledCard = styled.div<{ isDark?: boolean; customStyle: { direction: 'row' | 'column' } & CardProps }>`
+
+const StyledCard = styled.div<CardProps>`
   position: relative;
   display: flex;
-  flex-direction: ${props => props.customStyle.direction};
-  ${props =>
-    props.customStyle.direction === 'row'
-      ? css`
-          align-items: center;
-          justify-content: center;
-        `
-      : ''}
   border-radius: 4px;
   width: 100%;
   transition: 0.3s;
   user-select: none;
-  ${props =>
-    props.customStyle.backgroundColor &&
-    css`
-      background-color: ${props.customStyle.backgroundColor};
-    `};
-  ${props =>
-    props.customStyle.backgroundImage &&
-    css`
-      background-image: url(${props.customStyle.backgroundImage});
-      background-size: cover;
-      background-position: center;
-    `}
-
-  ${props =>
-    props.customStyle.bordered
-      ? css`
-          border: 1px solid ${props.customStyle.borderColor || 'white'};
-        `
-      : ''}
-  ${props =>
-    props.customStyle.shadow && props.customStyle.backgroundColor
-      ? `filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1));`
-      : ``}
-  ${props =>
-    props.customStyle.dropShadow && props.customStyle.backgroundColor
-      ? `filter: drop-shadow(${props.customStyle.dropShadow});`
-      : ``}
-  ${props => props.customStyle.overflow && `overflow: ${props.customStyle.overflow};`}
-  
-  && {
-    ${generateCustomMarginStyle}
-    ${generateCustomPaddingStyle}
-    ${generateCustomBorderStyle}
-  }
+  align-items: center;
+  justify-content: center;
+  flex-direction: ${props => (props.horizontal ? 'row' : 'column')};
+  border: ${props => props.bordered && '1px solid white'};
+  filter: ${props => props.shadowed && 'drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1))'};
 `
 
 const StyledAvatarBlock = styled.div<{ direction?: 'row' | 'column' }>`
@@ -126,7 +74,7 @@ const MemberName = styled.span`
   color: #9b9b9b;
 `
 
-const Avatar: React.VFC<{
+const CardAvatar: React.VFC<{
   src?: string
   name?: string
   withName?: boolean
@@ -141,29 +89,32 @@ const Avatar: React.VFC<{
   </StyledAvatarBlock>
 )
 
-const Card: React.FC<{
-  className?: string
-  isDark?: boolean
-  customStyle: { direction: 'row' | 'column' } & CardProps
-  onClick?: () => void
-}> & {
+const Card: ElementComponent<CardProps> & {
   Image: typeof StyledImage
-  Title: typeof StyleCardTitle
-  Content: typeof StyledCardContent
-  ContentBlock: typeof StyledContentBlock
-  Description: typeof StyledDescription
-  MetaBlock: typeof StyledMetaBlock
-  Avatar: typeof Avatar
-} = ({ children, ...props }) => {
-  return <StyledCard {...props}>{children}</StyledCard>
+  Title: typeof CardTitle
+  Content: typeof CardContent
+  Description: typeof CardDescription
+  MetaBlock: typeof CardMetaBlock
+  Avatar: typeof CardAvatar
+} = props => {
+  return (
+    <StyledCard
+      className={classNames('card', props.className)}
+      variant={props.variant}
+      shadowed={props.shadowed}
+      bordered={props.bordered}
+      horizontal={props.horizontal}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </StyledCard>
+  )
 }
-
 Card.Image = StyledImage
-Card.Title = StyleCardTitle
-Card.Content = StyledCardContent
-Card.ContentBlock = StyledContentBlock
-Card.Description = StyledDescription
-Card.MetaBlock = StyledMetaBlock
-Card.Avatar = Avatar
+Card.Title = CardTitle
+Card.Content = CardContent
+Card.Description = CardDescription
+Card.MetaBlock = CardMetaBlock
+Card.Avatar = CardAvatar
 
 export default Card

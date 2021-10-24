@@ -1,4 +1,5 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
+import classNames from 'classnames'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
@@ -26,18 +27,10 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
   }
   return (
     <Card
-      className="cursor-pointer"
-      customStyle={{
-        direction: 'column',
-        bordered: false,
-        shadow: true,
-        backgroundColor: 'white',
-        p: '0',
-        overflow: 'hidden',
-      }}
+      className={classNames('cursor-pointer', props.className)}
       onClick={() => !loading && !props.editing && history.push(`/programs/${props.id}/contents`)}
     >
-      <Card.ContentBlock>
+      <Card.Content>
         {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{props.title}</StyledTitle>}
         <Card.Description>
           {loading ? <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} /> : props.abstract}
@@ -49,7 +42,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
             ) : (
               <PriceLabel
                 variant="inline"
-                listPrice={props.listPrice || props.currentPrice}
+                listPrice={props.listPrice || props.currentPrice || 0}
                 salePrice={props.currentPrice}
                 periodAmount={props.period?.amount}
                 periodType={props.period?.type}
@@ -58,7 +51,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
           </div>
           <div>{loading ? <SkeletonText /> : durationFormatter(props.totalDuration)}</div>
         </Card.MetaBlock>
-      </Card.ContentBlock>
+      </Card.Content>
     </Card>
   )
 }
