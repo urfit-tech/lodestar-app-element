@@ -1,4 +1,5 @@
 import Button from '../buttons/Button'
+import Card from '../cards/Card'
 import RichCard from '../cards/RichCard'
 import ProgramCollection from '../collections/ProgramCollection'
 import Carousel from './Carousel'
@@ -20,6 +21,7 @@ export const CraftTitle = Craftize(Title)
 export const CraftParagraph = Craftize(Paragraph)
 export const CraftButton = Craftize(Button)
 export const CraftImage = Craftize(Image)
+export const CraftCard = Craftize(Card)
 export const CraftRichCard = Craftize(RichCard)
 export const CraftCarousel = Craftize(Carousel)
 export const CraftStatistics = Craftize(Statistics)
