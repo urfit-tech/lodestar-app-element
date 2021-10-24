@@ -1,3 +1,4 @@
+import { Accordion } from '@chakra-ui/accordion'
 import Button from '../buttons/Button'
 import Card from '../cards/Card'
 import RichCard from '../cards/RichCard'
@@ -24,6 +25,7 @@ export const CraftImage = Craftize(Image)
 export const CraftCard = Craftize(Card)
 export const CraftRichCard = Craftize(RichCard)
 export const CraftCarousel = Craftize(Carousel)
+export const CraftCollapse = Craftize(Accordion)
 export const CraftStatistics = Craftize(Statistics)
 export const CraftEmbedded = Craftize(Embedded)
 // product catalog
