@@ -42,7 +42,7 @@ const ProgramCard: React.FC<ProgramElementProps> = props => {
           <MultiAvatar loading memberIdList={[]} />
         ) : (
           <MultiAvatar
-            memberIdList={props.instructorIds}
+            memberIdList={props.instructorIds || []}
             withName
             onClick={instructorId => !props.editing && history.push(`/creators/${instructorId}?tabkey=introduction`)}
           />
