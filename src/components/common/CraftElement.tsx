@@ -2,7 +2,10 @@ import { Accordion } from '@chakra-ui/accordion'
 import Button from '../buttons/Button'
 import Card from '../cards/Card'
 import RichCard from '../cards/RichCard'
+import ActivityCollection from '../collections/ActivityCollection'
 import ProgramCollection from '../collections/ProgramCollection'
+import ProgramContentCollection from '../collections/ProgramContentCollection'
+import ProgramPackageCollection from '../collections/ProgramPackageCollection'
 import Carousel from './Carousel'
 import Craftize from './Craftize'
 import Embedded from './Embedded'
@@ -30,3 +33,6 @@ export const CraftStatistics = Craftize(Statistics)
 export const CraftEmbedded = Craftize(Embedded)
 // product catalog
 export const CraftProgramCollection = Craftize(ProgramCollection)
+export const CraftProgramContentCollection = Craftize(ProgramContentCollection)
+export const CraftProgramPackageCollection = Craftize(ProgramPackageCollection)
+export const CraftActivityCollection = Craftize(ActivityCollection)
