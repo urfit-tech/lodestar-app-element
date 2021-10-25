@@ -2,7 +2,9 @@ import Slider, { Settings as SliderProps } from 'react-slick'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
-const StyledSlider = styled(Slider)<{ variant?: 'cover' }>`
+type CarouselProps = SliderProps & { variant?: 'cover' }
+
+const StyledSlider = styled(Slider)<CarouselProps>`
   && {
     ${props =>
       props.variant === 'cover' &&
@@ -27,17 +29,11 @@ const StyledSlider = styled(Slider)<{ variant?: 'cover' }>`
   }
 `
 
-type CarouselProps = SliderProps
-
 const Carousel: ElementComponent<CarouselProps> = props => {
   if (props.loading || props.errors) {
     return null
   }
-  return (
-    <StyledSlider {...props} variant="cover">
-      {props.children}
-    </StyledSlider>
-  )
+  return <StyledSlider {...props}>{props.children}</StyledSlider>
 }
 
 export default Carousel
