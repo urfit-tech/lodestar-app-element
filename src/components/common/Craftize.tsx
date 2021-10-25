@@ -1,7 +1,7 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent } from '../../types/element'
-import Responsive from './Responsive'
+import Responsive, { ResponsiveValue } from './Responsive'
 
 const CraftRefBlock = styled.div<{
   options?: { enabled?: boolean }
@@ -30,7 +30,7 @@ export const CraftSelectedMixin = css`
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
   const Component: UserComponent<
     ElementBaseProps<P> & {
-      responsive?: { tablet?: P; desktop?: P }
+      responsive?: ResponsiveValue<P>['responsive']
       customStyle?: CSSObject
       children?: React.ReactNode
     }

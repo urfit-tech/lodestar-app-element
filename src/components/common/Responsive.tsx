@@ -6,6 +6,8 @@ const Responsive = {
   Desktop: (props: MediaQueryProps) => <MediaQuery {...props} minWidth={DESKTOP_BREAK_POINT} />,
 }
 
+export type ResponsiveValue<V> = { default: V; responsive: { tablet: V; desktop: V } }
+
 export const TABLET_BREAK_POINT = 576
 export const DESKTOP_BREAK_POINT = 992
 export const BREAK_POINT = 992
