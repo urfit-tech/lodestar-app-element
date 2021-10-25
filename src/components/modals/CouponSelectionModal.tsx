@@ -9,9 +9,9 @@ import { handleError } from '../../helpers'
 import { checkoutMessages, codeMessages, commonMessages } from '../../helpers/translation'
 import { useCouponCollection } from '../../hooks/data'
 import { CouponProps, OrderDiscountProps, OrderProductProps } from '../../types/checkout'
+import CouponCard from '../cards/CouponCard'
 import CommonModal from '../common/CommonModal'
 import Divider from '../common/Divider'
-import CouponCard from './CouponCard'
 
 const StyledInputWrapper = styled.div`
   && {
