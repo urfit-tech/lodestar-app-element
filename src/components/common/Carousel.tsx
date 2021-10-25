@@ -3,7 +3,7 @@ import Slider, { Settings as SliderProps } from 'react-slick'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
-type CarouselProps = SliderProps & { variant?: 'cover' }
+export type CarouselProps = SliderProps & { variant?: 'cover' }
 
 const StyledSlider = styled(Slider)<CarouselProps>`
   && {
