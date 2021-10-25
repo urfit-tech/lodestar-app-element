@@ -5,11 +5,12 @@ const StyledParagraph = styled.p`
   white-space: pre-line;
   margin-bottom: 0;
 `
-const Paragraph: ElementComponent = props => {
+export type ParagraphProps = { content: string }
+const Paragraph: ElementComponent<ParagraphProps> = props => {
   if (props.loading || props.errors) {
     return null
   }
-  return <StyledParagraph className={props.className}>{props.children}</StyledParagraph>
+  return <StyledParagraph className={props.className}>{props.content}</StyledParagraph>
 }
 
 export default Paragraph

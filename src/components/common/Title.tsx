@@ -5,6 +5,7 @@ const StyledTitle = styled.h3`
   line-height: 1;
 `
 export type TitleProps = {
+  title: string
   iconUrl?: string | null
   subtitle?: string | null
 }
@@ -15,7 +16,7 @@ const Title: ElementComponent<TitleProps> = props => {
   ) : (
     <StyledTitle className={props.className}>
       {props.iconUrl && <div>{props.iconUrl}</div>}
-      {children}
+      {props.title}
       {props.subtitle && <div>{props.subtitle}</div>}
     </StyledTitle>
   )

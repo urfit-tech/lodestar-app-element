@@ -77,7 +77,7 @@ const Dialog: ElementComponent<{
         <StyledSlideTitle className="title">
           <span>{title}</span>
         </StyledSlideTitle>
-        <Paragraph className="paragraph">{description}</Paragraph>
+        <Paragraph className="paragraph" content={description}></Paragraph>
       </StyledDialogBlock>
       <StyledUserBlock>
         <img src={avatarSrc} alt="avatar" />

@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
 export type ButtonProps = {
+  title: string
   size: 'sm' | 'md' | 'lg'
   variant?: 'text' | 'solid' | 'outline'
   block?: boolean
@@ -64,7 +65,7 @@ const Button: ElementComponent<ButtonProps> = props => {
         }
       }}
     >
-      {children}
+      {props.title}
     </StyledButton>
   )
 }
