@@ -1,4 +1,5 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
+import { PropsWithChildren } from 'react-router/node_modules/@types/react'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent } from '../../types/element'
 
@@ -27,7 +28,7 @@ export const CraftSelectedMixin = css`
 // FIXME: why cannot use <P extends {editing?:boolean}> directly?
 // FIXME: only accept for FC and CC, not VFC
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
-  const Component: UserComponent<ElementBaseProps<P> & { customStyle?: CSSObject }> = props => {
+  const Component: UserComponent<ElementBaseProps<P> & PropsWithChildren<{ customStyle?: CSSObject }>> = props => {
     const { editing } = useEditor(state => ({
       editing: state.options.enabled,
     }))
