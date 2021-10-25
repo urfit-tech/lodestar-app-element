@@ -27,14 +27,13 @@ export const CraftSelectedMixin = css`
 
 // FIXME: why cannot use <P extends {editing?:boolean}> directly?
 // FIXME: only accept for FC and CC, not VFC
+
+export type PropsWithCraft<P> = ElementBaseProps<P> & {
+  responsive?: { tablet?: P & { customStyle?: CSSObject }; desktop?: P & { customStyle?: CSSObject } }
+  customStyle?: CSSObject
+}
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
-  const Component: UserComponent<
-    ElementBaseProps<P> & {
-      responsive?: { tablet?: P & { customStyle?: CSSObject }; desktop?: P & { customStyle?: CSSObject } }
-      customStyle?: CSSObject
-      children?: React.ReactNode
-    }
-  > = props => {
+  const Component: UserComponent<PropsWithCraft<P>> = props => {
     const { editing } = useEditor(state => ({
       editing: state.options.enabled,
     }))
