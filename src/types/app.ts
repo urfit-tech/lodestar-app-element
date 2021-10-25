@@ -57,7 +57,7 @@ export type Module =
   | 'zoom'
   | 'fb_pixel'
   | 'ga'
-  | 'gift'
+  | 'transfer_voucher'
   | 'gtm'
   | 'hotjar'
   | 'tappay'
