@@ -1,5 +1,4 @@
 import styled, { CSSObject } from 'styled-components'
-import { CraftMarginProps, CraftPaddingProps, CraftTextStyleProps } from '../../types/craft'
 import { ElementComponent } from '../../types/element'
 import Card from './Card'
 
@@ -20,14 +19,8 @@ export type RichCardProps = {
   imageType: 'none' | 'image'
   imageUrl: string
   imageAlign?: 'flex-start' | 'flex-end' | 'center'
-  imageMargin?: CraftMarginProps
-  imagePadding?: CraftPaddingProps
   title: string
-  titleStyle: CraftTextStyleProps
   paragraph?: string
-  paragraphStyle?: CraftTextStyleProps
-  cardMargin: CraftMarginProps
-  cardPadding: CraftPaddingProps
   variant: 'backgroundColor' | 'outline' | 'none'
   outlineColor?: string
   backgroundType?: 'none' | 'solidColor' | 'backgroundImage'
@@ -50,8 +43,6 @@ const RichCard: ElementComponent<RichCardProps> = props => {
     boxShadow: (props.variant === 'none' && 'none') || undefined,
     backgroundColor: props.backgroundType === 'solidColor' ? props.solidColor : undefined,
     backgroundImage: props.backgroundType === 'backgroundImage' ? props.backgroundImageUrl : undefined,
-    ...props.cardMargin,
-    ...props.cardPadding,
     ...(props.type === 'referrer' && props.variant === 'backgroundColor' && props.backgroundType === 'solidColor'
       ? { borderBottomLeftRadius: '0', dropShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' }
       : {}),

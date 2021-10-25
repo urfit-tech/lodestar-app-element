@@ -13,7 +13,6 @@ import Image from './Image'
 import Layout from './Layout'
 import Paragraph from './Paragraph'
 import Section from './Section'
-import Statistics from './Statistics'
 import Text from './Text'
 import Title from './Title'
 
@@ -50,9 +49,6 @@ export type CraftCarouselProps = typeof CraftCarousel.defaultProps
 
 export const CraftCollapse = Craftize(Accordion)
 export type CraftCollapseProps = typeof CraftCollapse.defaultProps
-
-export const CraftStatistics = Craftize(Statistics)
-export type CraftStatisticsProps = typeof CraftStatistics.defaultProps
 
 export const CraftEmbedded = Craftize(Embedded)
 export type CraftEmbeddedProps = typeof CraftEmbedded.defaultProps
