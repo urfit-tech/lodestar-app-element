@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/default-avatar.svg'
 import { ElementComponent } from '../../types/element'
-import Responsive from './Responsive'
 
 export type ImageProps = {
   src?: string
@@ -50,23 +49,11 @@ export const StyledImage = styled.img`
   width: fit-content;
 `
 
-const Image: ElementComponent<{
-  desktop?: ImageProps
-  mobile?: ImageProps
-}> = props => {
+const Image: ElementComponent<ImageProps> = props => {
   if (props.loading || props.errors) {
     return null
   }
-  return (
-    <>
-      <Responsive.Default>
-        <StyledImage src={props.mobile?.src} />
-      </Responsive.Default>
-      <Responsive.Desktop>
-        <StyledImage src={props.desktop?.src} />
-      </Responsive.Desktop>
-    </>
-  )
+  return <StyledImage {...props} className={props.className} src={props.src} />
 }
 
 export default Image
