@@ -6,19 +6,19 @@ import { ElementComponent } from '../../types/element'
 import { StyledImage } from '../common/Image'
 
 export type CardProps = {
-  variant?: 'dark'
+  variant?: 'outline' | 'background'
+  darkMode?: boolean
   shadowed?: boolean
-  bordered?: boolean
   horizontal?: boolean
   onClick?: () => void
 }
 
-const CardTitle = styled.h3<{ variant?: 'dark' }>`
+const CardTitle = styled.h3<CardProps>`
   font-family: NotoSansCJKtc;
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.2px;
-  color: ${props => (props.variant ? 'white' : 'var(--gray-darker)')};
+  color: ${props => (props.darkMode ? 'white' : 'var(--gray-darker)')};
 `
 const CardContent = styled.div`
   width: 100%;
@@ -48,7 +48,7 @@ const StyledCard = styled.div<CardProps>`
   align-items: center;
   justify-content: center;
   flex-direction: ${props => (props.horizontal ? 'row' : 'column')};
-  border: ${props => props.bordered && '1px solid white'};
+  border: ${props => props.variant === 'outline' && '1px solid white'};
   filter: ${props => props.shadowed && 'drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1))'};
 `
 
@@ -98,14 +98,7 @@ const Card: ElementComponent<CardProps> & {
   Avatar: typeof CardAvatar
 } = props => {
   return (
-    <StyledCard
-      className={classNames('card', props.className)}
-      variant={props.variant}
-      shadowed={props.shadowed}
-      bordered={props.bordered}
-      horizontal={props.horizontal}
-      onClick={props.onClick}
-    >
+    <StyledCard className={classNames('card', props.className)} {...props}>
       {props.children}
     </StyledCard>
   )
