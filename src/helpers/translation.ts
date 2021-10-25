@@ -33,6 +33,9 @@ export const commonMessages = {
     allCategory: { id: 'common.button.allCategory', defaultMessage: '全部分類' },
     add: { id: 'common.button.add', defaultMessage: '新增' },
   }),
+  content: defineMessages({
+    noPeriod: { id: 'common.content.noPeriod', defaultMessage: '無使用期限' },
+  }),
 }
 
 export const productMessages = {
