@@ -1,3 +1,4 @@
+import { Children } from 'react'
 import Slider, { Settings as SliderProps } from 'react-slick'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
@@ -33,7 +34,14 @@ const Carousel: ElementComponent<CarouselProps> = props => {
   if (props.loading || props.errors) {
     return null
   }
-  return <StyledSlider {...props}>{props.children}</StyledSlider>
+  return (
+    <StyledSlider {...props}>
+      {Children.count(props.children) &&
+        Children.map(props.children, child =>
+          props.editing ? <div style={{ border: '1px dashed cornflowerblue' }}>{child}</div> : child,
+        )}
+    </StyledSlider>
+  )
 }
 
 export default Carousel
