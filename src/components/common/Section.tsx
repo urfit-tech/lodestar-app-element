@@ -12,13 +12,11 @@ export const StyledTitle = styled(Title)`
 `
 const StyledSection = styled.section<SectionProps>`
   position: relative;
-  background-color: ${props => (props.backgroundType === 'solidColor' && props.solidColor) || 'white'};
-  background-image: ${props => props.backgroundType === 'backgroundImage' && `url(${props.coverUrl})`};
   background-size: cover;
   background-position: center;
 
   ${props =>
-    props.variant === 'dark'
+    props.darkMode
       ? css`
           color: white;
           &::after {
@@ -50,13 +48,7 @@ const StyledSection = styled.section<SectionProps>`
         `};
 `
 
-export type SectionProps = { variant?: 'dark' } & (
-  | {
-      backgroundType: 'none'
-    }
-  | { backgroundType: 'solidColor'; solidColor: string }
-  | { backgroundType: 'backgroundImage'; coverUrl: string | null }
-)
+export type SectionProps = { darkMode?: boolean }
 
 const Section: ElementComponent<SectionProps> = props => {
   if (props.loading || props.errors) {

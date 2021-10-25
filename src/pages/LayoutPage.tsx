@@ -3,7 +3,7 @@ import { CraftLayout, CraftSection } from '../components/common/CraftElement'
 const LayoutPage = () => {
   return (
     <>
-      <CraftSection backgroundType="none" />
+      <CraftSection />
       <CraftLayout ratios={[1, 3, 1]}>
         <div>1</div>
         <div>2</div>
