@@ -1,7 +1,7 @@
-import Accordion from '../accordions/Accordion'
 import Button from '../buttons/Button'
 import Card from '../cards/Card'
 import RichCard from '../cards/RichCard'
+import Collapse from '../collapses/Collapse'
 import ActivityCollection from '../collections/ActivityCollection'
 import ProgramCollection from '../collections/ProgramCollection'
 import ProgramContentCollection from '../collections/ProgramContentCollection'
@@ -27,7 +27,7 @@ export const CraftImage = Craftize(Image)
 export const CraftCard = Craftize(Card)
 export const CraftRichCard = Craftize(RichCard)
 export const CraftCarousel = Craftize(Carousel)
-export const CraftCollapse = Craftize(Accordion)
+export const CraftCollapse = Craftize(Collapse)
 export const CraftEmbedded = Craftize(Embedded)
 
 // product catalog

@@ -24,7 +24,7 @@ const StyledParagraph = styled(Paragraph)<{ isActive: boolean }>`
   display: ${props => (props.isActive ? 'block' : `none`)};
 `
 
-const StyledAccordionHeader = styled.header`
+const StyledCollapseHeader = styled.header`
   font-family: NotoSansCJKtc;
   font-size: 16px;
   font-weight: bold;
@@ -34,7 +34,7 @@ const StyledAccordionHeader = styled.header`
   line-height: 1;
 `
 
-const StyledAccordion = styled.article<{ isActive?: boolean }>`
+const StyledCollapse = styled.article<{ isActive?: boolean }>`
   margin-bottom: 1.5rem;
   border-radius: 4px;
   padding: 1.25rem;
@@ -42,12 +42,14 @@ const StyledAccordion = styled.article<{ isActive?: boolean }>`
   background-color: var(--gray-lighter);
 `
 
-const Accordion: ElementComponent<{
+export type CollapseProps = {
   list: {
     title: string
     description: string
   }[]
-}> = props => {
+  accordion?: boolean
+}
+const Collapse: ElementComponent<CollapseProps> = props => {
   const [activeIndex, setActiveIndex] = useState(0)
   if (props.loading || props.errors) {
     return null
@@ -55,8 +57,8 @@ const Accordion: ElementComponent<{
   return (
     <div>
       {props.list.map((v, i) => (
-        <StyledAccordion key={v.title + i} className={props.className} isActive={activeIndex === i}>
-          <StyledAccordionHeader
+        <StyledCollapse key={v.title + i} className={props.className} isActive={activeIndex === i}>
+          <StyledCollapseHeader
             onClick={() => setActiveIndex(i)}
             className="d-flex justify-content-between align-items-center"
           >
@@ -64,14 +66,14 @@ const Accordion: ElementComponent<{
             <StyledAction isActive={activeIndex === i}>
               <AngleRightIcon />
             </StyledAction>
-          </StyledAccordionHeader>
+          </StyledCollapseHeader>
           <StyledParagraph className="paragraph" isActive={activeIndex === i}>
             {v.description}
           </StyledParagraph>
-        </StyledAccordion>
+        </StyledCollapse>
       ))}
     </div>
   )
 }
 
-export default Accordion
+export default Collapse
