@@ -7,9 +7,8 @@ const StyledDiv = styled.div`
   }
 `
 
-const Embedded: ElementComponent<{
-  iframe: string
-}> = props => {
+export type EmbeddedProps = { iframe: string }
+const Embedded: ElementComponent<EmbeddedProps> = props => {
   if (props.loading || props.errors) {
     return null
   }
