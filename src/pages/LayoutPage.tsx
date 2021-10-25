@@ -4,22 +4,13 @@ const LayoutPage = () => {
   return (
     <>
       <CraftSection backgroundType="none" />
-      <CraftLayout
-      // mobile={{
-      //   padding: { p: '20' },
-      //   margin: { ml: '20', mr: '20' },
-      //   columnAmount: 1,
-      //   columnRatio: [12],
-      //   displayAmount: 3,
-      // }}
-      // desktop={{
-      //   padding: { p: '20' },
-      //   margin: { ml: '200', mr: '200' },
-      //   columnAmount: 1,
-      //   columnRatio: [12],
-      //   displayAmount: 3,
-      // }}
-      />
+      <CraftLayout ratios={[1, 3, 1]}>
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+      </CraftLayout>
     </>
   )
 }
