@@ -1,73 +1,33 @@
 import styled from 'styled-components'
-import { generateCustomParagraphStyle, generateCustomTitleStyle } from '.'
-import { ParagraphProps, TitleProps } from '../../types/style'
-import { BREAK_POINT } from './Responsive'
 
-const StyledDescriptionTitle = styled.h3<{ customStyle: TitleProps }>`
+const StyledDescriptionTitle = styled.h3`
   font-family: NotoSansCJKtc;
-  font-weight: ${props =>
-    props.customStyle.fontWeight === 'bold'
-      ? 800
-      : props.customStyle.fontWeight === 'normal'
-      ? 500
-      : props.customStyle.fontWeight === 'lighter'
-      ? 200
-      : 500};
   letter-spacing: 0.2px;
   text-align: center;
-  font-size: ${props => props.customStyle.fontSize}px;
-
-  @media (min-width: ${BREAK_POINT}px) {
-    && {
-      ${generateCustomTitleStyle}
-    }
-  }
 `
 
-const StyledTitle = styled.h3<{ highlight?: boolean; customStyle: TitleProps }>`
+const StyledTitle = styled.h3<{ highlight?: boolean }>`
   font-family: NotoSansCJKtc;
-  font-size: ${props => props.customStyle.fontSize || 16}px;
-  font-weight: ${props =>
-    props.customStyle.fontWeight === 'bold'
-      ? 800
-      : props.customStyle.fontWeight === 'normal'
-      ? 500
-      : props.customStyle.fontWeight === 'lighter'
-      ? 200
-      : 500};
+  font-size: 16px;
+  font-weight: 500;
   letter-spacing: 0.2px;
   color: ${props => (props.highlight ? props.theme['@primary-color'] : 'var(--gray-darker)')};
 
-  ${({ highlight, customStyle, theme }) =>
+  ${({ highlight, theme }) =>
     highlight &&
     `
       padding-left: 8px;
-      border-left: 3px solid ${customStyle.color || theme['@primary-color']};
+      border-left: 3px solid ${theme['@primary-color']};
     `}
-
-  && {
-    ${generateCustomTitleStyle}
-  }
 `
 
-const StyledParagraph = styled.p<{ customStyle: ParagraphProps }>`
+const StyledParagraph = styled.p`
   font-size: 16px;
-  font-weight: ${props =>
-    props.customStyle.fontWeight === 'bold'
-      ? 800
-      : props.customStyle.fontWeight === 'normal'
-      ? 500
-      : props.customStyle.fontWeight === 'lighter'
-      ? 200
-      : 500};
+  font-weight: 500;
   line-height: 1.69;
   letter-spacing: 0.2px;
   text-align: justify;
   color: var(--gray-darker);
-
-  && {
-    ${generateCustomParagraphStyle}
-  }
 `
 const StyledArticle = styled.article`
   display: inline-block;

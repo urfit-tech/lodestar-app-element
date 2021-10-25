@@ -2,8 +2,6 @@ import { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ReactComponent as AngleRightIcon } from '../../images/icons/angle-right.svg'
 import { ElementComponent } from '../../types/element'
-import { ParagraphProps, TitleProps } from '../../types/style'
-import { generateCustomTitleStyle } from '../common'
 import Paragraph from '../common/Paragraph'
 
 const StyledAction = styled.div<{ isActive?: boolean }>`
@@ -17,20 +15,16 @@ const StyledAction = styled.div<{ isActive?: boolean }>`
   transition: transform 0.3s ease-in-out;
 `
 
-const StyledTitle = styled.h3<{ customStyle?: TitleProps }>`
+const StyledTitle = styled.h3`
   line-height: 1.5;
-  && {
-    ${generateCustomTitleStyle}
-  }
 `
 
-const StyledParagraph = styled(Paragraph)<{ isActive?: boolean; customStyle?: ParagraphProps }>`
+const StyledParagraph = styled(Paragraph)<{ isActive?: boolean }>`
   && {
     transition: 0.5s;
     ${props =>
       props.isActive
         ? css`
-            margin-top: ${props.customStyle?.mt} !important;
             height: fit-content;
           `
         : `margin-top: 0 !important; height:0; overflow:hidden;`};

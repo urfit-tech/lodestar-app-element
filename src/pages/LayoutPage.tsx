@@ -1,8 +1,9 @@
-import { CraftLayout } from '../components/common/CraftElement'
+import { CraftLayout, CraftSection } from '../components/common/CraftElement'
 
 const LayoutPage = () => {
   return (
     <>
+      <CraftSection backgroundType="none" />
       <CraftLayout
       // mobile={{
       //   padding: { p: '20' },

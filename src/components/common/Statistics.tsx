@@ -7,7 +7,19 @@ const StatisticsWrapper = styled.div`
   width: fit-content;
   text-align: center;
 `
-
+const StyledDigit = styled(Stat.Digit)`
+  text-align: center;
+  font-size: 20;
+  font-weight: normal;
+  color: #585858;
+`
+const StyledContent = styled(Stat.Content)`
+  text-align: center;
+  font-size: 20;
+  font-weight: normal;
+  line-height: 1;
+  color: #585858;
+`
 export type StatisticsProps = CraftImageProps &
   CraftBoxModelProps & { title: CraftTitleProps; paragraph: CraftParagraphProps }
 
@@ -23,27 +35,8 @@ const Statistics: ElementComponent<StatisticsProps> = props => {
         }}
         src={props.coverUrl}
       />
-      <Stat.Digit
-        customStyle={{
-          textAlign: 'center',
-          fontSize: '20',
-          fontWeight: 'normal',
-          color: '#585858',
-        }}
-      >
-        {props.title.titleContent}
-      </Stat.Digit>
-      <Stat.Content
-        customStyle={{
-          textAlign: 'center',
-          fontSize: '20',
-          fontWeight: 'normal',
-          lineHeight: 1,
-          color: '#585858',
-        }}
-      >
-        {props.paragraph.paragraphContent}
-      </Stat.Content>
+      <StyledDigit>{props.title.titleContent}</StyledDigit>
+      <StyledContent>{props.paragraph.paragraphContent}</StyledContent>
     </StatisticsWrapper>
   )
 }

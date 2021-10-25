@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled, { css } from 'styled-components'
-import { CardProps, ParagraphProps, TitleProps } from '../../types/style'
-import { generateCustomCardStyle, generateCustomTitleStyle, StyledParagraph as Paragraph } from '../common'
+import { ElementComponent } from '../../types/element'
+import Paragraph from '../common/Paragraph'
 import { ReactComponent as AngleRightIcon } from '../images/icons/angle-right.svg'
 
 const StyledAction = styled.div<{ isActive: boolean }>`
@@ -15,11 +15,8 @@ const StyledAction = styled.div<{ isActive: boolean }>`
   transition: transform 0.3s ease-in-out;
 `
 
-const StyledTitle = styled.h3<{ customStyle: TitleProps }>`
+const StyledTitle = styled.h3`
   line-height: 1.5;
-  && {
-    ${generateCustomTitleStyle}
-  }
 `
 
 const StyledParagraph = styled(Paragraph)<{ isActive: boolean }>`
@@ -37,50 +34,38 @@ const StyledAccordionHeader = styled.header`
   line-height: 1;
 `
 
-const StyledAccordion = styled.article<{ titleHeight: number; customStyle: CardProps; isActive?: boolean }>`
+const StyledAccordion = styled.article<{ isActive?: boolean }>`
   margin-bottom: 1.5rem;
   border-radius: 4px;
   padding: 1.25rem;
   overflow: hidden;
   background-color: var(--gray-lighter);
-
-  && {
-    ${generateCustomCardStyle}
-  }
 `
 
-const Accordion: React.FC<{
+const Accordion: ElementComponent<{
   list: {
     title: string
     description: string
   }[]
-  customStyle: {
-    title: TitleProps
-    paragraph: ParagraphProps
-    card: CardProps
-  }
-}> = ({ list, customStyle }) => {
+}> = props => {
   const [activeIndex, setActiveIndex] = useState(0)
-
+  if (props.loading || props.errors) {
+    return null
+  }
   return (
     <div>
-      {list.map((v, i) => (
-        <StyledAccordion
-          key={v.title + i}
-          customStyle={customStyle.card}
-          titleHeight={Number(customStyle.title.fontSize) + Number(customStyle.title.mb) + Number(customStyle.title.mt)}
-          isActive={activeIndex === i}
-        >
+      {props.list.map((v, i) => (
+        <StyledAccordion key={v.title + i} className={props.className} isActive={activeIndex === i}>
           <StyledAccordionHeader
             onClick={() => setActiveIndex(i)}
             className="d-flex justify-content-between align-items-center"
           >
-            <StyledTitle customStyle={customStyle.title}>{v.title}</StyledTitle>
+            <StyledTitle className="title">{v.title}</StyledTitle>
             <StyledAction isActive={activeIndex === i}>
               <AngleRightIcon />
             </StyledAction>
           </StyledAccordionHeader>
-          <StyledParagraph isActive={activeIndex === i} customStyle={customStyle.paragraph}>
+          <StyledParagraph className="paragraph" isActive={activeIndex === i}>
             {v.description}
           </StyledParagraph>
         </StyledAccordion>

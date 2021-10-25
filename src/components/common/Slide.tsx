@@ -1,7 +1,5 @@
 import styled from 'styled-components'
-import { generateCustomParagraphStyle, generateCustomTitleStyle } from '.'
 import { ElementComponent } from '../../types/element'
-import { ParagraphProps, TitleProps } from '../../types/style'
 
 const SliderWrapper = styled.div`
   position: relative;
@@ -27,46 +25,29 @@ const StyledCoverBackground = styled.div<{ srcDesktop: string; srcMobile: string
     background-image: url(${props => props.srcDesktop});
   }
 `
-const StyledCoverHeading = styled.h2<{ customStyle?: TitleProps }>`
-  color: ${props => props.customStyle?.color || 'white'};
+const StyledCoverHeading = styled.h2`
+  color: white;
   font-size: 28px;
   font-weight: 500;
   letter-spacing: 0.23px;
-  ${props => props.customStyle && `text-align: ${props.customStyle.textAlign}`};
 
   @media (min-width: 992px) {
     font-size: 52px;
     line-height: 1.3;
     letter-spacing: 1px;
-
-    && {
-      ${generateCustomTitleStyle}
-    }
   }
 `
 
-const StyledParagraph = styled.p<{ customStyle?: ParagraphProps }>`
+const StyledParagraph = styled.p`
   color: #fff;
   font-size: 16px;
-  font-weight: ${props =>
-    props.customStyle &&
-    (props.customStyle.fontWeight === 'bold'
-      ? 800
-      : props.customStyle.fontWeight === 'normal'
-      ? 500
-      : props.customStyle.fontWeight === 'lighter'
-      ? 200
-      : 500)};
+  font-weight: 500;
   line-height: 1.69;
   letter-spacing: 0.2px;
 
   @media (min-width: 992px) {
     font-size: 27px;
     text-align: center;
-  }
-
-  && {
-    ${generateCustomParagraphStyle}
   }
 `
 

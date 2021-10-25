@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { generateCustomParagraphStyle, generateCustomTitleStyle } from '.'
 import DefaultAvatar from '../../images/icons/avatar.svg'
-import { ParagraphProps, TitleProps } from '../../types/style'
+import { ElementComponent } from '../../types/element'
 
 const StyledInstructorBlock = styled.div`
   padding: 1rem;
@@ -19,7 +18,7 @@ const StyledAvatar = styled.img<{ size?: number }>`
   object-fit: cover;
   object-position: center;
 `
-const StyledSubTitle = styled.h2<{ customStyle?: TitleProps }>`
+const StyledSubTitle = styled.h2`
   color: var(--gray-darker);
   text-align: center;
   font-size: 24px;
@@ -27,31 +26,11 @@ const StyledSubTitle = styled.h2<{ customStyle?: TitleProps }>`
   font-weight: bold;
   line-height: 1.3;
   letter-spacing: 0.77;
-  font-weight: ${props =>
-    props.customStyle &&
-    (props.customStyle.fontWeight === 'bold'
-      ? 800
-      : props.customStyle.fontWeight === 'normal'
-      ? 500
-      : props.customStyle.fontWeight === 'lighter'
-      ? 200
-      : 500)};
-
-  && {
-    ${generateCustomTitleStyle}
-  }
+  font-weight: 500;
 `
-const StyledDescription = styled.div<{ customStyle?: ParagraphProps }>`
+const StyledDescription = styled.div`
   font-size: 14px;
-  font-weight: ${props =>
-    props.customStyle &&
-    (props.customStyle.fontWeight === 'bold'
-      ? 800
-      : props.customStyle.fontWeight === 'normal'
-      ? 500
-      : props.customStyle.fontWeight === 'lighter'
-      ? 200
-      : 500)};
+  font-weight: 500;
   line-height: 1;
   letter-spacing: 0.2px;
   max-width: 190px;
@@ -63,41 +42,28 @@ const StyledDescription = styled.div<{ customStyle?: ParagraphProps }>`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 8;
-  && {
-    ${generateCustomParagraphStyle}
-  }
 `
 const StyledAbstract = styled(StyledDescription)`
   color: #a9a9a9;
   line-height: 1.5;
-  font-weight: ${props =>
-    props.customStyle &&
-    (props.customStyle.fontWeight === 'bold'
-      ? 800
-      : props.customStyle.fontWeight === 'normal'
-      ? 500
-      : props.customStyle.fontWeight === 'lighter'
-      ? 200
-      : 500)};
+  font-weight: 500;
 `
 
-const Instructor: React.FC<{
+const Instructor: ElementComponent<{
   id: string | null
   name: string | null
   abstract: string | null
   description: string | null
   avatarUrl: string | null
   isShowDescription?: boolean
-  customStyle?: {
-    subTitle?: TitleProps
-    abstract?: ParagraphProps
-    description?: ParagraphProps
+}> = props => {
+  if (props.loading || props.errors) {
+    return null
   }
-  craftEnabled?: boolean
-}> = ({ id, name, abstract, description, avatarUrl, isShowDescription, customStyle, craftEnabled }) => {
+  const { id, name, abstract, description, avatarUrl, isShowDescription } = props
   return (
     <StyledInstructorBlock key={id}>
-      <Link to={`/creators/${id}`} onClick={craftEnabled ? e => e.preventDefault() : undefined}>
+      <Link to={`/creators/${id}`} onClick={props.editing ? e => e.preventDefault() : undefined}>
         <div className="mb-4">
           <StyledAvatar
             src={avatarUrl !== null ? avatarUrl : DefaultAvatar}
@@ -106,13 +72,9 @@ const Instructor: React.FC<{
             size={128}
           />
         </div>
-        <StyledSubTitle customStyle={customStyle?.subTitle}>{name}</StyledSubTitle>
-        <StyledAbstract customStyle={customStyle?.abstract}>{abstract}</StyledAbstract>
-        {isShowDescription && (
-          <StyledDescription className="mt-3" customStyle={customStyle?.description}>
-            {description}
-          </StyledDescription>
-        )}
+        <StyledSubTitle className="subtitle">{name}</StyledSubTitle>
+        <StyledAbstract className="abstract">{abstract}</StyledAbstract>
+        {isShowDescription && <StyledDescription className="mt-3 description">{description}</StyledDescription>}
       </Link>
     </StyledInstructorBlock>
   )

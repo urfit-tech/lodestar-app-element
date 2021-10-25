@@ -1,8 +1,11 @@
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/default-avatar.svg'
 import { ElementComponent } from '../../types/element'
-import { ImageProps } from '../../types/style'
 import Responsive from './Responsive'
+
+export type ImageProps = {
+  src?: string
+}
 
 type AvatarImageProps = {
   src?: string | null
