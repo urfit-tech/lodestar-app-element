@@ -14,6 +14,9 @@ export const commonMessages = {
     monthWithQuantifier: { id: 'common.unit.monthWithQuantifier', defaultMessage: '個月' },
     year: { id: 'common.unit.year', defaultMessage: '年' },
   }),
+  title: defineMessages({
+    podcastSubscription: { id: 'common.title.podcast.subscribe', defaultMessage: '訂閱廣播頻道' },
+  }),
   label: defineMessages({
     listPrice: { id: 'common.label.listPrice', defaultMessage: '定價' },
     free: { id: 'common.label.free', defaultMessage: '免費' },
@@ -49,6 +52,12 @@ export const productMessages = {
       remaining: { id: 'product.activity.content.remaining', defaultMessage: '剩餘' },
     }),
   },
+  label: defineMessages({
+    availableForLimitTime: {
+      id: 'programPackage.label.availableForLimitTime',
+      defaultMessage: '可觀看 {amount} {unit}',
+    },
+  }),
 }
 
 export const projectMessages = {
