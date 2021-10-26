@@ -214,7 +214,7 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
   }
 }
 
-const GET_PRODUCT_SIMPLE = gql`
+export const GET_PRODUCT_SIMPLE = gql`
   query GET_PRODUCT_SIMPLE($targetId: uuid!, $startedAt: timestamptz) {
     program_by_pk(id: $targetId) {
       id
