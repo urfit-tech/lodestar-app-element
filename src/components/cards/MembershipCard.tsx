@@ -1,7 +1,7 @@
 import { render } from 'mustache'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import DefaultAvatar from '../../images/avatar.svg'
+import DefaultAvatar from '../../images/default-avatar.svg'
 
 const StyledContainer = styled.div`
   position: relative;
