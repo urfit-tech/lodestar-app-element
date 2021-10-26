@@ -16,22 +16,7 @@ const LayoutPage = () => {
         size="lg"
         customStyle={{
           margin: 12,
-        }}
-        responsive={{
-          tablet: {
-            title: 'test',
-            size: 'lg',
-            customStyle: {
-              margin: 16,
-            },
-          },
-          desktop: {
-            title: 'test',
-            size: 'lg',
-            customStyle: {
-              margin: 18,
-            },
-          },
+          background: 'red',
         }}
       />
     </>

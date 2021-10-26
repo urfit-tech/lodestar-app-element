@@ -1,4 +1,3 @@
-import { Button as ChakraButton } from '@chakra-ui/react'
 import styled, { css } from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
@@ -12,7 +11,7 @@ export type ButtonProps = {
   openNewTab?: boolean
 }
 
-const StyledButton = styled(ChakraButton)<ButtonProps>`
+const StyledButton = styled.button<ButtonProps>`
   display: inline-block;
   border-radius: 4px;
   user-select: none;
@@ -20,16 +19,6 @@ const StyledButton = styled(ChakraButton)<ButtonProps>`
   transition: 0.3s;
   font-size: 16px;
   letter-spacing: 0.2px;
-
-  &:hover {
-    color: #eeee;
-  }
-
-  color: ${props => props.color || '#585858'};
-  ${props => props.backgroundColor && `background: ${props.backgroundColor} !important`};
-  ${props => props.backgroundColor && `background-color: ${props.backgroundColor} `};
-  ${props => props.outlineColor && `border: solid 1px ${props.outlineColor} !important`};
-
   ${props =>
     props.size === 'lg'
       ? 'padding: 10px 42px;'
@@ -48,11 +37,10 @@ const StyledButton = styled(ChakraButton)<ButtonProps>`
 
 const Button: ElementComponent<ButtonProps> = props => {
   const { loading, errors, editing, children } = props
-  return loading || errors ? (
-    <StyledButton>{children}</StyledButton>
-  ) : (
+  return loading || errors ? null : (
     <StyledButton
       {...props}
+      className={props.className}
       onClick={() => {
         if (editing) {
           return
