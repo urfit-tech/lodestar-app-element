@@ -10,8 +10,8 @@ import { checkoutMessages, codeMessages, commonMessages } from '../../helpers/tr
 import { useCouponCollection } from '../../hooks/data'
 import { CouponProps, OrderDiscountProps, OrderProductProps } from '../../types/checkout'
 import CouponCard from '../cards/CouponCard'
-import CommonModal from '../common/CommonModal'
 import Divider from '../common/Divider'
+import CommonModal from './CommonModal'
 
 const StyledInputWrapper = styled.div`
   && {

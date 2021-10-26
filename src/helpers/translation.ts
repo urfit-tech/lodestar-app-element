@@ -22,6 +22,7 @@ export const commonMessages = {
     originalPrice: { id: 'common.label.originalPrice', defaultMessage: '原價' },
     name: { id: 'common.label.name', defaultMessage: '名稱' },
     or: { id: 'common.label.or', defaultMessage: '或' },
+    referrerEmail: { id: 'common.label.referrerEmail', defaultMessage: '請輸入推薦人的註冊信箱' },
   }),
   ui: defineMessages({
     uploadImage: { id: 'common.ui.uploadImage', defaultMessage: '上傳圖片' },
@@ -35,6 +36,10 @@ export const commonMessages = {
   }),
   content: defineMessages({
     noPeriod: { id: 'common.content.noPeriod', defaultMessage: '無使用期限' },
+  }),
+  text: defineMessages({
+    selfReferringIsNotAllowed: { id: 'common.text.selfReferringIsNotAllowed', defaultMessage: '不可填寫自己的信箱' },
+    notFoundMemberEmail: { id: 'common.text.notFoundMemberEmail', defaultMessage: '找不到這個註冊信箱' },
   }),
 }
 
@@ -232,9 +237,79 @@ export const checkoutMessages = {
   }),
   title: defineMessages({
     chooseCoupon: { id: 'checkout.title.chooseCoupon', defaultMessage: '選擇折價券' },
+    chooseMemberCard: { id: 'checkout.title.chooseMemberCard', defaultMessage: '選擇會員卡' },
+  }),
+  label: defineMessages({
+    noDiscount: { id: 'checkout.label.noDiscount', defaultMessage: '無折扣' },
+    useCoupon: { id: 'checkout.label.useCoupon', defaultMessage: '使用折價券' },
+    useMemberCard: { id: 'checkout.label.useMemberCard', defaultMessage: '使用會員卡' },
+    groupBuyingRuleTitle: {
+      id: 'checkout.label.groupBuyingRuleTitle',
+      defaultMessage: '多人同行揪團規定與退費說明',
+    },
+    groupBuying: { id: 'checkout.label.groupBuying', defaultMessage: '多人同行揪團' },
+    groupBuyingPlan: {
+      id: 'checkout.label.groupBuyingTitle',
+      defaultMessage: '你購買「{title}」多人同行 方案：',
+    },
+    partnerEmail: {
+      id: 'checkout.label.partnerEmail',
+      defaultMessage: '同行者信箱',
+    },
+  }),
+  button: defineMessages({
+    reselectCoupon: { id: 'checkout.button.reselectCoupon', defaultMessage: '重新選擇' },
+    chooseCoupon: { id: 'checkout.button.chooseCoupon.', defaultMessage: '選擇折價券' },
   }),
   placeholder: defineMessages({
     enterCouponCode: { id: 'checkout.placeholder.enterCouponCode', defaultMessage: '輸入折扣碼' },
+  }),
+  text: defineMessages({
+    groupBuyingRuleLink: {
+      id: 'checkout.text.groupBuyingRuleLink',
+      defaultMessage: '規定與退費',
+    },
+    groupBuyingRule1: {
+      id: 'checkout.text.groupBuyingRule1',
+      defaultMessage: ' 選擇多人同行方案，僅會開立一張發票，無法另外提供多張發票。',
+    },
+    groupBuyingRule2: {
+      id: 'checkout.text.groupBuyingRule2',
+      defaultMessage: '多人同行方案不得與其他優惠合併使用。',
+    },
+    groupBuyingRule3: {
+      id: 'checkout.text.groupBuyingRule3',
+      defaultMessage: '多人同行方案於購買後 7 天內，只要所有人尚未使用，即可申請全額退費。',
+    },
+    groupBuyingRule4: {
+      id: 'checkout.text.groupBuyingRule4',
+      defaultMessage: '退費時由多人同行方案的購買人向平台方提出申請，平台方也將統一退費給當初的購買人，將不分別退費。',
+    },
+    groupBuyingRule5: {
+      id: 'checkout.text.groupBuyingRule5',
+      defaultMessage: '會員之間的項目轉讓，均屬會員的私人行為，平台方均不干涉。',
+    },
+    groupBuyingDescription1: {
+      id: 'checkout.text.groupBuyingDescription1',
+      defaultMessage:
+        '可於底下填寫同行者信箱帳號，將於完成付款後隨即開通，主揪者與同行者皆可在「我的主頁」內找到購買項目。',
+    },
+    groupBuyingDescription2: {
+      id: 'checkout.text.groupBuyingDescription2',
+      defaultMessage: '若本次未填寫同行者信箱，則會保留在後台的「我的揪團」，可以之後再指定開通給其他會員。',
+    },
+    groupBuyingDescription3: {
+      id: 'checkout.text.groupBuyingDescription3',
+      defaultMessage: '注意事項：購買即同意以下多人同行揪團{modal}辦法。',
+    },
+    existingPartner: {
+      id: 'checkout.text.existingPartner',
+      defaultMessage: '重複的同行者',
+    },
+    fillInPartnerEmail: {
+      id: 'checkout.text.fillInPartnerEmail',
+      defaultMessage: '請填寫同行者在站上註冊的電子信箱',
+    },
   }),
 }
 

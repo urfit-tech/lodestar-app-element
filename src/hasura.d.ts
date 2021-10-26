@@ -80,31 +80,6 @@ export interface GET_RECENT_PROGRAM_PROGRESSVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GET_NEWEST_ACTIVITIES
-// ====================================================
-
-export interface GET_NEWEST_ACTIVITIES_activity {
-  __typename: 'activity'
-  id: any
-}
-
-export interface GET_NEWEST_ACTIVITIES {
-  /**
-   * fetch data from the table: "activity"
-   */
-  activity: GET_NEWEST_ACTIVITIES_activity[]
-}
-
-export interface GET_NEWEST_ACTIVITIESVariables {
-  limit?: number | null
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL query operation: GET_NEWEST_CREATOR
 // ====================================================
 
@@ -714,6 +689,97 @@ export interface GET_ACTIVITY_COLLECTIONVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_ENROLLED_CARD_IDS
+// ====================================================
+
+export interface GET_ENROLLED_CARD_IDS_card_enrollment {
+  __typename: 'card_enrollment'
+  card_id: any | null
+}
+
+export interface GET_ENROLLED_CARD_IDS {
+  /**
+   * fetch data from the table: "card_enrollment"
+   */
+  card_enrollment: GET_ENROLLED_CARD_IDS_card_enrollment[]
+}
+
+export interface GET_ENROLLED_CARD_IDSVariables {
+  memberId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_ENROLLED_CARDS
+// ====================================================
+
+export interface GET_ENROLLED_CARDS_card_enrollment_card {
+  __typename: 'card'
+  id: any
+  title: string
+  description: string
+  template: string
+}
+
+export interface GET_ENROLLED_CARDS_card_enrollment {
+  __typename: 'card_enrollment'
+  /**
+   * An object relationship
+   */
+  card: GET_ENROLLED_CARDS_card_enrollment_card | null
+  updated_at: any | null
+}
+
+export interface GET_ENROLLED_CARDS {
+  /**
+   * fetch data from the table: "card_enrollment"
+   */
+  card_enrollment: GET_ENROLLED_CARDS_card_enrollment[]
+}
+
+export interface GET_ENROLLED_CARDSVariables {
+  memberId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_ENROLLED_CARD
+// ====================================================
+
+export interface GET_ENROLLED_CARD_card_by_pk {
+  __typename: 'card'
+  id: any
+  title: string
+  description: string
+  template: string
+  app_id: string
+}
+
+export interface GET_ENROLLED_CARD {
+  /**
+   * fetch data from the table: "card" using primary key columns
+   */
+  card_by_pk: GET_ENROLLED_CARD_card_by_pk | null
+}
+
+export interface GET_ENROLLED_CARDVariables {
+  cardId: any
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_PUBLISHED_PROGRAM_COLLECTION
 // ====================================================
 
@@ -1178,6 +1244,86 @@ export interface GET_COUPON_COLLECTION {
 
 export interface GET_COUPON_COLLECTIONVariables {
   memberId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_MEMBER
+// ====================================================
+
+export interface GET_MEMBER_member_by_pk_member_phones {
+  __typename: 'member_phone'
+  id: any
+  phone: string
+}
+
+export interface GET_MEMBER_member_by_pk {
+  __typename: 'member'
+  id: string
+  /**
+   * app-owner / content-creator
+   */
+  role: string
+  username: string
+  name: string
+  email: string
+  picture_url: string | null
+  metadata: any
+  description: string | null
+  created_at: any | null
+  logined_at: any | null
+  facebook_user_id: string | null
+  google_user_id: string | null
+  /**
+   * array of youtube channel ids
+   */
+  youtube_channel_ids: any | null
+  /**
+   * An array relationship
+   */
+  member_phones: GET_MEMBER_member_by_pk_member_phones[]
+}
+
+export interface GET_MEMBER {
+  /**
+   * fetch data from the table: "member" using primary key columns
+   */
+  member_by_pk: GET_MEMBER_member_by_pk | null
+}
+
+export interface GET_MEMBERVariables {
+  memberId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: SEARCH_MEMBERS
+// ====================================================
+
+export interface SEARCH_MEMBERS_member_public {
+  __typename: 'member_public'
+  id: string | null
+  email: string | null
+}
+
+export interface SEARCH_MEMBERS {
+  /**
+   * fetch data from the table: "member_public"
+   */
+  member_public: SEARCH_MEMBERS_member_public[]
+}
+
+export interface SEARCH_MEMBERSVariables {
+  emails: string[]
+  appId: string
 }
 
 /* tslint:disable */
@@ -7987,6 +8133,7 @@ export interface program_plan_avg_order_by {
   group_buying_people?: order_by | null
   list_price?: order_by | null
   period_amount?: order_by | null
+  remind_period_amount?: order_by | null
   sale_price?: order_by | null
   type?: order_by | null
 }
@@ -8018,6 +8165,8 @@ export interface program_plan_bool_exp {
   program_id?: uuid_comparison_exp | null
   program_plan_enrollments?: program_plan_enrollment_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
+  remind_period_amount?: Int_comparison_exp | null
+  remind_period_type?: String_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   started_at?: timestamptz_comparison_exp | null
@@ -8089,6 +8238,8 @@ export interface program_plan_max_order_by {
   period_type?: order_by | null
   program_id?: order_by | null
   published_at?: order_by | null
+  remind_period_amount?: order_by | null
+  remind_period_type?: order_by | null
   sale_price?: order_by | null
   sold_at?: order_by | null
   started_at?: order_by | null
@@ -8112,6 +8263,8 @@ export interface program_plan_min_order_by {
   period_type?: order_by | null
   program_id?: order_by | null
   published_at?: order_by | null
+  remind_period_amount?: order_by | null
+  remind_period_type?: order_by | null
   sale_price?: order_by | null
   sold_at?: order_by | null
   started_at?: order_by | null
@@ -8143,6 +8296,8 @@ export interface program_plan_order_by {
   program_id?: order_by | null
   program_plan_enrollments_aggregate?: program_plan_enrollment_aggregate_order_by | null
   published_at?: order_by | null
+  remind_period_amount?: order_by | null
+  remind_period_type?: order_by | null
   sale_price?: order_by | null
   sold_at?: order_by | null
   started_at?: order_by | null
@@ -8158,6 +8313,7 @@ export interface program_plan_stddev_order_by {
   group_buying_people?: order_by | null
   list_price?: order_by | null
   period_amount?: order_by | null
+  remind_period_amount?: order_by | null
   sale_price?: order_by | null
   type?: order_by | null
 }
@@ -8170,6 +8326,7 @@ export interface program_plan_stddev_pop_order_by {
   group_buying_people?: order_by | null
   list_price?: order_by | null
   period_amount?: order_by | null
+  remind_period_amount?: order_by | null
   sale_price?: order_by | null
   type?: order_by | null
 }
@@ -8182,6 +8339,7 @@ export interface program_plan_stddev_samp_order_by {
   group_buying_people?: order_by | null
   list_price?: order_by | null
   period_amount?: order_by | null
+  remind_period_amount?: order_by | null
   sale_price?: order_by | null
   type?: order_by | null
 }
@@ -8194,6 +8352,7 @@ export interface program_plan_sum_order_by {
   group_buying_people?: order_by | null
   list_price?: order_by | null
   period_amount?: order_by | null
+  remind_period_amount?: order_by | null
   sale_price?: order_by | null
   type?: order_by | null
 }
@@ -8206,6 +8365,7 @@ export interface program_plan_var_pop_order_by {
   group_buying_people?: order_by | null
   list_price?: order_by | null
   period_amount?: order_by | null
+  remind_period_amount?: order_by | null
   sale_price?: order_by | null
   type?: order_by | null
 }
@@ -8218,6 +8378,7 @@ export interface program_plan_var_samp_order_by {
   group_buying_people?: order_by | null
   list_price?: order_by | null
   period_amount?: order_by | null
+  remind_period_amount?: order_by | null
   sale_price?: order_by | null
   type?: order_by | null
 }
@@ -8230,6 +8391,7 @@ export interface program_plan_variance_order_by {
   group_buying_people?: order_by | null
   list_price?: order_by | null
   period_amount?: order_by | null
+  remind_period_amount?: order_by | null
   sale_price?: order_by | null
   type?: order_by | null
 }
@@ -9127,6 +9289,7 @@ export interface voucher_plan_bool_exp {
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
+  is_transferable?: Boolean_comparison_exp | null
   product_quantity_limit?: Int_comparison_exp | null
   started_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null

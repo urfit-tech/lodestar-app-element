@@ -1,7 +1,17 @@
 {
   "cSpell.words": [
+    "Braft",
+    "chakra",
+    "commonhealth",
+    "instflag",
     "kolable",
+    "logined",
+    "spgateway",
+    "tappay",
     "typegen",
+    "unionpay",
+    "vacc",
+    "webatm"
   ],
   "typescript.tsdk": "node_modules/typescript/lib"
 }

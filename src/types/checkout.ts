@@ -55,3 +55,38 @@ export type CouponProps = {
     }
   }
 }
+export type ShippingOptionIdType = 'sevenEleven' | 'familyMart' | 'okMart' | 'sendByPost' | 'homeDelivery'
+export type PaymentMethodType = 'credit' | 'vacc' | 'cvs' | 'instflag' | 'unionpay' | 'webatm' | 'barcode'
+export type PaymentGatewayType = 'spgateway' | 'tappay' | 'parenting' | 'paypal' | 'commonhealth'
+export type ShippingProps = {
+  name?: string
+  phone?: string
+  address?: string
+  shippingMethod?: string
+  specification?: string
+  storeId?: string
+  storeName?: string
+}
+
+export type InvoiceProps = {
+  name: string
+  phone: string
+  email: string
+  phoneBarCode?: string
+  citizenCode?: string
+  uniformNumber?: string
+  uniformTitle?: string
+  donationCode?: string
+  postCode?: string
+  address?: string
+  referrerEmail?: string
+}
+export type PaymentProps =
+  | {
+      gateway: Extract<PaymentGatewayType, 'spgateway'>
+      method: PaymentMethodType
+    }
+  | {
+      gateway: Exclude<PaymentGatewayType, 'spgateway'>
+      method: Extract<PaymentMethodType, 'credit'>
+    }
