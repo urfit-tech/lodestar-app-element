@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import moment from 'moment'
 import queryString from 'query-string'
+import { css, FlattenSimpleInterpolation } from 'styled-components'
+import { BREAK_POINT } from '../components/common/Responsive'
 import { ProductPlan } from '../types/data'
 
 export const durationFullFormatter = (seconds: number) => {
@@ -78,3 +80,9 @@ export const findCheapestPlan = (plans: Partial<ProductPlan>[]) =>
     (accum, plan) => (accum === null ? plan : getCurrentPrice(plan) < getCurrentPrice(accum) ? plan : accum),
     null as Partial<ProductPlan> | null,
   )
+
+export const desktopViewMixin = (children: FlattenSimpleInterpolation) => css`
+  @media (min-width: ${BREAK_POINT}px) {
+    ${children}
+  }
+`

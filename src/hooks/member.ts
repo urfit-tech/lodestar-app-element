@@ -1,4 +1,4 @@
-import { useApolloClient, useQuery } from '@apollo/react-hooks'
+import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { useApp } from '../contexts/AppContext'
 import hasura from '../hasura'
@@ -98,4 +98,26 @@ export const useSearchMembers = () => {
   }
 
   return searchMembers
+}
+
+export const useUpdateMemberMetadata = () => {
+  const [updateMemberMetadata] = useMutation<hasura.UPDATE_MEMBER_METADATA, hasura.UPDATE_MEMBER_METADATAVariables>(gql`
+    mutation UPDATE_MEMBER_METADATA(
+      $memberId: String!
+      $metadata: jsonb
+      $memberPhones: [member_phone_insert_input!]!
+    ) {
+      update_member(where: { id: { _eq: $memberId } }, _set: { metadata: $metadata }) {
+        affected_rows
+      }
+      insert_member_phone(
+        objects: $memberPhones
+        on_conflict: { constraint: member_phone_member_id_phone_key, update_columns: [] }
+      ) {
+        affected_rows
+      }
+    }
+  `)
+
+  return updateMemberMetadata
 }
