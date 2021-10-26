@@ -1,7 +1,7 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent } from '../../types/element'
-import Responsive, { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
+import Responsive from './Responsive'
 
 const CraftRefBlock = styled.div<{
   options?: { enabled?: boolean }
@@ -45,20 +45,14 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       selected: node.events.selected,
       hovered: node.events.hovered,
     }))
-    const tabletMediaQueryKey = `@media(min-width: ${TABLET_BREAK_POINT})`
-    const desktopMediaQueryKey = `@media(min-width: ${DESKTOP_BREAK_POINT})`
-    const StyledCraftElement = styled(WrappedComponent)({
-      ...props.customStyle,
-      [tabletMediaQueryKey]: props.responsive?.tablet?.customStyle,
-      [desktopMediaQueryKey]: props.responsive?.desktop?.customStyle,
-    }) as ElementComponent<P>
+    const StyledCraftElement = styled(WrappedComponent)(props.customStyle || {}) as ElementComponent<P>
     return (
       <CraftRefBlock ref={ref => ref && connect(ref)} events={{ hovered, selected }} options={{ enabled: editing }}>
         <Responsive.Default>
-          <StyledCraftElement {...props} editing={editing} />
+          <StyledCraftElement {...(props.responsive?.tablet || props.responsive?.desktop || props)} editing={editing} />
         </Responsive.Default>
         <Responsive.Tablet>
-          <StyledCraftElement {...(props.responsive?.tablet || props)} editing={editing} />
+          <StyledCraftElement {...(props.responsive?.tablet || props.responsive?.desktop || props)} editing={editing} />
         </Responsive.Tablet>
         <Responsive.Desktop>
           <StyledCraftElement {...(props.responsive?.desktop || props)} editing={editing} />
