@@ -1,7 +1,8 @@
 import { useEditor, useNode, UserComponent } from '@craftjs/core'
+import { useMediaQuery } from 'react-responsive'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent } from '../../types/element'
-import Responsive from './Responsive'
+import Responsive, { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
 
 const CraftRefBlock = styled.div<{
   options?: { enabled?: boolean }
@@ -45,17 +46,26 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       selected: node.events.selected,
       hovered: node.events.hovered,
     }))
-    const StyledCraftElement = styled(WrappedComponent)(props.customStyle || {}) as ElementComponent<P>
+    const isTablet = useMediaQuery({
+      query: `(min-width: ${TABLET_BREAK_POINT}px, max-width: ${DESKTOP_BREAK_POINT - 1}px)`,
+    })
+    const isDesktop = useMediaQuery({ query: `(min-width: ${DESKTOP_BREAK_POINT}px)` })
+    const responsiveProps = isDesktop
+      ? props.responsive?.desktop || props
+      : isTablet
+      ? props.responsive?.tablet || props.responsive?.desktop || props
+      : props
+    const StyledCraftElement = styled(WrappedComponent)(responsiveProps.customStyle || {}) as ElementComponent<P>
     return (
       <CraftRefBlock ref={ref => ref && connect(ref)} events={{ hovered, selected }} options={{ enabled: editing }}>
         <Responsive.Default>
-          <StyledCraftElement {...(props.responsive?.tablet || props.responsive?.desktop || props)} editing={editing} />
+          <StyledCraftElement {...responsiveProps} editing={editing} />
         </Responsive.Default>
         <Responsive.Tablet>
-          <StyledCraftElement {...(props.responsive?.tablet || props.responsive?.desktop || props)} editing={editing} />
+          <StyledCraftElement {...responsiveProps} editing={editing} />
         </Responsive.Tablet>
         <Responsive.Desktop>
-          <StyledCraftElement {...(props.responsive?.desktop || props)} editing={editing} />
+          <StyledCraftElement {...responsiveProps} editing={editing} />
         </Responsive.Desktop>
       </CraftRefBlock>
     )
