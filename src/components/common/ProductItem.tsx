@@ -1,5 +1,4 @@
-import { Spinner } from '@chakra-ui/react'
-import { Typography } from 'antd'
+import { Heading, Spinner, Text } from '@chakra-ui/react'
 import moment from 'moment'
 import React from 'react'
 import { useIntl } from 'react-intl'
@@ -31,15 +30,6 @@ const StyledProductTitle = styled.div`
   color: var(--gray-darker);
   line-height: 1.5;
   letter-spacing: 0.2px;
-`
-const StyledTitle = styled(Typography.Title)`
-  && {
-    color: var(--gray-darker);
-    font-size: 20px;
-    font-weight: bold;
-    line-height: 1.3;
-    letter-spacing: 0.77px;
-  }
 `
 const StyledPeriod = styled.div`
   ${CommonTextMixin}
@@ -112,9 +102,19 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
     case 'simple':
       return (
         <>
-          <StyledTitle level={2} ellipsis={{ rows: 2 }} className="flex-grow-1 m-0 mr-5">
+          <Heading
+            as="h2"
+            size="md"
+            noOfLines={2}
+            className="flex-grow-1 m-0 mr-5"
+            color="var(--gray-darker)"
+            fontSize="20px"
+            fontWeight="bold"
+            lineHeight="1.3"
+            letterSpacing="0.77px"
+          >
             {title}
-          </StyledTitle>
+          </Heading>
           <StyledCoverImage src={coverUrl || EmptyCover} alt={id} className="flex-shrink-0" />
         </>
       )
@@ -138,10 +138,10 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
             className="flex-shrink-0 mr-3"
           />
           <div className="flex-grow-1">
-            <Typography.Paragraph ellipsis={{ rows: 2 }} className="mb-0">
+            <Text noOfLines={2} mb="0">
               {title}
               {typeof quantity === 'number' ? ` x${quantity}` : ''}
-            </Typography.Paragraph>
+            </Text>
             <StyledMeta className="text-left">
               <PriceLabel listPrice={(salePrice || listPrice || 0) * (quantity || 1)} currencyId={currencyId} />
             </StyledMeta>
@@ -152,14 +152,24 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
       return (
         <>
           <div className="d-flex align-items-center justify-content-between">
-            <StyledTitle level={2} ellipsis={{ rows: 2 }} className="flex-grow-1 m-0 mr-5">
+            <Heading
+              as="h2"
+              size="md"
+              noOfLines={2}
+              className="flex-grow-1 m-0 mr-5"
+              color="var(--gray-darker)"
+              fontSize="20px"
+              fontWeight="bold"
+              lineHeight="1.3"
+              letterSpacing="0.77px"
+            >
               <span>{title}</span>
               {!!startedAt && !!endedAt && (
                 <StyledPeriod className="mt-2">{`${moment(startedAt).format('YYYY-MM-DD(dd)')} ${moment(
                   startedAt,
                 ).format('HH:mm')} - ${moment(endedAt).format('HH:mm')}`}</StyledPeriod>
               )}
-            </StyledTitle>
+            </Heading>
             <CustomRatioImage
               width="88px"
               ratio={3 / 4}
