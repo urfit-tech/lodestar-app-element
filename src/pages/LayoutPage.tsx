@@ -1,4 +1,4 @@
-import { CraftLayout, CraftSection } from '../components/common/CraftElement'
+import { CraftButton, CraftLayout, CraftSection } from '../components/common/CraftElement'
 
 const LayoutPage = () => {
   return (
@@ -11,6 +11,29 @@ const LayoutPage = () => {
         <div>4</div>
         <div>5</div>
       </CraftLayout>
+      <CraftButton
+        title="test"
+        size="lg"
+        customStyle={{
+          margin: 12,
+        }}
+        responsive={{
+          tablet: {
+            title: 'test',
+            size: 'lg',
+            customStyle: {
+              margin: 16,
+            },
+          },
+          desktop: {
+            title: 'test',
+            size: 'lg',
+            customStyle: {
+              margin: 18,
+            },
+          },
+        }}
+      />
     </>
   )
 }

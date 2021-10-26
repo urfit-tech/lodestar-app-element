@@ -47,13 +47,15 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       hovered: node.events.hovered,
     }))
     const isTablet = useMediaQuery({
-      query: `(min-width: ${TABLET_BREAK_POINT}px, max-width: ${DESKTOP_BREAK_POINT - 1}px)`,
+      minWidth: TABLET_BREAK_POINT,
+      maxWidth: DESKTOP_BREAK_POINT - 1,
     })
-    const isDesktop = useMediaQuery({ query: `(min-width: ${DESKTOP_BREAK_POINT}px)` })
+    const isDesktop = useMediaQuery({ minWidth: DESKTOP_BREAK_POINT })
+    console.log({ isTablet, isDesktop })
     const responsiveProps = isDesktop
-      ? props.responsive?.desktop || props
+      ? { ...props, ...props.responsive?.desktop }
       : isTablet
-      ? props.responsive?.tablet || props.responsive?.desktop || props
+      ? { ...props, ...props.responsive?.tablet }
       : props
     const StyledCraftElement = styled(WrappedComponent)(responsiveProps.customStyle || {}) as ElementComponent<P>
     return (
