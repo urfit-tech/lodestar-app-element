@@ -51,7 +51,6 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       maxWidth: DESKTOP_BREAK_POINT - 1,
     })
     const isDesktop = useMediaQuery({ minWidth: DESKTOP_BREAK_POINT })
-    console.log({ isTablet, isDesktop })
     const responsiveProps = isDesktop
       ? { ...props, ...props.responsive?.desktop }
       : isTablet
