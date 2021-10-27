@@ -34,12 +34,15 @@ export type PropsWithCraft<P> = ElementBaseProps<P> & {
   customStyle?: CSSObject
 }
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
+  const StyledCraftElement = styled(WrappedComponent)(
+    (props: PropsWithCraft<P>) => props.customStyle,
+  ) as ElementComponent<P>
   const Component: UserComponent<PropsWithCraft<P>> = props => {
     const { editing } = useEditor(state => ({
       editing: state.options.enabled,
     }))
     const {
-      connectors: { connect },
+      connectors: { connect, drag },
       selected,
       hovered,
     } = useNode(node => ({
@@ -56,9 +59,12 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       : isTablet
       ? { ...props, ...props.responsive?.tablet }
       : props
-    const StyledCraftElement = styled(WrappedComponent)(responsiveProps.customStyle || {}) as ElementComponent<P>
     return (
-      <CraftRefBlock ref={ref => ref && connect(ref)} events={{ hovered, selected }} options={{ enabled: editing }}>
+      <CraftRefBlock
+        ref={ref => ref && connect(drag(ref))}
+        events={{ hovered, selected }}
+        options={{ enabled: editing }}
+      >
         <Responsive.Default>
           <StyledCraftElement {...responsiveProps} editing={editing} />
         </Responsive.Default>
