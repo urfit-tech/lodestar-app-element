@@ -3,6 +3,11 @@ import styled, { css } from 'styled-components'
 import { ElementComponent } from '../../types/element'
 import Title from './Title'
 
+export type SectionProps = {
+  horizontal?: boolean
+  darkMode?: boolean
+}
+
 export const StyledLink = styled(Link)`
   margin-top: 40px;
 `
@@ -15,6 +20,7 @@ const StyledSection = styled.section<SectionProps>`
   position: relative;
   background-size: cover;
   background-position: center;
+  flex-direction: ${props => (props.horizontal ? 'row' : 'column')};
 
   ${props =>
     props.darkMode
@@ -48,8 +54,6 @@ const StyledSection = styled.section<SectionProps>`
           }
         `};
 `
-
-export type SectionProps = { darkMode?: boolean }
 
 const Section: ElementComponent<SectionProps> = props => {
   if (props.loading || props.errors) {

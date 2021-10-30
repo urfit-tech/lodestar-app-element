@@ -1,4 +1,4 @@
-import { CopyIcon, DeleteIcon, PlusSquareIcon, UpDownIcon } from '@chakra-ui/icons'
+import { CopyIcon, DeleteIcon, EditIcon, PlusSquareIcon, UpDownIcon } from '@chakra-ui/icons'
 import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserComponent } from '@craftjs/core'
 import { getRandomId } from '@craftjs/utils'
 import { useIntl } from 'react-intl'
@@ -38,8 +38,10 @@ export const CraftSelectedMixin = css`
 export type PropsWithCraft<P> = ElementBaseProps<P> & {
   responsive?: { tablet?: P & { customStyle?: CSSObject }; desktop?: P & { customStyle?: CSSObject } }
   customStyle?: CSSObject
+  onEdit?: () => void
   onSave?: (template: { rootNodeId: NodeId; serializedNodes: SerializedNodes }) => void
 }
+export type CraftTemplate = { rootNodeId: NodeId; serializedNodes: SerializedNodes }
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
   const StyledCraftElement = styled(WrappedComponent)(
     (props: PropsWithCraft<P>) => props.customStyle,
@@ -67,16 +69,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
           hovered={node.events.hovered}
           selected={node.events.selected}
         >
-          {editor.editing && node.events.hovered && (
-            <CraftController
-              onSave={(rootNodeId, serializedNodes) =>
-                props.onSave?.({
-                  rootNodeId,
-                  serializedNodes,
-                })
-              }
-            />
-          )}
+          {editor.editing && node.events.hovered && <CraftController onSave={props.onSave} onEdit={props.onEdit} />}
           <Responsive.Default>
             <StyledCraftElement {...responsiveProps} editing={editor.editing} />
           </Responsive.Default>
@@ -106,8 +99,9 @@ const StyledControllerItem = styled.button`
   color: white;
   background-color: rgba(0, 0, 0, 0.3);
 `
-const CraftController: React.FC<{ onSave?: (nodeId: string, serializedNodes: SerializedNodes) => void }> = ({
+const CraftController: React.FC<{ onSave?: (template: CraftTemplate) => void; onEdit?: () => void }> = ({
   onSave,
+  onEdit,
 }) => {
   const editor = useEditor()
   const node = useNode()
@@ -120,7 +114,23 @@ const CraftController: React.FC<{ onSave?: (nodeId: string, serializedNodes: Ser
           <UpDownIcon />
         </StyledControllerItem>
       )}
-      <StyledControllerItem onClick={() => onSave?.(node.id, JSON.parse(editor.query.serialize()))}>
+      <StyledControllerItem
+        onClick={() =>
+          node.actions.setCustom(custom => {
+            custom.editing = true
+          })
+        }
+      >
+        <EditIcon />
+      </StyledControllerItem>
+      <StyledControllerItem
+        onClick={() =>
+          onSave?.({
+            rootNodeId: node.id,
+            serializedNodes: JSON.parse(editor.query.serialize()),
+          })
+        }
+      >
         <PlusSquareIcon />
       </StyledControllerItem>
       {!editor.query.node(node.id).isTopLevelNode() && (
