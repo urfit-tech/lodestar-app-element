@@ -44,15 +44,15 @@ export const getActivityCollectionQuery = (activityFields: DocumentNode) => gql`
   ${activityFields}
 `
 
-export const getMemberCollectionQuery = (memberFields: DocumentNode) => gql`
-  query GET_PUBLIC_MEMBER_COLLECTION(
-    $whereClause: member_public_bool_exp
-    $limit: Int
-    $orderByClause: [member_public_order_by!]
-  ) {
-    member_public(where: $whereClause, limit: $limit, order_by: $orderByClause) {
-      ...memberFields
-    }
-  }
-  ${memberFields}
-`
+// export const getMemberCollectionQuery = (memberFields: DocumentNode) => gql`
+//   query GET_PUBLIC_MEMBER_COLLECTION(
+//     $whereClause: member_public_bool_exp
+//     $limit: Int
+//     $orderByClause: [member_public_order_by!]
+//   ) {
+//     member_public(where: $whereClause, limit: $limit, order_by: $orderByClause) {
+//       ...memberFields
+//     }
+//   }
+//   ${memberFields}
+// `

@@ -211,48 +211,12 @@ const activityFields = gql`
     id
     cover_url
     title
-    abstract
-    list_price
-    sale_price
-    sold_at
+    published_at
+    is_participants_visible
     activity_categories {
       category {
         id
         name
-      }
-    }
-    activity_roles(where: { name: { _eq: "instructor" } }) {
-      id
-      name
-      member_id
-    }
-    activity_plans(order_by: { created_at: asc }, limit: 1) {
-      id
-      type
-      title
-      description
-      gains
-      currency {
-        id
-        label
-        unit
-        name
-      }
-      list_price
-      sale_price
-      sold_at
-      discount_down_price
-      period_amount
-      period_type
-      started_at
-      ended_at
-      is_participants_visible
-      published_at
-      auto_renewed
-      activity_plan_enrollments_aggregate {
-        aggregate {
-          count
-        }
       }
     }
     activity_enrollments_aggregate {
@@ -260,17 +224,12 @@ const activityFields = gql`
         count
       }
     }
-    activity_content_sections {
-      activity_contents {
-        duration
-      }
-      activity_contents_aggregate {
-        aggregate {
-          sum {
-            duration
-          }
-        }
-      }
+    activity_sessions {
+      started_at
+      ended_at
+    }
+    activity_tickets {
+      count
     }
   }
 `
