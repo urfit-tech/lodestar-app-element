@@ -1,6 +1,7 @@
-import Icon from '@chakra-ui/icon'
-import { SettingsIcon } from '@chakra-ui/icons'
-import { Node, useEditor, useNode, useNodeReturnType, UserComponent } from '@craftjs/core'
+import { CopyIcon, DeleteIcon, PlusSquareIcon, UpDownIcon } from '@chakra-ui/icons'
+import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserComponent } from '@craftjs/core'
+import { getRandomId } from '@craftjs/utils'
+import { useIntl } from 'react-intl'
 import { useMediaQuery } from 'react-responsive'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent } from '../../types/element'
@@ -8,33 +9,23 @@ import Responsive, { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsiv
 
 const CraftRefBlock = styled.div<{
   editing?: boolean
-  events?: { hovered?: boolean; selected?: boolean }
+  hovered?: boolean
+  selected?: boolean
 }>`
   position: relative;
+  margin: 4px;
   ${props =>
     props?.editing &&
     css`
       cursor: pointer;
-      ${props?.events?.hovered && CraftHoveredMixin}
-      ${props?.events?.selected && CraftSelectedMixin}
+      ${props?.hovered && CraftHoveredMixin}
+      ${props?.selected && CraftSelectedMixin}
     `}
-`
-
-const StyledControls = styled.div`
-  position: absolute;
-  top: -44px;
-  left: 0;
-`
-
-const StyledButton = styled.button`
-  background: var(--gray-light);
-  padding: 8px 16px;
-  border-radius: 4px;
 `
 
 export const CraftHoveredMixin = css`
   border-radius: 2px;
-  border: 1px dashed cornflowerblue;
+  border: 2px dashed cornflowerblue;
 `
 export const CraftSelectedMixin = css`
   border-radius: 2px;
@@ -47,17 +38,17 @@ export const CraftSelectedMixin = css`
 export type PropsWithCraft<P> = ElementBaseProps<P> & {
   responsive?: { tablet?: P & { customStyle?: CSSObject }; desktop?: P & { customStyle?: CSSObject } }
   customStyle?: CSSObject
-  renderExtra?: (node: useNodeReturnType<Node>) => React.ReactNode
+  onSave?: (template: { rootNodeId: NodeId; serializedNodes: SerializedNodes }) => void
 }
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
   const StyledCraftElement = styled(WrappedComponent)(
     (props: PropsWithCraft<P>) => props.customStyle,
   ) as ElementComponent<P>
   const Component: UserComponent<PropsWithCraft<P>> = props => {
-    const { editing } = useEditor(state => ({
+    const node = useNode(node => node)
+    const editor = useEditor(state => ({
       editing: state.options.enabled,
     }))
-    const node = useNode(node => node)
     const isTablet = useMediaQuery({
       minWidth: TABLET_BREAK_POINT,
       maxWidth: DESKTOP_BREAK_POINT - 1,
@@ -69,28 +60,129 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       ? { ...props, ...props.responsive?.tablet }
       : props
     return (
-      <CraftRefBlock editing={editing} events={{ hovered: node.events.hovered, selected: node.events.selected }}>
-        {editing && (
-          <StyledControls className="d-flex">
-            <StyledButton ref={(ref: any) => ref && node.connectors.connect(node.connectors.drag(ref))}>
-              <Icon as={SettingsIcon} />
-            </StyledButton>
-            {props.renderExtra?.(node)}
-          </StyledControls>
-        )}
-        <Responsive.Default>
-          <StyledCraftElement {...responsiveProps} editing={editing} />
-        </Responsive.Default>
-        <Responsive.Tablet>
-          <StyledCraftElement {...responsiveProps} editing={editing} />
-        </Responsive.Tablet>
-        <Responsive.Desktop>
-          <StyledCraftElement {...responsiveProps} editing={editing} />
-        </Responsive.Desktop>
-      </CraftRefBlock>
+      <div>
+        <CraftRefBlock
+          ref={ref => ref && node.connectors.connect(node.connectors.drag(ref))}
+          editing={editor.editing}
+          hovered={node.events.hovered}
+          selected={node.events.selected}
+        >
+          {editor.editing && node.events.hovered && (
+            <CraftController
+              onSave={(rootNodeId, serializedNodes) =>
+                props.onSave?.({
+                  rootNodeId,
+                  serializedNodes,
+                })
+              }
+            />
+          )}
+          <Responsive.Default>
+            <StyledCraftElement {...responsiveProps} editing={editor.editing} />
+          </Responsive.Default>
+          <Responsive.Tablet>
+            <StyledCraftElement {...responsiveProps} editing={editor.editing} />
+          </Responsive.Tablet>
+          <Responsive.Desktop>
+            <StyledCraftElement {...responsiveProps} editing={editor.editing} />
+          </Responsive.Desktop>
+        </CraftRefBlock>
+      </div>
     )
   }
   return Component
 }
 
+const StyledController = styled.div`
+  display: flex;
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  left: 0;
+`
+const StyledControllerItem = styled.button`
+  margin: 2px;
+  padding: 2px 8px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.3);
+`
+const CraftController: React.FC<{ onSave?: (nodeId: string, serializedNodes: SerializedNodes) => void }> = ({
+  onSave,
+}) => {
+  const editor = useEditor()
+  const node = useNode()
+  const { formatMessage } = useIntl()
+
+  return (
+    <StyledController>
+      {editor.query.node(node.id).isDraggable() && (
+        <StyledControllerItem>
+          <UpDownIcon />
+        </StyledControllerItem>
+      )}
+      <StyledControllerItem onClick={() => onSave?.(node.id, JSON.parse(editor.query.serialize()))}>
+        <PlusSquareIcon />
+      </StyledControllerItem>
+      {!editor.query.node(node.id).isTopLevelNode() && (
+        <StyledControllerItem
+          onClick={() => {
+            const parentNodeId = editor.query.node(node.id).get().data.parent
+            const indexToAdd = editor.query.node(parentNodeId).get().data.nodes.indexOf(node.id)
+            const nodeTree = cloneNodeTree(editor.query.node(node.id).toNodeTree()) // id is the node id
+            editor.actions.addNodeTree(nodeTree, parentNodeId, indexToAdd + 1)
+          }}
+        >
+          <CopyIcon />
+        </StyledControllerItem>
+      )}
+      {editor.query.node(node.id).isDeletable() && (
+        <StyledControllerItem
+          onClick={() => {
+            window.confirm(
+              formatMessage({ id: 'common.craftize.confirmDelete', defaultMessage: '確定要刪除？此動作無法復原' }),
+            ) && editor.actions.delete(node.id)
+          }}
+        >
+          <DeleteIcon />
+        </StyledControllerItem>
+      )}
+    </StyledController>
+  )
+}
+
+const cloneNodeTree = (tree: NodeTree): NodeTree => {
+  const newNodes: { [nodeId: string]: Node } = {}
+  const changeNodeId = (rootNode: Node, newParentId?: string) => {
+    const newNodeId = getRandomId()
+    const childNodes: string[] = rootNode.data.nodes.map(childId => changeNodeId(tree.nodes[childId], newNodeId))
+    const linkedNodes: Record<string, string> = Object.keys(rootNode.data.linkedNodes).reduce((accum, id) => {
+      const newLinkedNodeId = changeNodeId(tree.nodes[rootNode.data.linkedNodes[id]], newNodeId)
+      return {
+        ...accum,
+        [id]: newLinkedNodeId,
+      }
+    }, {})
+    newNodes[newNodeId] = {
+      ...rootNode,
+      id: newNodeId,
+      events: {
+        hovered: false,
+        selected: false,
+        dragged: false,
+      },
+      data: {
+        ...rootNode.data,
+        parent: newParentId || rootNode.data.parent,
+        nodes: childNodes,
+        linkedNodes,
+      },
+    }
+    return newNodeId
+  }
+  const rootNodeId = changeNodeId(tree.nodes[tree.rootNodeId])
+  return {
+    rootNodeId,
+    nodes: newNodes,
+  }
+}
 export default Craftize

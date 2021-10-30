@@ -1,4 +1,5 @@
 import { Children } from 'react'
+import { isFragment } from 'react-is'
 import Slider, { Settings as SliderProps } from 'react-slick'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
@@ -34,12 +35,25 @@ const Carousel: ElementComponent<CarouselProps> = props => {
   if (props.loading || props.errors) {
     return null
   }
+  let children = props.children
+
+  // validate top level dom is only one fragment
+  if (Children.count(props.children) === 1 && isFragment(props.children)) {
+    const { children: fragmentChildren } = props.children.props
+    children = fragmentChildren
+  }
+
   return (
-    <StyledSlider {...props} autoplay={props.editing ? false : props.autoplay}>
-      {Children.count(props.children) &&
-        Children.map(props.children, child =>
-          props.editing ? <div style={{ border: '1px dashed cornflowerblue' }}>{child}</div> : <div>{child}</div>,
-        )}
+    <StyledSlider
+      {...props}
+      arrows
+      dots={props.editing || props.dots}
+      autoplay={props.editing ? false : props.autoplay}
+      draggable={props.editing ? false : props.draggable}
+    >
+      {Children.map(children, (child, idx) => (
+        <div key={idx}>{child}</div>
+      ))}
     </StyledSlider>
   )
 }

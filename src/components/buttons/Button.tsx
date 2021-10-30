@@ -3,7 +3,7 @@ import { ElementComponent } from '../../types/element'
 
 export type ButtonProps = {
   title: string
-  size: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg'
   variant?: 'text' | 'solid' | 'outline'
   block?: boolean
   colorScheme?: string
@@ -36,7 +36,7 @@ const StyledButton = styled.button<ButtonProps>`
 `
 
 const Button: ElementComponent<ButtonProps> = props => {
-  const { loading, errors, editing, children } = props
+  const { loading, errors, editing } = props
   return loading || errors ? null : (
     <StyledButton
       {...props}

@@ -11,6 +11,7 @@ export const StyledTitle = styled(Title)`
   margin-bottom: 40px;
 `
 const StyledSection = styled.section<SectionProps>`
+  display: flex;
   position: relative;
   background-size: cover;
   background-position: center;
