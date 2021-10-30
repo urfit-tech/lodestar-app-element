@@ -1,20 +1,35 @@
-import { useEditor, useNode, UserComponent } from '@craftjs/core'
+import Icon from '@chakra-ui/icon'
+import { SettingsIcon } from '@chakra-ui/icons'
+import { Node, useEditor, useNode, useNodeReturnType, UserComponent } from '@craftjs/core'
 import { useMediaQuery } from 'react-responsive'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent } from '../../types/element'
 import Responsive, { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
 
 const CraftRefBlock = styled.div<{
-  options?: { enabled?: boolean }
+  editing?: boolean
   events?: { hovered?: boolean; selected?: boolean }
 }>`
+  position: relative;
   ${props =>
-    props?.options?.enabled &&
+    props?.editing &&
     css`
       cursor: pointer;
       ${props?.events?.hovered && CraftHoveredMixin}
       ${props?.events?.selected && CraftSelectedMixin}
     `}
+`
+
+const StyledControls = styled.div`
+  position: absolute;
+  top: -44px;
+  left: 0;
+`
+
+const StyledButton = styled.button`
+  background: var(--gray-light);
+  padding: 8px 16px;
+  border-radius: 4px;
 `
 
 export const CraftHoveredMixin = css`
@@ -32,6 +47,7 @@ export const CraftSelectedMixin = css`
 export type PropsWithCraft<P> = ElementBaseProps<P> & {
   responsive?: { tablet?: P & { customStyle?: CSSObject }; desktop?: P & { customStyle?: CSSObject } }
   customStyle?: CSSObject
+  renderExtra?: (node: useNodeReturnType<Node>) => React.ReactNode
 }
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
   const StyledCraftElement = styled(WrappedComponent)(
@@ -41,14 +57,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
     const { editing } = useEditor(state => ({
       editing: state.options.enabled,
     }))
-    const {
-      connectors: { connect, drag },
-      selected,
-      hovered,
-    } = useNode(node => ({
-      selected: node.events.selected,
-      hovered: node.events.hovered,
-    }))
+    const node = useNode(node => node)
     const isTablet = useMediaQuery({
       minWidth: TABLET_BREAK_POINT,
       maxWidth: DESKTOP_BREAK_POINT - 1,
@@ -60,11 +69,15 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       ? { ...props, ...props.responsive?.tablet }
       : props
     return (
-      <CraftRefBlock
-        ref={ref => ref && connect(drag(ref))}
-        events={{ hovered, selected }}
-        options={{ enabled: editing }}
-      >
+      <CraftRefBlock editing={editing} events={{ hovered: node.events.hovered, selected: node.events.selected }}>
+        {editing && (
+          <StyledControls className="d-flex">
+            <StyledButton ref={(ref: any) => ref && node.connectors.connect(node.connectors.drag(ref))}>
+              <Icon as={SettingsIcon} />
+            </StyledButton>
+            {props.renderExtra?.(node)}
+          </StyledControls>
+        )}
         <Responsive.Default>
           <StyledCraftElement {...responsiveProps} editing={editing} />
         </Responsive.Default>

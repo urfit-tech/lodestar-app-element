@@ -35,10 +35,10 @@ const Carousel: ElementComponent<CarouselProps> = props => {
     return null
   }
   return (
-    <StyledSlider {...props}>
+    <StyledSlider {...props} autoplay={props.editing ? false : props.autoplay}>
       {Children.count(props.children) &&
         Children.map(props.children, child =>
-          props.editing ? <div style={{ border: '1px dashed cornflowerblue' }}>{child}</div> : child,
+          props.editing ? <div style={{ border: '1px dashed cornflowerblue' }}>{child}</div> : <div>{child}</div>,
         )}
     </StyledSlider>
   )
