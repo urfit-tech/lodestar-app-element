@@ -7,6 +7,7 @@ export type SectionProps = {
 }
 
 const StyledSection = styled.section<SectionProps>`
+  width: 100%;
   display: flex;
   position: relative;
   background-size: cover;
