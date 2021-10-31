@@ -54,7 +54,13 @@ const Carousel: ElementComponent<CarouselProps> = props => {
     ...props,
   }
   return (
-    <StyledSlider className={props.className} ref={sliderRef} {...settings}>
+    <StyledSlider
+      className={props.className}
+      ref={sliderRef}
+      {...settings}
+      swipe={props.editing ? false : props.swipe}
+      draggable={props.editing ? false : props.draggable}
+    >
       {Children.map(children, (child, idx) => (
         <div key={idx}>{child}</div>
       ))}
