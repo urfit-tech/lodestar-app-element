@@ -6,7 +6,7 @@ const CarouselPage = () => {
     currentNode: state.events.selected ? state.nodes[state.events.selected] : null,
   }))
   return (
-    <>
+    <Element id="RootSection" is={CraftSection} canvas>
       <Element id="Section" is={CraftSection} canvas>
         <Element id="Button" is={CraftButton} title="A" />
         <Element id="Button1" is={CraftButton} title="B" />
@@ -41,7 +41,7 @@ const CarouselPage = () => {
           Current node: {currentNode.id} / {JSON.stringify(currentNode.data.custom)}
         </div>
       )}
-    </>
+    </Element>
   )
 }
 

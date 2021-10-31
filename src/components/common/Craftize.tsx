@@ -1,4 +1,12 @@
-import { CopyIcon, DeleteIcon, EditIcon, StarIcon, UpDownIcon } from '@chakra-ui/icons'
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CopyIcon,
+  DeleteIcon,
+  DragHandleIcon,
+  EditIcon,
+  StarIcon,
+} from '@chakra-ui/icons'
 import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserComponent } from '@craftjs/core'
 import { getRandomId } from '@craftjs/utils'
 import { clone, mergeDeepRight } from 'ramda'
@@ -13,12 +21,11 @@ const CraftRefBlock = styled.div<{
   hovered?: boolean
   selected?: boolean
 }>`
-  position: relative;
-  margin: 4px;
   ${props =>
     props?.editing &&
     css`
-      cursor: pointer;
+      position: relative;
+      margin: 4px;
       ${props?.hovered && CraftHoveredMixin}
       ${props?.selected && CraftSelectedMixin}
     `}
@@ -69,7 +76,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
     return (
       <div>
         <CraftRefBlock
-          ref={ref => ref && node.connectors.connect(node.connectors.drag(ref))}
+          ref={ref => ref && node.connectors.connect(ref)}
           editing={editor.editing}
           hovered={node.events.hovered}
           selected={node.events.selected}
@@ -112,8 +119,34 @@ const CraftController: React.FC = () => {
   return (
     <StyledController>
       {editor.query.node(node.id).isDraggable() && (
-        <StyledControllerItem>
-          <UpDownIcon />
+        <StyledControllerItem ref={ref => ref && node.connectors.drag(ref)}>
+          <DragHandleIcon />
+        </StyledControllerItem>
+      )}
+      {!editor.query.node(node.id).isRoot() && (
+        <StyledControllerItem
+          onClick={() => {
+            const nodeIndex = editor.query.node(node.data.parent).get().data.nodes.indexOf(node.id)
+            nodeIndex >= 0 && editor.actions.move(node.id, node.data.parent, nodeIndex <= 0 ? 0 : nodeIndex - 1)
+          }}
+        >
+          <ChevronLeftIcon />
+        </StyledControllerItem>
+      )}
+      {!editor.query.node(node.id).isRoot() && (
+        <StyledControllerItem
+          onClick={() => {
+            const siblingNodes = editor.query.node(node.data.parent).get().data.nodes
+            const nodeIndex = siblingNodes.indexOf(node.id) + 1
+            nodeIndex > 0 &&
+              editor.actions.move(
+                node.id,
+                node.data.parent,
+                nodeIndex >= siblingNodes.length ? nodeIndex : nodeIndex + 1,
+              )
+          }}
+        >
+          <ChevronRightIcon />
         </StyledControllerItem>
       )}
       <StyledControllerItem
