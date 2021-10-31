@@ -45,11 +45,14 @@ const Carousel: ElementComponent<CarouselProps> = props => {
 
   return (
     <StyledSlider
-      {...props}
-      arrows
+      className={props.className}
+      arrows={props.editing || props.arrows}
       dots={props.editing || props.dots}
       autoplay={props.editing ? false : props.autoplay}
       draggable={props.editing ? false : props.draggable}
+      slidesToShow={props.slidesToShow}
+      slidesToScroll={props.slidesToScroll}
+      infinite={props.infinite}
     >
       {Children.map(children, (child, idx) => (
         <div key={idx}>{child}</div>

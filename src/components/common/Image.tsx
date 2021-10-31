@@ -1,31 +1,36 @@
-import styled from 'styled-components'
-import DefaultAvatar from '../../images/default-avatar.svg'
+import styled, { css } from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
 export type ImageProps = {
-  src?: string
+  width?: number
+  height?: number
+  ratio?: number
+  shape?: 'circle' | 'rounded' | 'square'
 }
 
-type AvatarImageProps = {
-  src?: string | null
-  size?: string | number
-  shape?: 'circle' | 'square'
-  background?: string
-}
-export const AvatarImage = styled.div<AvatarImageProps>`
-  ${props => {
-    if (typeof props.size === 'number') {
-      return `width: ${props.size}px; height: ${props.size}px;`
-    }
-
-    return `width: ${props.size || '2rem'}; height: ${props.size || '2rem'};`
-  }}
-  background-color: ${props => props.background || '#ccc'};
-  background-image: url(${props => props.src || DefaultAvatar});
+export const StyledImage = styled.div<ImageProps>`
   background-size: cover;
   background-position: center;
-  border-radius: ${props => (props.shape === 'square' ? '4px' : '50%')};
+  ${props => {
+    const width = props.width ? props.width + 'px' : '100%'
+    const ratio = props.ratio || 3 / 4
+    return css`
+      width: ${width};
+      padding-top: ${props.height ? props.height + 'px' : `calc(${width} * ${ratio})`};
+    `
+  }}
+  background-size: cover;
+  background-position: center;
+  ${props =>
+    props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : undefined};
 `
+
+const Image: ElementComponent<ImageProps> = props => {
+  if (props.loading || props.errors) {
+    return null
+  }
+  return <StyledImage {...props} />
+}
 
 type CustomRatioImageProps = {
   width: string
@@ -44,16 +49,5 @@ export const CustomRatioImage = styled.div<CustomRatioImageProps>`
     props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : ''};
   opacity: ${props => props.disabled && 0.4};
 `
-
-export const StyledImage = styled.img`
-  width: fit-content;
-`
-
-const Image: ElementComponent<ImageProps> = props => {
-  if (props.loading || props.errors) {
-    return null
-  }
-  return <StyledImage {...props} className={props.className} src={props.src} />
-}
 
 export default Image

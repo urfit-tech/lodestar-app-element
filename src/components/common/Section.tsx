@@ -1,20 +1,11 @@
-import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ElementComponent } from '../../types/element'
-import Title from './Title'
 
 export type SectionProps = {
   horizontal?: boolean
   darkMode?: boolean
 }
 
-export const StyledLink = styled(Link)`
-  margin-top: 40px;
-`
-export const StyledTitle = styled(Title)`
-  margin: 0 auto;
-  margin-bottom: 40px;
-`
 const StyledSection = styled.section<SectionProps>`
   display: flex;
   position: relative;

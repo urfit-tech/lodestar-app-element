@@ -60,7 +60,7 @@ const RichCard: ElementComponent<RichCardProps> = props => {
             withName={!!props.avatarName}
           />
         )}
-        <Card.Image src={props.imageType === 'image' ? props.imageUrl : undefined} />
+        {/* <Card.Image src={props.imageType === 'image' ? props.imageUrl : undefined} /> */}
         <Card.Title>{props.title}</Card.Title>
         <Card.Content>{props.paragraph}</Card.Content>
         {props.type === 'referrer' && props.variant === 'backgroundColor' && props.backgroundType === 'solidColor' && (

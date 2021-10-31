@@ -6,6 +6,7 @@ import * as CraftResolvers from './components/common/CraftElement'
 import { LodestarAppProvider } from './contexts/LodestarAppContext'
 import ActivityPage from './pages/ActivityPage'
 import CarouselPage from './pages/CarouselPage'
+import ImagePage from './pages/ImagePage'
 import LayoutPage from './pages/LayoutPage'
 import ProgramContentCollectionPage from './pages/ProgramContentCollectionPage'
 import ProgramElementPage from './pages/ProgramElementPage'
@@ -21,6 +22,7 @@ const routes = [
   { name: 'Layout', path: '/layout', component: LayoutPage },
   { name: 'Text', path: '/text', component: TextPage },
   { name: 'Carousel', path: '/carousel', component: CarouselPage },
+  { name: 'Image', path: '/image', component: ImagePage },
 ]
 const App: React.VFC = () => {
   const [editing, setEditing] = useState(false)
