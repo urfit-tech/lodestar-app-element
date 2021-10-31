@@ -1,37 +1,42 @@
-import { Children } from 'react'
+import { Children, useEffect, useRef } from 'react'
 import { isFragment } from 'react-is'
-import Slider, { Settings as SliderProps } from 'react-slick'
+import Slider, { Settings, Settings as SliderProps } from 'react-slick'
 import styled from 'styled-components'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent, ElementProps } from '../../types/element'
 
-export type CarouselProps = SliderProps & { variant?: 'cover' }
+export type CarouselProps = SliderProps & { variant?: 'cover'; currentSlide?: number }
 
-const StyledSlider = styled(Slider)<CarouselProps>`
-  && {
-    ${props =>
-      props.variant === 'cover' &&
-      `
-        .slick-dots {
-          bottom: 25px;
-        }
-      `}
-    .slick-dots {
-      z-index: 1;
-    }
-
-    li button::before {
-      opacity: 1;
+const StyledSlider = styled(Slider)<ElementProps<CarouselProps>>`
+  .slick-arrow {
+    z-index: 1;
+    pointer-events: ${props => props.editing && 'none'};
+  }
+  .slick-prev {
+    left: 4px;
+  }
+  .slick-next {
+    right: 4px;
+  }
+  .slick-dots {
+    bottom: 8px;
+    pointer-events: ${props => props.editing && 'none'};
+    button::before {
       font-size: 10px;
       color: #cdcdcd;
-      transition: 0.3s;
     }
-    li.slick-active button::before {
+    .slick-active button::before {
       color: ${props => props.theme['@primary-color']};
     }
   }
 `
 
 const Carousel: ElementComponent<CarouselProps> = props => {
+  const sliderRef = useRef<Slider>(null)
+  useEffect(() => {
+    console.log('currentSlide', props.currentSlide)
+    sliderRef.current?.slickGoTo(props.currentSlide || 0)
+  }, [props.currentSlide])
+
   if (props.loading || props.errors) {
     return null
   }
@@ -42,18 +47,14 @@ const Carousel: ElementComponent<CarouselProps> = props => {
     const { children: fragmentChildren } = props.children.props
     children = fragmentChildren
   }
-
+  const settings: Settings = {
+    arrows: true,
+    dots: true,
+    slidesToShow: 1,
+    ...props,
+  }
   return (
-    <StyledSlider
-      className={props.className}
-      arrows={props.editing || props.arrows}
-      dots={props.editing || props.dots}
-      autoplay={props.editing ? false : props.autoplay}
-      draggable={props.editing ? false : props.draggable}
-      slidesToShow={props.slidesToShow}
-      slidesToScroll={props.slidesToScroll}
-      infinite={props.infinite}
-    >
+    <StyledSlider className={props.className} ref={sliderRef} {...settings}>
       {Children.map(children, (child, idx) => (
         <div key={idx}>{child}</div>
       ))}
