@@ -99,7 +99,7 @@ const StyledControllerItem = styled.button`
   background-color: rgba(0, 0, 0, 0.3);
 `
 const CraftController: React.FC = () => {
-  const editor = useEditor()
+  const editor = useEditor(state => ({ nodes: state.nodes }))
   const node = useNode(node => node)
   const { formatMessage } = useIntl()
 
@@ -111,11 +111,13 @@ const CraftController: React.FC = () => {
         </StyledControllerItem>
       )}
       <StyledControllerItem
-        onClick={() =>
-          node.actions.setCustom(custom => {
-            custom.editing = true
-          })
-        }
+        onClick={() => {
+          for (const nodeId in editor.nodes) {
+            editor.actions.setCustom(nodeId, custom => {
+              custom.editing = nodeId === node.id
+            })
+          }
+        }}
       >
         <EditIcon />
       </StyledControllerItem>

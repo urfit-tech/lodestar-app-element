@@ -1,7 +1,10 @@
-import { Element } from '@craftjs/core'
+import { Element, useEditor } from '@craftjs/core'
 import { CraftButton, CraftCarousel, CraftSection } from '../components/common/CraftElement'
 
 const CarouselPage = () => {
+  const { currentNode } = useEditor(state => ({
+    currentNode: state.events.selected ? state.nodes[state.events.selected] : null,
+  }))
   return (
     <>
       <Element id="Section" is={CraftSection} canvas>
@@ -33,6 +36,11 @@ const CarouselPage = () => {
           canvas
         />
       </Element>
+      {currentNode && (
+        <div>
+          Current node: {currentNode.id} / {JSON.stringify(currentNode.data.custom)}
+        </div>
+      )}
     </>
   )
 }
