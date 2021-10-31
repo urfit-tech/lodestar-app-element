@@ -1,7 +1,7 @@
 import { CopyIcon, DeleteIcon, EditIcon, StarIcon, UpDownIcon } from '@chakra-ui/icons'
 import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserComponent } from '@craftjs/core'
 import { getRandomId } from '@craftjs/utils'
-import { clone } from 'ramda'
+import { clone, mergeDeepRight } from 'ramda'
 import { useIntl } from 'react-intl'
 import { useMediaQuery } from 'react-responsive'
 import styled, { css, CSSObject } from 'styled-components'
@@ -59,11 +59,13 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       maxWidth: DESKTOP_BREAK_POINT - 1,
     })
     const isDesktop = useMediaQuery({ minWidth: DESKTOP_BREAK_POINT })
-    const responsiveProps = isDesktop
-      ? { ...props, ...props.responsive?.desktop }
-      : isTablet
-      ? { ...props, ...props.responsive?.tablet }
-      : { ...props, ...props.responsive?.mobile }
+    const responsiveProps = (
+      isDesktop
+        ? mergeDeepRight(props, props.responsive?.desktop || {})
+        : isTablet
+        ? mergeDeepRight(props, props.responsive?.tablet || {})
+        : mergeDeepRight(props, props.responsive?.mobile || {})
+    ) as PropsWithCraft<P>
     return (
       <div>
         <CraftRefBlock
