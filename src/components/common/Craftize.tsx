@@ -37,7 +37,11 @@ export const CraftSelectedMixin = css`
 // FIXME: only accept for FC and CC, not VFC
 
 export type PropsWithCraft<P> = ElementBaseProps<P> & {
-  responsive?: { tablet?: P & { customStyle?: CSSObject }; desktop?: P & { customStyle?: CSSObject } }
+  responsive?: {
+    mobile?: P & { customStyle?: CSSObject }
+    tablet?: P & { customStyle?: CSSObject }
+    desktop?: P & { customStyle?: CSSObject }
+  }
   customStyle?: CSSObject
 }
 export type CraftTemplate = { rootNodeId: NodeId; serializedNodes: SerializedNodes }
@@ -59,7 +63,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       ? { ...props, ...props.responsive?.desktop }
       : isTablet
       ? { ...props, ...props.responsive?.tablet }
-      : props
+      : { ...props, ...props.responsive?.mobile }
     return (
       <div>
         <CraftRefBlock
