@@ -1,6 +1,7 @@
-import { CopyIcon, DeleteIcon, EditIcon, PlusSquareIcon, UpDownIcon } from '@chakra-ui/icons'
+import { CopyIcon, DeleteIcon, EditIcon, StarIcon, UpDownIcon } from '@chakra-ui/icons'
 import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserComponent } from '@craftjs/core'
 import { getRandomId } from '@craftjs/utils'
+import { clone } from 'ramda'
 import { useIntl } from 'react-intl'
 import { useMediaQuery } from 'react-responsive'
 import styled, { css, CSSObject } from 'styled-components'
@@ -38,8 +39,6 @@ export const CraftSelectedMixin = css`
 export type PropsWithCraft<P> = ElementBaseProps<P> & {
   responsive?: { tablet?: P & { customStyle?: CSSObject }; desktop?: P & { customStyle?: CSSObject } }
   customStyle?: CSSObject
-  onEdit?: () => void
-  onSave?: (template: { rootNodeId: NodeId; serializedNodes: SerializedNodes }) => void
 }
 export type CraftTemplate = { rootNodeId: NodeId; serializedNodes: SerializedNodes }
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
@@ -69,7 +68,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
           hovered={node.events.hovered}
           selected={node.events.selected}
         >
-          {editor.editing && node.events.hovered && <CraftController onSave={props.onSave} onEdit={props.onEdit} />}
+          {editor.editing && node.events.hovered && <CraftController />}
           <Responsive.Default>
             <StyledCraftElement {...responsiveProps} editing={editor.editing} />
           </Responsive.Default>
@@ -99,12 +98,9 @@ const StyledControllerItem = styled.button`
   color: white;
   background-color: rgba(0, 0, 0, 0.3);
 `
-const CraftController: React.FC<{ onSave?: (template: CraftTemplate) => void; onEdit?: () => void }> = ({
-  onSave,
-  onEdit,
-}) => {
+const CraftController: React.FC = () => {
   const editor = useEditor()
-  const node = useNode()
+  const node = useNode(node => node)
   const { formatMessage } = useIntl()
 
   return (
@@ -123,17 +119,7 @@ const CraftController: React.FC<{ onSave?: (template: CraftTemplate) => void; on
       >
         <EditIcon />
       </StyledControllerItem>
-      <StyledControllerItem
-        onClick={() =>
-          onSave?.({
-            rootNodeId: node.id,
-            serializedNodes: JSON.parse(editor.query.serialize()),
-          })
-        }
-      >
-        <PlusSquareIcon />
-      </StyledControllerItem>
-      {!editor.query.node(node.id).isTopLevelNode() && (
+      {!editor.query.node(node.id).isRoot() && (
         <StyledControllerItem
           onClick={() => {
             const parentNodeId = editor.query.node(node.id).get().data.parent
@@ -145,6 +131,16 @@ const CraftController: React.FC<{ onSave?: (template: CraftTemplate) => void; on
           <CopyIcon />
         </StyledControllerItem>
       )}
+      <StyledControllerItem
+        onClick={() =>
+          node.data.custom?.onSave?.({
+            rootNodeId: node.id,
+            serializedNodes: JSON.parse(editor.query.serialize()),
+          })
+        }
+      >
+        <StarIcon />
+      </StyledControllerItem>
       {editor.query.node(node.id).isDeletable() && (
         <StyledControllerItem
           onClick={() => {
@@ -163,35 +159,27 @@ const CraftController: React.FC<{ onSave?: (template: CraftTemplate) => void; on
 const cloneNodeTree = (tree: NodeTree): NodeTree => {
   const newNodes: { [nodeId: string]: Node } = {}
   const changeNodeId = (rootNode: Node, newParentId?: string) => {
-    const newNodeId = getRandomId()
-    const childNodes: string[] = rootNode.data.nodes.map(childId => changeNodeId(tree.nodes[childId], newNodeId))
-    const linkedNodes: Record<string, string> = Object.keys(rootNode.data.linkedNodes).reduce((accum, id) => {
-      const newLinkedNodeId = changeNodeId(tree.nodes[rootNode.data.linkedNodes[id]], newNodeId)
+    const clonedNode = clone(rootNode)
+    clonedNode.id = getRandomId()
+    clonedNode.data.parent = newParentId || clonedNode.data.parent
+    clonedNode.data.nodes = clonedNode.data.nodes.map(childId => changeNodeId(tree.nodes[childId], clonedNode.id))
+    clonedNode.data.linkedNodes = Object.keys(clonedNode.data.linkedNodes).reduce((accum, id) => {
+      const newLinkedNodeId = changeNodeId(tree.nodes[clonedNode.data.linkedNodes[id]], clonedNode.id)
       return {
         ...accum,
         [id]: newLinkedNodeId,
       }
     }, {})
-    newNodes[newNodeId] = {
-      ...rootNode,
-      id: newNodeId,
-      events: {
-        hovered: false,
-        selected: false,
-        dragged: false,
-      },
-      data: {
-        ...rootNode.data,
-        parent: newParentId || rootNode.data.parent,
-        nodes: childNodes,
-        linkedNodes,
-      },
+    clonedNode.events = {
+      hovered: false,
+      selected: false,
+      dragged: false,
     }
-    return newNodeId
+    newNodes[clonedNode.id] = clonedNode
+    return clonedNode.id
   }
-  const rootNodeId = changeNodeId(tree.nodes[tree.rootNodeId])
   return {
-    rootNodeId,
+    rootNodeId: changeNodeId(tree.nodes[tree.rootNodeId]),
     nodes: newNodes,
   }
 }
