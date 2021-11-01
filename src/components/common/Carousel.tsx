@@ -18,14 +18,17 @@ const StyledSlider = styled(Slider)<ElementProps<CarouselProps>>`
     right: 4px;
   }
   .slick-dots {
+    z-index: 1;
     bottom: 8px;
     pointer-events: ${props => props.editing && 'none'};
     button::before {
-      font-size: 10px;
-      color: #cdcdcd;
+      content: '';
+      width: 20px;
+      height: 20px;
+      background-color: #cdcdcd;
     }
     .slick-active button::before {
-      color: ${props => props.theme['@primary-color']};
+      background-color: ${props => props.theme['@primary-color']};
     }
   }
 `
@@ -33,7 +36,6 @@ const StyledSlider = styled(Slider)<ElementProps<CarouselProps>>`
 const Carousel: ElementComponent<CarouselProps> = props => {
   const sliderRef = useRef<Slider>(null)
   useEffect(() => {
-    console.log('currentSlide', props.currentSlide)
     sliderRef.current?.slickGoTo(props.currentSlide || 0)
   }, [props.currentSlide])
 
