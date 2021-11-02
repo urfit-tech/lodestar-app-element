@@ -9,7 +9,7 @@ import * as hasura from '../../hasura'
 import { findCheapestPlan, getCurrentPrice, notEmpty } from '../../helpers'
 import { Category, ProductPlan, ProgramPackage } from '../../types/data'
 import { ElementComponent } from '../../types/element'
-import { CustomSourceOptions, PublishedAtSourceOptions } from '../../types/options'
+import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
 import ProgramPackageCard from '../cards/ProgramPackageCard'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
@@ -29,7 +29,7 @@ type ProgramPackageData = DeepPick<
 type ProgramPackageContextCollection = ContextCollection<ProgramPackageData>
 
 export type ProgramPackageCollectionProps = {
-  sourceOptions: CustomSourceOptions | PublishedAtSourceOptions
+  source?: ProductCustomSource | ProductPublishedAtSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
@@ -37,22 +37,22 @@ export type ProgramPackageCollectionProps = {
 const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
-  const { loading, errors, children } = props
+  const { loading, errors, children, source = { type: 'publishedAt' } } = props
   if (loading || errors) {
     return null
   }
 
   const ElementCollection = Collection(props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard)
   let ContextCollection: ProgramPackageContextCollection
-  switch (props.sourceOptions.source) {
+  switch (source.type) {
     case 'publishedAt':
-      ContextCollection = collectPublishedAtCollection(props.sourceOptions)
+      ContextCollection = collectPublishedAtCollection(source)
       break
     case 'custom':
-      ContextCollection = collectCustomCollection(props.sourceOptions)
+      ContextCollection = collectCustomCollection(source)
       break
     default:
-      ContextCollection = collectPublishedAtCollection(props.sourceOptions)
+      ContextCollection = collectPublishedAtCollection(source)
   }
 
   return (
@@ -64,11 +64,8 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
             : uniqBy((category: Category) => category.id)(
                 ctx.data
                   ?.flatMap(d => d.categories)
-                  .filter(
-                    category =>
-                      props.sourceOptions.source === 'custom' ||
-                      !props.sourceOptions.defaultCategoryIds?.includes(category.id),
-                  ) || [],
+                  .filter(category => source.type === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
+                  [],
               )
         const filter = (d: ProgramPackageData) =>
           !props.withSelector ||
@@ -114,7 +111,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
   )
 }
 
-const collectCustomCollection = (options: CustomSourceOptions) => {
+const collectCustomCollection = (options: ProductCustomSource) => {
   const ProgramPackageElementCollection: ProgramPackageContextCollection = ({ children }) => {
     const {
       data: rawData,
@@ -149,7 +146,7 @@ const collectCustomCollection = (options: CustomSourceOptions) => {
   return ProgramPackageElementCollection
 }
 
-const collectPublishedAtCollection = (options: PublishedAtSourceOptions) => {
+const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
   const ProgramPackageElementCollection: ProgramPackageContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<
       hasura.GET_PROGRAM_PACKAGE_COLLECTION,

@@ -9,7 +9,7 @@ import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
 import { ProgramContent } from '../../types/data'
 import { ElementComponent } from '../../types/element'
-import { CustomSourceOptions, RecentWatchedSourceOptions } from '../../types/options'
+import { ProductCustomSource, ProductRecentWatchedSource } from '../../types/options'
 import ProgramContentCard from '../cards/ProgramContentCard'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
 
@@ -27,7 +27,7 @@ type ProgramContentData = DeepPick<
 type ProgramContentContextCollection = ContextCollection<ProgramContentData>
 
 export type ProgramContentCollectionProps = {
-  sourceOptions: CustomSourceOptions | RecentWatchedSourceOptions
+  source?: ProductCustomSource | ProductRecentWatchedSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
@@ -35,22 +35,22 @@ export type ProgramContentCollectionProps = {
 const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
-  const { loading, errors, children } = props
+  const { loading, errors, children, source = { type: 'recentWatched' } } = props
   if (loading || errors) {
     return null
   }
 
   const ElementCollection = Collection(props.variant === 'card' ? ProgramContentCard : ProgramContentCard)
   let ContextCollection: ProgramContentContextCollection
-  switch (props.sourceOptions.source) {
+  switch (source.type) {
     case 'recentWatched':
-      ContextCollection = collectRecentWatchedCollection(props.sourceOptions)
+      ContextCollection = collectRecentWatchedCollection(source)
       break
     case 'custom':
-      ContextCollection = collectCustomCollection(props.sourceOptions)
+      ContextCollection = collectCustomCollection(source)
       break
     default:
-      ContextCollection = collectRecentWatchedCollection(props.sourceOptions)
+      ContextCollection = collectRecentWatchedCollection(source)
   }
 
   return (
@@ -86,7 +86,7 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
   )
 }
 
-const collectCustomCollection = (options: CustomSourceOptions) => {
+const collectCustomCollection = (options: ProductCustomSource) => {
   const ProgramContentElementCollection: ProgramContentContextCollection = ({ children }) => {
     const {
       data: rawData,
@@ -136,7 +136,7 @@ const collectCustomCollection = (options: CustomSourceOptions) => {
   return ProgramContentElementCollection
 }
 
-const collectRecentWatchedCollection = (options: RecentWatchedSourceOptions) => {
+const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => {
   const ProgramContentElementCollection: ProgramContentContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<
       hasura.GET_RECENT_PROGRAM_PROGRESS,

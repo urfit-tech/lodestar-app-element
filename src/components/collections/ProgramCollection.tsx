@@ -10,7 +10,7 @@ import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
 import { Category, PeriodType, ProductRole, Program } from '../../types/data'
 import { ElementComponent } from '../../types/element'
-import { CurrentPriceSourceOptions, CustomSourceOptions, PublishedAtSourceOptions } from '../../types/options'
+import { ProductCurrentPriceSource, ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
 import ProgramCard from '../cards/ProgramCard'
 import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
 import Collection, { CollectionLayout, ContextCollection } from '../collections/Collection'
@@ -34,7 +34,7 @@ type ProgramData = DeepPick<
 type ProgramContextCollection = ContextCollection<ProgramData>
 
 export type ProgramCollectionProps = {
-  sourceOptions: CustomSourceOptions | PublishedAtSourceOptions | CurrentPriceSourceOptions
+  source?: ProductCustomSource | ProductPublishedAtSource | ProductCurrentPriceSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
@@ -42,25 +42,25 @@ export type ProgramCollectionProps = {
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
-  const { loading, errors, children } = props
+  const { loading, errors, children, source = { type: 'publishedAt' } } = props
   if (loading || errors) {
     return null
   }
 
   const ElementCollection = Collection(props.variant === 'card' ? ProgramCard : ProgramSecondaryCard)
   let ContextCollection: ProgramContextCollection
-  switch (props.sourceOptions.source) {
+  switch (source.type) {
     case 'publishedAt':
-      ContextCollection = collectPublishedAtCollection(props.sourceOptions)
+      ContextCollection = collectPublishedAtCollection(source)
       break
     case 'currentPrice':
-      ContextCollection = collectCurrentPriceCollection(props.sourceOptions)
+      ContextCollection = collectCurrentPriceCollection(source)
       break
     case 'custom':
-      ContextCollection = collectCustomCollection(props.sourceOptions)
+      ContextCollection = collectCustomCollection(source)
       break
     default:
-      ContextCollection = collectPublishedAtCollection(props.sourceOptions)
+      ContextCollection = collectPublishedAtCollection(source)
   }
 
   return (
@@ -72,11 +72,8 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
             : uniqBy((category: Category) => category.id)(
                 ctx.data
                   ?.flatMap(d => d.categories)
-                  .filter(
-                    category =>
-                      props.sourceOptions.source === 'custom' ||
-                      !props.sourceOptions.defaultCategoryIds?.includes(category.id),
-                  ) || [],
+                  .filter(category => source.type === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
+                  [],
               )
         const filter = (d: ProgramData) =>
           !props.withSelector ||
@@ -124,7 +121,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   )
 }
 
-const collectCustomCollection = (options: CustomSourceOptions) => {
+const collectCustomCollection = (options: ProductCustomSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),
@@ -156,7 +153,7 @@ const collectCustomCollection = (options: CustomSourceOptions) => {
   return ProgramElementCollection
 }
 
-const collectPublishedAtCollection = (options: PublishedAtSourceOptions) => {
+const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),
@@ -194,7 +191,7 @@ const collectPublishedAtCollection = (options: PublishedAtSourceOptions) => {
   return ProgramElementCollection
 }
 
-const collectCurrentPriceCollection = (options: CurrentPriceSourceOptions) => {
+const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),

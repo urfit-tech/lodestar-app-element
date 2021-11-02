@@ -10,7 +10,7 @@ import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
 import { Activity, Category } from '../../types/data'
 import { ElementComponent } from '../../types/element'
-import { CustomSourceOptions, PublishedAtSourceOptions } from '../../types/options'
+import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
 import ActivityCard from '../cards/ActivityCard'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
@@ -30,7 +30,7 @@ type ActivityData = DeepPick<
 type ActivityContextCollection = ContextCollection<ActivityData>
 
 export type ActivityCollectionProps = {
-  sourceOptions: CustomSourceOptions | PublishedAtSourceOptions
+  source?: ProductCustomSource | ProductPublishedAtSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
@@ -38,22 +38,22 @@ export type ActivityCollectionProps = {
 const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
-  const { loading, errors, children } = props
+  const { loading, errors, children, source = { type: 'publishedAt' } } = props
   if (loading || errors) {
     return null
   }
 
   const ElementCollection = Collection(props.variant === 'card' ? ActivityCard : ActivityCard)
   let ContextCollection: ActivityContextCollection
-  switch (props.sourceOptions.source) {
+  switch (source.type) {
     case 'publishedAt':
-      ContextCollection = collectPublishedAtCollection(props.sourceOptions)
+      ContextCollection = collectPublishedAtCollection(source)
       break
     case 'custom':
-      ContextCollection = collectCustomCollection(props.sourceOptions)
+      ContextCollection = collectCustomCollection(source)
       break
     default:
-      ContextCollection = collectPublishedAtCollection(props.sourceOptions)
+      ContextCollection = collectPublishedAtCollection(source)
   }
 
   return (
@@ -65,11 +65,8 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
             : uniqBy((category: Category) => category.id)(
                 ctx.data
                   ?.flatMap(d => d.categories)
-                  .filter(
-                    category =>
-                      props.sourceOptions.source === 'custom' ||
-                      !props.sourceOptions.defaultCategoryIds?.includes(category.id),
-                  ) || [],
+                  .filter(category => source.type === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
+                  [],
               )
         const filter = (d: ActivityData) =>
           !props.withSelector ||
@@ -115,7 +112,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
   )
 }
 
-const collectCustomCollection = (options: CustomSourceOptions) => {
+const collectCustomCollection = (options: ProductCustomSource) => {
   const ActivityElementCollection: ActivityContextCollection = ({ children }) => {
     const {
       data: rawData,
@@ -150,7 +147,7 @@ const collectCustomCollection = (options: CustomSourceOptions) => {
   return ActivityElementCollection
 }
 
-const collectPublishedAtCollection = (options: PublishedAtSourceOptions) => {
+const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
   const ActivityElementCollection: ActivityContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<hasura.GET_ACTIVITY_COLLECTION, hasura.GET_ACTIVITY_COLLECTIONVariables>(
       getActivityCollectionQuery(activityFields),

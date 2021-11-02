@@ -6,8 +6,8 @@ const ProgramElementPage: React.VFC = () => {
       <CraftProgramCollection
         withSelector
         variant="card"
-        sourceOptions={{
-          source: 'currentPrice',
+        source={{
+          type: 'currentPrice',
           // min: 10,
           max: 1000,
           asc: true,
@@ -29,8 +29,8 @@ const ProgramElementPage: React.VFC = () => {
           columns: [1, 3, 5],
         }}
         withSelector
-        sourceOptions={{
-          source: 'publishedAt',
+        source={{
+          type: 'publishedAt',
           asc: true,
           defaultCategoryIds: ['286b4906-0550-4c56-a16b-ce88fe516690'],
         }}
@@ -42,8 +42,8 @@ const ProgramElementPage: React.VFC = () => {
           gap: 12,
           columns: 2,
         }}
-        sourceOptions={{
-          source: 'custom',
+        source={{
+          type: 'custom',
           idList: [
             'fa0c97e9-475e-43b6-b7ed-67f8e27ab4c6',
             'c08d6910-893a-419a-9df5-792727541dd1',

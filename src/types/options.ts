@@ -1,6 +1,6 @@
-export type SourceOptions<S, T> = { source: S } & T
-export type CustomSourceOptions = SourceOptions<'custom', { idList: string[] }>
-export type PublishedAtSourceOptions = SourceOptions<
+export type ProductSource<T, P> = { type: T } & P
+export type ProductCustomSource = ProductSource<'custom', { idList: string[] }>
+export type ProductPublishedAtSource = ProductSource<
   'publishedAt',
   {
     limit?: number
@@ -9,7 +9,7 @@ export type PublishedAtSourceOptions = SourceOptions<
     defaultCategoryIds?: string[]
   }
 >
-export type CurrentPriceSourceOptions = SourceOptions<
+export type ProductCurrentPriceSource = ProductSource<
   'currentPrice',
   {
     limit?: number
@@ -20,7 +20,7 @@ export type CurrentPriceSourceOptions = SourceOptions<
     defaultCategoryIds?: string[]
   }
 >
-export type RecentWatchedSourceOptions = SourceOptions<
+export type ProductRecentWatchedSource = ProductSource<
   'recentWatched',
   {
     watchedAt?: Date
@@ -28,7 +28,7 @@ export type RecentWatchedSourceOptions = SourceOptions<
   }
 >
 
-export type RoleSourceOptions = SourceOptions<
+export type ProductRoleSource = ProductSource<
   'role',
   {
     role: 'app-owner' | 'content-creator' | 'member' | 'author'

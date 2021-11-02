@@ -12,7 +12,7 @@ const ProgramPackagePage: React.VFC = () => {
         totalPrograms={3}
         currentPrice={19800}
       />
-      {/* <CraftProgramPackageCollection variant="card" sourceOptions={{ source: 'publishedAt' }} /> */}
+      {/* <CraftProgramPackageCollection variant="card" source={{ source: 'publishedAt' }} /> */}
     </div>
   )
 }

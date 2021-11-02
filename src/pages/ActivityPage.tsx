@@ -1,7 +1,7 @@
 const ActivityPage: React.VFC = () => {
   return (
     <div>
-      {/* <CraftActivityCollection variant="card" sourceOptions={{ source: 'publishedAt', limit: 3 }} withSelector /> */}
+      {/* <CraftActivityCollection variant="card" source={{ source: 'publishedAt', limit: 3 }} withSelector /> */}
     </div>
   )
 }
