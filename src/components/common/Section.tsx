@@ -1,7 +1,11 @@
+import classNames from 'classnames'
+import { useHistory } from 'react-router'
 import styled, { css } from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
 export type SectionProps = {
+  link?: string
+  openTab?: boolean
   horizontal?: boolean
   darkMode?: boolean
 }
@@ -48,10 +52,29 @@ const StyledSection = styled.section<SectionProps>`
 `
 
 const Section: ElementComponent<SectionProps> = props => {
+  const history = useHistory()
   if (props.loading || props.errors) {
     return null
   }
-  return <StyledSection {...props}>{props.children}</StyledSection>
+  return (
+    <StyledSection
+      {...props}
+      className={classNames(props.className, { 'cursor-pointer': props.link })}
+      onClick={e =>
+        props.editing || !props.link
+          ? e.preventDefault()
+          : props.link.startsWith('http')
+          ? props.openTab
+            ? window.open(props.link)
+            : window.location.assign(props.link)
+          : props.openTab
+          ? window.open(window.location.origin + props.link)
+          : history.push(props.link)
+      }
+    >
+      {props.children}
+    </StyledSection>
+  )
 }
 
 export default Section

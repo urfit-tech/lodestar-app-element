@@ -9,7 +9,7 @@ const StyledButton = styled.button`
 `
 const LayoutPage = () => {
   return (
-    <Element id="Section" is={CraftSection} canvas customStyle={{ padding: 0 }}>
+    <Element id="Section" is={CraftSection} canvas customStyle={{ padding: 0 }} link="/image">
       <Element is={CraftLayout} ratios={[1, 3, 1]} canvas customStyle={{ padding: 0 }}>
         <div>1</div>
         <div>2</div>
