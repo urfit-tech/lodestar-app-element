@@ -6,6 +6,7 @@ import ActivityCollection from '../collections/ActivityCollection'
 import ProgramCollection from '../collections/ProgramCollection'
 import ProgramContentCollection from '../collections/ProgramContentCollection'
 import ProgramPackageCollection from '../collections/ProgramPackageCollection'
+import ProjectCollection from '../collections/ProjectCollection'
 import Carousel from './Carousel'
 import Craftize from './Craftize'
 import Embedded from './Embedded'
@@ -35,3 +36,4 @@ export const CraftProgramCollection = Craftize(ProgramCollection)
 export const CraftProgramContentCollection = Craftize(ProgramContentCollection)
 export const CraftProgramPackageCollection = Craftize(ProgramPackageCollection)
 export const CraftActivityCollection = Craftize(ActivityCollection)
+export const CraftProjectCollection = Craftize(ProjectCollection)

@@ -71,6 +71,7 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
                     <ProgramContentElement
                       editing={props.editing}
                       title={programContent.title}
+                      link={`/programs/${programContent.contentSection.program.id}/contents/${programContent.id}`}
                       coverUrl={programContent.contentSection.program.coverUrl}
                       type={programContent.videos.length > 0 ? ('video' as const) : ('text' as const)}
                       duration={programContent.duration}

@@ -99,6 +99,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                 data={ctx.data?.filter(filter) || []}
                 renderElement={(program, ProgramElement) => (
                   <ProgramElement
+                    editing={props.editing}
                     id={program.id}
                     title={program.title}
                     abstract={program.abstract || ''}

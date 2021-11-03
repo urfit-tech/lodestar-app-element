@@ -1,6 +1,15 @@
 import { DocumentNode } from 'graphql'
 import gql from 'graphql-tag'
 
+export const getProjectCollectionQuery = (projectFields: DocumentNode) => gql`
+  query GET_PROJECT_COLLECTION($whereClause: project_bool_exp, $limit: Int, $orderByClause: [project_order_by!]) {
+    project(where: $whereClause, limit: $limit, order_by: $orderByClause) {
+      ...projectFields
+    }
+  }
+  ${projectFields}
+`
+
 export const getProgramCollectionQuery = (programFields: DocumentNode) => gql`
   query GET_PROGRAM_COLLECTION($whereClause: program_bool_exp, $limit: Int, $orderByClause: [program_order_by!]) {
     program(where: $whereClause, limit: $limit, order_by: $orderByClause) {

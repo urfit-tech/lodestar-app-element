@@ -6,7 +6,7 @@ import { DeepPick } from 'ts-deep-pick/lib'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
 import { CouponProps } from '../types/checkout'
-import { Member, PeriodType, PodcastProgram, Program, Project } from '../types/data'
+import { Member, PeriodType, PodcastProgram, Program } from '../types/data'
 
 export const usePublishedProgramCollection = (options: { ids?: string[]; limit?: number }) => {
   const { loading, error, data, refetch } = useQuery<
@@ -126,96 +126,6 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
     errorPrograms: error,
     programs,
     refetchPrograms: refetch,
-  }
-}
-
-export const useProjectCollection = (options?: {
-  ids?: string[]
-  categoryId?: string
-  projectType?: Project['type']
-  limit?: number
-}) => {
-  const condition: hasura.GET_PROJECT_COLLECTIONVariables['condition'] = {
-    ...(options?.ids?.length ? { id: { _in: options.ids } } : {}),
-    published_at: { _lt: 'now()' },
-    type: { ...(options?.projectType ? { _eq: options.projectType } : { _in: ['on-sale', 'pre-order', 'funding'] }) },
-    ...(options?.categoryId && { project_categories: { category_id: { _eq: options.categoryId } } }),
-  }
-  const { loading, error, data, refetch } = useQuery<
-    hasura.GET_PROJECT_COLLECTION,
-    hasura.GET_PROJECT_COLLECTIONVariables
-  >(
-    gql`
-      query GET_PROJECT_COLLECTION($condition: project_bool_exp!, $limit: Int) {
-        project(where: $condition, order_by: { position: asc }, limit: $limit) {
-          id
-          type
-          title
-          cover_url
-          preview_url
-          abstract
-          target_amount
-          target_unit
-          expired_at
-          is_participants_visible
-          is_countdown_timer_visible
-          project_sales {
-            total_sales
-          }
-          project_plans {
-            id
-            project_plan_enrollments_aggregate {
-              aggregate {
-                count
-              }
-            }
-          }
-        }
-      }
-    `,
-    { variables: { condition } },
-  )
-
-  const projects: DeepPick<
-    Project,
-    | 'id'
-    | 'type'
-    | 'title'
-    | 'coverUrl'
-    | 'previewUrl'
-    | 'abstract'
-    | 'target'
-    | 'expiredAt'
-    | 'isParticipantsVisible'
-    | 'isCountdownTimerVisible'
-    | 'totalSales'
-    | 'enrollmentCount'
-  >[] =
-    data?.project.map(v => ({
-      id: v.id,
-      type: v.type as Project['type'],
-      title: v.title,
-      coverUrl: v.cover_url,
-      previewUrl: v.preview_url,
-      abstract: v.abstract || '',
-      target: {
-        amount: v.target_amount,
-        unit: v.target_unit as Project['target']['unit'],
-      },
-      expiredAt: v.expired_at ? new Date(v.expired_at) : null,
-      isParticipantsVisible: v.is_participants_visible,
-      isCountdownTimerVisible: v.is_countdown_timer_visible,
-      totalSales: v.project_sales?.total_sales || 0,
-      enrollmentCount: sum(
-        v.project_plans.map(projectPlan => projectPlan.project_plan_enrollments_aggregate.aggregate?.count || 0),
-      ),
-    })) || []
-
-  return {
-    loadingProjects: loading,
-    errorProjects: error,
-    projects,
-    refetchProjects: refetch,
   }
 }
 

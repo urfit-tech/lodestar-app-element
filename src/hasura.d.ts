@@ -197,6 +197,98 @@ export interface GET_APPVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_PROJECT_COLLECTION
+// ====================================================
+
+export interface GET_PROJECT_COLLECTION_project_project_sales {
+  __typename: 'project_sales'
+  total_sales: any | null
+}
+
+export interface GET_PROJECT_COLLECTION_project_project_plans_project_plan_enrollments_aggregate_aggregate {
+  __typename: 'project_plan_enrollment_aggregate_fields'
+  count: number | null
+}
+
+export interface GET_PROJECT_COLLECTION_project_project_plans_project_plan_enrollments_aggregate {
+  __typename: 'project_plan_enrollment_aggregate'
+  aggregate: GET_PROJECT_COLLECTION_project_project_plans_project_plan_enrollments_aggregate_aggregate | null
+}
+
+export interface GET_PROJECT_COLLECTION_project_project_plans {
+  __typename: 'project_plan'
+  /**
+   * An aggregated array relationship
+   */
+  project_plan_enrollments_aggregate: GET_PROJECT_COLLECTION_project_project_plans_project_plan_enrollments_aggregate
+}
+
+export interface GET_PROJECT_COLLECTION_project_project_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface GET_PROJECT_COLLECTION_project_project_categories {
+  __typename: 'project_category'
+  /**
+   * An object relationship
+   */
+  category: GET_PROJECT_COLLECTION_project_project_categories_category
+}
+
+export interface GET_PROJECT_COLLECTION_project {
+  __typename: 'project'
+  id: any
+  title: string
+  abstract: string | null
+  cover_url: string | null
+  preview_url: string | null
+  /**
+   * funding / pre-order / on-sale / modular
+   */
+  type: string
+  target_amount: any | null
+  /**
+   * funds / participants
+   */
+  target_unit: string
+  expired_at: any | null
+  is_participants_visible: boolean
+  is_countdown_timer_visible: boolean
+  /**
+   * An object relationship
+   */
+  project_sales: GET_PROJECT_COLLECTION_project_project_sales | null
+  /**
+   * An array relationship
+   */
+  project_plans: GET_PROJECT_COLLECTION_project_project_plans[]
+  /**
+   * An array relationship
+   */
+  project_categories: GET_PROJECT_COLLECTION_project_project_categories[]
+}
+
+export interface GET_PROJECT_COLLECTION {
+  /**
+   * fetch data from the table: "project"
+   */
+  project: GET_PROJECT_COLLECTION_project[]
+}
+
+export interface GET_PROJECT_COLLECTIONVariables {
+  whereClause?: project_bool_exp | null
+  limit?: number | null
+  orderByClause?: project_order_by[] | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_PROGRAM_COLLECTION
 // ====================================================
 
@@ -1156,80 +1248,6 @@ export interface GET_PUBLISHED_PROGRAM_COLLECTIONVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GET_PROJECT_COLLECTION
-// ====================================================
-
-export interface GET_PROJECT_COLLECTION_project_project_sales {
-  __typename: 'project_sales'
-  total_sales: any | null
-}
-
-export interface GET_PROJECT_COLLECTION_project_project_plans_project_plan_enrollments_aggregate_aggregate {
-  __typename: 'project_plan_enrollment_aggregate_fields'
-  count: number | null
-}
-
-export interface GET_PROJECT_COLLECTION_project_project_plans_project_plan_enrollments_aggregate {
-  __typename: 'project_plan_enrollment_aggregate'
-  aggregate: GET_PROJECT_COLLECTION_project_project_plans_project_plan_enrollments_aggregate_aggregate | null
-}
-
-export interface GET_PROJECT_COLLECTION_project_project_plans {
-  __typename: 'project_plan'
-  id: any
-  /**
-   * An aggregated array relationship
-   */
-  project_plan_enrollments_aggregate: GET_PROJECT_COLLECTION_project_project_plans_project_plan_enrollments_aggregate
-}
-
-export interface GET_PROJECT_COLLECTION_project {
-  __typename: 'project'
-  id: any
-  /**
-   * funding / pre-order / on-sale / modular
-   */
-  type: string
-  title: string
-  cover_url: string | null
-  preview_url: string | null
-  abstract: string | null
-  target_amount: any | null
-  /**
-   * funds / participants
-   */
-  target_unit: string
-  expired_at: any | null
-  is_participants_visible: boolean
-  is_countdown_timer_visible: boolean
-  /**
-   * An object relationship
-   */
-  project_sales: GET_PROJECT_COLLECTION_project_project_sales | null
-  /**
-   * An array relationship
-   */
-  project_plans: GET_PROJECT_COLLECTION_project_project_plans[]
-}
-
-export interface GET_PROJECT_COLLECTION {
-  /**
-   * fetch data from the table: "project"
-   */
-  project: GET_PROJECT_COLLECTION_project[]
-}
-
-export interface GET_PROJECT_COLLECTIONVariables {
-  condition: project_bool_exp
-  limit?: number | null
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL query operation: GET_PUBLISHED_PODCAST_PROGRAM_COLLECTION
 // ====================================================
 
@@ -2012,6 +2030,85 @@ export interface programPackageFields {
    */
   program_package_categories: programPackageFields_program_package_categories[]
   published_at: any | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: projectFields
+// ====================================================
+
+export interface projectFields_project_sales {
+  __typename: 'project_sales'
+  total_sales: any | null
+}
+
+export interface projectFields_project_plans_project_plan_enrollments_aggregate_aggregate {
+  __typename: 'project_plan_enrollment_aggregate_fields'
+  count: number | null
+}
+
+export interface projectFields_project_plans_project_plan_enrollments_aggregate {
+  __typename: 'project_plan_enrollment_aggregate'
+  aggregate: projectFields_project_plans_project_plan_enrollments_aggregate_aggregate | null
+}
+
+export interface projectFields_project_plans {
+  __typename: 'project_plan'
+  /**
+   * An aggregated array relationship
+   */
+  project_plan_enrollments_aggregate: projectFields_project_plans_project_plan_enrollments_aggregate
+}
+
+export interface projectFields_project_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+}
+
+export interface projectFields_project_categories {
+  __typename: 'project_category'
+  /**
+   * An object relationship
+   */
+  category: projectFields_project_categories_category
+}
+
+export interface projectFields {
+  __typename: 'project'
+  id: any
+  title: string
+  abstract: string | null
+  cover_url: string | null
+  preview_url: string | null
+  /**
+   * funding / pre-order / on-sale / modular
+   */
+  type: string
+  target_amount: any | null
+  /**
+   * funds / participants
+   */
+  target_unit: string
+  expired_at: any | null
+  is_participants_visible: boolean
+  is_countdown_timer_visible: boolean
+  /**
+   * An object relationship
+   */
+  project_sales: projectFields_project_sales | null
+  /**
+   * An array relationship
+   */
+  project_plans: projectFields_project_plans[]
+  /**
+   * An array relationship
+   */
+  project_categories: projectFields_project_categories[]
 }
 
 /* tslint:disable */
@@ -16460,11 +16557,35 @@ export interface project_bool_exp {
 }
 
 /**
+ * order by aggregate values of table "project_category"
+ */
+export interface project_category_aggregate_order_by {
+  avg?: project_category_avg_order_by | null
+  count?: order_by | null
+  max?: project_category_max_order_by | null
+  min?: project_category_min_order_by | null
+  stddev?: project_category_stddev_order_by | null
+  stddev_pop?: project_category_stddev_pop_order_by | null
+  stddev_samp?: project_category_stddev_samp_order_by | null
+  sum?: project_category_sum_order_by | null
+  var_pop?: project_category_var_pop_order_by | null
+  var_samp?: project_category_var_samp_order_by | null
+  variance?: project_category_variance_order_by | null
+}
+
+/**
  * input type for inserting array relation for remote table "project_category"
  */
 export interface project_category_arr_rel_insert_input {
   data: project_category_insert_input[]
   on_conflict?: project_category_on_conflict | null
+}
+
+/**
+ * order by avg() on columns of table "project_category"
+ */
+export interface project_category_avg_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -16495,12 +16616,81 @@ export interface project_category_insert_input {
 }
 
 /**
+ * order by max() on columns of table "project_category"
+ */
+export interface project_category_max_order_by {
+  category_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  project_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "project_category"
+ */
+export interface project_category_min_order_by {
+  category_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  project_id?: order_by | null
+}
+
+/**
  * on conflict condition type for table "project_category"
  */
 export interface project_category_on_conflict {
   constraint: project_category_constraint
   update_columns: project_category_update_column[]
   where?: project_category_bool_exp | null
+}
+
+/**
+ * order by stddev() on columns of table "project_category"
+ */
+export interface project_category_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "project_category"
+ */
+export interface project_category_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "project_category"
+ */
+export interface project_category_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "project_category"
+ */
+export interface project_category_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "project_category"
+ */
+export interface project_category_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "project_category"
+ */
+export interface project_category_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "project_category"
+ */
+export interface project_category_variance_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -16554,11 +16744,74 @@ export interface project_on_conflict {
 }
 
 /**
+ * ordering options when selecting data from "project"
+ */
+export interface project_order_by {
+  abstract?: order_by | null
+  app_id?: order_by | null
+  comments?: order_by | null
+  contents?: order_by | null
+  cover_type?: order_by | null
+  cover_url?: order_by | null
+  created_at?: order_by | null
+  creator?: member_public_order_by | null
+  creator_id?: order_by | null
+  description?: order_by | null
+  expired_at?: order_by | null
+  id?: order_by | null
+  introduction?: order_by | null
+  introduction_desktop?: order_by | null
+  is_countdown_timer_visible?: order_by | null
+  is_participants_visible?: order_by | null
+  position?: order_by | null
+  preview_url?: order_by | null
+  project_categories_aggregate?: project_category_aggregate_order_by | null
+  project_plans_aggregate?: project_plan_aggregate_order_by | null
+  project_sales?: project_sales_order_by | null
+  project_sections_aggregate?: project_section_aggregate_order_by | null
+  published_at?: order_by | null
+  target_amount?: order_by | null
+  target_unit?: order_by | null
+  template?: order_by | null
+  title?: order_by | null
+  type?: order_by | null
+  updates?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "project_plan"
+ */
+export interface project_plan_aggregate_order_by {
+  avg?: project_plan_avg_order_by | null
+  count?: order_by | null
+  max?: project_plan_max_order_by | null
+  min?: project_plan_min_order_by | null
+  stddev?: project_plan_stddev_order_by | null
+  stddev_pop?: project_plan_stddev_pop_order_by | null
+  stddev_samp?: project_plan_stddev_samp_order_by | null
+  sum?: project_plan_sum_order_by | null
+  var_pop?: project_plan_var_pop_order_by | null
+  var_samp?: project_plan_var_samp_order_by | null
+  variance?: project_plan_variance_order_by | null
+}
+
+/**
  * input type for inserting array relation for remote table "project_plan"
  */
 export interface project_plan_arr_rel_insert_input {
   data: project_plan_insert_input[]
   on_conflict?: project_plan_on_conflict | null
+}
+
+/**
+ * order by avg() on columns of table "project_plan"
+ */
+export interface project_plan_avg_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
 }
 
 /**
@@ -16653,12 +16906,131 @@ export interface project_plan_inventory_status_bool_exp {
 }
 
 /**
+ * order by max() on columns of table "project_plan"
+ */
+export interface project_plan_max_order_by {
+  cover_url?: order_by | null
+  created_at?: order_by | null
+  deliverables?: order_by | null
+  description?: order_by | null
+  discount_down_price?: order_by | null
+  id?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  period_type?: order_by | null
+  position?: order_by | null
+  project_id?: order_by | null
+  published_at?: order_by | null
+  sale_price?: order_by | null
+  sold_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "project_plan"
+ */
+export interface project_plan_min_order_by {
+  cover_url?: order_by | null
+  created_at?: order_by | null
+  deliverables?: order_by | null
+  description?: order_by | null
+  discount_down_price?: order_by | null
+  id?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  period_type?: order_by | null
+  position?: order_by | null
+  project_id?: order_by | null
+  published_at?: order_by | null
+  sale_price?: order_by | null
+  sold_at?: order_by | null
+  title?: order_by | null
+}
+
+/**
  * on conflict condition type for table "project_plan"
  */
 export interface project_plan_on_conflict {
   constraint: project_plan_constraint
   update_columns: project_plan_update_column[]
   where?: project_plan_bool_exp | null
+}
+
+/**
+ * order by stddev() on columns of table "project_plan"
+ */
+export interface project_plan_stddev_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "project_plan"
+ */
+export interface project_plan_stddev_pop_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "project_plan"
+ */
+export interface project_plan_stddev_samp_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "project_plan"
+ */
+export interface project_plan_sum_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "project_plan"
+ */
+export interface project_plan_var_pop_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "project_plan"
+ */
+export interface project_plan_var_samp_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "project_plan"
+ */
+export interface project_plan_variance_order_by {
+  discount_down_price?: order_by | null
+  list_price?: order_by | null
+  period_amount?: order_by | null
+  position?: order_by | null
+  sale_price?: order_by | null
 }
 
 /**
@@ -16674,11 +17046,44 @@ export interface project_sales_bool_exp {
 }
 
 /**
+ * ordering options when selecting data from "project_sales"
+ */
+export interface project_sales_order_by {
+  project?: project_order_by | null
+  project_id?: order_by | null
+  total_sales?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "project_section"
+ */
+export interface project_section_aggregate_order_by {
+  avg?: project_section_avg_order_by | null
+  count?: order_by | null
+  max?: project_section_max_order_by | null
+  min?: project_section_min_order_by | null
+  stddev?: project_section_stddev_order_by | null
+  stddev_pop?: project_section_stddev_pop_order_by | null
+  stddev_samp?: project_section_stddev_samp_order_by | null
+  sum?: project_section_sum_order_by | null
+  var_pop?: project_section_var_pop_order_by | null
+  var_samp?: project_section_var_samp_order_by | null
+  variance?: project_section_variance_order_by | null
+}
+
+/**
  * input type for inserting array relation for remote table "project_section"
  */
 export interface project_section_arr_rel_insert_input {
   data: project_section_insert_input[]
   on_conflict?: project_section_on_conflict | null
+}
+
+/**
+ * order by avg() on columns of table "project_section"
+ */
+export interface project_section_avg_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -16709,12 +17114,81 @@ export interface project_section_insert_input {
 }
 
 /**
+ * order by max() on columns of table "project_section"
+ */
+export interface project_section_max_order_by {
+  id?: order_by | null
+  position?: order_by | null
+  project_id?: order_by | null
+  type?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "project_section"
+ */
+export interface project_section_min_order_by {
+  id?: order_by | null
+  position?: order_by | null
+  project_id?: order_by | null
+  type?: order_by | null
+}
+
+/**
  * on conflict condition type for table "project_section"
  */
 export interface project_section_on_conflict {
   constraint: project_section_constraint
   update_columns: project_section_update_column[]
   where?: project_section_bool_exp | null
+}
+
+/**
+ * order by stddev() on columns of table "project_section"
+ */
+export interface project_section_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "project_section"
+ */
+export interface project_section_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "project_section"
+ */
+export interface project_section_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "project_section"
+ */
+export interface project_section_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "project_section"
+ */
+export interface project_section_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "project_section"
+ */
+export interface project_section_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "project_section"
+ */
+export interface project_section_variance_order_by {
+  position?: order_by | null
 }
 
 /**

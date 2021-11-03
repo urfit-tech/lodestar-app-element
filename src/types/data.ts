@@ -57,6 +57,7 @@ export type Project = {
   isCountdownTimerVisible: boolean
   totalSales: number
   enrollmentCount: number
+  categories: Category[]
 }
 
 export type Program = {

@@ -93,6 +93,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                   const cheapestPlan = findCheapestPlan(programPackage.plans)
                   return (
                     <ProgramPackageElement
+                      editing={props.editing}
                       coverUrl={programPackage.coverUrl || undefined}
                       title={programPackage.title}
                       link={`/program-packages/${programPackage.id}`}

@@ -1,4 +1,6 @@
 import { Heading, Skeleton } from '@chakra-ui/react'
+import classNames from 'classnames'
+import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
@@ -99,11 +101,15 @@ const StyledProgressBar = styled(ProgressBar)`
 
 const ProgramContentCard: React.FC<ProgramContentElementProps> = props => {
   const { loading, errors } = props
+  const history = useHistory()
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
   return (
-    <StyledProgramContentCard>
+    <StyledProgramContentCard
+      className={classNames(props.className, { 'cursor-pointer': Boolean(props.link) })}
+      onClick={e => (props.editing || !props.link ? e.preventDefault() : history.push(props.link))}
+    >
       <div className="d-flex overflow-hidden">
         <StyledCover className="flex-shrink-0">
           {loading ? (

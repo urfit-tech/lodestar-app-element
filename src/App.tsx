@@ -11,6 +11,7 @@ import LayoutPage from './pages/LayoutPage'
 import ProgramContentCollectionPage from './pages/ProgramContentCollectionPage'
 import ProgramElementPage from './pages/ProgramElementPage'
 import ProgramPackagePage from './pages/ProgramPackagePage'
+import ProjectElementPage from './pages/ProjectElementPage'
 import TextPage from './pages/TextPage'
 
 const routes = [
@@ -18,6 +19,7 @@ const routes = [
   { name: 'Program', path: '/programs', component: ProgramElementPage },
   { name: 'Program content', path: '/program-contents', component: ProgramContentCollectionPage },
   { name: 'Program package', path: '/program-package', component: ProgramPackagePage },
+  { name: 'Project', path: '/project', component: ProjectElementPage },
   { name: 'Activity', path: '/activity', component: ActivityPage },
   { name: 'Layout', path: '/layout', component: LayoutPage },
   { name: 'Text', path: '/text', component: TextPage },

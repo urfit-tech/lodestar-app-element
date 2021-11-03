@@ -1,41 +1,45 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { getActivityCollectionQuery } from '../../graphql/queries'
+import { getProjectCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { Activity, Category } from '../../types/data'
+import { Category, Project } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
-import ActivityCard from '../cards/ActivityCard'
+import ProjectCard from '../cards/ProjectCard'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
 
-type ActivityData = DeepPick<
-  Activity,
+type ProjectData = DeepPick<
+  Project,
   | 'id'
-  | 'coverUrl'
   | 'title'
-  | 'isParticipantVisible'
-  | 'totalParticipants'
-  | 'sessions.[].startedAt'
-  | 'sessions.[].endedAt'
-  | 'tickets.[].limit'
+  | 'abstract'
+  | 'coverUrl'
+  | 'previewUrl'
+  | 'type'
+  | 'target'
+  | 'expiredAt'
+  | 'isParticipantsVisible'
+  | 'isCountdownTimerVisible'
+  | 'totalSales'
+  | 'enrollmentCount'
   | 'categories'
 >
-type ActivityContextCollection = ContextCollection<ActivityData>
 
-export type ActivityCollectionProps = {
+type ProjectContextCollection = ContextCollection<ProjectData>
+
+export type ProjectCollectionProps = {
   source?: ProductCustomSource | ProductPublishedAtSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
 }
-const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
+const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -43,8 +47,8 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection(props.variant === 'card' ? ActivityCard : ActivityCard)
-  let ContextCollection: ActivityContextCollection
+  const ElementCollection = Collection(ProjectCard)
+  let ContextCollection: ProjectContextCollection
   switch (source.from) {
     case 'publishedAt':
       ContextCollection = collectPublishedAtCollection(source)
@@ -68,7 +72,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
                   .filter(category => source.from === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
                   [],
               )
-        const filter = (d: ActivityData) =>
+        const filter = (d: ProjectData) =>
           !props.withSelector ||
           !activeCategoryId ||
           d.categories.map(category => category.id).includes(activeCategoryId)
@@ -90,18 +94,22 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
               <ElementCollection
                 layout={props.layout}
                 data={ctx.data?.filter(filter) || []}
-                renderElement={(activity, ActivityElement) => (
-                  <ActivityElement
+                renderElement={(project, ProjectElement) => (
+                  <ProjectElement
                     editing={props.editing}
-                    id={activity.id}
-                    coverUrl={activity.coverUrl}
-                    title={activity.title}
-                    isParticipantsVisible={activity.isParticipantVisible}
-                    startedAt={moment.min(activity.sessions.map(session => moment(session.startedAt))).toDate()}
-                    endedAt={moment.max(activity.sessions.map(session => moment(session.endedAt))).toDate()}
-                    participantCount={activity.totalParticipants}
-                    totalSeats={sum(activity.tickets.map(ticket => ticket.limit))}
-                    categories={activity.categories}
+                    id={project.id}
+                    title={project.title}
+                    abstract={project.abstract}
+                    coverUrl={project.coverUrl}
+                    previewUrl={project.previewUrl}
+                    type={project.type}
+                    targetAmount={project.target.amount}
+                    targetUnit={project.target.unit}
+                    expiredAt={project.expiredAt}
+                    isParticipantsVisible={project.isParticipantsVisible}
+                    isCountdownTimerVisible={project.isCountdownTimerVisible}
+                    totalSales={project.totalSales}
+                    enrollmentCount={project.enrollmentCount}
                   />
                 )}
               />
@@ -114,13 +122,9 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
 }
 
 const collectCustomCollection = (options: ProductCustomSource) => {
-  const ActivityElementCollection: ActivityContextCollection = ({ children }) => {
-    const {
-      data: rawData,
-      loading,
-      error,
-    } = useQuery<hasura.GET_ACTIVITY_COLLECTION, hasura.GET_ACTIVITY_COLLECTIONVariables>(
-      getActivityCollectionQuery(activityFields),
+  const ProjectElementCollection: ProjectContextCollection = ({ children }) => {
+    const { data, loading, error } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(
+      getProjectCollectionQuery(projectFields),
       {
         variables: {
           limit: undefined,
@@ -132,46 +136,40 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         },
       },
     )
-    const data = {
-      ...rawData,
-      activity: options.idList
-        .filter(activityId => rawData?.activity.find(p => p.id === activityId))
-        .map(activityId => rawData?.activity.find(p => p.id === activityId))
+    const orderedData = {
+      ...data,
+      project: options.idList
+        .filter(projectId => data?.project.find(p => p.id === projectId))
+        .map(projectId => data?.project.find(p => p.id === projectId))
         .filter(notEmpty),
     }
     return children({
       loading,
       errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
+      data: data && composeCollectionData(orderedData),
     })
   }
-  return ActivityElementCollection
+  return ProjectElementCollection
 }
 
 const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
-  const ActivityElementCollection: ActivityContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_ACTIVITY_COLLECTION, hasura.GET_ACTIVITY_COLLECTIONVariables>(
-      getActivityCollectionQuery(activityFields),
+  const ProjectElementCollection: ProjectContextCollection = ({ children }) => {
+    const { data, loading, error } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(
+      getProjectCollectionQuery(projectFields),
       {
         variables: {
+          limit: options.limit,
+          orderByClause: [{ published_at: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
           whereClause: {
-            activity_categories: options.defaultCategoryIds?.length
+            published_at: { _lt: 'now()' },
+            project_categories: options.defaultCategoryIds?.length
               ? {
                   category_id: {
                     _in: options.defaultCategoryIds,
                   },
                 }
               : undefined,
-            activity_tags: options.defaultTagNames?.length
-              ? {
-                  tag_name: {
-                    _in: options.defaultTagNames,
-                  },
-                }
-              : undefined,
           },
-          orderByClause: [{ published_at: (options.asc ? 'asc' : 'desc') as hasura.order_by }],
-          limit: options.limit,
         },
       },
     )
@@ -181,55 +179,59 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
       data: data && composeCollectionData(data),
     })
   }
-  return ActivityElementCollection
+  return ProjectElementCollection
 }
 
-const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityData[] =>
-  data?.activity.map(a => ({
-    id: a.id,
-    title: a.title,
-    coverUrl: a.cover_url,
-    isParticipantVisible: a.is_participants_visible,
-    sessions: a.activity_sessions.map(as => ({
-      startedAt: as.started_at,
-      endedAt: as.ended_at,
-    })),
-    tickets: a.activity_tickets.map(at => ({
-      limit: at.count,
-    })),
-    categories: a.activity_categories.map(ac => ({
-      id: ac.category.id,
-      name: ac.category.name,
-    })),
-    totalParticipants: 0, // TODO
-  })) || []
+const composeCollectionData = (data: hasura.GET_PROJECT_COLLECTION): ProjectData[] =>
+  data.project.map(p => ({
+    id: p.id,
+    title: p.title,
+    abstract: p.abstract || '',
+    coverUrl: p.cover_url,
+    previewUrl: p.preview_url,
+    type: p.type as ProjectData['type'],
+    target: {
+      amount: p.target_amount,
+      unit: p.target_unit,
+    } as ProjectData['target'],
+    expiredAt: p.expired_at,
+    isParticipantsVisible: p.is_participants_visible,
+    isCountdownTimerVisible: p.is_countdown_timer_visible,
+    totalSales: p.project_sales?.total_sales || 0,
+    enrollmentCount: sum(p.project_plans.map(pp => pp.project_plan_enrollments_aggregate.aggregate?.count || 0)),
+    categories: p.project_categories.map(pc => pc.category),
+  }))
 
-const activityFields = gql`
-  fragment activityFields on activity {
+const projectFields = gql`
+  fragment projectFields on project {
     id
-    cover_url
     title
-    published_at
+    abstract
+    cover_url
+    preview_url
+    type
+    target_amount
+    target_unit
+    expired_at
     is_participants_visible
-    activity_categories {
+    is_countdown_timer_visible
+    project_sales {
+      total_sales
+    }
+    project_plans {
+      project_plan_enrollments_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }
+    project_categories {
       category {
         id
         name
       }
     }
-    activity_enrollments_aggregate {
-      aggregate {
-        count
-      }
-    }
-    activity_sessions {
-      started_at
-      ended_at
-    }
-    activity_tickets {
-      count
-    }
   }
 `
 
-export default ActivityCollection
+export default ProjectCollection

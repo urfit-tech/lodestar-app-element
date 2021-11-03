@@ -28,6 +28,7 @@ export type ProgramElementProps = ElementProps<{
 
 export type ProgramContentElementProps = ElementProps<{
   title: string
+  link?: string
   type: 'video' | 'text' | null
   coverUrl: string | null
   duration: number

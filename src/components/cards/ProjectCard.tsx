@@ -1,3 +1,4 @@
+import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import moment from 'moment'
 import { Circle } from 'rc-progress'
 import { useContext } from 'react'
@@ -41,17 +42,21 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
       onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
     >
       <Card className={props.className}>
-        {!loading && (
-          <CustomRatioImage width="100%" ratio={9 / 16} src={props.previewUrl || props.coverUrl || EmptyCover} />
-        )}
+        <CustomRatioImage
+          width="100%"
+          ratio={9 / 16}
+          src={loading ? EmptyCover : props.previewUrl || props.coverUrl || EmptyCover}
+        />
         <Card.Content>
           <Card.Title
             style={{ height: '3rem', fontSize: '18', textAlign: 'left', fontWeight: 'bold', color: '' }}
             className="mb-3"
           >
-            {!loading && props.title}
+            {loading ? <Skeleton height={4} width={100} /> : props.title}
           </Card.Title>
-          <Card.Description className="mb-3">{!loading && props.abstract}</Card.Description>
+          <Card.Description className="mb-3">
+            {loading ? <SkeletonText noOfLines={5} /> : props.abstract}
+          </Card.Description>
           <Card.MetaBlock className="d-flex align-items-end justify-content-between">
             <StyledCircleWrapper>
               {!loading && props.type === 'funding' && (
@@ -92,6 +97,7 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
             </StyledCircleWrapper>
 
             <div className="text-right">
+              {loading && <Skeleton height={4} width={20} />}
               {!loading && props.type === 'funding' && (
                 <StyledLabel>
                   {props.targetUnit === 'participants' &&
