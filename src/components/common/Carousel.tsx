@@ -7,6 +7,14 @@ import { ElementComponent, ElementProps } from '../../types/element'
 export type CarouselProps = SliderProps & { variant?: 'cover'; currentSlide?: number }
 
 const StyledSlider = styled(Slider)<ElementProps<CarouselProps>>`
+  overflow: hidden;
+  min-height: 200px;
+  .slick-list {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
   .slick-arrow {
     z-index: 1;
     pointer-events: ${props => props.editing && 'none'};
@@ -51,8 +59,8 @@ const Carousel: ElementComponent<CarouselProps> = props => {
   }
   const settings: Settings = {
     arrows: props.arrows,
-    dots: props.arrows,
-    slidesToShow: props.slidesToScroll || 1,
+    dots: props.dots,
+    slidesToShow: props.slidesToShow || 1,
     slidesToScroll: props.slidesToScroll || 1,
     autoplay: props.autoplay,
   }
