@@ -132,7 +132,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           whereClause: {
             id: { _in: options.idList },
             is_private: { _eq: false },
-            published_at: { _is_null: false },
+            published_at: { _lt: 'now()' },
           },
         },
       },
@@ -163,7 +163,7 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
           orderByClause: [{ published_at: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
           whereClause: {
             is_private: { _eq: false },
-            published_at: { _is_null: false },
+            published_at: { _lt: 'now()' },
             program_categories: options.defaultCategoryIds?.length
               ? {
                   category_id: {
@@ -204,7 +204,7 @@ const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
           ],
           whereClause: {
             is_private: { _eq: false },
-            published_at: { _is_null: false },
+            published_at: { _lt: 'now()' },
             program_categories: options.defaultCategoryIds?.length
               ? {
                   category_id: {

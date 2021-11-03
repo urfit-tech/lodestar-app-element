@@ -137,7 +137,7 @@ export const useProjectCollection = (options?: {
 }) => {
   const condition: hasura.GET_PROJECT_COLLECTIONVariables['condition'] = {
     ...(options?.ids?.length ? { id: { _in: options.ids } } : {}),
-    published_at: { _is_null: false },
+    published_at: { _lt: 'now()' },
     type: { ...(options?.projectType ? { _eq: options.projectType } : { _in: ['on-sale', 'pre-order', 'funding'] }) },
     ...(options?.categoryId && { project_categories: { category_id: { _eq: options.categoryId } } }),
   }
@@ -223,7 +223,7 @@ export const usePublishedPodcastProgramCollection = (options?: { ids?: string[];
   const { loading, error, data, refetch } = useQuery<hasura.GET_PUBLISHED_PODCAST_PROGRAM_COLLECTION>(
     gql`
       query GET_PUBLISHED_PODCAST_PROGRAM_COLLECTION($limit: Int) {
-        podcast_program(order_by: { published_at: desc }, where: { published_at: { _is_null: false } }, limit: $limit) {
+        podcast_program(order_by: { published_at: desc }, where: { published_at: { _lt: "now()" } }, limit: $limit) {
           id
           cover_url
           title
@@ -369,7 +369,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
     gql`
       query GET_PUBLISHED_ACTIVITY_COLLECTION($ids: [uuid!]) {
         activity(
-          where: { published_at: { _is_null: false }, id: { _in: $ids } }
+          where: { published_at: { _lt: "now()" }, id: { _in: $ids } }
           order_by: [{ position: asc }, { published_at: desc }]
         ) {
           id

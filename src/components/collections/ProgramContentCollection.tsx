@@ -69,6 +69,7 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
                 renderElement={(programContent, ProgramContentElement) => {
                   return (
                     <ProgramContentElement
+                      editing={props.editing}
                       title={programContent.title}
                       coverUrl={programContent.contentSection.program.coverUrl}
                       type={programContent.videos.length > 0 ? ('video' as const) : ('text' as const)}
@@ -100,7 +101,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           orderByClause: [],
           whereClause: {
             id: { _in: options.idList },
-            published_at: { _is_null: false },
+            published_at: { _lt: 'now()' },
           },
         },
       },

@@ -125,7 +125,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           orderByClause: [],
           whereClause: {
             id: { _in: options.idList },
-            published_at: { _is_null: false },
+            published_at: { _lt: 'now()' },
           },
         },
       },
