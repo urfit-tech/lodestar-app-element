@@ -50,10 +50,11 @@ const Carousel: ElementComponent<CarouselProps> = props => {
     children = fragmentChildren
   }
   const settings: Settings = {
-    arrows: true,
-    dots: true,
-    slidesToShow: 1,
-    ...props,
+    arrows: props.arrows,
+    dots: props.arrows,
+    slidesToShow: props.slidesToScroll || 1,
+    slidesToScroll: props.slidesToScroll || 1,
+    autoplay: props.autoplay,
   }
   return (
     <StyledSlider
