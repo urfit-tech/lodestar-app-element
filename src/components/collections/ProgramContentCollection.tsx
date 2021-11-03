@@ -35,14 +35,14 @@ export type ProgramContentCollectionProps = {
 const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
-  const { loading, errors, children, source = { type: 'recentWatched' } } = props
+  const { loading, errors, children, source = { from: 'recentWatched' } } = props
   if (loading || errors) {
     return null
   }
 
   const ElementCollection = Collection(props.variant === 'card' ? ProgramContentCard : ProgramContentCard)
   let ContextCollection: ProgramContentContextCollection
-  switch (source.type) {
+  switch (source.from) {
     case 'recentWatched':
       ContextCollection = collectRecentWatchedCollection(source)
       break

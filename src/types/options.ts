@@ -1,4 +1,4 @@
-export type ProductSource<T, P> = { type: T } & P
+export type ProductSource<T, P> = { from: T } & P
 export type ProductCustomSource = ProductSource<'custom', { idList: string[] }>
 export type ProductPublishedAtSource = ProductSource<
   'publishedAt',

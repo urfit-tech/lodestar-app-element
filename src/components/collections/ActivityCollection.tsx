@@ -38,14 +38,14 @@ export type ActivityCollectionProps = {
 const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
-  const { loading, errors, children, source = { type: 'publishedAt' } } = props
+  const { loading, errors, children, source = { from: 'publishedAt' } } = props
   if (loading || errors) {
     return null
   }
 
   const ElementCollection = Collection(props.variant === 'card' ? ActivityCard : ActivityCard)
   let ContextCollection: ActivityContextCollection
-  switch (source.type) {
+  switch (source.from) {
     case 'publishedAt':
       ContextCollection = collectPublishedAtCollection(source)
       break
@@ -65,7 +65,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
             : uniqBy((category: Category) => category.id)(
                 ctx.data
                   ?.flatMap(d => d.categories)
-                  .filter(category => source.type === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
+                  .filter(category => source.from === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
                   [],
               )
         const filter = (d: ActivityData) =>

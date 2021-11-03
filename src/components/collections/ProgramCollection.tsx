@@ -42,14 +42,14 @@ export type ProgramCollectionProps = {
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
-  const { loading, errors, children, source = { type: 'publishedAt' } } = props
+  const { loading, errors, children, source = { from: 'publishedAt' } } = props
   if (loading || errors) {
     return null
   }
 
   const ElementCollection = Collection(props.variant === 'card' ? ProgramCard : ProgramSecondaryCard)
   let ContextCollection: ProgramContextCollection
-  switch (source.type) {
+  switch (source.from) {
     case 'publishedAt':
       ContextCollection = collectPublishedAtCollection(source)
       break
@@ -72,7 +72,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
             : uniqBy((category: Category) => category.id)(
                 ctx.data
                   ?.flatMap(d => d.categories)
-                  .filter(category => source.type === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
+                  .filter(category => source.from === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
                   [],
               )
         const filter = (d: ProgramData) =>

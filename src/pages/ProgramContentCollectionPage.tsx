@@ -6,7 +6,7 @@ const ProgramContentCollectionPage: React.VFC = () => {
       {/* <CraftProgramContentCollection
         variant="card"
         source={{
-          type: 'recentWatched',
+          from: 'recentWatched',
           limit: 3,
         }}
       /> */}

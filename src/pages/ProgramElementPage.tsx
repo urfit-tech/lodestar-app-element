@@ -7,7 +7,7 @@ const ProgramElementPage: React.VFC = () => {
         withSelector
         variant="card"
         source={{
-          type: 'currentPrice',
+          from: 'currentPrice',
           // min: 10,
           max: 1000,
           asc: true,
@@ -30,7 +30,7 @@ const ProgramElementPage: React.VFC = () => {
         }}
         withSelector
         source={{
-          type: 'publishedAt',
+          from: 'publishedAt',
           asc: true,
           defaultCategoryIds: ['286b4906-0550-4c56-a16b-ce88fe516690'],
         }}
@@ -43,7 +43,7 @@ const ProgramElementPage: React.VFC = () => {
           columns: 2,
         }}
         source={{
-          type: 'custom',
+          from: 'custom',
           idList: [
             'fa0c97e9-475e-43b6-b7ed-67f8e27ab4c6',
             'c08d6910-893a-419a-9df5-792727541dd1',
