@@ -197,6 +197,38 @@ export interface GET_APPVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_MEMBER_COLLECTION
+// ====================================================
+
+export interface GET_MEMBER_COLLECTION_member_public {
+  __typename: 'member_public'
+  id: string | null
+  name: string | null
+  title: string | null
+  abstract: string | null
+  description: string | null
+  picture_url: string | null
+}
+
+export interface GET_MEMBER_COLLECTION {
+  /**
+   * fetch data from the table: "member_public"
+   */
+  member_public: GET_MEMBER_COLLECTION_member_public[]
+}
+
+export interface GET_MEMBER_COLLECTIONVariables {
+  whereClause?: member_public_bool_exp | null
+  limit?: number | null
+  orderByClause?: member_public_order_by[] | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_PROJECT_COLLECTION
 // ====================================================
 
@@ -1724,6 +1756,25 @@ export interface activityFields {
    * An array relationship
    */
   activity_tickets: activityFields_activity_tickets[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: memberFields
+// ====================================================
+
+export interface memberFields {
+  __typename: 'member_public'
+  id: string | null
+  name: string | null
+  title: string | null
+  abstract: string | null
+  description: string | null
+  picture_url: string | null
 }
 
 /* tslint:disable */

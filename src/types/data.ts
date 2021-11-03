@@ -31,6 +31,10 @@ export type Member = {
   username: string
   email: string
   pictureUrl: string | null
+  title: string | null
+  abstract: string | null
+  description: string | null
+  categories: Category[]
 }
 
 export type PodcastProgram = {

@@ -130,7 +130,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           limit: undefined,
           orderByClause: [],
           whereClause: {
-            id: { _in: options.idList },
+            id: { _in: options.idList || [] },
             published_at: { _lt: 'now()' },
           },
         },
@@ -138,7 +138,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
     )
     const orderedData = {
       ...data,
-      project: options.idList
+      project: (options.idList || [])
         .filter(projectId => data?.project.find(p => p.id === projectId))
         .map(projectId => data?.project.find(p => p.id === projectId))
         .filter(notEmpty),

@@ -91,9 +91,10 @@ export type ActivityElementProps = ElementProps<{
 }>
 
 export type MemberElementProps = ElementProps<{
-  id: string | null
-  name: TextElementProps
-  abstract?: TextElementProps
-  avatarUrl?: string | null
-  description?: string
+  id: string
+  name: string
+  title: string | null
+  abstract: string | null
+  avatarUrl: string | null
+  description: string | null
 }>

@@ -8,6 +8,7 @@ import ActivityPage from './pages/ActivityPage'
 import CarouselPage from './pages/CarouselPage'
 import ImagePage from './pages/ImagePage'
 import LayoutPage from './pages/LayoutPage'
+import MemberElementPage from './pages/MemberElementPage'
 import ProgramContentCollectionPage from './pages/ProgramContentCollectionPage'
 import ProgramElementPage from './pages/ProgramElementPage'
 import ProgramPackagePage from './pages/ProgramPackagePage'
@@ -16,6 +17,7 @@ import TextPage from './pages/TextPage'
 
 const routes = [
   { name: 'Home', path: '/', render: () => null },
+  { name: 'Member', path: '/member', component: MemberElementPage },
   { name: 'Program', path: '/programs', component: ProgramElementPage },
   { name: 'Program content', path: '/program-contents', component: ProgramContentCollectionPage },
   { name: 'Program package', path: '/program-package', component: ProgramPackagePage },

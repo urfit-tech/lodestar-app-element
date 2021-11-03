@@ -101,7 +101,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           limit: undefined,
           orderByClause: [],
           whereClause: {
-            id: { _in: options.idList },
+            id: { _in: options.idList || [] },
             published_at: { _lt: 'now()' },
           },
         },
@@ -109,7 +109,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
     )
     const data = {
       ...rawData,
-      program_content: options.idList
+      program_content: (options.idList || [])
         .filter(programContentId => rawData?.program_content.find(p => p.id === programContentId))
         .map(programContentId => rawData?.program_content.find(p => p.id === programContentId))
         .filter(notEmpty),

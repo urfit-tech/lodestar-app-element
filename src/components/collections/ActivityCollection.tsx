@@ -126,7 +126,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           limit: undefined,
           orderByClause: [],
           whereClause: {
-            id: { _in: options.idList },
+            id: { _in: options.idList || [] },
             published_at: { _lt: 'now()' },
           },
         },
@@ -134,7 +134,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
     )
     const data = {
       ...rawData,
-      activity: options.idList
+      activity: (options.idList || [])
         .filter(activityId => rawData?.activity.find(p => p.id === activityId))
         .map(activityId => rawData?.activity.find(p => p.id === activityId))
         .filter(notEmpty),

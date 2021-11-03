@@ -3,6 +3,7 @@ import Card from '../cards/Card'
 import RichCard from '../cards/RichCard'
 import Collapse from '../collapses/Collapse'
 import ActivityCollection from '../collections/ActivityCollection'
+import MemberCollection from '../collections/MemberCollection'
 import ProgramCollection from '../collections/ProgramCollection'
 import ProgramContentCollection from '../collections/ProgramContentCollection'
 import ProgramPackageCollection from '../collections/ProgramPackageCollection'
@@ -32,6 +33,7 @@ export const CraftCollapse = Craftize(Collapse)
 export const CraftEmbedded = Craftize(Embedded)
 
 // product catalog
+export const CraftMemberCollection = Craftize(MemberCollection)
 export const CraftProgramCollection = Craftize(ProgramCollection)
 export const CraftProgramContentCollection = Craftize(ProgramContentCollection)
 export const CraftProgramPackageCollection = Craftize(ProgramPackageCollection)

@@ -1,5 +1,5 @@
 export type ProductSource<T, P> = { from: T } & P
-export type ProductCustomSource = ProductSource<'custom', { idList: string[] }>
+export type ProductCustomSource = ProductSource<'custom', { idList?: string[] }>
 export type ProductPublishedAtSource = ProductSource<
   'publishedAt',
   {
@@ -31,7 +31,9 @@ export type ProductRecentWatchedSource = ProductSource<
 export type ProductRoleSource = ProductSource<
   'role',
   {
-    role: 'app-owner' | 'content-creator' | 'member' | 'author'
+    role?: 'app-owner' | 'content-creator' | 'general-member'
     limit?: number
+    defaultTagNames?: string[]
+    defaultCategoryIds?: string[]
   }
 >

@@ -1,6 +1,18 @@
 import { DocumentNode } from 'graphql'
 import gql from 'graphql-tag'
 
+export const getMemberCollectionQuery = (memberFields: DocumentNode) => gql`
+  query GET_MEMBER_COLLECTION(
+    $whereClause: member_public_bool_exp
+    $limit: Int
+    $orderByClause: [member_public_order_by!]
+  ) {
+    member_public(where: $whereClause, limit: $limit, order_by: $orderByClause) {
+      ...memberFields
+    }
+  }
+  ${memberFields}
+`
 export const getProjectCollectionQuery = (projectFields: DocumentNode) => gql`
   query GET_PROJECT_COLLECTION($whereClause: project_bool_exp, $limit: Int, $orderByClause: [project_order_by!]) {
     project(where: $whereClause, limit: $limit, order_by: $orderByClause) {
