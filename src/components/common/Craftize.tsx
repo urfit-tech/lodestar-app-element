@@ -96,9 +96,11 @@ const StyledController = styled.div`
 `
 const StyledControllerItem = styled.button`
   margin: 2px;
-  padding: 2px 8px;
+  padding: 4px 8px;
   color: white;
-  background-color: rgba(0, 0, 0, 0.3);
+  border: none;
+  width: 32px;
+  background-color: rgba(0, 0, 0, 0.2);
 `
 const CraftController: React.FC = () => {
   const editor = useEditor(state => ({ nodes: state.nodes }))
