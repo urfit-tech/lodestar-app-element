@@ -9,12 +9,11 @@ import {
 } from '@chakra-ui/icons'
 import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserComponent } from '@craftjs/core'
 import { getRandomId } from '@craftjs/utils'
-import { clone, mergeDeepRight } from 'ramda'
+import { clone } from 'ramda'
 import { useIntl } from 'react-intl'
-import { useMediaQuery } from 'react-responsive'
 import styled, { css, CSSObject } from 'styled-components'
-import { ElementBaseProps, ElementComponent } from '../../types/element'
-import Responsive, { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
+import { ElementBaseProps, ElementComponent, ElementProps } from '../../types/element'
+import { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
 
 const CraftRefBlock = styled.div<{
   editing?: boolean
@@ -61,18 +60,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
     const editor = useEditor(state => ({
       editing: state.options.enabled,
     }))
-    const isTablet = useMediaQuery({
-      minWidth: TABLET_BREAK_POINT,
-      maxWidth: DESKTOP_BREAK_POINT - 1,
-    })
-    const isDesktop = useMediaQuery({ minWidth: DESKTOP_BREAK_POINT })
-    const responsiveProps = (
-      isDesktop
-        ? mergeDeepRight(props, props.responsive?.desktop || {})
-        : isTablet
-        ? mergeDeepRight(props, props.responsive?.tablet || {})
-        : mergeDeepRight(props, props.responsive?.mobile || {})
-    ) as PropsWithCraft<P>
+    const { responsive, ...elementProps } = props
     return (
       <div>
         <CraftRefBlock
@@ -82,15 +70,16 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
           selected={node.events.selected}
         >
           {editor.editing && node.events.hovered && <CraftController />}
-          <Responsive.Default>
-            <StyledCraftElement {...responsiveProps} editing={editor.editing} />
-          </Responsive.Default>
-          <Responsive.Tablet>
-            <StyledCraftElement {...responsiveProps} editing={editor.editing} />
-          </Responsive.Tablet>
-          <Responsive.Desktop>
-            <StyledCraftElement {...responsiveProps} editing={editor.editing} />
-          </Responsive.Desktop>
+          <StyledCraftElement
+            {...(elementProps as ElementProps<P>)}
+            customStyle={{
+              ...props.customStyle,
+              [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: responsive?.mobile?.customStyle,
+              [`@media (min-width: ${TABLET_BREAK_POINT}px)`]: responsive?.tablet?.customStyle,
+              [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: responsive?.desktop?.customStyle,
+            }}
+            editing={editor.editing}
+          />
         </CraftRefBlock>
       </div>
     )
@@ -185,9 +174,7 @@ const CraftController: React.FC = () => {
       {editor.query.node(node.id).isDeletable() && (
         <StyledControllerItem
           onClick={() => {
-            window.confirm(
-              formatMessage({ id: 'common.craftize.confirmDelete', defaultMessage: '確定要刪除？此動作無法復原' }),
-            ) && editor.actions.delete(node.id)
+            editor.actions.delete(node.id)
           }}
         >
           <DeleteIcon />
