@@ -9,8 +9,9 @@ import {
 } from '@chakra-ui/icons'
 import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserComponent } from '@craftjs/core'
 import { getRandomId } from '@craftjs/utils'
-import { clone } from 'ramda'
+import { clone, mergeDeepRight } from 'ramda'
 import { useIntl } from 'react-intl'
+import { useMediaQuery } from 'react-responsive'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent, ElementProps } from '../../types/element'
 import { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
@@ -60,7 +61,22 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
     const editor = useEditor(state => ({
       editing: state.options.enabled,
     }))
-    const { responsive, ...elementProps } = props
+    const isTablet = useMediaQuery({
+      minWidth: TABLET_BREAK_POINT,
+      maxWidth: DESKTOP_BREAK_POINT - 1,
+    })
+    const isDesktop = useMediaQuery({ minWidth: DESKTOP_BREAK_POINT })
+    const device = editor.editing
+      ? node.data.custom?.device || 'desktop'
+      : isDesktop
+      ? 'desktop'
+      : isTablet
+      ? 'tablet'
+      : 'mobile'
+    const responsiveProps = mergeDeepRight(
+      props,
+      props.responsive?.[device as keyof typeof props.responsive] || {},
+    ) as PropsWithCraft<P>
     return (
       <div>
         <CraftRefBlock
@@ -71,12 +87,12 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
         >
           {editor.editing && node.events.hovered && <CraftController />}
           <StyledCraftElement
-            {...(elementProps as ElementProps<P>)}
+            {...(responsiveProps as ElementProps<P>)}
             customStyle={{
               ...props.customStyle,
-              [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: responsive?.mobile?.customStyle,
-              [`@media (min-width: ${TABLET_BREAK_POINT}px)`]: responsive?.tablet?.customStyle,
-              [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: responsive?.desktop?.customStyle,
+              [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: props.responsive?.mobile?.customStyle,
+              [`@media (min-width: ${TABLET_BREAK_POINT}px)`]: props.responsive?.tablet?.customStyle,
+              [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: props.responsive?.desktop?.customStyle,
             }}
             editing={editor.editing}
           />
