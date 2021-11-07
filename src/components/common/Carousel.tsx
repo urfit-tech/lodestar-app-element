@@ -13,7 +13,7 @@ const StyledSlider = styled(Slider)<ElementProps<CarouselProps>>`
     position: absolute;
     width: 100%;
     top: 50%;
-    transform: translate(0, -50%);
+    transform: translate(0, -50%) !important; // !important for the iframe of lodestar-app-admin
   }
   .slick-arrow {
     z-index: 1;
