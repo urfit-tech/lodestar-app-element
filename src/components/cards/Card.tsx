@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 import styled from 'styled-components'
-import { MultiLineTruncationMixin } from '../../helpers/style'
 import DefaultAvatar from '../../images/icons/avatar.svg'
 import { ElementComponent } from '../../types/element'
+import { MultiLineTruncationMixin } from '../common'
 import { StyledImage } from '../common/Image'
 
 export type CardProps = {
