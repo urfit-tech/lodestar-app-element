@@ -37,6 +37,25 @@ const CommonTitleMixin = css`
   font-weight: bold;
   color: var(--gray-darker);
 `
+const CommonLargeTitleMixin = css`
+  font-size: 24px;
+  letter-spacing: 0.2px;
+  font-weight: bold;
+  color: var(--gray-darker);
+`
+const MultiLineTruncationMixin = css`
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`
+
+const EmptyBlock = styled.div`
+  padding: 12.5rem 0;
+  color: var(--gray-dark);
+  font-size: 14px;
+  text-align: center;
+`
 export {
   AdminHeaderTitle,
   StyledSettingButtonWrapper,
@@ -44,4 +63,7 @@ export {
   CommonLargeTextMixin,
   CommonTextMixin,
   CommonTitleMixin,
+  CommonLargeTitleMixin,
+  MultiLineTruncationMixin,
+  EmptyBlock,
 }
