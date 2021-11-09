@@ -1,9 +1,10 @@
-import { useQuery } from '@apollo/react-hooks'
+import { useApolloClient, useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { useIntl } from 'react-intl'
 import { useApp } from '../contexts/AppContext'
 import { useAuth } from '../contexts/AuthContext'
 import hasura from '../hasura'
+import { notEmpty } from '../helpers'
 import { commonMessages } from '../helpers/translation'
 import { PeriodType } from '../types/data'
 import { Target } from '../types/product'
@@ -361,3 +362,41 @@ export const GET_PRODUCT_SIMPLE = gql`
     }
   }
 `
+
+export const useSearchMembers = () => {
+  const apolloClient = useApolloClient()
+  const { id: appId } = useApp()
+  const searchMembers = async (emails: string[]) => {
+    try {
+      const { data } = await apolloClient.query<hasura.SEARCH_MEMBERS, hasura.SEARCH_MEMBERSVariables>({
+        query: gql`
+          query SEARCH_MEMBERS($emails: [String!]!, $appId: String!) {
+            member_public(where: { email: { _in: $emails }, app_id: { _eq: $appId } }) {
+              id
+              email
+            }
+          }
+        `,
+        variables: {
+          emails: emails.filter(notEmpty),
+          appId,
+        },
+        fetchPolicy: 'no-cache',
+      })
+
+      const members =
+        data?.member_public
+          .filter(v => v.id && v.email)
+          .map(v => ({
+            id: v.id || '',
+            email: v.email || '',
+          })) || []
+
+      return members
+    } catch {
+      return []
+    }
+  }
+
+  return searchMembers
+}

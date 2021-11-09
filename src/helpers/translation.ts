@@ -25,6 +25,7 @@ export const commonMessages = {
     originalPrice: { id: 'common.label.originalPrice', defaultMessage: '原價' },
     name: { id: 'common.label.name', defaultMessage: '名稱' },
     or: { id: 'common.label.or', defaultMessage: '或' },
+    referrer: { id: 'common.label.referrer', defaultMessage: '推薦人' },
     referrerEmail: { id: 'common.label.referrerEmail', defaultMessage: '請輸入推薦人的註冊信箱' },
   }),
   ui: defineMessages({
@@ -32,10 +33,12 @@ export const commonMessages = {
     upload: { id: 'common.ui.upload', defaultMessage: '上傳' },
     selectImage: { id: 'common.ui.selectImage', defaultMessage: '選擇圖片' },
     save: { id: 'common.ui.save', defaultMessage: '儲存' },
+    cancel: { id: 'common.ui.cancel', defaultMessage: '取消' },
   }),
   button: defineMessages({
     allCategory: { id: 'common.button.allCategory', defaultMessage: '全部分類' },
     add: { id: 'common.button.add', defaultMessage: '新增' },
+    subscribeNow: { id: 'common.subscribe.now', defaultMessage: '立即訂閱' },
   }),
   content: defineMessages({
     noPeriod: { id: 'common.content.noPeriod', defaultMessage: '無使用期限' },
@@ -239,16 +242,34 @@ export const craftPageMessages = {
 export const checkoutMessages = {
   coupon: defineMessages({
     fromNow: { id: 'checkout.coupon.fromNow', defaultMessage: '即日起' },
-    noPeriod: { id: 'common.period.no', defaultMessage: '無使用期限' },
+    noPeriod: { id: 'checkout.coupon.noPeriod', defaultMessage: '無使用期限' },
   }),
   content: defineMessages({
     discountDirectly: { id: 'checkout.discount.directly', defaultMessage: '直接折抵' },
   }),
   title: defineMessages({
+    cart: { id: 'checkout.title.cart', defaultMessage: '購物清單' },
     chooseCoupon: { id: 'checkout.title.chooseCoupon', defaultMessage: '選擇折價券' },
     chooseMemberCard: { id: 'checkout.title.chooseMemberCard', defaultMessage: '選擇會員卡' },
   }),
   label: defineMessages({
+    paymentMethodPlaceholder: { id: 'checkout.label.paymentMethodPlaceholder', defaultMessage: '請選擇付款方式' },
+    paymentMethod: { id: 'checkout.label.paymentMethod', defaultMessage: '付款方式' },
+    credit: { id: 'checkout.label.credit', defaultMessage: '信用卡' },
+    vacc: { id: 'checkout.label.vacc', defaultMessage: 'ATM轉帳' },
+    cvs: { id: 'checkout.label.cvs', defaultMessage: '超商付款' },
+    instflag: { id: 'checkout.label.instflag', defaultMessage: '信用卡分期' },
+    unionpay: { id: 'checkout.label.unionpay', defaultMessage: '銀聯卡支付' },
+    webatm: { id: 'checkout.label.webatm', defaultMessage: 'WebATM' },
+    barcode: { id: 'checkout.label.barcode', defaultMessage: '超商條碼繳費' },
+    spgateway: { id: 'checkout.label.spgateway', defaultMessage: '藍新' },
+    tappay: { id: 'checkout.label.tappay', defaultMessage: 'tappay' },
+    paypal: { id: 'checkout.label.paypal', defaultMessage: 'PayPal - 限非台灣地區' },
+    parenting: { id: 'checkout.label.parenting', defaultMessage: '親子天下' },
+    commonhealth: { id: 'checkout.label.commonhealth', defaultMessage: '康健' },
+    cw_commonhealth: { id: 'checkout.label.cw_commonhealth', defaultMessage: '康健' },
+    cw_parenting: { id: 'checkout.label.cw_parenting', defaultMessage: '親子天下' },
+    groupBuying: { id: 'checkout.label.groupBuying', defaultMessage: '多人同行揪團' },
     noDiscount: { id: 'checkout.label.noDiscount', defaultMessage: '無折扣' },
     useCoupon: { id: 'checkout.label.useCoupon', defaultMessage: '使用折價券' },
     useMemberCard: { id: 'checkout.label.useMemberCard', defaultMessage: '使用會員卡' },
@@ -256,7 +277,6 @@ export const checkoutMessages = {
       id: 'checkout.label.groupBuyingRuleTitle',
       defaultMessage: '多人同行揪團規定與退費說明',
     },
-    groupBuying: { id: 'checkout.label.groupBuying', defaultMessage: '多人同行揪團' },
     groupBuyingPlan: {
       id: 'checkout.label.groupBuyingTitle',
       defaultMessage: '你購買「{title}」多人同行 方案：',
@@ -265,13 +285,39 @@ export const checkoutMessages = {
       id: 'checkout.label.partnerEmail',
       defaultMessage: '同行者信箱',
     },
+    shippingInput: { id: 'checkout.label.shippingInput', defaultMessage: '寄送資訊' },
+    shippingMethod: { id: 'checkout.label.shippingMethod', defaultMessage: '寄送方式' },
+    selectStore: { id: 'checkout.label.selectStore', defaultMessage: '選擇門市' },
+    receiverName: { id: 'checkout.label.receiverName', defaultMessage: '收件人姓名' },
+    receiverPhone: { id: 'checkout.label.receiverPhone', defaultMessage: '收件人電話' },
+    phone: { id: 'checkout.label.phone', defaultMessage: '手機' },
+    specification: { id: 'checkout.label.specification', defaultMessage: '商品規格與備註' },
+    receiverAddress: { id: 'checkout.label.receiverAddress', defaultMessage: '收件人地址' },
+  }),
+  message: defineMessages({
+    addressText: { id: 'checkout.message.addressText', defaultMessage: '請輸入地址' },
+    warningPayment: {
+      id: 'checkout.message.warningPayment',
+      defaultMessage: '下一步將連至第三方金流服務進行付款，你所有的交易資訊皆獲得安全保護。',
+    },
+  }),
+  shipping: defineMessages({
+    sevenEleven: { id: 'checkout.label.sevenEleven', defaultMessage: '7-11超商取貨' },
+    familyMart: { id: 'checkout.label.familyMart', defaultMessage: '全家超商取貨' },
+    hiLife: { id: 'checkout.label.hiLife', defaultMessage: '萊爾富超商取貨' },
+    okMart: { id: 'checkout.label.okMart', defaultMessage: 'OK超商取貨' },
+    sendByPost: { id: 'checkout.label.sendByPost', defaultMessage: '郵寄' },
+    homeDelivery: { id: 'checkout.label.homeDelivery', defaultMessage: '宅配' },
+    other: { id: 'checkout.label.other', defaultMessage: '其他' },
   }),
   button: defineMessages({
     reselectCoupon: { id: 'checkout.button.reselectCoupon', defaultMessage: '重新選擇' },
     chooseCoupon: { id: 'checkout.button.chooseCoupon.', defaultMessage: '選擇折價券' },
+    cartSubmit: { id: 'checkout.cart.cartSubmit', defaultMessage: '前往結帳' },
   }),
   placeholder: defineMessages({
     enterCouponCode: { id: 'checkout.placeholder.enterCouponCode', defaultMessage: '輸入折扣碼' },
+    nameText: { id: 'checkout.placeholder.nameText', defaultMessage: '真實姓名' },
   }),
   text: defineMessages({
     groupBuyingRuleLink: {
