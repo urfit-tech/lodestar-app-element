@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const AdminHeaderTitle = styled.div`
   flex-grow: 1;
@@ -19,5 +19,29 @@ const StyledCraftSettingLabel = styled.span`
   letter-spacing: 0.4px;
   font-weight: 500;
 `
-
-export { AdminHeaderTitle, StyledSettingButtonWrapper, StyledCraftSettingLabel }
+const CommonLargeTextMixin = css`
+  font-size: 16px;
+  letter-spacing: 0.2px;
+  font-weight: 500;
+  color: var(--gray-darker);
+`
+const CommonTextMixin = css`
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  color: var(--gray-dark);
+`
+const CommonTitleMixin = css`
+  font-size: 18px;
+  letter-spacing: 0.8px;
+  font-weight: bold;
+  color: var(--gray-darker);
+`
+export {
+  AdminHeaderTitle,
+  StyledSettingButtonWrapper,
+  StyledCraftSettingLabel,
+  CommonLargeTextMixin,
+  CommonTextMixin,
+  CommonTitleMixin,
+}
