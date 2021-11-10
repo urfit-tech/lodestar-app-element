@@ -369,8 +369,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       .then(taskId => history.push(`/tasks/order/${taskId}`))
       .catch(() => {})
   }
-  console.log(totalPrice > 0)
-  console.log(target.discountDownPrice)
+
   return (
     <>
       {renderTrigger({
