@@ -15,8 +15,8 @@ import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
-import { useMemberValidation } from '../../hooks/common'
-import { useUpdateMemberMetadata } from '../../hooks/member'
+import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
+import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
 import { InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ShippingMethodProps } from '../../types/merchandise'
 import DiscountSelectionCard from '../cards/DiscountSelectionCard'
@@ -128,27 +128,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { enabledModules, settings } = useApp()
   const { currentMemberId } = useAuth()
 
-  // FIXME:
-  // const { member: currentMember } = useMember(currentMemberId || '')
-  const currentMember = {
-    id: '793733e7-c270-4db1-ae71-562984265429',
-    member: '793733e7-c270-4db1-ae71-562984265429',
-    role: 'app-owner',
-    username: 'admin',
-    name: 'admin',
-    email: 'admin@kolable.com',
-    picture_url: 'https://static.kolable.com/avatars/demo/793733e7-c270-4db1-ae71-562984265429/400',
-    shipping: null,
-    invoice: null,
-    payment: null,
-    description: 'yoyoyoyo\n',
-    created_at: '2019-08-22T08:17:13.158233+00:00',
-    logined_at: '2021-11-09T06:46:21.436+00:00',
-    facebook_user_id: null,
-    google_user_id: null,
-    youtube_channel_ids: null,
-    phone: '0834343434',
-  }
+  const { member: currentMember } = useMember(currentMemberId || '')
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
   const [sharingCode = window.sessionStorage.getItem(sessionStorageKey)] = useQueryParam('sharing', StringParam)
@@ -182,19 +162,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   // checkout
   const [productId, setProductId] = useState(defaultProductId)
 
-  // FIXME:
-  // const { target } = useSimpleProduct({ id: productId, startedAt })
-  const target = {
-    id: 'cd0b4c4d-6a18-4e7f-a606-8878d5809715',
-    productType: 'MerchandiseSpec',
-    title: '客製虛擬 - 客製大的',
-    salePrice: 0,
-    isPhysical: false,
-    isCustomized: true,
-    isSubscription: false,
-    discountDownPrice: undefined,
-    groupBuyingPeople: 0,
-  }
+  const { target } = useSimpleProduct({ id: productId, startedAt })
 
   // cart information
   const memberCartInfo: {

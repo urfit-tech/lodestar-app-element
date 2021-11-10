@@ -1,8 +1,10 @@
+import { Button } from '@chakra-ui/react'
 import { Editor, Frame } from '@craftjs/core'
 import { useState } from 'react'
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 import { QueryParamProvider } from 'use-query-params'
 import * as CraftResolvers from './components/common/CraftElement'
+import CheckoutProductModal from './components/modals/CheckoutProductModal'
 import { LodestarAppProvider } from './contexts/LodestarAppContext'
 import ActivityPage from './pages/ActivityPage'
 import CarouselPage from './pages/CarouselPage'
@@ -57,9 +59,24 @@ const App: React.VFC = () => {
                   ))}
                 </ul>
               </div>
+
               {routes.map(route => (
                 <Route key={route.path} path={route.path} render={route.render} component={route.component} />
               ))}
+              <br />
+              <CheckoutProductModal
+                renderTrigger={({ onOpen }) => (
+                  <Button
+                    colorScheme="primary"
+                    onClick={() => {
+                      onOpen?.()
+                    }}
+                  >
+                    CheckoutProductModal
+                  </Button>
+                )}
+                defaultProductId={`MerchandiseSpec_cd0b4c4d-6a18-4e7f-a606-8878d5809715`}
+              />
             </QueryParamProvider>
           </BrowserRouter>
         </Frame>
