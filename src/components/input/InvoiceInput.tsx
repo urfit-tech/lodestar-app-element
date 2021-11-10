@@ -236,10 +236,6 @@ const InvoiceInput: React.VFC<{
         </div>
       )}
 
-      <Form.Item label="測試" required>
-        <Input placeholder="測試" />
-      </Form.Item>
-
       {renderMemberInfoInput?.({ value, nameRef, phoneRef, emailRef }) || (
         <div className="row">
           <div className="col-12 col-lg-3">
