@@ -1,4 +1,4 @@
-import { Button, Divider, SkeletonText, useDisclosure } from '@chakra-ui/react'
+import { Button, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
 import { camelCase } from 'lodash'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import ReactPixel from 'react-facebook-pixel'
@@ -7,10 +7,20 @@ import { useIntl } from 'react-intl'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { StringParam, useQueryParam } from 'use-query-params'
+import DiscountSelectionCard from '../../components/cards/DiscountSelectionCard'
+import { CommonTitleMixin } from '../../components/common'
 import ProductItem from '../../components/common/ProductItem'
+import CheckoutGroupBuyingForm, {
+  StyledBlockTitle,
+  StyledListItem,
+} from '../../components/form/CheckoutGroupBuyingForm'
+import CheckoutProductReferrerInput from '../../components/input/CheckoutProductReferrerInput'
 import InvoiceInput, { validateInvoice } from '../../components/input/InvoiceInput'
 import ShippingInput, { validateShipping } from '../../components/input/ShippingInput'
 import PriceLabel from '../../components/labels/PriceLabel'
+import CommonModal from '../../components/modals/CommonModal'
+import GroupBuyingRuleModal from '../../components/modals/GroupBuyingRuleModal'
+import PaymentSelector from '../../components/selectors/PaymentSelector'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
@@ -19,13 +29,7 @@ import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
 import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
 import { InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ShippingMethodProps } from '../../types/merchandise'
-import DiscountSelectionCard from '../cards/DiscountSelectionCard'
-import { CommonTitleMixin } from '../common'
 import { BREAK_POINT } from '../common/Responsive'
-import CheckoutGroupBuyingForm from '../form/CheckoutGroupBuyingForm'
-import CheckoutProductReferrerInput from '../input/CheckoutProductReferrerInput'
-import PaymentSelector from '../selectors/PaymentSelector'
-import CommonModal from './CommonModal'
 
 export const StyledTitle = styled.h1`
   ${CommonTitleMixin}
@@ -127,7 +131,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { enabledModules, settings } = useApp()
   const { currentMemberId } = useAuth()
-
   const { member: currentMember } = useMember(currentMemberId || '')
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
@@ -161,7 +164,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   // checkout
   const [productId, setProductId] = useState(defaultProductId)
-
   const { target } = useSimpleProduct({ id: productId, startedAt })
 
   // cart information
@@ -264,7 +266,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       ;({ isValidInvoice, isValidShipping } = isFieldsValidate({ invoice, shipping }))
     } else {
       isValidShipping = !target.isPhysical || validateShipping(shipping)
-      isValidInvoice = validateInvoice(invoice).length === 0
+      isValidInvoice = settings['feature.invoice.disable'] ? true : validateInvoice(invoice).length === 0
     }
 
     if (totalPrice > 0 && payment === null) {
@@ -382,8 +384,16 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           </div>
         )}
 
-        {enabledModules.group_buying && !!target.groupBuyingPeople && (
+        {enabledModules.group_buying && !!target.groupBuyingPeople && target.groupBuyingPeople > 1 && (
           <div ref={groupBuyingRef}>
+            <StyledBlockTitle className="mb-3">{formatMessage(checkoutMessages.label.groupBuying)}</StyledBlockTitle>
+            <OrderedList className="mb-4">
+              <StyledListItem>{formatMessage(checkoutMessages.text.groupBuyingDescription1)}</StyledListItem>
+              <StyledListItem>{formatMessage(checkoutMessages.text.groupBuyingDescription2)}</StyledListItem>
+              <StyledListItem>
+                {formatMessage(checkoutMessages.text.groupBuyingDescription3, { modal: <GroupBuyingRuleModal /> })}
+              </StyledListItem>
+            </OrderedList>
             <CheckoutGroupBuyingForm
               title={target.title || ''}
               partnerCount={target.groupBuyingPeople - 1}
@@ -401,14 +411,15 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         {(totalPrice > 0 || target.discountDownPrice) && (
           <>
             <div ref={invoiceRef} className="mb-5">
-              {renderInvoice?.({ invoice, setInvoice, isValidating }) || (
-                <InvoiceInput
-                  value={invoice}
-                  onChange={value => setInvoice(value)}
-                  isValidating={isValidating}
-                  shouldSameToShippingCheckboxDisplay={target.isPhysical}
-                />
-              )}
+              {renderInvoice?.({ invoice, setInvoice, isValidating }) ||
+                (!settings['feature.invoice.disable'] && (
+                  <InvoiceInput
+                    value={invoice}
+                    onChange={value => setInvoice(value)}
+                    isValidating={isValidating}
+                    shouldSameToShippingCheckboxDisplay={target.isPhysical}
+                  />
+                ))}
             </div>
             <div className="mb-3">
               <DiscountSelectionCard check={check} value={discountId} onChange={setDiscountId} />
