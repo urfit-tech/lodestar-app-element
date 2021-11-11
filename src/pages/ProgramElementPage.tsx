@@ -24,9 +24,9 @@ const ProgramElementPage: React.VFC = () => {
       <CraftProgramCollection
         variant="card"
         layout={{
-          gap: [8, 16],
+          gap: 8,
           gutter: 10,
-          columns: [1, 3, 5],
+          columns: 3,
         }}
         withSelector
         source={{

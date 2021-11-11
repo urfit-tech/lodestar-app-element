@@ -1,16 +1,27 @@
-import { ResponsiveValue, SimpleGrid } from '@chakra-ui/react'
 import { repeat } from 'ramda'
+import styled from 'styled-components'
 import { ElementComponent, ElementProps } from '../../types/element'
 
 export type CollectionLayout = {
-  gutter?: ResponsiveValue<number>
-  gap?: ResponsiveValue<number>
-  columns?: ResponsiveValue<number>
+  gutter?: number
+  gap?: number
+  columns?: number
 }
 
 export type ContextCollection<D> = React.FC<{
   children: (context: { loading?: boolean; errors?: Error[]; data?: Array<D> }) => React.ReactElement
 }>
+
+const StyledGrid = styled.div<CollectionLayout>`
+  display: grid;
+  grid-template-columns: ${props =>
+    new Array(props.columns || 2)
+      .fill(1)
+      .map(() => `minmax(0, 1fr)`)
+      .join(' ')};
+  grid-gap: ${props => `${props.gap || 16}px ${props.gutter || 16}px`};
+  place-items: center;
+`
 
 const Collection =
   <P extends object>(ElementComponent: ElementComponent<P>) =>
@@ -23,19 +34,25 @@ const Collection =
   ) => {
     const loadingProps = { loading: true } as P
     return (
-      <SimpleGrid
-        spacingX={props.layout?.gutter || 8}
-        spacingY={props.layout?.gap || 8}
-        columns={props.layout?.columns || [1, 2, 4]}
-      >
+      <div style={{ display: 'flex', flexWrap: 'wrap', width: '100%', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
         {props.loading ? (
           repeat(<ElementComponent {...loadingProps} />)(4)
         ) : props.errors ? (
           <div>Error</div>
         ) : props.data ? (
-          props.data.map(d => props.renderElement?.(d, ElementComponent))
+          props.data.map((d, idx) => (
+            <div
+              key={idx}
+              style={{
+                width: 100 / (props.layout?.columns || 2) + '%',
+                padding: `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`,
+              }}
+            >
+              {props.renderElement?.(d, ElementComponent)}
+            </div>
+          ))
         ) : null}
-      </SimpleGrid>
+      </div>
     )
   }
 
