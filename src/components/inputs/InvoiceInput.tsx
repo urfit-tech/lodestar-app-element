@@ -3,11 +3,11 @@ import { Checkbox, Form, Input } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { CommonTitleMixin } from '../../components/common'
 import { useApp } from '../../contexts/AppContext'
 import { validationRegExp } from '../../helpers'
 import { checkoutMessages } from '../../helpers/translation'
 import { InvoiceProps, ShippingProps } from '../../types/checkout'
+import { CommonTitleMixin } from '../common'
 
 const StyledWrapper = styled.div`
   .ant-select {

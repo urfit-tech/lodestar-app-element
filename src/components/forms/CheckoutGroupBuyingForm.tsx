@@ -3,11 +3,11 @@ import { uniq } from 'ramda'
 import React, { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { FormInput } from '../../components/input/FormInput'
 import { useAuth } from '../../contexts/AuthContext'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useSearchMembers, useSimpleProduct } from '../../hooks/common'
 import { CommonLargeTextMixin, CommonTextMixin, CommonTitleMixin } from '../common/index'
+import { FormInput } from '../inputs/FormInput'
 
 export const StyledBlockTitle = styled.h2`
   ${CommonTitleMixin}

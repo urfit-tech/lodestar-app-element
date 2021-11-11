@@ -10,13 +10,6 @@ import { StringParam, useQueryParam } from 'use-query-params'
 import DiscountSelectionCard from '../../components/cards/DiscountSelectionCard'
 import { CommonTitleMixin } from '../../components/common'
 import ProductItem from '../../components/common/ProductItem'
-import CheckoutGroupBuyingForm, {
-  StyledBlockTitle,
-  StyledListItem,
-} from '../../components/form/CheckoutGroupBuyingForm'
-import CheckoutProductReferrerInput from '../../components/input/CheckoutProductReferrerInput'
-import InvoiceInput, { validateInvoice } from '../../components/input/InvoiceInput'
-import ShippingInput, { validateShipping } from '../../components/input/ShippingInput'
 import PriceLabel from '../../components/labels/PriceLabel'
 import CommonModal from '../../components/modals/CommonModal'
 import GroupBuyingRuleModal from '../../components/modals/GroupBuyingRuleModal'
@@ -30,6 +23,10 @@ import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
 import { InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ShippingMethodProps } from '../../types/merchandise'
 import { BREAK_POINT } from '../common/Responsive'
+import CheckoutGroupBuyingForm, { StyledBlockTitle, StyledListItem } from '../forms/CheckoutGroupBuyingForm'
+import CheckoutProductReferrerInput from '../inputs/CheckoutProductReferrerInput'
+import InvoiceInput, { validateInvoice } from '../inputs/InvoiceInput'
+import ShippingInput, { validateShipping } from '../inputs/ShippingInput'
 
 export const StyledTitle = styled.h1`
   ${CommonTitleMixin}

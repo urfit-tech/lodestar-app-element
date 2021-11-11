@@ -4,11 +4,11 @@ import { camelCase } from 'lodash'
 import React, { useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import PriceLabel from '../../components/labels/PriceLabel'
 import { useApp } from '../../contexts/AppContext'
 import { checkoutMessages } from '../../helpers/translation'
 import { ShippingOptionProps, ShippingProps } from '../../types/checkout'
 import { CommonTitleMixin } from '../common'
+import PriceLabel from '../labels/PriceLabel'
 
 export const csvShippingMethods = ['seven-eleven', 'family-mart', 'ok-mart', 'hi-life']
 

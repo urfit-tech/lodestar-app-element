@@ -3,7 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import { useAuth } from '../../contexts/AuthContext'
 import { commonMessages } from '../../helpers/translation'
-import { FormInput } from '../input/FormInput'
+import { FormInput } from './FormInput'
 
 const CheckoutProductReferrerInput: React.VFC<{
   referrerStatus: 'success' | 'error' | 'validating' | undefined
