@@ -9,6 +9,7 @@ export type ButtonProps = {
   colorScheme?: string
   link?: string
   openNewTab?: boolean
+  action?: string
 }
 
 const StyledButton = styled.button<ButtonProps>`
