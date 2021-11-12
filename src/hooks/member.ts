@@ -1,8 +1,6 @@
-import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import { useApp } from '../contexts/AppContext'
 import hasura from '../hasura'
-import { notEmpty } from '../helpers'
 import { MemberProps, UserRole } from '../types/member'
 
 export const useMember = (memberId: string) => {
@@ -61,43 +59,6 @@ export const useMember = (memberId: string) => {
     member,
     refetchMember: refetch,
   }
-}
-export const useSearchMembers = () => {
-  const apolloClient = useApolloClient()
-  const { id: appId } = useApp()
-  const searchMembers = async (emails: string[]) => {
-    try {
-      const { data } = await apolloClient.query<hasura.SEARCH_MEMBERS, hasura.SEARCH_MEMBERSVariables>({
-        query: gql`
-          query SEARCH_MEMBERS($emails: [String!]!, $appId: String!) {
-            member_public(where: { email: { _in: $emails }, app_id: { _eq: $appId } }) {
-              id
-              email
-            }
-          }
-        `,
-        variables: {
-          emails: emails.filter(notEmpty),
-          appId,
-        },
-        fetchPolicy: 'no-cache',
-      })
-
-      const members =
-        data?.member_public
-          .filter(v => v.id && v.email)
-          .map(v => ({
-            id: v.id || '',
-            email: v.email || '',
-          })) || []
-
-      return members
-    } catch {
-      return []
-    }
-  }
-
-  return searchMembers
 }
 
 export const useUpdateMemberMetadata = () => {
