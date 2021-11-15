@@ -4,7 +4,19 @@ import Slider, { Settings, Settings as SliderProps } from 'react-slick'
 import styled from 'styled-components'
 import { ElementComponent, ElementProps } from '../../types/element'
 
-export type CarouselProps = SliderProps & { variant?: 'cover'; currentSlide?: number }
+export type CarouselProps = Pick<
+  SliderProps,
+  | 'autoplay'
+  | 'autoplaySpeed'
+  | 'arrows'
+  | 'dots'
+  | 'slidesToShow'
+  | 'slidesToScroll'
+  | 'dotsClass'
+  | 'swipe'
+  | 'draggable'
+  | 'infinite'
+> & { variant?: 'cover'; currentSlide?: number }
 
 const StyledSlider = styled(Slider)<ElementProps<CarouselProps>>`
   overflow: hidden;
@@ -31,8 +43,9 @@ const StyledSlider = styled(Slider)<ElementProps<CarouselProps>>`
     pointer-events: ${props => props.editing && 'none'};
     button::before {
       content: '';
-      width: 20px;
-      height: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
       background-color: #cdcdcd;
     }
     .slick-active button::before {
@@ -63,6 +76,11 @@ const Carousel: ElementComponent<CarouselProps> = props => {
     slidesToShow: props.slidesToShow || 1,
     slidesToScroll: props.slidesToScroll || 1,
     autoplay: props.autoplay,
+    autoplaySpeed: props.autoplaySpeed,
+    dotsClass: props.dotsClass,
+    swipe: props.swipe,
+    draggable: props.draggable,
+    infinite: props.infinite,
   }
   return (
     <StyledSlider
