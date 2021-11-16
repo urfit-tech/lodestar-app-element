@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
 import { ElementComponent } from '../../types/element'
+import { ProductOpenLinkSource, ProductPurchaseProductSource } from '../../types/options'
 import CheckoutProductModal from '../modals/CheckoutProductModal'
 
 export type ButtonProps = {
@@ -10,8 +11,7 @@ export type ButtonProps = {
   colorScheme?: string
   link?: string
   openNewTab?: boolean
-  productType?: string
-  productId?: string
+  source?: ProductOpenLinkSource | ProductPurchaseProductSource
 }
 
 const StyledButton = styled.button<ButtonProps>`
@@ -57,15 +57,31 @@ const Button: ElementComponent<ButtonProps> = props => {
             if (props.link && props.openNewTab) {
               window.open(props.link)
             }
-            if (props.productType) {
-              onOpen?.()
+            if (props.source?.from) {
+              switch (props.source.from) {
+                case 'openLink':
+                  if (!props.source.openNewTab && props.source.link) {
+                    window.location.href = props.source.link
+                  }
+                  if (props.source.openNewTab && props.source.link) {
+                    window.open(props.source.link)
+                  }
+                  break
+                case 'purchaseProduct':
+                  onOpen?.()
+                  break
+                default:
+                  break
+              }
             }
           }}
         >
           {props.title}
         </StyledButton>
       )}
-      defaultProductId={props.productType ? `${props.productType}_${props.productId}` : ''}
+      defaultProductId={
+        props.source?.from === 'purchaseProduct' ? `${props.source.productType}_${props.source.productId}` : ''
+      }
     />
   )
 }
