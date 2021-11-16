@@ -1,3 +1,5 @@
+import { ProductType } from './product'
+
 export type ProductSource<T, P> = { from: T } & P
 export type ProductCustomSource = ProductSource<'custom', { idList?: string[] }>
 export type ProductPublishedAtSource = ProductSource<
@@ -35,5 +37,20 @@ export type ProductRoleSource = ProductSource<
     limit?: number
     defaultTagNames?: string[]
     defaultCategoryIds?: string[]
+  }
+>
+
+export type ProductOpenLinkSource = ProductSource<
+  'openLink',
+  {
+    link?: string
+    openNewTab?: boolean
+  }
+>
+export type ProductPurchaseProductSource = ProductSource<
+  'purchaseProduct',
+  {
+    productTypes?: ProductType[] | null
+    productIds?: string[]
   }
 >
