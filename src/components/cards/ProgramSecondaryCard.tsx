@@ -28,7 +28,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
   return (
     <Card
       className={classNames('cursor-pointer', props.className)}
-      onClick={() => !loading && !props.editing && history.push(`/programs/${props.id}/contents`)}
+      onClick={() => !loading && !props.editing && history.push(`/programs/${props.id}`)}
     >
       <Card.Content>
         {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{props.title}</StyledTitle>}
