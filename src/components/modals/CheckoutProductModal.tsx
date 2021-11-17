@@ -250,7 +250,13 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const [referrerEmail, setReferrerEmail] = useState('')
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
-
+  console.log('************************')
+  console.log(currentMember)
+  console.log('-------')
+  console.log(target)
+  console.log('-------')
+  console.log(payment)
+  console.log('************************')
   if (currentMember === null || target === null || payment === undefined) {
     return renderTrigger?.({ isLoading: true })
   }
