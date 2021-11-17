@@ -1,5 +1,3 @@
-import { ProductType } from './product'
-
 export type ProductSource<T, P> = { from: T } & P
 export type ProductCustomSource = ProductSource<'custom', { idList?: string[] }>
 export type ProductPublishedAtSource = ProductSource<
@@ -50,7 +48,6 @@ export type ProductOpenLinkSource = ProductSource<
 export type ProductPurchaseProductSource = ProductSource<
   'purchaseProduct',
   {
-    productType?: ProductType | null
     productId?: string
   }
 >

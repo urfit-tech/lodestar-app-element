@@ -79,9 +79,7 @@ const Button: ElementComponent<ButtonProps> = props => {
           {props.title}
         </StyledButton>
       )}
-      defaultProductId={
-        props.source?.from === 'purchaseProduct' ? `${props.source.productType}_${props.source.productId}` : ''
-      }
+      defaultProductId={props.source?.from === 'purchaseProduct' ? `${props.source.productId}` : ''}
     />
   )
 }
