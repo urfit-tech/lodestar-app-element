@@ -40,7 +40,7 @@ const StyledButton = styled.button<ButtonProps>`
 
 const Button: ElementComponent<ButtonProps> = props => {
   const { loading, errors, editing } = props
-  return loading || errors ? null : (
+  return loading || errors ? null : props.source?.from ? (
     <CheckoutProductModal
       renderTrigger={({ onOpen }) => (
         <StyledButton
@@ -50,12 +50,6 @@ const Button: ElementComponent<ButtonProps> = props => {
           onClick={() => {
             if (editing) {
               return
-            }
-            if (props.link && !props.openNewTab) {
-              window.location.href = props.link
-            }
-            if (props.link && props.openNewTab) {
-              window.open(props.link)
             }
             if (props.source?.from) {
               switch (props.source.from) {
@@ -81,6 +75,25 @@ const Button: ElementComponent<ButtonProps> = props => {
       )}
       defaultProductId={props.source?.from === 'purchaseProduct' ? `${props.source.productId}` : ''}
     />
+  ) : (
+    <StyledButton
+      {...props}
+      className={props.className}
+      colorScheme="primary"
+      onClick={() => {
+        if (editing) {
+          return
+        }
+        if (props.link && !props.openNewTab) {
+          window.location.href = props.link
+        }
+        if (props.link && props.openNewTab) {
+          window.open(props.link)
+        }
+      }}
+    >
+      {props.title}
+    </StyledButton>
   )
 }
 
