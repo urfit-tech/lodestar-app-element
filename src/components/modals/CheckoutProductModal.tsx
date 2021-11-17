@@ -408,7 +408,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           <>
             <div ref={invoiceRef} className="mb-5">
               {renderInvoice?.({ invoice, setInvoice, isValidating }) ||
-                (!settings['feature.invoice.disable'] && (
+                (settings['feature.invoice.disable'] !== '1' && (
                   <InvoiceInput
                     value={invoice}
                     onChange={value => setInvoice(value)}
