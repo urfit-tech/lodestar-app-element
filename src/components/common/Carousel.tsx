@@ -77,7 +77,6 @@ const Carousel: ElementComponent<CarouselProps> = props => {
     slidesToScroll: props.slidesToScroll || 1,
     autoplay: props.autoplay,
     autoplaySpeed: props.autoplaySpeed || 3000,
-    dotsClass: props.dotsClass,
     swipe: props.swipe,
     draggable: props.draggable,
     infinite: props.infinite,

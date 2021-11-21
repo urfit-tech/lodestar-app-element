@@ -29,7 +29,7 @@ const CarouselPage = () => {
           <Element id="Button3" is={CraftButton} title="D" />
         </Element>
         <Element id="Section" is={CraftSection} canvas customStyle={{ padding: 48 }}>
-          <Element id="Carousel" is={CraftCarousel} canvas infinite autoplay>
+          <Element id="Carousel" is={CraftCarousel} canvas dots infinite autoplay>
             <Element
               key="1"
               id="Section"
