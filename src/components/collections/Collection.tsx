@@ -36,7 +36,16 @@ const Collection =
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', width: '100%', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
         {props.loading ? (
-          repeat(<ElementComponent {...loadingProps} />)(4)
+          repeat(
+            <div
+              style={{
+                width: 100 / (props.layout?.columns || 2) + '%',
+                padding: `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`,
+              }}
+            >
+              <ElementComponent {...loadingProps} />
+            </div>,
+          )(4)
         ) : props.errors ? (
           <div>Error</div>
         ) : props.data ? (

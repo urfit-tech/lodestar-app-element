@@ -1,4 +1,5 @@
 import { Skeleton, SkeletonCircle } from '@chakra-ui/skeleton'
+import classNames from 'classnames'
 import styled from 'styled-components'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { usePublicMember } from '../../hooks/data'
@@ -98,10 +99,23 @@ export const MultiAvatar: React.FC<
       ) : (
         <>
           {props.renderAvatar?.(member, props.onClick) || (
-            <AvatarImage src={member?.pictureUrl} shape={props.shape} size={props.size} />
+            <AvatarImage
+              className={classNames({ 'cursor-pointer': Boolean(props.onClick) })}
+              src={member?.pictureUrl}
+              shape={props.shape}
+              size={props.size}
+              onClick={() => props.onClick?.(memberId)}
+            />
           )}
           {props.renderText?.(member, props.onClick) ||
-            (props.withName && <MemberName className="ml-3">{member?.name}</MemberName>)}
+            (props.withName && (
+              <MemberName
+                className={classNames('ml-3', { 'cursor-pointer': Boolean(props.onClick) })}
+                onClick={() => props.onClick?.(memberId)}
+              >
+                {member?.name}
+              </MemberName>
+            ))}
         </>
       )}
     </div>

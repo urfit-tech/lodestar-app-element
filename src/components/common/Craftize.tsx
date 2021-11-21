@@ -80,7 +80,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
     return (
       <div>
         <CraftRefBlock
-          ref={ref => ref && node.connectors.connect(ref)}
+          ref={ref => ref && editor.editing && node.connectors.connect(ref)}
           editing={editor.editing}
           hovered={node.events.hovered}
           selected={node.events.selected}
