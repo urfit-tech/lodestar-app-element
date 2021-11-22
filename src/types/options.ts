@@ -37,3 +37,17 @@ export type ProductRoleSource = ProductSource<
     defaultCategoryIds?: string[]
   }
 >
+
+export type ProductOpenLinkSource = ProductSource<
+  'openLink',
+  {
+    link?: string
+    openNewTab?: boolean
+  }
+>
+export type ProductPurchaseProductSource = ProductSource<
+  'purchaseProduct',
+  {
+    productId?: string
+  }
+>

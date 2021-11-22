@@ -250,7 +250,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const [referrerEmail, setReferrerEmail] = useState('')
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
-
   if (currentMember === null || target === null || payment === undefined) {
     return renderTrigger?.({ isLoading: true })
   }
@@ -409,7 +408,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           <>
             <div ref={invoiceRef} className="mb-5">
               {renderInvoice?.({ invoice, setInvoice, isValidating }) ||
-                (!settings['feature.invoice.disable'] && (
+                (settings['feature.invoice.disable'] !== '1' && (
                   <InvoiceInput
                     value={invoice}
                     onChange={value => setInvoice(value)}
