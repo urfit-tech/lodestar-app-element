@@ -56,7 +56,24 @@ export type CouponProps = {
   }
 }
 export type ShippingOptionIdType = 'sevenEleven' | 'familyMart' | 'okMart' | 'sendByPost' | 'homeDelivery'
-export type PaymentMethodType = 'credit' | 'vacc' | 'cvs' | 'instflag' | 'unionpay' | 'webatm' | 'barcode'
+export type PaymentMethodType =
+  | 'credit'
+  | 'vacc'
+  | 'cvs'
+  | 'instflag'
+  | 'unionpay'
+  | 'webatm'
+  | 'barcode'
+  | 'androidpay'
+  | 'samsungpay'
+  | 'creditred'
+  | 'cvscom'
+  | 'alipay'
+  | 'ezpay'
+  | 'esumwallet'
+  | 'taiwanpay'
+  | 'linepay'
+
 export type PaymentGatewayType = 'spgateway' | 'tappay' | 'parenting' | 'paypal' | 'commonhealth'
 export type ShippingProps = {
   name?: string
