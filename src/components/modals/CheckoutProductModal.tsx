@@ -91,6 +91,7 @@ export type CheckoutProductModalProps = {
     isLoading?: boolean
     isSubscription?: boolean
     disable?: boolean
+    alert?: boolean
     onOpen?: () => void
     onProductChange?: (productId: string) => void
   }) => React.ReactElement
@@ -253,10 +254,10 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const updateMemberMetadata = useUpdateMemberMetadata()
 
   if (currentMember === null) {
-    alert('請先登入')
+    return renderTrigger?.({ alert: true })
   }
 
-  if (currentMember === null || target === null || payment === undefined) {
+  if (target === null || payment === undefined) {
     return renderTrigger?.({ isLoading: true })
   }
 
