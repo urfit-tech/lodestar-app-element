@@ -62,7 +62,7 @@ const Button: ElementComponent<ButtonProps> = props => {
       renderTrigger={({ onOpen, disable, isLoginAlert }) => (
         <StyledButton
           {...props}
-          className={`${props.className} ${disable ? 'disabled' : ''}`}
+          className={`${props.className} ${props.source?.from === 'purchaseProduct' && disable ? 'disabled' : ''}`}
           colorScheme="primary"
           disabled={props.source?.from === 'purchaseProduct' ? disable : false}
           onClick={() => {
