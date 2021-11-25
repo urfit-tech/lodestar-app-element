@@ -47,7 +47,7 @@ const Button: ElementComponent<ButtonProps> = props => {
           {...props}
           className={props.className}
           colorScheme="primary"
-          disabled={disable}
+          disabled={props.source?.from === 'purchaseProduct' ? disable : false}
           onClick={() => {
             if (editing) return
             if (props.source?.from) {
