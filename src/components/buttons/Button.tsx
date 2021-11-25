@@ -51,7 +51,6 @@ const Button: ElementComponent<ButtonProps> = props => {
           onClick={() => {
             if (editing) return
             if (props.source?.from) {
-              if (!isLogin) return window.alert('請先登入')
               switch (props.source.from) {
                 case 'openLink':
                   if (!props.source.openNewTab && props.source.link) {
@@ -62,6 +61,7 @@ const Button: ElementComponent<ButtonProps> = props => {
                   }
                   break
                 case 'purchaseProduct':
+                  if (!isLogin) return window.alert('請先登入')
                   onOpen?.()
                   break
                 default:
