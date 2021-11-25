@@ -65,11 +65,12 @@ const App: React.VFC = () => {
               ))}
               <br />
               <CheckoutProductModal
-                renderTrigger={({ onOpen, isLogin }) => (
+                renderTrigger={({ onOpen, disable, isLoginAlert }) => (
                   <Button
                     colorScheme="primary"
+                    disabled={disable}
                     onClick={() => {
-                      if (!isLogin) return window.alert('請先登入')
+                      if (isLoginAlert) return window.alert('請先登入')
                       onOpen?.()
                     }}
                   >

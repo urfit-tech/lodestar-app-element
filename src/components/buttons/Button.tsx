@@ -42,12 +42,11 @@ const Button: ElementComponent<ButtonProps> = props => {
   const { loading, errors, editing } = props
   return loading || errors ? null : props.source?.from ? (
     <CheckoutProductModal
-      renderTrigger={({ onOpen, disable, isLogin }) => (
+      renderTrigger={({ onOpen, disable, isLoginAlert }) => (
         <StyledButton
           {...props}
           className={props.className}
           colorScheme="primary"
-          disabled={disable}
           onClick={() => {
             if (editing) return
             if (props.source?.from) {
@@ -61,7 +60,7 @@ const Button: ElementComponent<ButtonProps> = props => {
                   }
                   break
                 case 'purchaseProduct':
-                  if (!isLogin) return window.alert('請先登入')
+                  if (isLoginAlert) return window.alert('請先登入')
                   onOpen?.()
                   break
                 default:

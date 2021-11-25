@@ -91,7 +91,7 @@ export type CheckoutProductModalProps = {
     isLoading?: boolean
     isSubscription?: boolean
     disable?: boolean
-    isLogin?: boolean
+    isLoginAlert?: boolean
     onOpen?: () => void
     onProductChange?: (productId: string) => void
   }) => React.ReactElement
@@ -254,7 +254,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const updateMemberMetadata = useUpdateMemberMetadata()
 
   if (currentMember === null) {
-    return renderTrigger?.({ isLogin: false })
+    return renderTrigger?.({ isLoginAlert: true })
   }
 
   if (target === null || payment === undefined) {
