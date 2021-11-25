@@ -49,9 +49,9 @@ const Button: ElementComponent<ButtonProps> = props => {
           colorScheme="primary"
           disabled={disable}
           onClick={() => {
-            if (!isLogin) return window.alert('請先登入')
             if (editing) return
             if (props.source?.from) {
+              if (!isLogin) return window.alert('請先登入')
               switch (props.source.from) {
                 case 'openLink':
                   if (!props.source.openNewTab && props.source.link) {
