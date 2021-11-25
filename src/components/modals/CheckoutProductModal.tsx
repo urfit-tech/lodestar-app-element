@@ -259,7 +259,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   }
 
   if (target === null || payment === undefined) {
-    return renderTrigger?.({ isLoading: true })
+    return renderTrigger?.({ isLoading: true, disable: true })
   }
 
   const handleSubmit = () => {
