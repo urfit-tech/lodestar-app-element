@@ -350,7 +350,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         onOpen,
         onProductChange: productId => setProductId(productId),
         isSubscription: target.isSubscription,
-        disable: (target.endedAt || 0) < new Date(now()) || (target.expiredAt || 0) < new Date(now()),
+        disable:
+          (target.endedAt ? target.endedAt < new Date(now()) : false) ||
+          (target.expiredAt ? target.expiredAt < new Date(now()) : false),
       })}
       <CommonModal
         title={<StyledTitle className="mb-4">{formatMessage(checkoutMessages.title.cart)}</StyledTitle>}

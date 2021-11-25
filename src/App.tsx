@@ -92,7 +92,7 @@ const App: React.VFC = () => {
                     CheckoutProductModal
                   </Button>
                 )}
-                defaultProductId={`ActivityTicket_f317da80-f4b8-4ae7-b7b8-06bd90547875`}
+                defaultProductId={`ProgramPlan_551ec07a-03ec-4c5e-9541-cf141dab1f97`}
               />
             </QueryParamProvider>
           </BrowserRouter>
