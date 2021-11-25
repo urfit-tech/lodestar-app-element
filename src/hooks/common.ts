@@ -120,6 +120,7 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
         listPrice: data.activity_ticket_by_pk.price,
         coverUrl: data.activity_ticket_by_pk.activity?.cover_url || undefined,
         isSubscription: false,
+        endedAt: data.activity_ticket_by_pk.ended_at,
       }
     : data?.card_by_pk
     ? {
@@ -149,6 +150,7 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
         isLimited: data.project_plan_by_pk.is_limited,
         isPhysical: data.project_plan_by_pk.is_physical,
         isSubscription: data.project_plan_by_pk.is_subscription,
+        expiredAt: data.project_plan_by_pk.project.expired_at,
       }
     : data?.podcast_program_by_pk
     ? {
@@ -284,6 +286,7 @@ export const GET_PRODUCT_SIMPLE = gql`
       id
       title
       price
+      ended_at
       activity {
         id
         title
@@ -303,6 +306,7 @@ export const GET_PRODUCT_SIMPLE = gql`
       project {
         id
         title
+        expired_at
       }
       is_limited
       is_physical

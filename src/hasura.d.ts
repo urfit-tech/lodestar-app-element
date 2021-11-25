@@ -993,6 +993,7 @@ export interface GET_PRODUCT_SIMPLE_activity_ticket_by_pk {
   id: any
   title: string
   price: any
+  ended_at: any
   /**
    * An object relationship
    */
@@ -1003,6 +1004,7 @@ export interface GET_PRODUCT_SIMPLE_project_plan_by_pk_project {
   __typename: 'project'
   id: any
   title: string
+  expired_at: any | null
 }
 
 export interface GET_PRODUCT_SIMPLE_project_plan_by_pk {
@@ -1164,6 +1166,33 @@ export interface GET_PRODUCT_SIMPLE {
 export interface GET_PRODUCT_SIMPLEVariables {
   targetId: any
   startedAt?: any | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: SEARCH_MEMBERS
+// ====================================================
+
+export interface SEARCH_MEMBERS_member_public {
+  __typename: 'member_public'
+  id: string | null
+  email: string | null
+}
+
+export interface SEARCH_MEMBERS {
+  /**
+   * fetch data from the table: "member_public"
+   */
+  member_public: SEARCH_MEMBERS_member_public[]
+}
+
+export interface SEARCH_MEMBERSVariables {
+  emails: string[]
+  appId: string
 }
 
 /* tslint:disable */
@@ -1615,33 +1644,6 @@ export interface GET_MEMBER {
 
 export interface GET_MEMBERVariables {
   memberId: string
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: SEARCH_MEMBERS
-// ====================================================
-
-export interface SEARCH_MEMBERS_member_public {
-  __typename: 'member_public'
-  id: string | null
-  email: string | null
-}
-
-export interface SEARCH_MEMBERS {
-  /**
-   * fetch data from the table: "member_public"
-   */
-  member_public: SEARCH_MEMBERS_member_public[]
-}
-
-export interface SEARCH_MEMBERSVariables {
-  emails: string[]
-  appId: string
 }
 
 /* tslint:disable */
@@ -2482,6 +2484,7 @@ export enum app_update_column {
   point_discount_ratio = 'point_discount_ratio',
   point_exchange_rate = 'point_exchange_rate',
   point_validity_period = 'point_validity_period',
+  symbol = 'symbol',
   title = 'title',
   updated_at = 'updated_at',
   vimeo_project_id = 'vimeo_project_id',
@@ -6450,6 +6453,7 @@ export interface app_bool_exp {
   programs?: program_bool_exp | null
   properties?: property_bool_exp | null
   sharing_codes?: sharing_code_bool_exp | null
+  symbol?: String_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
   vimeo_project_id?: String_comparison_exp | null
@@ -6618,6 +6622,7 @@ export interface app_insert_input {
   programs?: program_arr_rel_insert_input | null
   properties?: property_arr_rel_insert_input | null
   sharing_codes?: sharing_code_arr_rel_insert_input | null
+  symbol?: string | null
   title?: string | null
   updated_at?: any | null
   vimeo_project_id?: string | null
@@ -6910,6 +6915,7 @@ export interface app_order_by {
   programs_aggregate?: program_aggregate_order_by | null
   properties_aggregate?: property_aggregate_order_by | null
   sharing_codes_aggregate?: sharing_code_aggregate_order_by | null
+  symbol?: order_by | null
   title?: order_by | null
   updated_at?: order_by | null
   vimeo_project_id?: order_by | null
@@ -6935,7 +6941,7 @@ export interface app_page_bool_exp {
   app_page_sections?: app_page_section_bool_exp | null
   craft_data?: jsonb_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
-  editor?: member_bool_exp | null
+  editor?: member_public_bool_exp | null
   editor_id?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
@@ -6954,7 +6960,6 @@ export interface app_page_insert_input {
   app_page_sections?: app_page_section_arr_rel_insert_input | null
   craft_data?: any | null
   created_at?: any | null
-  editor?: member_obj_rel_insert_input | null
   editor_id?: string | null
   id?: any | null
   is_deleted?: boolean | null

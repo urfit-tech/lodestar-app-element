@@ -90,6 +90,7 @@ export type CheckoutProductModalProps = {
   renderTrigger: (options: {
     isLoading?: boolean
     isSubscription?: boolean
+    disable?: boolean
     onOpen?: () => void
     onProductChange?: (productId: string) => void
   }) => React.ReactElement
@@ -250,7 +251,12 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const [referrerEmail, setReferrerEmail] = useState('')
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
-  if (currentMember === null || target === null || payment === undefined) {
+
+  if (currentMember === null) {
+    alert('請先登入')
+  }
+
+  if (target === null || payment === undefined) {
     return renderTrigger?.({ isLoading: true })
   }
 
@@ -342,6 +348,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         onOpen,
         onProductChange: productId => setProductId(productId),
         isSubscription: target.isSubscription,
+        disable: !!target.endedAt || !!target.expiredAt,
       })}
       <CommonModal
         title={<StyledTitle className="mb-4">{formatMessage(checkoutMessages.title.cart)}</StyledTitle>}

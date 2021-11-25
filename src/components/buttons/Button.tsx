@@ -42,11 +42,12 @@ const Button: ElementComponent<ButtonProps> = props => {
   const { loading, errors, editing } = props
   return loading || errors ? null : props.source?.from ? (
     <CheckoutProductModal
-      renderTrigger={({ onOpen }) => (
+      renderTrigger={({ onOpen, disable }) => (
         <StyledButton
           {...props}
           className={props.className}
           colorScheme="primary"
+          disabled={disable}
           onClick={() => {
             if (editing) {
               return

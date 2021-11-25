@@ -22,6 +22,7 @@ export type Target = {
   groupBuyingPeople?: number
   categories?: string[]
   roles?: string[]
+  expiredAt?: Date
 }
 
 export type ProductType =
