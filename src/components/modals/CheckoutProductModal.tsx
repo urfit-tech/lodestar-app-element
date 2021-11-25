@@ -256,7 +256,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     alert('請先登入')
   }
 
-  if (target === null || payment === undefined) {
+  if (currentMember === null || target === null || payment === undefined) {
     return renderTrigger?.({ isLoading: true })
   }
 
