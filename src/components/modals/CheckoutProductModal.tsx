@@ -1,5 +1,6 @@
 import { Button, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
 import { camelCase } from 'lodash'
+import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import ReactPixel from 'react-facebook-pixel'
 import ReactGA from 'react-ga'
@@ -349,7 +350,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         onOpen,
         onProductChange: productId => setProductId(productId),
         isSubscription: target.isSubscription,
-        disable: !!target.endedAt || !!target.expiredAt,
+        disable: (target.endedAt || 0) < new Date(now()) || (target.expiredAt || 0) < new Date(now()),
       })}
       <CommonModal
         title={<StyledTitle className="mb-4">{formatMessage(checkoutMessages.title.cart)}</StyledTitle>}
