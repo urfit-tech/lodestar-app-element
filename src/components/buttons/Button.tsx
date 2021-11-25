@@ -22,6 +22,23 @@ const StyledButton = styled.button<ButtonProps>`
   transition: 0.3s;
   font-size: 16px;
   letter-spacing: 0.2px;
+
+  &&:disabled,
+  &&.disabled {
+    color: #fff;
+    border-color: #a0a0a0;
+    background-color: #a0a0a0;
+    cursor: not-allowed !important;
+  }
+  &&:disabled:hover,
+  &&:disabled:focus,
+  &&.disabled:hover,
+  &&.disabled:focus {
+    color: #fff;
+    border-color: #a0a0a0;
+    background-color: #a0a0a0;
+    cursor: not-allowed !important;
+  }
   ${props =>
     props.size === 'lg'
       ? 'padding: 10px 42px;'
@@ -29,13 +46,13 @@ const StyledButton = styled.button<ButtonProps>`
       ? 'padding: 10px 20px;'
       : props.size === 'sm'
       ? 'padding: 6px 16px;'
-      : 'padding: 10px 20px;'}
+      : 'padding: 10px 20px;'};
   ${props =>
     props.block &&
     css`
       width: 100% !important;
       display: block;
-    `}
+    `};
 `
 
 const Button: ElementComponent<ButtonProps> = props => {
@@ -45,7 +62,7 @@ const Button: ElementComponent<ButtonProps> = props => {
       renderTrigger={({ onOpen, disable, isLoginAlert }) => (
         <StyledButton
           {...props}
-          className={props.className}
+          className={`${props.className} ${disable ? 'disabled' : ''}`}
           colorScheme="primary"
           disabled={props.source?.from === 'purchaseProduct' ? disable : false}
           onClick={() => {
