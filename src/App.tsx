@@ -94,6 +94,21 @@ const App: React.VFC = () => {
                 )}
                 defaultProductId={`ProgramPlan_551ec07a-03ec-4c5e-9541-cf141dab1f97`}
               />
+              <CheckoutProductModal
+                renderTrigger={({ onOpen, disable, isLoginAlert }) => (
+                  <Button
+                    colorScheme="primary"
+                    disabled={disable}
+                    onClick={() => {
+                      if (isLoginAlert) return window.alert('請先登入')
+                      onOpen?.()
+                    }}
+                  >
+                    CheckoutProductModal
+                  </Button>
+                )}
+                defaultProductId={`ActivityTicket_f317da80-f4b8-4ae7-b7b8-06bd90547875`}
+              />
             </QueryParamProvider>
           </BrowserRouter>
         </Frame>
