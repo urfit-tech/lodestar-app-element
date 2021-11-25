@@ -42,14 +42,14 @@ const Button: ElementComponent<ButtonProps> = props => {
   const { loading, errors, editing } = props
   return loading || errors ? null : props.source?.from ? (
     <CheckoutProductModal
-      renderTrigger={({ onOpen, disable, alert }) => (
+      renderTrigger={({ onOpen, disable, isLogin }) => (
         <StyledButton
           {...props}
           className={props.className}
           colorScheme="primary"
           disabled={disable}
           onClick={() => {
-            if (alert) window.alert('請先登入')
+            if (!isLogin) return window.alert('請先登入')
             if (editing) return
             if (props.source?.from) {
               switch (props.source.from) {
