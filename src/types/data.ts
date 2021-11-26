@@ -23,6 +23,7 @@ export type ProductPlan = {
     type: PeriodType
   } | null
   autoRenewed: boolean
+  isPrimary: boolean
 }
 
 export type Member = {

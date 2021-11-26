@@ -106,9 +106,15 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                     totalDuration={program.totalDuration || 0}
                     coverUrl={program.coverUrl}
                     instructorIds={program.roles.map(programRole => programRole.member.id)}
-                    listPrice={program.soldAt && moment() < moment(program.soldAt) ? program.listPrice : undefined}
+                    listPrice={
+                      program.soldAt && moment() < moment(program.soldAt)
+                        ? program.plans.find(plan => plan.isPrimary)?.listPrice
+                        : undefined
+                    }
                     currentPrice={
-                      program.soldAt && moment() < moment(program.soldAt) ? program.salePrice || 0 : program.listPrice
+                      program.soldAt && moment() < moment(program.soldAt)
+                        ? program.plans.find(plan => plan.isPrimary)?.salePrice || 0
+                        : program.plans.find(plan => plan.isPrimary)?.listPrice || 0
                     }
                     period={program.plans[0]?.period || undefined}
                   />
@@ -272,6 +278,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
               type: pp.period_type as PeriodType,
             }
           : null,
+      isPrimary: pp.is_primary,
     })),
     categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
   }))
@@ -324,6 +331,7 @@ const programFields = gql`
           count
         }
       }
+      is_primary
     }
     program_enrollments_aggregate {
       aggregate {
