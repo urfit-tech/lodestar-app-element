@@ -17,11 +17,11 @@ const CouponCard: React.VFC<
   BoxProps & {
     coupon: CouponProps
   }
-> = ({ coupon }) => {
+> = ({ coupon, ...boxProps }) => {
   const { formatMessage } = useIntl()
 
   return (
-    <BoxWrapper mb="12px" p="24px">
+    <BoxWrapper {...boxProps} mb="12px" p="24px">
       <div style={{ fontSize: '20px', fontWeight: 'bold', paddingBottom: '12px' }}>
         {coupon.couponCode.couponPlan.title}
       </div>
