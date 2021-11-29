@@ -306,7 +306,7 @@ const programFields = gql`
       name
       member_id
     }
-    program_plans(order_by: { created_at: asc }, limit: 1) {
+    program_plans {
       id
       type
       title
