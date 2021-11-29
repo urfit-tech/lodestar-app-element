@@ -114,7 +114,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                     currentPrice={
                       program.soldAt && moment() < moment(program.soldAt)
                         ? program.plans.find(plan => plan.isPrimary)?.salePrice || program?.plans[0]?.salePrice || 0
-                        : program.plans.find(plan => plan.isPrimary)?.listPrice || program?.plans[0]?.salePrice || 0
+                        : program.plans.find(plan => plan.isPrimary)?.listPrice || program?.plans[0]?.listPrice || 0
                     }
                     period={program.plans[0]?.period || undefined}
                   />
