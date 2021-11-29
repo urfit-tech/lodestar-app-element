@@ -221,12 +221,14 @@ const InvoiceInput: React.VFC<{
     <StyledWrapper>
       <StyledTitle>{formatMessage(checkoutMessages.label.invoice)}</StyledTitle>
       {renderDescription?.() || (
-        <StyledDescription className="mb-4">
-          {enabledModules.invoice
-            ? formatMessage(checkoutMessages.message.warningEmail)
-            : formatMessage(checkoutMessages.message.warningHardcopy)}
-        </StyledDescription>
-      )}
+          <div dangerouslySetInnerHTML={{ __html: settings['custom.invoiceInput.description'] }} />
+        ) || (
+          <StyledDescription className="mb-4">
+            {enabledModules.invoice
+              ? formatMessage(checkoutMessages.message.warningEmail)
+              : formatMessage(checkoutMessages.message.warningHardcopy)}
+          </StyledDescription>
+        )}
 
       {shouldSameToShippingCheckboxDisplay && (
         <div className="mb-4">
