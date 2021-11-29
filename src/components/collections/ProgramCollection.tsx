@@ -108,13 +108,13 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                     instructorIds={program.roles.map(programRole => programRole.member.id)}
                     listPrice={
                       program.soldAt && moment() < moment(program.soldAt)
-                        ? program.plans.find(plan => plan.isPrimary)?.listPrice
+                        ? program.plans.find(plan => plan.isPrimary)?.listPrice || program?.plans[0]?.listPrice
                         : undefined
                     }
                     currentPrice={
                       program.soldAt && moment() < moment(program.soldAt)
-                        ? program.plans.find(plan => plan.isPrimary)?.salePrice || 0
-                        : program.plans.find(plan => plan.isPrimary)?.listPrice || 0
+                        ? program.plans.find(plan => plan.isPrimary)?.salePrice || program?.plans[0]?.salePrice || 0
+                        : program.plans.find(plan => plan.isPrimary)?.listPrice || program?.plans[0]?.salePrice || 0
                     }
                     period={program.plans[0]?.period || undefined}
                   />
