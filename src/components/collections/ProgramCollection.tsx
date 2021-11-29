@@ -75,7 +75,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                   .filter(category => source.from === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
                   [],
               )
-        const filter = (d: ProgramData) =>
+        const programFilter = (d: ProgramData) =>
           !props.withSelector ||
           !activeCategoryId ||
           d.categories.map(category => category.id).includes(activeCategoryId)
@@ -96,29 +96,30 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
             ) : (
               <ElementCollection
                 layout={props.layout}
-                data={ctx.data?.filter(filter) || []}
-                renderElement={(program, ProgramElement) => (
-                  <ProgramElement
-                    editing={props.editing}
-                    id={program.id}
-                    title={program.title}
-                    abstract={program.abstract || ''}
-                    totalDuration={program.totalDuration || 0}
-                    coverUrl={program.coverUrl}
-                    instructorIds={program.roles.map(programRole => programRole.member.id)}
-                    listPrice={
-                      program.soldAt && moment() < moment(program.soldAt)
-                        ? program.plans.find(plan => plan.isPrimary)?.listPrice || program?.plans[0]?.listPrice
-                        : undefined
-                    }
-                    currentPrice={
-                      program.soldAt && moment() < moment(program.soldAt)
-                        ? program.plans.find(plan => plan.isPrimary)?.salePrice || program?.plans[0]?.salePrice || 0
-                        : program.plans.find(plan => plan.isPrimary)?.listPrice || program?.plans[0]?.listPrice || 0
-                    }
-                    period={program.plans[0]?.period || undefined}
-                  />
-                )}
+                data={ctx.data?.filter(programFilter) || []}
+                renderElement={(program, ProgramElement) => {
+                  const primaryProgramPlan = program.plans[0] || null
+                  return (
+                    <ProgramElement
+                      editing={props.editing}
+                      id={program.id}
+                      title={program.title}
+                      abstract={program.abstract || ''}
+                      totalDuration={program.totalDuration || 0}
+                      coverUrl={program.coverUrl}
+                      instructorIds={program.roles.map(programRole => programRole.member.id)}
+                      salePrice={
+                        typeof primaryProgramPlan?.salePrice === 'number' &&
+                        primaryProgramPlan?.soldAt &&
+                        moment() < moment(primaryProgramPlan.soldAt)
+                          ? primaryProgramPlan.salePrice
+                          : undefined
+                      }
+                      listPrice={primaryProgramPlan?.listPrice}
+                      period={primaryProgramPlan?.period || undefined}
+                    />
+                  )
+                }}
               />
             )}
           </div>
@@ -265,21 +266,23 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
     listPrice: p.list_price || 0,
     salePrice: p.sale_price,
     soldAt: p.sold_at,
-    plans: p.program_plans.map(pp => ({
-      id: pp.id,
-      listPrice: pp.list_price,
-      salePrice: pp.sale_price,
-      soldAt: pp.sold_at,
-      autoRenewed: pp.auto_renewed || false,
-      period:
-        pp.period_amount && pp.period_type
-          ? {
-              amount: Number(pp.period_amount),
-              type: pp.period_type as PeriodType,
-            }
-          : null,
-      isPrimary: pp.is_primary,
-    })),
+    plans: p.program_plans
+      .filter(pp => pp.published_at)
+      .map(pp => ({
+        id: pp.id,
+        listPrice: pp.list_price,
+        salePrice: pp.sale_price,
+        soldAt: pp.sold_at,
+        autoRenewed: pp.auto_renewed || false,
+        period:
+          pp.period_amount && pp.period_type
+            ? {
+                amount: Number(pp.period_amount),
+                type: pp.period_type as PeriodType,
+              }
+            : null,
+        isPrimary: pp.is_primary,
+      })),
     categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
   }))
 

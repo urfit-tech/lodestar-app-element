@@ -39,15 +39,15 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
           <div>
             {loading ? (
               <Skeleton width="10" height={4} />
-            ) : (
+            ) : props.listPrice !== undefined ? (
               <PriceLabel
                 variant="inline"
-                listPrice={props.listPrice || props.currentPrice || 0}
-                salePrice={props.currentPrice}
+                listPrice={props.listPrice}
+                salePrice={props.salePrice}
                 periodAmount={props.period?.amount}
                 periodType={props.period?.type}
               />
-            )}
+            ) : null}
           </div>
           <div>{loading ? <SkeletonText /> : durationFormatter(props.totalDuration)}</div>
         </Card.MetaBlock>

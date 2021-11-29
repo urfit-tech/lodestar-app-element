@@ -18,7 +18,7 @@ export type ProgramElementProps = ElementProps<{
   totalDuration: number
   coverUrl: string | null
   instructorIds: string[]
-  currentPrice: number
+  salePrice?: number
   listPrice?: number
   period?: {
     amount: number
