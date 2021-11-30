@@ -225,7 +225,10 @@ const InvoiceInput: React.VFC<{
       <StyledTitle>{formatMessage(checkoutMessages.label.invoice)}</StyledTitle>
       {renderDescription?.() ||
         (settings['custom.invoiceInput.description'] && (
-          <div dangerouslySetInnerHTML={{ __html: settings['custom.invoiceInput.description'] }} />
+          <StyledDescription
+            className="mb-4"
+            dangerouslySetInnerHTML={{ __html: settings['custom.invoiceInput.description'] }}
+          />
         )) || (
           <StyledDescription className="mb-4">
             {enabledModules.invoice
