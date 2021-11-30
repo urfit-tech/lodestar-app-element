@@ -224,11 +224,17 @@ const InvoiceInput: React.VFC<{
     <StyledWrapper>
       <StyledTitle>{formatMessage(checkoutMessages.label.invoice)}</StyledTitle>
       {renderDescription?.() ||
-        (settings['custom.invoiceInput.description'] && (
-          <StyledDescription
-            className="mb-4"
-            dangerouslySetInnerHTML={{ __html: settings['custom.invoiceInput.description'] }}
-          />
+        (settings['feature.invoice_input_description.enable'] === '1' && (
+          <StyledDescription className="mb-4">
+            <div className="mb-1">{formatMessage(checkoutMessages.text.invoiceDescription1)}</div>
+            <div>
+              {formatMessage(checkoutMessages.text.invoiceDescription2)}
+              <a className="primary" href={`${settings['feature.invoice_input_description_href']}`}>
+                {formatMessage(checkoutMessages.text.invoiceDescription3)}
+              </a>
+              {formatMessage(checkoutMessages.text.invoiceDescription4)}
+            </div>
+          </StyledDescription>
         )) || (
           <StyledDescription className="mb-4">
             {enabledModules.invoice
