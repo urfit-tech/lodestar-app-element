@@ -22,6 +22,9 @@ export const StyledDescription = styled.div`
   color: var(--gray-dark);
   font-size: 14px;
   letter-spacing: 0.4px;
+  .primary {
+    color: ${props => props.theme['@primary-color']};
+  }
 `
 export const StyledRemark = styled.div`
   color: var(--gray-darker);
@@ -220,9 +223,10 @@ const InvoiceInput: React.VFC<{
   return (
     <StyledWrapper>
       <StyledTitle>{formatMessage(checkoutMessages.label.invoice)}</StyledTitle>
-      {renderDescription?.() || (
+      {renderDescription?.() ||
+        (settings['custom.invoiceInput.description'] && (
           <div dangerouslySetInnerHTML={{ __html: settings['custom.invoiceInput.description'] }} />
-        ) || (
+        )) || (
           <StyledDescription className="mb-4">
             {enabledModules.invoice
               ? formatMessage(checkoutMessages.message.warningEmail)
