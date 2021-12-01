@@ -7,16 +7,29 @@ import { ElementComponent, MemberElementProps } from '../../types/element'
 const StyledInstructorBlock = styled.div`
   padding: 1rem;
 `
+const StyledAvatarWrapper = styled.div`
+  position: relative;
+  ::before {
+    float: left;
+    padding-top: 100%;
+    content: '';
+  }
+  ::after {
+    display: block;
+    content: '';
+    clear: both;
+  }
+`
 const StyledAvatar = styled.img`
-  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
-  min-height: 100%;
-  min-width: 100%;
   object-fit: cover;
-  object-position: center;
   border-radius: 50%;
-  background: #ccc;
 `
 const StyledTitle = styled.div`
   margin-bottom: 0.5rem;
@@ -46,13 +59,13 @@ const MemberPrimaryCard: ElementComponent<MemberElementProps> = props => {
   return (
     <StyledInstructorBlock key={props.id}>
       <Link to={loading || editing ? '#!' : `/creators/${props.id}`}>
-        <div className="mb-4">
+        <StyledAvatarWrapper className="mb-4">
           <StyledAvatar
             src={props.avatarUrl !== null ? props.avatarUrl : DefaultAvatar}
             alt={props.name}
             className="mx-auto"
           />
-        </div>
+        </StyledAvatarWrapper>
         <StyledTitle>{loading ? <Skeleton width={40} height={4} /> : props.name}</StyledTitle>
         <StyledDescription>{props.abstract}</StyledDescription>
       </Link>
