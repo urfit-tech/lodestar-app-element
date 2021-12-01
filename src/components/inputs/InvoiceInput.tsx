@@ -223,8 +223,8 @@ const InvoiceInput: React.VFC<{
   return (
     <StyledWrapper>
       <StyledTitle>{formatMessage(checkoutMessages.label.invoice)}</StyledTitle>
-      {renderDescription?.() ? (
-        settings['feature.invoice_input_description.enable'] === '1' && (
+      {renderDescription?.() ||
+        (settings['feature.invoice_input_description.enable'] === '1' ? (
           <StyledDescription className="mb-4">
             <div className="mb-1">{formatMessage(checkoutMessages.text.invoiceDescription1)}</div>
             <div>
@@ -235,14 +235,13 @@ const InvoiceInput: React.VFC<{
               {formatMessage(checkoutMessages.text.invoiceDescription4)}
             </div>
           </StyledDescription>
-        )
-      ) : (
-        <StyledDescription className="mb-4">
-          {enabledModules.invoice
-            ? formatMessage(checkoutMessages.message.warningEmail)
-            : formatMessage(checkoutMessages.message.warningHardcopy)}
-        </StyledDescription>
-      )}
+        ) : (
+          <StyledDescription className="mb-4">
+            {enabledModules.invoice
+              ? formatMessage(checkoutMessages.message.warningEmail)
+              : formatMessage(checkoutMessages.message.warningHardcopy)}
+          </StyledDescription>
+        ))}
 
       {shouldSameToShippingCheckboxDisplay && (
         <div className="mb-4">
