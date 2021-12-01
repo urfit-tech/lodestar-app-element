@@ -22,6 +22,9 @@ export const StyledDescription = styled.div`
   color: var(--gray-dark);
   font-size: 14px;
   letter-spacing: 0.4px;
+  .primary {
+    color: ${props => props.theme['@primary-color']};
+  }
 `
 export const StyledRemark = styled.div`
   color: var(--gray-darker);
@@ -220,13 +223,25 @@ const InvoiceInput: React.VFC<{
   return (
     <StyledWrapper>
       <StyledTitle>{formatMessage(checkoutMessages.label.invoice)}</StyledTitle>
-      {renderDescription?.() || (
-        <StyledDescription className="mb-4">
-          {enabledModules.invoice
-            ? formatMessage(checkoutMessages.message.warningEmail)
-            : formatMessage(checkoutMessages.message.warningHardcopy)}
-        </StyledDescription>
-      )}
+      {renderDescription?.() ||
+        (settings['feature.invoice_input_description.enable'] === '1' ? (
+          <StyledDescription className="mb-4">
+            <div className="mb-1">{formatMessage(checkoutMessages.text.invoiceDescription1)}</div>
+            <div>
+              {formatMessage(checkoutMessages.text.invoiceDescription2)}
+              <a className="primary" href={`${settings['feature.invoice_input_description_href']}`}>
+                {formatMessage(checkoutMessages.text.invoiceDescription3)}
+              </a>
+              {formatMessage(checkoutMessages.text.invoiceDescription4)}
+            </div>
+          </StyledDescription>
+        ) : (
+          <StyledDescription className="mb-4">
+            {enabledModules.invoice
+              ? formatMessage(checkoutMessages.message.warningEmail)
+              : formatMessage(checkoutMessages.message.warningHardcopy)}
+          </StyledDescription>
+        ))}
 
       {shouldSameToShippingCheckboxDisplay && (
         <div className="mb-4">
@@ -236,7 +251,7 @@ const InvoiceInput: React.VFC<{
         </div>
       )}
 
-      {renderMemberInfoInput?.({ value, nameRef, phoneRef, emailRef }) || (
+      {renderMemberInfoInput?.({ value, nameRef, phoneRef, emailRef }) ? (
         <div className="row">
           <div className="col-12 col-lg-3">
             <Form.Item
@@ -284,7 +299,7 @@ const InvoiceInput: React.VFC<{
             </Form.Item>
           </div>
         </div>
-      )}
+      ) : null}
 
       <div className="row mb-4">
         <div className="col-12 col-lg-6">

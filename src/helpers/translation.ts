@@ -419,6 +419,22 @@ export const checkoutMessages = {
       id: 'checkout.text.fillInPartnerEmail',
       defaultMessage: '請填寫同行者在站上註冊的電子信箱',
     },
+    invoiceDescription1: {
+      id: 'checkout.text.invoiceDescription1',
+      defaultMessage: '你的發票姓名、手機、email 與您註冊時填寫的會員資料相同，中獎時會主動通知。',
+    },
+    invoiceDescription2: {
+      id: 'checkout.text.invoiceDescription2',
+      defaultMessage: '若需要修改密碼、會員資料，',
+    },
+    invoiceDescription3: {
+      id: 'checkout.text.invoiceDescription3',
+      defaultMessage: '請點此',
+    },
+    invoiceDescription4: {
+      id: 'checkout.text.invoiceDescription4',
+      defaultMessage: '，登入後進行修改。',
+    },
   }),
 }
 
