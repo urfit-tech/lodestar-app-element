@@ -251,7 +251,7 @@ const InvoiceInput: React.VFC<{
         </div>
       )}
 
-      {renderMemberInfoInput?.({ value, nameRef, phoneRef, emailRef }) ? (
+      {renderMemberInfoInput?.({ value, nameRef, phoneRef, emailRef }) || (
         <div className="row">
           <div className="col-12 col-lg-3">
             <Form.Item
@@ -299,7 +299,7 @@ const InvoiceInput: React.VFC<{
             </Form.Item>
           </div>
         </div>
-      ) : null}
+      )}
 
       <div className="row mb-4">
         <div className="col-12 col-lg-6">
