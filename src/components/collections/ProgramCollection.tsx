@@ -301,7 +301,7 @@ const programFields = gql`
         name
       }
     }
-    program_roles(where: { name: { _eq: "instructor" } }) {
+    program_roles(where: { name: { _eq: "instructor" } }, order_by: { created_at: asc }) {
       id
       name
       member_id
