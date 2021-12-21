@@ -6,6 +6,8 @@ import ReactGA from 'react-ga'
 import { handleError } from '../helpers'
 import { UserRole } from '../types/data'
 
+type ProviderType = 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth' | 'cw'
+
 type AuthProps = {
   isAuthenticating: boolean
   isAuthenticated: boolean
@@ -30,11 +32,7 @@ type AuthProps = {
     withoutLogin?: boolean
   }) => Promise<void>
   login?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
-  socialLogin?: (data: {
-    provider: 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth'
-    providerToken: any
-    accountLinkToken?: string
-  }) => Promise<void>
+  socialLogin?: (data: { provider: ProviderType; providerToken: any; accountLinkToken?: string }) => Promise<void>
   logout?: () => Promise<void>
   sendSmsCode?: (data: { phoneNumber: string }) => Promise<void>
   verifySmsCode?: (data: { phoneNumber: string; code: string }) => Promise<void>
