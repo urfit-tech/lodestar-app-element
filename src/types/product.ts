@@ -26,7 +26,6 @@ export type Target = {
 }
 
 export type ProductType =
-  | 'Program'
   | 'ProgramPlan'
   | 'ProgramContent'
   | 'ProgramPackagePlan'

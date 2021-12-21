@@ -23,8 +23,6 @@ const ProductTypeLabel: React.VFC<{
   const { formatMessage } = useIntl()
 
   switch (productType) {
-    case 'Program':
-      return <>{formatMessage(messages.program)}</>
     case 'ProgramPlan':
       return <>{formatMessage(messages.programPlan)}</>
     case 'ProgramContent':

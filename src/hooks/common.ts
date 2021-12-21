@@ -56,23 +56,7 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
     },
   )
 
-  const target: Target | null = data?.program_by_pk
-    ? {
-        id: data.program_by_pk.id,
-        productType: 'Program',
-        title: data.program_by_pk.title,
-        coverUrl: data.program_by_pk.cover_url || undefined,
-        listPrice: data.program_by_pk.list_price,
-        isOnSale: data.program_by_pk.sold_at ? new Date(data.program_by_pk.sold_at).getTime() > Date.now() : false,
-        salePrice:
-          data.program_by_pk.sold_at && new Date(data.program_by_pk.sold_at).getTime() > Date.now()
-            ? data.program_by_pk.sale_price
-            : undefined,
-        isSubscription: false,
-        categories: data.program_by_pk.program_categories.map(v => v.category.name),
-        roles: data.program_by_pk.program_roles.filter(v => v.name === 'instructor').map(v => v.member?.name || ''),
-      }
-    : data?.program_plan_by_pk
+  const target: Target | null = data?.program_plan_by_pk
     ? {
         id: data.program_plan_by_pk.id,
         productType: 'ProgramPlan',
