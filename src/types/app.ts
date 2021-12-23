@@ -51,6 +51,7 @@ export type Module =
   | 'order_contact'
   | 'practice'
   | 'program_content_material'
+  | 'program_content_external_file'
   | 'exercise'
   | 'private_appointment_plan'
   | 'activity_online'
