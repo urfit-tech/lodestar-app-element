@@ -210,6 +210,11 @@ const programPackageFields = gql`
     cover_url
     program_package_programs {
       program {
+        program_roles(where: { name: { _eq: "instructor" } }, order_by: { created_at: asc }) {
+          id
+          name
+          member_id
+        }
         program_content_sections {
           program_contents_aggregate {
             aggregate {

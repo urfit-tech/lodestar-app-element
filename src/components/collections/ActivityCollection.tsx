@@ -211,6 +211,7 @@ const activityFields = gql`
     title
     published_at
     is_participants_visible
+    organizer_id
     activity_categories {
       category {
         id
@@ -228,6 +229,7 @@ const activityFields = gql`
     }
     activity_tickets {
       count
+      price
     }
   }
 `
