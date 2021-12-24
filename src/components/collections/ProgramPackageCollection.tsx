@@ -1,13 +1,15 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { sum, uniqBy } from 'ramda'
+import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
+import { useApp } from '../../contexts/AppContext'
 import { getProgramPackageCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { findCheapestPlan, getCurrentPrice, notEmpty } from '../../helpers'
-import { Category, ProductPlan, ProgramPackage } from '../../types/data'
+import { Category, ProductPlan, ProductRole, ProgramPackage } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
 import ProgramPackageCard from '../cards/ProgramPackageCard'
@@ -24,6 +26,8 @@ type ProgramPackageData = DeepPick<
   | 'plans.[].salePrice'
   | 'plans.[].soldAt'
   | 'plans.[].period'
+  | 'programs.[].roles.[].name'
+  | 'programs.[].roles.[].member.id'
   | 'programs.[].totalDuration'
 >
 type ProgramPackageContextCollection = ContextCollection<ProgramPackageData>
@@ -138,10 +142,13 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         .map(programPackageId => rawData?.program_package.find(p => p.id === programPackageId))
         .filter(notEmpty),
     }
+    const composedData = data ? composeCollectionData(data) : []
+    useEcommerce(composedData)
+
     return children({
       loading,
       errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
+      data: composedData,
     })
   }
   return ProgramPackageElementCollection
@@ -167,10 +174,13 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
         limit: options.limit,
       },
     })
+    const composedData = data ? composeCollectionData(data) : []
+    useEcommerce(composedData)
+
     return children({
       loading,
       errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
+      data: composedData,
     })
   }
   return ProgramPackageElementCollection
@@ -195,6 +205,11 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
       } as ProductPlan['period'],
     })),
     programs: pp.program_package_programs.map(ppp => ({
+      roles: ppp.program.program_roles.map(pr => ({
+        id: pr.id,
+        name: pr.name as ProductRole['name'],
+        member: { id: pr.member_id },
+      })),
       totalDuration: sum(
         ppp.program.program_content_sections.flatMap(
           pcs => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0,
@@ -202,6 +217,41 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
       ),
     })),
   })) || []
+
+const useEcommerce = (programPackages: ProgramPackageData[]) => {
+  const { settings, currencyId: appCurrencyId, id: appId } = useApp()
+
+  useEffect(() => {
+    if (programPackages.length > 0) {
+      ;(window as any).dataLayer = (window as any).dataLayer || []
+      ;(window as any).dataLayer.push({
+        event: 'productImpression',
+        ecommerce: {
+          currencyCode: appCurrencyId || 'TWD',
+          impressions: programPackages.map((programPackage, index) => {
+            const listPrice = programPackage.plans[0]?.listPrice || 0
+            const salePrice =
+              (programPackage.plans[0]?.soldAt?.getTime() || 0) > Date.now()
+                ? programPackage.plans[0]?.salePrice
+                : (programPackage.plans[0]?.soldAt?.getTime() || 0) > Date.now()
+                ? programPackage.plans[0]?.salePrice
+                : undefined
+            return {
+              id: programPackage.id,
+              name: programPackage.title,
+              price: salePrice || listPrice,
+              brand: settings['title'] || appId,
+              category: programPackage.categories.map(category => category.name).join('|'),
+              variant: programPackage.programs[0].roles.map(role => role.member.id).join('|') || '',
+              list: 'Home',
+              position: index + 1,
+            }
+          }),
+        },
+      })
+    }
+  }, [programPackages])
+}
 
 const programPackageFields = gql`
   fragment programPackageFields on program_package {

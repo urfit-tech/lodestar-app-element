@@ -2,9 +2,11 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
+import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
+import { useApp } from '../../contexts/AppContext'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
@@ -152,6 +154,8 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         .map(programId => data?.program.find(p => p.id === programId))
         .filter(notEmpty),
     }
+    useEcommerce(composeCollectionData(orderedData))
+
     return children({
       loading,
       errors: error && [new Error(error.message)],
@@ -190,10 +194,13 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
         },
       },
     )
+    const composedData = data ? composeCollectionData(data) : []
+    useEcommerce(composedData)
+
     return children({
       loading,
       errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
+      data: composedData,
     })
   }
   return ProgramElementCollection
@@ -240,10 +247,13 @@ const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
         },
       },
     )
+    const composedData = data ? composeCollectionData(data) : []
+    useEcommerce(composedData)
+
     return children({
       loading,
       errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
+      data: composedData,
     })
   }
   return ProgramElementCollection
@@ -285,6 +295,42 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
       })),
     categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
   }))
+
+const useEcommerce = (programs: ProgramData[]) => {
+  const { settings, currencyId: appCurrencyId, id: appId } = useApp()
+
+  useEffect(() => {
+    if (programs.length > 0) {
+      ;(window as any).dataLayer = (window as any).dataLayer || []
+      ;(window as any).dataLayer.push({
+        event: 'productImpression',
+        ecommerce: {
+          currencyCode: appCurrencyId || 'TWD',
+          impressions: programs.map((program, index) => {
+            const listPrice = program.plans[0]?.listPrice || 0
+            const salePrice =
+              (program.plans[0]?.soldAt?.getTime() || 0) > Date.now()
+                ? program.plans[0]?.salePrice
+                : (program.plans[0]?.soldAt?.getTime() || 0) > Date.now()
+                ? program.plans[0]?.salePrice
+                : undefined
+
+            return {
+              id: program.id,
+              name: program.title,
+              price: salePrice || listPrice,
+              brand: settings['title'] || appId,
+              category: program.categories.map(category => category.name).join('|'),
+              variant: program.roles.map(role => role.member.id).join('|') || '',
+              list: 'Home',
+              position: index + 1,
+            }
+          }),
+        },
+      })
+    }
+  }, [programs])
+}
 
 const programFields = gql`
   fragment programFields on program {
