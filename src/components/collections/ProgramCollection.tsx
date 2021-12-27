@@ -275,14 +275,14 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
     })),
     listPrice: p.list_price || 0,
     salePrice: p.sale_price,
-    soldAt: p.sold_at,
+    soldAt: p.sold_at && new Date(p.sold_at),
     plans: p.program_plans
       .filter(pp => pp.published_at)
       .map(pp => ({
         id: pp.id,
         listPrice: pp.list_price,
         salePrice: pp.sale_price,
-        soldAt: pp.sold_at,
+        soldAt: pp.sold_at && new Date(pp.sold_at),
         autoRenewed: pp.auto_renewed || false,
         period:
           pp.period_amount && pp.period_type

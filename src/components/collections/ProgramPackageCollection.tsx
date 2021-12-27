@@ -198,7 +198,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
     plans: pp.program_package_plans.map(ppp => ({
       listPrice: ppp.list_price,
       salePrice: ppp.sale_price,
-      soldAt: ppp.sold_at,
+      soldAt: ppp.sold_at && new Date(ppp.sold_at),
       period: {
         amount: ppp.period_amount,
         type: ppp.period_type,
