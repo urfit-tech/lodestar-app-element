@@ -176,9 +176,12 @@ const InvoiceInput: React.VFC<{
           ? uniformTitleRef.current?.input.value || ''
           : undefined,
       donationCode: currentInvoiceType === 'donation' ? currentSelectedCharity : undefined,
-      postCode: currentInvoiceType === 'hardcopy-uniform-number' ? postCodeRef.current?.input.value || '' : undefined,
+      postCode:
+        currentInvoiceType === 'hardcopy-uniform-number' || currentInvoiceType === 'hardcopy'
+          ? postCodeRef.current?.input.value || ''
+          : undefined,
       address:
-        currentInvoiceType === 'hardcopy-uniform-number'
+        currentInvoiceType === 'hardcopy-uniform-number' || currentInvoiceType === 'hardcopy'
           ? shippingAddress || addressRef.current?.input.value || ''
           : undefined,
     }
