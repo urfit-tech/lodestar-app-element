@@ -2,9 +2,11 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
+import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
+import { useApp } from '../../contexts/AppContext'
 import { getActivityCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
@@ -20,11 +22,13 @@ type ActivityData = DeepPick<
   | 'id'
   | 'coverUrl'
   | 'title'
+  | 'organizerId'
   | 'isParticipantVisible'
   | 'totalParticipants'
   | 'sessions.[].startedAt'
   | 'sessions.[].endedAt'
   | 'tickets.[].limit'
+  | 'tickets.[].price'
   | 'categories'
 >
 type ActivityContextCollection = ContextCollection<ActivityData>
@@ -139,10 +143,13 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         .map(activityId => rawData?.activity.find(p => p.id === activityId))
         .filter(notEmpty),
     }
+    const composedData = data ? composeCollectionData(data) : []
+    useEcommerce(composedData)
+
     return children({
       loading,
       errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
+      data: composedData,
     })
   }
   return ActivityElementCollection
@@ -175,10 +182,13 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
         },
       },
     )
+    const composedData = data ? composeCollectionData(data) : []
+    useEcommerce(composedData)
+
     return children({
       loading,
       errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
+      data: composedData,
     })
   }
   return ActivityElementCollection
@@ -190,12 +200,14 @@ const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityDa
     title: a.title,
     coverUrl: a.cover_url,
     isParticipantVisible: a.is_participants_visible,
+    organizerId: a.organizer_id,
     sessions: a.activity_sessions.map(as => ({
       startedAt: as.started_at,
       endedAt: as.ended_at,
     })),
     tickets: a.activity_tickets.map(at => ({
       limit: at.count,
+      price: at.price,
     })),
     categories: a.activity_categories.map(ac => ({
       id: ac.category.id,
@@ -204,6 +216,34 @@ const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityDa
     totalParticipants: 0, // TODO
   })) || []
 
+const useEcommerce = (activities: ActivityData[]) => {
+  const { settings, currencyId: appCurrencyId, id: appId } = useApp()
+
+  useEffect(() => {
+    if (activities.length > 0) {
+      ;(window as any).dataLayer = (window as any).dataLayer || []
+      ;(window as any).dataLayer.push({
+        event: 'productImpression',
+        ecommerce: {
+          currencyCode: appCurrencyId || 'TWD',
+          impressions: activities.map((activity, index) => {
+            return {
+              id: activity.id,
+              name: activity.title,
+              price: activity.tickets[0].price,
+              brand: settings['title'] || appId,
+              category: activity.categories.map(category => category.name).join('|'),
+              variant: activity.organizerId,
+              list: 'Home',
+              position: index + 1,
+            }
+          }),
+        },
+      })
+    }
+  }, [activities])
+}
+
 const activityFields = gql`
   fragment activityFields on activity {
     id
@@ -211,6 +251,7 @@ const activityFields = gql`
     title
     published_at
     is_participants_visible
+    organizer_id
     activity_categories {
       category {
         id
@@ -228,6 +269,7 @@ const activityFields = gql`
     }
     activity_tickets {
       count
+      price
     }
   }
 `

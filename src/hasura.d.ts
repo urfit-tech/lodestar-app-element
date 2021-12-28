@@ -566,6 +566,16 @@ export interface GET_PROGRAM_CONTENT_COLLECTIONVariables {
 // GraphQL query operation: GET_PROGRAM_PACKAGE_COLLECTION
 // ====================================================
 
+export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_roles {
+  __typename: 'program_role'
+  id: any
+  /**
+   * instructor / assistant
+   */
+  name: string
+  member_id: string
+}
+
 export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate_sum {
   __typename: 'program_content_sum_fields'
   duration: any | null
@@ -594,6 +604,10 @@ export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_
   /**
    * An array relationship
    */
+  program_roles: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_roles[]
+  /**
+   * An array relationship
+   */
   program_content_sections: GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_programs_program_program_content_sections[]
 }
 
@@ -610,8 +624,11 @@ export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_
   list_price: any
   sale_price: any | null
   sold_at: any | null
-  period_amount: any
-  period_type: string
+  period_amount: any | null
+  /**
+   * Y / M / W / D
+   */
+  period_type: string | null
 }
 
 export interface GET_PROGRAM_PACKAGE_COLLECTION_program_package_program_package_categories_category {
@@ -706,6 +723,7 @@ export interface GET_ACTIVITY_COLLECTION_activity_activity_tickets {
    * unlimited as 99999999
    */
   count: number
+  price: any
 }
 
 export interface GET_ACTIVITY_COLLECTION_activity {
@@ -715,6 +733,7 @@ export interface GET_ACTIVITY_COLLECTION_activity {
   title: string
   published_at: any | null
   is_participants_visible: boolean
+  organizer_id: string
   /**
    * An array relationship
    */
@@ -967,8 +986,11 @@ export interface GET_PRODUCT_SIMPLE_program_package_plan_by_pk {
   sale_price: any | null
   sold_at: any | null
   discount_down_price: any | null
-  period_amount: any
-  period_type: string
+  period_amount: any | null
+  /**
+   * Y / M / W / D
+   */
+  period_type: string | null
   is_subscription: boolean
   /**
    * An object relationship
@@ -1734,6 +1756,7 @@ export interface activityFields_activity_tickets {
    * unlimited as 99999999
    */
   count: number
+  price: any
 }
 
 export interface activityFields {
@@ -1743,6 +1766,7 @@ export interface activityFields {
   title: string
   published_at: any | null
   is_participants_visible: boolean
+  organizer_id: string
   /**
    * An array relationship
    */
@@ -2005,6 +2029,16 @@ export interface programContentFields {
 // GraphQL fragment: programPackageFields
 // ====================================================
 
+export interface programPackageFields_program_package_programs_program_program_roles {
+  __typename: 'program_role'
+  id: any
+  /**
+   * instructor / assistant
+   */
+  name: string
+  member_id: string
+}
+
 export interface programPackageFields_program_package_programs_program_program_content_sections_program_contents_aggregate_aggregate_sum {
   __typename: 'program_content_sum_fields'
   duration: any | null
@@ -2033,6 +2067,10 @@ export interface programPackageFields_program_package_programs_program {
   /**
    * An array relationship
    */
+  program_roles: programPackageFields_program_package_programs_program_program_roles[]
+  /**
+   * An array relationship
+   */
   program_content_sections: programPackageFields_program_package_programs_program_program_content_sections[]
 }
 
@@ -2049,8 +2087,11 @@ export interface programPackageFields_program_package_plans {
   list_price: any
   sale_price: any | null
   sold_at: any | null
-  period_amount: any
-  period_type: string
+  period_amount: any | null
+  /**
+   * Y / M / W / D
+   */
+  period_type: string | null
 }
 
 export interface programPackageFields_program_package_categories_category {
@@ -2470,6 +2511,7 @@ export enum app_setting_constraint {
  */
 export enum app_setting_update_column {
   app_id = 'app_id',
+  created_at = 'created_at',
   id = 'id',
   key = 'key',
   value = 'value',
@@ -3717,6 +3759,7 @@ export enum order_product_update_column {
   created_at = 'created_at',
   currency_id = 'currency_id',
   deliverables = 'deliverables',
+  delivered_at = 'delivered_at',
   description = 'description',
   ended_at = 'ended_at',
   id = 'id',
@@ -4635,6 +4678,7 @@ export enum program_role_constraint {
  * update columns of table "program_role"
  */
 export enum program_role_update_column {
+  created_at = 'created_at',
   id = 'id',
   member_id = 'member_id',
   name = 'name',
@@ -7134,6 +7178,7 @@ export interface app_setting_bool_exp {
   _or?: (app_setting_bool_exp | null)[] | null
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
   key?: String_comparison_exp | null
   setting?: setting_bool_exp | null
@@ -7146,6 +7191,7 @@ export interface app_setting_bool_exp {
 export interface app_setting_insert_input {
   app?: app_obj_rel_insert_input | null
   app_id?: string | null
+  created_at?: any | null
   id?: any | null
   key?: string | null
   setting?: setting_obj_rel_insert_input | null
@@ -7157,6 +7203,7 @@ export interface app_setting_insert_input {
  */
 export interface app_setting_max_order_by {
   app_id?: order_by | null
+  created_at?: order_by | null
   id?: order_by | null
   key?: order_by | null
   value?: order_by | null
@@ -7167,6 +7214,7 @@ export interface app_setting_max_order_by {
  */
 export interface app_setting_min_order_by {
   app_id?: order_by | null
+  created_at?: order_by | null
   id?: order_by | null
   key?: order_by | null
   value?: order_by | null
@@ -11118,6 +11166,7 @@ export interface order_executor_bool_exp {
   order_id?: String_comparison_exp | null
   order_log?: order_log_bool_exp | null
   ratio?: numeric_comparison_exp | null
+  sharing?: order_executor_sharing_bool_exp | null
 }
 
 /**
@@ -11139,6 +11188,24 @@ export interface order_executor_on_conflict {
   constraint: order_executor_constraint
   update_columns: order_executor_update_column[]
   where?: order_executor_bool_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "order_executor_sharing". All fields are combined with a logical 'AND'.
+ */
+export interface order_executor_sharing_bool_exp {
+  _and?: (order_executor_sharing_bool_exp | null)[] | null
+  _not?: order_executor_sharing_bool_exp | null
+  _or?: (order_executor_sharing_bool_exp | null)[] | null
+  created_at?: timestamptz_comparison_exp | null
+  executor?: member_bool_exp | null
+  executor_id?: String_comparison_exp | null
+  order_executor?: order_executor_bool_exp | null
+  order_executor_id?: uuid_comparison_exp | null
+  order_id?: String_comparison_exp | null
+  order_log?: order_log_bool_exp | null
+  ratio?: numeric_comparison_exp | null
+  total_price?: numeric_comparison_exp | null
 }
 
 /**
@@ -11308,6 +11375,7 @@ export interface order_product_bool_exp {
   currency?: currency_bool_exp | null
   currency_id?: String_comparison_exp | null
   deliverables?: jsonb_comparison_exp | null
+  delivered_at?: timestamp_comparison_exp | null
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -11378,6 +11446,7 @@ export interface order_product_insert_input {
   currency?: currency_obj_rel_insert_input | null
   currency_id?: string | null
   deliverables?: any | null
+  delivered_at?: any | null
   description?: string | null
   ended_at?: any | null
   id?: any | null
@@ -11400,6 +11469,7 @@ export interface order_product_max_order_by {
   accumulated_errors?: order_by | null
   created_at?: order_by | null
   currency_id?: order_by | null
+  delivered_at?: order_by | null
   description?: order_by | null
   ended_at?: order_by | null
   id?: order_by | null
@@ -11418,6 +11488,7 @@ export interface order_product_min_order_by {
   accumulated_errors?: order_by | null
   created_at?: order_by | null
   currency_id?: order_by | null
+  delivered_at?: order_by | null
   description?: order_by | null
   ended_at?: order_by | null
   id?: order_by | null
@@ -16293,6 +16364,7 @@ export interface program_role_bool_exp {
   _and?: (program_role_bool_exp | null)[] | null
   _not?: program_role_bool_exp | null
   _or?: (program_role_bool_exp | null)[] | null
+  created_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
   member?: member_public_bool_exp | null
   member_id?: String_comparison_exp | null
@@ -16305,6 +16377,7 @@ export interface program_role_bool_exp {
  * input type for inserting data into table "program_role"
  */
 export interface program_role_insert_input {
+  created_at?: any | null
   id?: any | null
   member_id?: string | null
   name?: string | null
@@ -16316,6 +16389,7 @@ export interface program_role_insert_input {
  * order by max() on columns of table "program_role"
  */
 export interface program_role_max_order_by {
+  created_at?: order_by | null
   id?: order_by | null
   member_id?: order_by | null
   name?: order_by | null
@@ -16326,6 +16400,7 @@ export interface program_role_max_order_by {
  * order by min() on columns of table "program_role"
  */
 export interface program_role_min_order_by {
+  created_at?: order_by | null
   id?: order_by | null
   member_id?: order_by | null
   name?: order_by | null
@@ -17918,6 +17993,21 @@ export interface tag_on_conflict {
   constraint: tag_constraint
   update_columns: tag_update_column[]
   where?: tag_bool_exp | null
+}
+
+/**
+ * expression to compare columns of type timestamp. All fields are combined with logical 'AND'.
+ */
+export interface timestamp_comparison_exp {
+  _eq?: any | null
+  _gt?: any | null
+  _gte?: any | null
+  _in?: any[] | null
+  _is_null?: boolean | null
+  _lt?: any | null
+  _lte?: any | null
+  _neq?: any | null
+  _nin?: any[] | null
 }
 
 /**

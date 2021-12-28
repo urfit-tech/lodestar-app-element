@@ -128,6 +128,7 @@ export type Activity = {
   sessions: ActivitySession[]
   tickets: ActivityTicket[]
   totalParticipants: number
+  organizerId: string
 }
 
 export type ActivitySession = {
@@ -142,4 +143,5 @@ export type ActivityTicket = {
   sessions: ActivitySession[]
   participants: Member[]
   limit: number
+  price: number
 }
