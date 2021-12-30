@@ -316,12 +316,12 @@ const useEcommerce = (programs: ProgramData[]) => {
                 : undefined
 
             return {
-              id: program.id,
-              name: program.title,
+              id: program?.id,
+              name: program?.title,
               price: salePrice || listPrice,
               brand: settings['title'] || appId,
-              category: program.categories.map(category => category.name).join('|'),
-              variant: program.roles.map(role => role.member.id).join('|') || '',
+              category: program?.categories?.map(category => category.name).join('|'),
+              variant: program?.roles?.map(role => role.member.id).join('|') || '',
               list: 'Home',
               position: index + 1,
             }
