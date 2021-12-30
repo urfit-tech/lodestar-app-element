@@ -224,12 +224,12 @@ const useEcommerce = (activities: ActivityData[]) => {
           currencyCode: appCurrencyId || 'TWD',
           impressions: activities.map((activity, index) => {
             return {
-              id: activity.id,
-              name: activity.title,
+              id: activity?.id,
+              name: activity?.title,
               price: activity?.tickets[0]?.price || 0,
               brand: settings['title'] || appId,
-              category: activity.categories.map(category => category.name).join('|'),
-              variant: activity.organizerId,
+              category: activity?.categories?.map(category => category.name).join('|'),
+              variant: activity?.organizerId,
               list: 'Home',
               position: index + 1,
             }
