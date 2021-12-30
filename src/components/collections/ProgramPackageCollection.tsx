@@ -118,23 +118,19 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
 
 const collectCustomCollection = (options: ProductCustomSource) => {
   const ProgramPackageElementCollection: ProgramPackageContextCollection = ({ children }) => {
-    const {
-      data: rawData,
-      loading,
-      error,
-    } = useQuery<hasura.GET_PROGRAM_PACKAGE_COLLECTION, hasura.GET_PROGRAM_PACKAGE_COLLECTIONVariables>(
-      getProgramPackageCollectionQuery(programPackageFields),
-      {
-        variables: {
-          limit: undefined,
-          orderByClause: [],
-          whereClause: {
-            id: { _in: options.idList || [] },
-            published_at: { _lt: 'now()' },
-          },
+    const { data: rawData, loading, error } = useQuery<
+      hasura.GET_PROGRAM_PACKAGE_COLLECTION,
+      hasura.GET_PROGRAM_PACKAGE_COLLECTIONVariables
+    >(getProgramPackageCollectionQuery(programPackageFields), {
+      variables: {
+        limit: undefined,
+        orderByClause: [],
+        whereClause: {
+          id: { _in: options.idList || [] },
+          published_at: { _lt: 'now()' },
         },
       },
-    )
+    })
     const data = {
       ...rawData,
       program_package: (options.idList || [])
@@ -237,12 +233,12 @@ const useEcommerce = (programPackages: ProgramPackageData[]) => {
                 ? programPackage.plans[0]?.salePrice
                 : undefined
             return {
-              id: programPackage.id,
-              name: programPackage.title,
+              id: programPackage?.id,
+              name: programPackage?.title,
               price: salePrice || listPrice,
               brand: settings['title'] || appId,
-              category: programPackage.categories.map(category => category.name).join('|'),
-              variant: programPackage.programs[0].roles.map(role => role.member.id).join('|') || '',
+              category: programPackage?.categories.map(category => category.name).join('|'),
+              variant: programPackage?.programs[0]?.roles?.map(role => role.member.id).join('|') || '',
               list: 'Home',
               position: index + 1,
             }
