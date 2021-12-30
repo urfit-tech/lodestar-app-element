@@ -119,23 +119,19 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
 
 const collectCustomCollection = (options: ProductCustomSource) => {
   const ActivityElementCollection: ActivityContextCollection = ({ children }) => {
-    const {
-      data: rawData,
-      loading,
-      error,
-    } = useQuery<hasura.GET_ACTIVITY_COLLECTION, hasura.GET_ACTIVITY_COLLECTIONVariables>(
-      getActivityCollectionQuery(activityFields),
-      {
-        variables: {
-          limit: undefined,
-          orderByClause: [],
-          whereClause: {
-            id: { _in: options.idList || [] },
-            published_at: { _lt: 'now()' },
-          },
+    const { data: rawData, loading, error } = useQuery<
+      hasura.GET_ACTIVITY_COLLECTION,
+      hasura.GET_ACTIVITY_COLLECTIONVariables
+    >(getActivityCollectionQuery(activityFields), {
+      variables: {
+        limit: undefined,
+        orderByClause: [],
+        whereClause: {
+          id: { _in: options.idList || [] },
+          published_at: { _lt: 'now()' },
         },
       },
-    )
+    })
     const data = {
       ...rawData,
       activity: (options.idList || [])
@@ -230,7 +226,7 @@ const useEcommerce = (activities: ActivityData[]) => {
             return {
               id: activity.id,
               name: activity.title,
-              price: activity.tickets[0].price,
+              price: activity?.tickets[0]?.price || 0,
               brand: settings['title'] || appId,
               category: activity.categories.map(category => category.name).join('|'),
               variant: activity.organizerId,
