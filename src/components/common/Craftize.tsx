@@ -21,6 +21,7 @@ const CraftRefBlock = styled.div<{
   hovered?: boolean
   selected?: boolean
 }>`
+  width: 100%;
   ${props =>
     props?.editing &&
     css`
@@ -78,26 +79,24 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       props.responsive?.[device as keyof typeof props.responsive] || {},
     ) as PropsWithCraft<P>
     return (
-      <div>
-        <CraftRefBlock
-          ref={ref => ref && editor.editing && node.connectors.connect(ref)}
+      <CraftRefBlock
+        ref={ref => ref && editor.editing && node.connectors.connect(ref)}
+        editing={editor.editing}
+        hovered={node.events.hovered}
+        selected={node.events.selected}
+      >
+        {editor.editing && node.events.hovered && <CraftController />}
+        <StyledCraftElement
+          {...(responsiveProps as ElementProps<P>)}
+          customStyle={{
+            ...props.customStyle,
+            [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: props.responsive?.mobile?.customStyle,
+            [`@media (min-width: ${TABLET_BREAK_POINT}px)`]: props.responsive?.tablet?.customStyle,
+            [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: props.responsive?.desktop?.customStyle,
+          }}
           editing={editor.editing}
-          hovered={node.events.hovered}
-          selected={node.events.selected}
-        >
-          {editor.editing && node.events.hovered && <CraftController />}
-          <StyledCraftElement
-            {...(responsiveProps as ElementProps<P>)}
-            customStyle={{
-              ...props.customStyle,
-              [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: props.responsive?.mobile?.customStyle,
-              [`@media (min-width: ${TABLET_BREAK_POINT}px)`]: props.responsive?.tablet?.customStyle,
-              [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: props.responsive?.desktop?.customStyle,
-            }}
-            editing={editor.editing}
-          />
-        </CraftRefBlock>
-      </div>
+        />
+      </CraftRefBlock>
     )
   }
   return Component
