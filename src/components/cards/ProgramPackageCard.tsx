@@ -1,6 +1,7 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { defineMessages, useIntl } from 'react-intl'
 import { useHistory } from 'react-router'
+import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProgramPackageElementProps } from '../../types/element'
 import { CustomRatioImage } from '../common/Image'
@@ -9,7 +10,6 @@ import Card from './Card'
 
 const messages = defineMessages({
   totalCourses: { id: 'programPackage.card.totalCourses', defaultMessage: '{count} 堂課' },
-  totalDuration: { id: 'programPackage.card.totalDuration', defaultMessage: '{duration} 分鐘' },
 })
 const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
   const { loading, errors } = props
@@ -36,7 +36,7 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
           ) : (
             formatMessage(messages.totalCourses, { count: props.totalPrograms }) +
             '．' +
-            formatMessage(messages.totalDuration, { duration: props.totalDuration })
+            durationFormatter(props.totalDuration)
           )}
         </Card.Description>
         <Card.MetaBlock className="d-flex flex-row-reverse justify-content-between align-items-center">
