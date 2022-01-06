@@ -39,6 +39,7 @@ const CardMetaBlock = styled.div`
 `
 
 const StyledCard = styled.div<CardProps>`
+  -webkit-transform: translate3d(0, 0, 0);
   position: relative;
   display: flex;
   border-radius: 4px;
