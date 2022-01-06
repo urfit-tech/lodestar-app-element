@@ -375,17 +375,7 @@ const programFields = gql`
       is_participants_visible
       published_at
       auto_renewed
-      program_plan_enrollments_aggregate {
-        aggregate {
-          count
-        }
-      }
       is_primary
-    }
-    program_enrollments_aggregate {
-      aggregate {
-        count
-      }
     }
     program_content_sections {
       program_contents {

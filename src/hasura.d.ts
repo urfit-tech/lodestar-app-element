@@ -356,16 +356,6 @@ export interface GET_PROGRAM_COLLECTION_program_program_plans_currency {
   name: string
 }
 
-export interface GET_PROGRAM_COLLECTION_program_program_plans_program_plan_enrollments_aggregate_aggregate {
-  __typename: 'program_plan_enrollment_aggregate_fields'
-  count: number | null
-}
-
-export interface GET_PROGRAM_COLLECTION_program_program_plans_program_plan_enrollments_aggregate {
-  __typename: 'program_plan_enrollment_aggregate'
-  aggregate: GET_PROGRAM_COLLECTION_program_program_plans_program_plan_enrollments_aggregate_aggregate | null
-}
-
 export interface GET_PROGRAM_COLLECTION_program_program_plans {
   __typename: 'program_plan'
   id: any
@@ -391,21 +381,7 @@ export interface GET_PROGRAM_COLLECTION_program_program_plans {
   is_participants_visible: boolean
   published_at: any | null
   auto_renewed: boolean
-  /**
-   * An aggregated array relationship
-   */
-  program_plan_enrollments_aggregate: GET_PROGRAM_COLLECTION_program_program_plans_program_plan_enrollments_aggregate
   is_primary: boolean
-}
-
-export interface GET_PROGRAM_COLLECTION_program_program_enrollments_aggregate_aggregate {
-  __typename: 'program_enrollment_aggregate_fields'
-  count: number | null
-}
-
-export interface GET_PROGRAM_COLLECTION_program_program_enrollments_aggregate {
-  __typename: 'program_enrollment_aggregate'
-  aggregate: GET_PROGRAM_COLLECTION_program_program_enrollments_aggregate_aggregate | null
 }
 
 export interface GET_PROGRAM_COLLECTION_program_program_content_sections_program_contents {
@@ -464,10 +440,6 @@ export interface GET_PROGRAM_COLLECTION_program {
    * An array relationship
    */
   program_plans: GET_PROGRAM_COLLECTION_program_program_plans[]
-  /**
-   * An aggregated array relationship
-   */
-  program_enrollments_aggregate: GET_PROGRAM_COLLECTION_program_program_enrollments_aggregate
   /**
    * An array relationship
    */
@@ -1845,16 +1817,6 @@ export interface programFields_program_plans_currency {
   name: string
 }
 
-export interface programFields_program_plans_program_plan_enrollments_aggregate_aggregate {
-  __typename: 'program_plan_enrollment_aggregate_fields'
-  count: number | null
-}
-
-export interface programFields_program_plans_program_plan_enrollments_aggregate {
-  __typename: 'program_plan_enrollment_aggregate'
-  aggregate: programFields_program_plans_program_plan_enrollments_aggregate_aggregate | null
-}
-
 export interface programFields_program_plans {
   __typename: 'program_plan'
   id: any
@@ -1880,21 +1842,7 @@ export interface programFields_program_plans {
   is_participants_visible: boolean
   published_at: any | null
   auto_renewed: boolean
-  /**
-   * An aggregated array relationship
-   */
-  program_plan_enrollments_aggregate: programFields_program_plans_program_plan_enrollments_aggregate
   is_primary: boolean
-}
-
-export interface programFields_program_enrollments_aggregate_aggregate {
-  __typename: 'program_enrollment_aggregate_fields'
-  count: number | null
-}
-
-export interface programFields_program_enrollments_aggregate {
-  __typename: 'program_enrollment_aggregate'
-  aggregate: programFields_program_enrollments_aggregate_aggregate | null
 }
 
 export interface programFields_program_content_sections_program_contents {
@@ -1953,10 +1901,6 @@ export interface programFields {
    * An array relationship
    */
   program_plans: programFields_program_plans[]
-  /**
-   * An aggregated array relationship
-   */
-  program_enrollments_aggregate: programFields_program_enrollments_aggregate
   /**
    * An array relationship
    */
@@ -2441,7 +2385,7 @@ export enum app_nav_update_column {
  * unique or primary key constraints on table "app_page"
  */
 export enum app_page_constraint {
-  app_page_path_app_id_key = 'app_page_path_app_id_key',
+  app_page_path_app_id_is_deleted_key = 'app_page_path_app_id_is_deleted_key',
   app_page_pkey = 'app_page_pkey',
 }
 
@@ -3210,6 +3154,7 @@ export enum member_oauth_constraint {
 export enum member_oauth_update_column {
   id = 'id',
   member_id = 'member_id',
+  options = 'options',
   provider = 'provider',
   provider_user_id = 'provider_user_id',
 }
@@ -9731,6 +9676,7 @@ export interface member_oauth_bool_exp {
   id?: uuid_comparison_exp | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
+  options?: jsonb_comparison_exp | null
   provider?: String_comparison_exp | null
   provider_user_id?: String_comparison_exp | null
 }
@@ -9742,6 +9688,7 @@ export interface member_oauth_insert_input {
   id?: any | null
   member?: member_obj_rel_insert_input | null
   member_id?: string | null
+  options?: any | null
   provider?: string | null
   provider_user_id?: string | null
 }
