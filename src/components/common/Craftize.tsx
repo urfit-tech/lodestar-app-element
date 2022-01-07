@@ -21,7 +21,6 @@ const CraftRefBlock = styled.div<{
   hovered?: boolean
   selected?: boolean
 }>`
-  width: 100%;
   ${props =>
     props?.editing &&
     css`
