@@ -282,6 +282,7 @@ export const checkoutMessages = {
     commonhealth: { id: 'checkout.label.commonhealth', defaultMessage: '康健' },
     cw_commonhealth: { id: 'checkout.label.cw_commonhealth', defaultMessage: '康健' },
     cw_parenting: { id: 'checkout.label.cw_parenting', defaultMessage: '親子天下' },
+    cw_cw: { id: 'checkout.label.cw_cw', defaultMessage: '天下' },
     groupBuying: { id: 'checkout.label.groupBuying', defaultMessage: '多人同行揪團' },
     noDiscount: { id: 'checkout.label.noDiscount', defaultMessage: '無折扣' },
     useCoupon: { id: 'checkout.label.useCoupon', defaultMessage: '使用折價券' },
