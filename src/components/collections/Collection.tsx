@@ -34,7 +34,7 @@ const Collection =
   ) => {
     const loadingProps = { loading: true } as P
     return (
-      <div style={{ display: 'flex', flexWrap: 'wrap', width: '100%', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
         {props.loading ? (
           repeat(
             <div
