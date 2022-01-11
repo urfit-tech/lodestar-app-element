@@ -70,6 +70,7 @@ export type Module =
   | 'fb_login'
   | 'commonhealth'
   | 'parenting_login'
+  | 'coin_back'
 
 export type Currency = {
   id: string
