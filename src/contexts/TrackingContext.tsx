@@ -30,7 +30,7 @@ export const TrackingProvider: React.FC = ({ children }) => {
   return <TrackingContext.Provider value={null}>{children}</TrackingContext.Provider>
 }
 
-type MetaProduct = {
+type TrackingPayload = {
   id: string
   type: 'program' | 'activity' | 'program_package' | 'project' | 'post'
   title: string
@@ -42,21 +42,21 @@ type MetaProduct = {
   options?: {
     sku?: string
     authors?: { id: string; name: string }[]
-    content_id?: string
-    content_name?: string
+    contentId?: string
+    contentName?: string
   }
 }
 
 export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
   const app = useApp()
-  const impress = async (list: string, metaProducts: MetaProduct[], eventName = 'productImpression') => {
+  const impress = async (list: string, trackingPayload: TrackingPayload[], eventName = 'productImpression') => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
     ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
     ;(window as any).dataLayer.push({
       event: eventName,
       ecommerce: {
         currencyCode: app.currencyId || options.currencyId,
-        impressions: metaProducts.map(metaProduct => ({
+        impressions: trackingPayload.map(metaProduct => ({
           id: metaProduct.options?.sku || metaProduct.id,
           name: metaProduct.title,
           price: metaProduct.price,
@@ -70,7 +70,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       },
     })
   }
-  const click = async (list: string, metaProducts: MetaProduct[], eventName = 'productClick') => {
+  const click = async (list: string, trackingPayload: TrackingPayload[], eventName = 'productClick') => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
     ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
     ;(window as any).dataLayer.push({
@@ -79,7 +79,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
         currencyCode: app.currencyId || options.currencyId,
         click: {
           actionField: { list },
-          products: metaProducts.map(metaProduct => ({
+          products: trackingPayload.map(metaProduct => ({
             id: metaProduct.options?.sku || metaProduct.id,
             name: metaProduct.title,
             price: metaProduct.price,
@@ -92,7 +92,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       },
     })
   }
-  const detail = async (list: string, metaProducts: MetaProduct[], eventName = 'detail') => {
+  const detail = async (list: string, trackingPayload: TrackingPayload[], eventName = 'detail') => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
     ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
     ;(window as any).dataLayer.push({
@@ -100,7 +100,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       ecommerce: {
         detail: {
           actionField: { list },
-          products: metaProducts.map(metaProduct => ({
+          products: trackingPayload.map(metaProduct => ({
             id: metaProduct.options?.sku || metaProduct.id,
             name: metaProduct.title,
             price: metaProduct.price,
@@ -112,7 +112,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       },
     })
     if (Boolean(Number(app.settings['tracking.cw.enabled']))) {
-      const cwProducts = metaProducts.map(metaProduct => ({
+      const cwProducts = trackingPayload.map(metaProduct => ({
         id: metaProduct.options?.sku || metaProduct.id,
         type: metaProduct.type,
         item: metaProduct.options?.['sku'],
@@ -126,8 +126,8 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
           },
         },
         keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
-        content_id: metaProduct.options?.content_id || '',
-        content_name: metaProduct.options?.content_name || '',
+        content_id: metaProduct.options?.contentId || '',
+        content_name: metaProduct.options?.contentName || '',
       }))
       ;(window as any).dataLayer.push({ itemData: null }) // Clear the previous item object.
       ;(window as any).dataLayer.push({
@@ -140,7 +140,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       })
     }
   }
-  const addToCart = async (metaProducts: MetaProduct[], eventName = 'addToCart') => {
+  const addToCart = async (trackingPayload: TrackingPayload[], eventName = 'addToCart') => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
     ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
     ;(window as any).dataLayer.push({
@@ -148,7 +148,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       ecommerce: {
         currencyCode: app.currencyId || options.currencyId,
         add: {
-          products: metaProducts.map(metaProduct => ({
+          products: trackingPayload.map(metaProduct => ({
             id: metaProduct.options?.sku || metaProduct.id,
             name: metaProduct.title,
             price: metaProduct.price,
@@ -161,14 +161,14 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       },
     })
   }
-  const removeFromCart = async (metaProducts: MetaProduct[], eventName = 'removeFromCart') => {
+  const removeFromCart = async (trackingPayload: TrackingPayload[], eventName = 'removeFromCart') => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
     ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
     ;(window as any).dataLayer.push({
       event: eventName,
       ecommerce: {
         remove: {
-          products: metaProducts.map(metaProduct => ({
+          products: trackingPayload.map(metaProduct => ({
             id: metaProduct.options?.sku || metaProduct.id,
             name: metaProduct.title,
             price: metaProduct.price,
@@ -181,7 +181,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       },
     })
   }
-  const checkout = async (metaProducts: MetaProduct[], eventName = 'checkout', step = 1) => {
+  const checkout = async (trackingPayload: TrackingPayload[], eventName = 'checkout', step = 1) => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
     ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
     ;(window as any).dataLayer.push({
@@ -189,7 +189,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       ecommerce: {
         checkout: {
           actionField: { step },
-          products: metaProducts.map(metaProduct => ({
+          products: trackingPayload.map(metaProduct => ({
             id: metaProduct.options?.sku || metaProduct.id,
             name: metaProduct.title,
             price: metaProduct.price,
@@ -213,13 +213,13 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       event: eventName,
       ecommerce: {
         checkout_option: {
-          actionField: { step, gateway: payment.gateway, option: payment.method },
+          actionField: { step, option: `${payment.gateway}.${payment.method}` },
         },
       },
     })
   }
   const purchase = async (
-    metaProducts: MetaProduct[],
+    trackingPayload: TrackingPayload[],
     metaOrder: { id: string; price: number; coupons: string[] },
     eventName = 'purchase',
   ) => {
@@ -235,7 +235,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
             revenue: metaOrder.price.toString(),
             coupon: metaOrder.coupons.join(options.separator),
           },
-          products: metaProducts.map(metaProduct => ({
+          products: trackingPayload.map(metaProduct => ({
             id: metaProduct.options?.sku || metaProduct.id,
             name: metaProduct.title,
             price: metaProduct.price,
