@@ -49,6 +49,7 @@ type TrackingPayload = {
 
 export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
   const app = useApp()
+  const viewPage = async () => {}
   const impress = async (list: string, trackingPayload: TrackingPayload[], eventName = 'productImpression') => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
     ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
@@ -274,7 +275,7 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       })
     }
   }
-  return { impress, click, detail, addToCart, removeFromCart, checkout, addPaymentInfo, purchase, loggedIn }
+  return { viewPage, impress, click, detail, addToCart, removeFromCart, checkout, addPaymentInfo, purchase, loggedIn }
 }
 
 export default TrackingContext
