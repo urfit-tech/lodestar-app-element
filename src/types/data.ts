@@ -26,6 +26,7 @@ export type ProductPlan = {
   isPrimary: boolean
 }
 
+export type MemberProvider = 'google' | 'facebook' | 'line' | 'cw' | 'parenting' | 'commonhealth'
 export type Member = {
   id: string
   name: string
@@ -36,6 +37,7 @@ export type Member = {
   abstract: string | null
   description: string | null
   categories: Category[]
+  provider: Record<MemberProvider, any>
 }
 
 export type PodcastProgram = {

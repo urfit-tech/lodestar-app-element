@@ -28,3 +28,12 @@ export const useCurrency = (currencyId?: string, coinUnit?: string) => {
     formatCurrency,
   }
 }
+
+export const getCookie = (cookieName: string) => {
+  const cookie: { [name: string]: string } = {}
+  document.cookie.split(';').forEach(function (el) {
+    let [key, value] = el.split('=')
+    cookie[key.trim()] = value
+  })
+  return cookie[cookieName.trim()] || ''
+}
