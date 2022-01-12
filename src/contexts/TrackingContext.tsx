@@ -30,9 +30,9 @@ export const TrackingProvider: React.FC = ({ children }) => {
   return <TrackingContext.Provider value={null}>{children}</TrackingContext.Provider>
 }
 
-type TrackingPayload = {
+export type TrackingPayload = {
   id: string
-  type: 'program' | 'activity' | 'program_package' | 'project' | 'post'
+  type: 'program' | 'activity' | 'program_package' | 'project' | 'post' | 'other'
   title: string
   price: number
   categories: string[]
@@ -57,16 +57,16 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       event: eventName,
       ecommerce: {
         currencyCode: app.currencyId || options.currencyId,
-        impressions: trackingPayload.map(metaProduct => ({
-          id: metaProduct.options?.sku || metaProduct.id,
-          name: metaProduct.title,
-          price: metaProduct.price,
+        impressions: trackingPayload.map(payload => ({
+          id: payload.options?.sku || payload.id,
+          name: payload.title,
+          price: payload.price,
           brand: document.title,
-          category: metaProduct.categories.join(options.separator),
-          variant: metaProduct.variants.join(options.separator),
-          quantity: metaProduct.quantity,
+          category: payload.categories.join(options.separator),
+          variant: payload.variants.join(options.separator),
+          quantity: payload.quantity,
           list,
-          position: metaProduct.position,
+          position: payload.position,
         })),
       },
     })
@@ -80,14 +80,14 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
         currencyCode: app.currencyId || options.currencyId,
         click: {
           actionField: { list },
-          products: trackingPayload.map(metaProduct => ({
-            id: metaProduct.options?.sku || metaProduct.id,
-            name: metaProduct.title,
-            price: metaProduct.price,
+          products: trackingPayload.map(payload => ({
+            id: payload.options?.sku || payload.id,
+            name: payload.title,
+            price: payload.price,
             brand: document.title,
-            category: metaProduct.categories.join(options.separator),
-            variant: metaProduct.variants.join(options.separator),
-            position: metaProduct.position,
+            category: payload.categories.join(options.separator),
+            variant: payload.variants.join(options.separator),
+            position: payload.position,
           })),
         },
       },
@@ -101,34 +101,34 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       ecommerce: {
         detail: {
           actionField: { list },
-          products: trackingPayload.map(metaProduct => ({
-            id: metaProduct.options?.sku || metaProduct.id,
-            name: metaProduct.title,
-            price: metaProduct.price,
+          products: trackingPayload.map(payload => ({
+            id: payload.options?.sku || payload.id,
+            name: payload.title,
+            price: payload.price,
             brand: document.title,
-            category: metaProduct.categories.join(options.separator),
-            variant: metaProduct.variants.join(options.separator),
+            category: payload.categories.join(options.separator),
+            variant: payload.variants.join(options.separator),
           })),
         },
       },
     })
     if (Boolean(Number(app.settings['tracking.cw.enabled']))) {
-      const cwProducts = trackingPayload.map(metaProduct => ({
-        id: metaProduct.options?.sku || metaProduct.id,
-        type: metaProduct.type,
-        item: metaProduct.options?.['sku'],
-        title: metaProduct.title,
+      const cwProducts = trackingPayload.map(payload => ({
+        id: payload.options?.sku || payload.id,
+        type: payload.type,
+        item: payload.options?.['sku'],
+        title: payload.title,
         url: window.location.href,
-        price: metaProduct.price,
-        authors: metaProduct.options?.authors || [],
+        price: payload.price,
+        authors: payload.options?.authors || [],
         channels: {
           master: {
-            id: metaProduct.categories,
+            id: payload.categories,
           },
         },
         keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
-        content_id: metaProduct.options?.contentId || '',
-        content_name: metaProduct.options?.contentName || '',
+        content_id: payload.options?.contentId || '',
+        content_name: payload.options?.contentName || '',
       }))
       ;(window as any).dataLayer.push({ itemData: null }) // Clear the previous item object.
       ;(window as any).dataLayer.push({
@@ -149,17 +149,24 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       ecommerce: {
         currencyCode: app.currencyId || options.currencyId,
         add: {
-          products: trackingPayload.map(metaProduct => ({
-            id: metaProduct.options?.sku || metaProduct.id,
-            name: metaProduct.title,
-            price: metaProduct.price,
+          products: trackingPayload.map(payload => ({
+            id: payload.options?.sku || payload.id,
+            name: payload.title,
+            price: payload.price,
             brand: document.title,
-            category: metaProduct.categories.join(options.separator),
-            variant: metaProduct.variants.join(options.separator),
-            quantity: metaProduct.quantity,
+            category: payload.categories.join(options.separator),
+            variant: payload.variants.join(options.separator),
+            quantity: payload.quantity,
           })),
         },
       },
+    })
+    trackingPayload.forEach(payload => {
+      ReactPixel.track('AddToCart', {
+        content_name: payload.title,
+        value: payload.price,
+        currency: app.currencyId || options.currencyId,
+      })
     })
   }
   const removeFromCart = async (trackingPayload: TrackingPayload[], eventName = 'removeFromCart') => {
@@ -169,14 +176,14 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       event: eventName,
       ecommerce: {
         remove: {
-          products: trackingPayload.map(metaProduct => ({
-            id: metaProduct.options?.sku || metaProduct.id,
-            name: metaProduct.title,
-            price: metaProduct.price,
+          products: trackingPayload.map(payload => ({
+            id: payload.options?.sku || payload.id,
+            name: payload.title,
+            price: payload.price,
             brand: document.title,
-            category: metaProduct.categories.join(options.separator),
-            variant: metaProduct.variants.join(options.separator),
-            quantity: metaProduct.quantity,
+            category: payload.categories.join(options.separator),
+            variant: payload.variants.join(options.separator),
+            quantity: payload.quantity,
           })),
         },
       },
@@ -190,14 +197,14 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
       ecommerce: {
         checkout: {
           actionField: { step },
-          products: trackingPayload.map(metaProduct => ({
-            id: metaProduct.options?.sku || metaProduct.id,
-            name: metaProduct.title,
-            price: metaProduct.price,
+          products: trackingPayload.map(payload => ({
+            id: payload.options?.sku || payload.id,
+            name: payload.title,
+            price: payload.price,
             brand: document.title,
-            category: metaProduct.categories.join(options.separator),
-            variant: metaProduct.variants.join(options.separator),
-            quantity: metaProduct.quantity,
+            category: payload.categories.join(options.separator),
+            variant: payload.variants.join(options.separator),
+            quantity: payload.quantity,
           })),
         },
       },
@@ -236,14 +243,14 @@ export const useEvent = (options = { separator: '|', currencyId: 'TWD' }) => {
             revenue: metaOrder.price.toString(),
             coupon: metaOrder.coupons.join(options.separator),
           },
-          products: trackingPayload.map(metaProduct => ({
-            id: metaProduct.options?.sku || metaProduct.id,
-            name: metaProduct.title,
-            price: metaProduct.price,
+          products: trackingPayload.map(payload => ({
+            id: payload.options?.sku || payload.id,
+            name: payload.title,
+            price: payload.price,
             brand: document.title,
-            category: metaProduct.categories.join(options.separator),
-            variant: metaProduct.variants.join(options.separator),
-            quantity: metaProduct.quantity,
+            category: payload.categories.join(options.separator),
+            variant: payload.variants.join(options.separator),
+            quantity: payload.quantity,
           })),
         },
       },

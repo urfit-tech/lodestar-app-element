@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { useApp } from '../../contexts/AppContext'
+import { useEvent } from '../../contexts/TrackingContext'
 import { getActivityCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
@@ -17,6 +17,7 @@ import ActivityCard from '../cards/ActivityCard'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
 
+// @ts-ignore
 type ActivityData = DeepPick<
   Activity,
   | 'id'
@@ -119,19 +120,23 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
 
 const collectCustomCollection = (options: ProductCustomSource) => {
   const ActivityElementCollection: ActivityContextCollection = ({ children }) => {
-    const { data: rawData, loading, error } = useQuery<
-      hasura.GET_ACTIVITY_COLLECTION,
-      hasura.GET_ACTIVITY_COLLECTIONVariables
-    >(getActivityCollectionQuery(activityFields), {
-      variables: {
-        limit: undefined,
-        orderByClause: [],
-        whereClause: {
-          id: { _in: options.idList || [] },
-          published_at: { _lt: 'now()' },
+    const {
+      data: rawData,
+      loading,
+      error,
+    } = useQuery<hasura.GET_ACTIVITY_COLLECTION, hasura.GET_ACTIVITY_COLLECTIONVariables>(
+      getActivityCollectionQuery(activityFields),
+      {
+        variables: {
+          limit: undefined,
+          orderByClause: [],
+          whereClause: {
+            id: { _in: options.idList || [] },
+            published_at: { _lt: 'now()' },
+          },
         },
       },
-    })
+    )
     const data = {
       ...rawData,
       activity: (options.idList || [])
@@ -213,31 +218,24 @@ const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityDa
   })) || []
 
 const useEcommerce = (activities: ActivityData[]) => {
-  const { settings, currencyId: appCurrencyId, id: appId } = useApp()
-
+  const { impress } = useEvent()
   useEffect(() => {
-    if (activities.length > 0) {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({
-        event: 'productImpression',
-        ecommerce: {
-          currencyCode: appCurrencyId || 'TWD',
-          impressions: activities.map((activity, index) => {
-            return {
-              id: activity?.id,
-              name: activity?.title,
-              price: activity?.tickets[0]?.price || 0,
-              brand: settings['title'] || appId,
-              category: activity?.categories?.map(category => category.name).join('|'),
-              variant: activity?.organizerId,
-              list: 'Home',
-              position: index + 1,
-            }
-          }),
-        },
-      })
-    }
-  }, [activities])
+    impress(
+      window.location.pathname,
+      activities.map((activity, index) => {
+        return {
+          id: activity.id,
+          type: 'activity',
+          title: activity.title,
+          price: activity.tickets[0]?.price || 0,
+          categories: activity.categories?.map(category => category.name) || [],
+          variants: [activity.organizerId],
+          quantity: 1,
+          position: index + 1,
+        }
+      }),
+    )
+  }, [activities, impress])
 }
 
 const activityFields = gql`

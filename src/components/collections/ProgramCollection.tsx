@@ -6,10 +6,10 @@ import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { useApp } from '../../contexts/AppContext'
+import { useEvent } from '../../contexts/TrackingContext'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { notEmpty } from '../../helpers'
+import { getCurrentPrice, notEmpty } from '../../helpers'
 import { Category, PeriodType, ProductRole, Program } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCurrentPriceSource, ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -18,6 +18,7 @@ import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
 import Collection, { CollectionLayout, ContextCollection } from '../collections/Collection'
 import CategorySelector from '../common/CategorySelector'
 
+// @ts-ignore
 type ProgramData = DeepPick<
   Program,
   | 'id'
@@ -297,39 +298,25 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
   }))
 
 const useEcommerce = (programs: ProgramData[]) => {
-  const { settings, currencyId: appCurrencyId, id: appId } = useApp()
-
+  const { impress } = useEvent()
   useEffect(() => {
-    if (programs.length > 0) {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({
-        event: 'productImpression',
-        ecommerce: {
-          currencyCode: appCurrencyId || 'TWD',
-          impressions: programs.map((program, index) => {
-            const listPrice = program.plans[0]?.listPrice || 0
-            const salePrice =
-              (program.plans[0]?.soldAt?.getTime() || 0) > Date.now()
-                ? program.plans[0]?.salePrice
-                : (program.plans[0]?.soldAt?.getTime() || 0) > Date.now()
-                ? program.plans[0]?.salePrice
-                : undefined
-
-            return {
-              id: program.id,
-              name: program.title,
-              price: salePrice || listPrice,
-              brand: settings['title'] || appId,
-              category: program.categories.map(category => category.name).join('|'),
-              variant: program.roles.map(role => role.member.id).join('|') || '',
-              list: 'Home',
-              position: index + 1,
-            }
-          }),
-        },
-      })
-    }
-  }, [programs])
+    impress(
+      window.location.pathname,
+      programs.map((program, index) => {
+        const price = getCurrentPrice(program.plans[0])
+        return {
+          id: program.id,
+          type: 'program',
+          title: program.title,
+          price,
+          categories: program.categories.map(category => category.name) || [],
+          variants: program.roles.map(role => role.member.id),
+          quantity: 1,
+          position: index + 1,
+        }
+      }),
+    )
+  }, [programs, impress])
 }
 
 const programFields = gql`

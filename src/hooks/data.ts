@@ -65,6 +65,7 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
     },
   )
 
+  // @ts-ignore
   const programs: DeepPick<
     Program,
     | 'id'

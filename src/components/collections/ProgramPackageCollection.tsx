@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { useApp } from '../../contexts/AppContext'
+import { useEvent } from '../../contexts/TrackingContext'
 import { getProgramPackageCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { findCheapestPlan, getCurrentPrice, notEmpty } from '../../helpers'
@@ -16,6 +16,7 @@ import ProgramPackageCard from '../cards/ProgramPackageCard'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
 
+// @ts-ignore
 type ProgramPackageData = DeepPick<
   ProgramPackage,
   | 'id'
@@ -118,19 +119,23 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
 
 const collectCustomCollection = (options: ProductCustomSource) => {
   const ProgramPackageElementCollection: ProgramPackageContextCollection = ({ children }) => {
-    const { data: rawData, loading, error } = useQuery<
-      hasura.GET_PROGRAM_PACKAGE_COLLECTION,
-      hasura.GET_PROGRAM_PACKAGE_COLLECTIONVariables
-    >(getProgramPackageCollectionQuery(programPackageFields), {
-      variables: {
-        limit: undefined,
-        orderByClause: [],
-        whereClause: {
-          id: { _in: options.idList || [] },
-          published_at: { _lt: 'now()' },
+    const {
+      data: rawData,
+      loading,
+      error,
+    } = useQuery<hasura.GET_PROGRAM_PACKAGE_COLLECTION, hasura.GET_PROGRAM_PACKAGE_COLLECTIONVariables>(
+      getProgramPackageCollectionQuery(programPackageFields),
+      {
+        variables: {
+          limit: undefined,
+          orderByClause: [],
+          whereClause: {
+            id: { _in: options.idList || [] },
+            published_at: { _lt: 'now()' },
+          },
         },
       },
-    })
+    )
     const data = {
       ...rawData,
       program_package: (options.idList || [])
@@ -215,38 +220,25 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
   })) || []
 
 const useEcommerce = (programPackages: ProgramPackageData[]) => {
-  const { settings, currencyId: appCurrencyId, id: appId } = useApp()
-
+  const { impress } = useEvent()
   useEffect(() => {
-    if (programPackages.length > 0) {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({
-        event: 'productImpression',
-        ecommerce: {
-          currencyCode: appCurrencyId || 'TWD',
-          impressions: programPackages.map((programPackage, index) => {
-            const listPrice = programPackage.plans[0]?.listPrice || 0
-            const salePrice =
-              (programPackage.plans[0]?.soldAt?.getTime() || 0) > Date.now()
-                ? programPackage.plans[0]?.salePrice
-                : (programPackage.plans[0]?.soldAt?.getTime() || 0) > Date.now()
-                ? programPackage.plans[0]?.salePrice
-                : undefined
-            return {
-              id: programPackage?.id,
-              name: programPackage?.title,
-              price: salePrice || listPrice,
-              brand: settings['title'] || appId,
-              category: programPackage?.categories.map(category => category.name).join('|'),
-              variant: programPackage?.programs[0]?.roles?.map(role => role.member.id).join('|') || '',
-              list: 'Home',
-              position: index + 1,
-            }
-          }),
-        },
-      })
-    }
-  }, [programPackages])
+    impress(
+      window.location.pathname,
+      programPackages.map((programPackage, index) => {
+        const price = getCurrentPrice(programPackage.plans[0])
+        return {
+          id: programPackage.id,
+          type: 'program_package',
+          title: programPackage.title,
+          price,
+          categories: programPackage.categories.map(category => category.name) || [],
+          variants: programPackage?.programs.flatMap(program => program.roles?.map(role => role.member.id) || []),
+          quantity: 1,
+          position: index + 1,
+        }
+      }),
+    )
+  }, [programPackages, impress])
 }
 
 const programPackageFields = gql`
