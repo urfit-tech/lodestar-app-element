@@ -503,9 +503,9 @@ const getTrackingInstancesPayload = async (
     `,
     variables: { resourceIds: trackingResourceIds },
   })
-  return trackingResourceIds
+  const payload = trackingResourceIds
     .map((trackingResourceId, idx) => {
-      const resourceData = data.resource.find(resource => (resource.id = trackingResourceId))
+      const resourceData = data.resource.find(resource => resource.id === trackingResourceId)
       return resourceData
         ? {
             id: trackingInstances[idx].id,
@@ -520,4 +520,5 @@ const getTrackingInstancesPayload = async (
         : null
     })
     .filter(notEmpty)
+  return payload
 }
