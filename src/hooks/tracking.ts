@@ -509,7 +509,7 @@ const getTrackingInstancesPayload = async (
     switch (instance.type) {
       case 'ProgramPackage':
         return apolloClient
-          .query<hasura.GET_PROGRAM_FAMILY, hasura.GET_PROGRAM_FAMILYVariables>({
+          .query<hasura.GET_PROGRAM_PACKAGE_FAMILY, hasura.GET_PROGRAM_PACKAGE_FAMILYVariables>({
             query: getProgramFamilyQuery(programFamilyFields),
             variables: { programPackageId: instance.id },
           })
@@ -536,7 +536,7 @@ const getTrackingInstancesPayload = async (
           })
       case 'ProgramPackagePlan':
         return apolloClient
-          .query<hasura.GET_PROGRAM_FAMILY, hasura.GET_PROGRAM_FAMILYVariables>({
+          .query<hasura.GET_PROGRAM_PACKAGE_FAMILY, hasura.GET_PROGRAM_PACKAGE_FAMILYVariables>({
             query: getProgramFamilyQuery(programFamilyFields),
             variables: { programPackagePlanId: instance.id },
           })
@@ -569,10 +569,9 @@ const getTrackingInstancesPayload = async (
             variables: { programId: instance.id },
           })
           .then(({ data }) => {
-            const programPackageData = data.program_package.shift()
-            const programData = programPackageData?.program_package_programs.shift()?.program
+            const programData = data.program.shift()
             const programPlanData = programData?.program_plans.shift()
-            return programPackageData && programData
+            return programData
               ? {
                   sku,
                   id: instance.id,
@@ -595,10 +594,9 @@ const getTrackingInstancesPayload = async (
             variables: { programPlanId: instance.id },
           })
           .then(({ data }) => {
-            const programPackageData = data.program_package.shift()
-            const programData = programPackageData?.program_package_programs.shift()?.program
+            const programData = data.program.shift()
             const programPlanData = programData?.program_plans.shift()
-            return programPackageData && programData && programPlanData
+            return programData && programPlanData
               ? {
                   sku,
                   id: instance.id,
