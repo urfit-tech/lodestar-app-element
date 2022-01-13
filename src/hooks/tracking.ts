@@ -189,39 +189,44 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
           },
         },
       })
-      ;(window as any).dataLayer.push({
-        event: 'cwData',
-        itemData: {
-          products: trackingPayload
-            .map(payload =>
-              payload
-                ? {
-                    id: payload.id,
-                    type:
-                      instance.type === 'Program' || instance.type === 'ProgramPlan'
-                        ? 'program'
-                        : instance.type === 'ProgramPackage' || instance.type === 'ProgramPackagePlan'
-                        ? 'program_package'
-                        : instance.type === 'Activity' || instance.type === 'ActivityTicket'
-                        ? 'activity'
-                        : 'other',
-                    item: payload?.sku,
-                    title: payload?.title,
-                    url: window.location.href,
-                    price: payload?.price,
-                    authors: payload.variants?.map(v => ({ name: v })),
-                    channels: {
-                      master: {
-                        id: payload.categories?.join(trackingOptions.separator),
-                      },
+      if (enabledCW) {
+        const cwProducts = trackingPayload
+          .map(payload =>
+            payload
+              ? {
+                  id: payload.id,
+                  type:
+                    payload.type === 'Program' || payload.type === 'ProgramPlan'
+                      ? 'program'
+                      : payload.type === 'ProgramPackage' || payload.type === 'ProgramPackagePlan'
+                      ? 'program_package'
+                      : payload.type === 'Activity' || payload.type === 'ActivityTicket'
+                      ? 'activity'
+                      : 'other',
+                  item: payload?.sku,
+                  title: payload?.title,
+                  url: window.location.href,
+                  price: payload?.price,
+                  authors: payload.variants?.map(v => ({ name: v })),
+                  channels: {
+                    master: {
+                      id: payload.categories?.join(trackingOptions.separator),
                     },
-                    keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
-                  }
-                : null,
-            )
-            .filter(notEmpty),
-        },
-      })
+                  },
+                  keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+                }
+              : null,
+          )
+          .filter(notEmpty)
+        ;(window as any).dataLayer.push({
+          event: 'cwData',
+          itemData: {
+            products: cwProducts,
+            program: cwProducts[0],
+            article: cwProducts[0],
+          },
+        })
+      }
     },
     addToCart: async (
       instance: TrackingInstance,
@@ -326,6 +331,44 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
           },
         },
       })
+      if (enabledCW) {
+        const cwProducts = trackingPayload
+          .map(payload =>
+            payload
+              ? {
+                  id: payload.id,
+                  type:
+                    payload.type === 'Program' || payload.type === 'ProgramPlan'
+                      ? 'program'
+                      : payload.type === 'ProgramPackage' || payload.type === 'ProgramPackagePlan'
+                      ? 'program_package'
+                      : payload.type === 'Activity' || payload.type === 'ActivityTicket'
+                      ? 'activity'
+                      : 'other',
+                  item: payload?.sku,
+                  title: payload?.title,
+                  url: window.location.href,
+                  price: payload?.price,
+                  authors: payload.variants?.map(v => ({ name: v })),
+                  channels: {
+                    master: {
+                      id: payload.categories?.join(trackingOptions.separator),
+                    },
+                  },
+                  keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+                }
+              : null,
+          )
+          .filter(notEmpty)
+        ;(window as any).dataLayer.push({
+          event: 'cwData',
+          itemData: {
+            products: cwProducts,
+            program: cwProducts[0],
+            article: cwProducts[0],
+          },
+        })
+      }
     },
     addPaymentInfo: async (
       paymentNo: string,
@@ -430,6 +473,44 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
           },
         },
       })
+      if (enabledCW) {
+        const cwProducts = trackingPayload
+          .map(payload =>
+            payload
+              ? {
+                  id: payload.id,
+                  type:
+                    payload.type === 'Program' || payload.type === 'ProgramPlan'
+                      ? 'program'
+                      : payload.type === 'ProgramPackage' || payload.type === 'ProgramPackagePlan'
+                      ? 'program_package'
+                      : payload.type === 'Activity' || payload.type === 'ActivityTicket'
+                      ? 'activity'
+                      : 'other',
+                  item: payload?.sku,
+                  title: payload?.title,
+                  url: window.location.href,
+                  price: payload?.price,
+                  authors: payload.variants?.map(v => ({ name: v })),
+                  channels: {
+                    master: {
+                      id: payload.categories?.join(trackingOptions.separator),
+                    },
+                  },
+                  keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+                }
+              : null,
+          )
+          .filter(notEmpty)
+        ;(window as any).dataLayer.push({
+          event: 'cwData',
+          itemData: {
+            products: cwProducts,
+            program: cwProducts[0],
+            article: cwProducts[0],
+          },
+        })
+      }
     },
   }
 }
