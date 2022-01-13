@@ -49,7 +49,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection('Program', props.variant === 'card' ? ProgramCard : ProgramSecondaryCard)
+  const ElementCollection = Collection('program', props.variant === 'card' ? ProgramCard : ProgramSecondaryCard)
   let ContextCollection: ProgramContextCollection
   switch (source.from) {
     case 'publishedAt':

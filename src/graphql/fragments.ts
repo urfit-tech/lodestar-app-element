@@ -4,6 +4,12 @@ export const programFamilyFields = gql`
   fragment trackingProgramPackageFields on program_package {
     id
     title
+    program_package_programs {
+      program {
+        id
+        title
+      }
+    }
     program_package_categories {
       category {
         name
@@ -21,9 +27,7 @@ export const programFamilyFields = gql`
     id
     title
     program_categories {
-      id
       category {
-        id
         name
       }
     }

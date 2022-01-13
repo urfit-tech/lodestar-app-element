@@ -48,7 +48,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection('Activity', props.variant === 'card' ? ActivityCard : ActivityCard)
+  const ElementCollection = Collection('activity', props.variant === 'card' ? ActivityCard : ActivityCard)
   let ContextCollection: ActivityContextCollection
   switch (source.from) {
     case 'publishedAt':

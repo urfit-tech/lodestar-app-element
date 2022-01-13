@@ -746,11 +746,6 @@ export interface GET_ACTIVITY_COLLECTIONVariables {
 // GraphQL query operation: GET_PROGRAM_PACKAGE_FAMILY
 // ====================================================
 
-export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs {
-  __typename: 'program_package_program'
-  program_id: any
-}
-
 export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_plans {
   __typename: 'program_package_plan'
   id: any
@@ -758,6 +753,20 @@ export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_plan
   list_price: any
   sale_price: any | null
   sold_at: any | null
+}
+
+export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program {
+  __typename: 'program'
+  id: any
+  title: string
+}
+
+export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs {
+  __typename: 'program_package_program'
+  /**
+   * An object relationship
+   */
+  program: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program
 }
 
 export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_categories_category {
@@ -778,13 +787,13 @@ export interface GET_PROGRAM_PACKAGE_FAMILY_program_package {
   /**
    * An array relationship
    */
-  program_package_programs: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs[]
-  /**
-   * An array relationship
-   */
   program_package_plans: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_plans[]
   id: any
   title: string
+  /**
+   * An array relationship
+   */
+  program_package_programs: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs[]
   /**
    * An array relationship
    */
@@ -843,13 +852,11 @@ export interface GET_PROGRAM_FAMILY_program_program_content_sections {
 
 export interface GET_PROGRAM_FAMILY_program_program_categories_category {
   __typename: 'category'
-  id: string
   name: string
 }
 
 export interface GET_PROGRAM_FAMILY_program_program_categories {
   __typename: 'program_category'
-  id: any
   /**
    * An object relationship
    */
@@ -1994,6 +2001,36 @@ export interface GET_ORDERVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_RESOURCE_COLLECTION
+// ====================================================
+
+export interface GET_RESOURCE_COLLECTION_resource {
+  __typename: 'resource'
+  id: string | null
+  name: string | null
+  price: number | null
+  categories: any | null
+  variants: any | null
+  sku: string | null
+}
+
+export interface GET_RESOURCE_COLLECTION {
+  /**
+   * fetch data from the table: "resource"
+   */
+  resource: GET_RESOURCE_COLLECTION_resource[]
+}
+
+export interface GET_RESOURCE_COLLECTIONVariables {
+  resourceIds: string[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_PRODUCT_COLLECTION
 // ====================================================
 
@@ -2533,6 +2570,20 @@ export interface projectFields {
 // GraphQL fragment: trackingProgramPackageFields
 // ====================================================
 
+export interface trackingProgramPackageFields_program_package_programs_program {
+  __typename: 'program'
+  id: any
+  title: string
+}
+
+export interface trackingProgramPackageFields_program_package_programs {
+  __typename: 'program_package_program'
+  /**
+   * An object relationship
+   */
+  program: trackingProgramPackageFields_program_package_programs_program
+}
+
 export interface trackingProgramPackageFields_program_package_categories_category {
   __typename: 'category'
   name: string
@@ -2550,6 +2601,10 @@ export interface trackingProgramPackageFields {
   __typename: 'program_package'
   id: any
   title: string
+  /**
+   * An array relationship
+   */
+  program_package_programs: trackingProgramPackageFields_program_package_programs[]
   /**
    * An array relationship
    */
@@ -2585,13 +2640,11 @@ export interface trackingProgramPackagePlanFields {
 
 export interface trackingProgramFields_program_categories_category {
   __typename: 'category'
-  id: string
   name: string
 }
 
 export interface trackingProgramFields_program_categories {
   __typename: 'program_category'
-  id: any
   /**
    * An object relationship
    */

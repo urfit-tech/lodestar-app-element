@@ -47,7 +47,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection('Project', ProjectCard)
+  const ElementCollection = Collection('project', ProjectCard)
   let ContextCollection: ProjectContextCollection
   switch (source.from) {
     case 'publishedAt':

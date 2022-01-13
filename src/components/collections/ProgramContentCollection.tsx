@@ -13,6 +13,7 @@ import { ProductCustomSource, ProductRecentWatchedSource } from '../../types/opt
 import ProgramContentCard from '../cards/ProgramContentCard'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
 
+// @ts-ignore
 type ProgramContentData = DeepPick<
   ProgramContent,
   | 'id'
@@ -41,7 +42,7 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
   }
 
   const ElementCollection = Collection(
-    'ProgramContent',
+    'program_content',
     props.variant === 'card' ? ProgramContentCard : ProgramContentCard,
   )
   let ContextCollection: ProgramContentContextCollection

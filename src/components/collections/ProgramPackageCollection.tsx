@@ -46,7 +46,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
   }
 
   const ElementCollection = Collection(
-    'ProgramPackage',
+    'program_package',
     props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard,
   )
   let ContextCollection: ProgramPackageContextCollection
