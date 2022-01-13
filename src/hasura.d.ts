@@ -746,62 +746,6 @@ export interface GET_ACTIVITY_COLLECTIONVariables {
 // GraphQL query operation: GET_PROGRAM_PACKAGE_FAMILY
 // ====================================================
 
-export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program_program_plans {
-  __typename: 'program_plan'
-  id: any
-  title: string
-  list_price: any
-  sale_price: any | null
-}
-
-export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program_program_categories_category {
-  __typename: 'category'
-  name: string
-}
-
-export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program_program_categories {
-  __typename: 'program_category'
-  /**
-   * An object relationship
-   */
-  category: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program_program_categories_category
-}
-
-export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program_program_roles {
-  __typename: 'program_role'
-  /**
-   * instructor / assistant
-   */
-  name: string
-  member_id: string
-}
-
-export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program {
-  __typename: 'program'
-  /**
-   * An array relationship
-   */
-  program_plans: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program_program_plans[]
-  id: any
-  title: string
-  /**
-   * An array relationship
-   */
-  program_categories: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program_program_categories[]
-  /**
-   * An array relationship
-   */
-  program_roles: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program_program_roles[]
-}
-
-export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs {
-  __typename: 'program_package_program'
-  /**
-   * An object relationship
-   */
-  program: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs_program
-}
-
 export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_plans {
   __typename: 'program_package_plan'
   id: any
@@ -825,10 +769,6 @@ export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_cate
 
 export interface GET_PROGRAM_PACKAGE_FAMILY_program_package {
   __typename: 'program_package'
-  /**
-   * An array relationship
-   */
-  program_package_programs: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs[]
   /**
    * An array relationship
    */

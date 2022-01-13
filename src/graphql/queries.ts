@@ -70,14 +70,6 @@ export const getProgramPackageFamilyQuery = (fields: DocumentNode) => gql`
     program_package(
       where: { id: { _eq: $programPackageId }, program_package_plans: { id: { _eq: $programPackagePlanId } } }
     ) {
-      program_package_programs {
-        program {
-          program_plans {
-            ...trackingProgramPlanFields
-          }
-          ...trackingProgramFields
-        }
-      }
       program_package_plans(where: { id: { _eq: $programPackagePlanId } }) {
         ...trackingProgramPackagePlanFields
       }
