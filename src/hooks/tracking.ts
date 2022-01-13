@@ -189,6 +189,39 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
           },
         },
       })
+      ;(window as any).dataLayer.push({
+        event: 'cwData',
+        itemData: {
+          products: trackingPayload
+            .map(payload =>
+              payload
+                ? {
+                    id: payload.id,
+                    type:
+                      instance.type === 'Program' || instance.type === 'ProgramPlan'
+                        ? 'program'
+                        : instance.type === 'ProgramPackage' || instance.type === 'ProgramPackagePlan'
+                        ? 'program_package'
+                        : instance.type === 'Activity' || instance.type === 'ActivityTicket'
+                        ? 'activity'
+                        : 'other',
+                    item: payload?.sku,
+                    title: payload?.title,
+                    url: window.location.href,
+                    price: payload?.price,
+                    authors: payload.variants?.map(v => ({ name: v })),
+                    channels: {
+                      master: {
+                        id: payload.categories?.join(trackingOptions.separator),
+                      },
+                    },
+                    keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+                  }
+                : null,
+            )
+            .filter(notEmpty),
+        },
+      })
     },
     addToCart: async (
       instance: TrackingInstance,
