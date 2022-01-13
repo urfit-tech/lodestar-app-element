@@ -163,7 +163,10 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
   useEffect(() => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
-    ;(window as any).dataLayer.push({ event: 'clearMember', member: null })
+    !currentMember && (window as any).dataLayer.push({ event: 'clearMember', member: null })
+  }, [currentMember])
+  useEffect(() => {
+    ;(window as any).dataLayer = (window as any).dataLayer || []
     currentMember &&
       (window as any).dataLayer.push({
         event: 'updateMember',
@@ -172,7 +175,10 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
           email: currentMember.email,
         },
       })
+  }, [currentMember, enabledCW])
+  useEffect(() => {
     if (currentMember && enabledCW) {
+      ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({
         event: 'cwData',
         memberData: {
