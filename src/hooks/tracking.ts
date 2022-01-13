@@ -6,12 +6,10 @@ import { useEffect } from 'react'
 import ReactPixel from 'react-facebook-pixel'
 import { hotjar } from 'react-hotjar'
 import { useApp } from '../contexts/AppContext'
-import { useAuth } from '../contexts/AuthContext'
 import { activityFamilyFields, programFamilyFields } from '../graphql/fragments'
 import { getActivityFamilyQuery, getProgramFamilyQuery } from '../graphql/queries'
 import hasura from '../hasura'
 import { getCurrentPrice, notEmpty } from '../helpers'
-import { getCookie } from './util'
 
 export type TrackingInstance = {
   type:
@@ -53,36 +51,6 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
       process.env.NODE_ENV === 'development' && console.error('cannot initialize hotjar', error)
     }
   }, [enabledHotjar, enabledPixel, settings])
-
-  const { currentMember } = useAuth()
-
-  useEffect(() => {
-    ;(window as any).dataLayer = (window as any).dataLayer || []
-    ;(window as any).dataLayer.push({ event: 'clearMember', member: null })
-    currentMember &&
-      (window as any).dataLayer.push({
-        event: 'updateMember',
-        member: {
-          id: currentMember.id,
-          email: currentMember.email,
-        },
-      })
-    if (currentMember && enabledCW) {
-      ;(window as any).dataLayer.push({
-        event: 'cwData',
-        memberData: {
-          id: currentMember.options[appId]?.id || '',
-          social_id: currentMember.options[appId]?.social_id || '',
-          uid_id: currentMember.options[appId]?.uid_id || '',
-          uid: currentMember.options[appId]?.uid || '',
-          uuid: currentMember.options[appId]?.uuid || '',
-          env: process.env.NODE_ENV === 'production' ? 'prod' : 'develop',
-          email: currentMember.email,
-          dmp_id: getCookie('__eruid'),
-        },
-      })
-    }
-  }, [appId, currentMember, enabledCW])
 
   return {
     view: async () => {},

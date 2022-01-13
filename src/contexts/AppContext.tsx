@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import hasura from '../hasura'
+import { getCookie } from '../hooks/util'
 import { AppProps, NavProps } from '../types/app'
 import { useAuth } from './AuthContext'
 
@@ -31,6 +32,7 @@ const AppContext = createContext<AppContextProps>(defaultAppContextProps)
 export const useApp = () => useContext(AppContext)
 
 export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
+  const { currentMember } = useAuth()
   const { authToken, refreshToken } = useAuth()
   const { data, loading, error, refetch } = useQuery<hasura.GET_APP, hasura.GET_APPVariables>(
     gql`
@@ -157,6 +159,35 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
       refreshToken?.()
     }
   }, [appId, authToken, refreshToken])
+
+  const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
+  useEffect(() => {
+    ;(window as any).dataLayer = (window as any).dataLayer || []
+    ;(window as any).dataLayer.push({ event: 'clearMember', member: null })
+    currentMember &&
+      (window as any).dataLayer.push({
+        event: 'updateMember',
+        member: {
+          id: currentMember.id,
+          email: currentMember.email,
+        },
+      })
+    if (currentMember && enabledCW) {
+      ;(window as any).dataLayer.push({
+        event: 'cwData',
+        memberData: {
+          id: currentMember.options[appId]?.id || '',
+          social_id: currentMember.options[appId]?.social_id || '',
+          uid_id: currentMember.options[appId]?.uid_id || '',
+          uid: currentMember.options[appId]?.uid || '',
+          uuid: currentMember.options[appId]?.uuid || '',
+          env: process.env.NODE_ENV === 'production' ? 'prod' : 'develop',
+          email: currentMember.email,
+          dmp_id: getCookie('__eruid'),
+        },
+      })
+    }
+  }, [appId, currentMember, enabledCW])
 
   return <AppContext.Provider value={app}>{children}</AppContext.Provider>
 }
