@@ -33,7 +33,7 @@ export type TrackingInstance = {
 }
 
 export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD' }) => {
-  const { settings, currencyId: appCurrencyId } = useApp()
+  const { settings, currencyId: appCurrencyId, id: appId } = useApp()
   const apolloClient = useApolloClient()
   const currencyId = appCurrencyId || trackingOptions.currencyId
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
@@ -71,18 +71,18 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
       ;(window as any).dataLayer.push({
         event: 'cwData',
         memberData: {
-          id: currentMember.options.id || '',
-          social_id: currentMember.options.social_id || '',
-          uid_id: currentMember.options.uid_id || '',
-          uid: currentMember.options.uid || '',
-          uuid: currentMember.options.uuid || '',
+          id: currentMember.options[appId]?.id || '',
+          social_id: currentMember.options[appId]?.social_id || '',
+          uid_id: currentMember.options[appId]?.uid_id || '',
+          uid: currentMember.options[appId]?.uid || '',
+          uuid: currentMember.options[appId]?.uuid || '',
           env: process.env.NODE_ENV === 'production' ? 'prod' : 'develop',
           email: currentMember.email,
           dmp_id: getCookie('__eruid'),
         },
       })
     }
-  }, [currentMember, enabledCW])
+  }, [appId, currentMember, enabledCW])
 
   return {
     view: async () => {},
