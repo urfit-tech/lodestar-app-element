@@ -42,7 +42,6 @@ export type ProgramCollectionProps = {
   withSelector?: boolean
 }
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
-  const tracking = useTracking()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -50,7 +49,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection(props.variant === 'card' ? ProgramCard : ProgramSecondaryCard)
+  const ElementCollection = Collection('Program', props.variant === 'card' ? ProgramCard : ProgramSecondaryCard)
   let ContextCollection: ProgramContextCollection
   switch (source.from) {
     case 'publishedAt':
@@ -82,6 +81,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
           !props.withSelector ||
           !activeCategoryId ||
           d.categories.map(category => category.id).includes(activeCategoryId)
+
         return (
           <div className={props.className}>
             {props.withSelector && (
@@ -103,26 +103,24 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                 renderElement={(program, ProgramElement) => {
                   const primaryProgramPlan = program.plans[0] || null
                   return (
-                    <div onClick={() => tracking.click({ type: 'Program', id: program.id })}>
-                      <ProgramElement
-                        editing={props.editing}
-                        id={program.id}
-                        title={program.title}
-                        abstract={program.abstract || ''}
-                        totalDuration={program.totalDuration || 0}
-                        coverUrl={program.coverUrl}
-                        instructorIds={program.roles.map(programRole => programRole.member.id)}
-                        salePrice={
-                          typeof primaryProgramPlan?.salePrice === 'number' &&
-                          primaryProgramPlan?.soldAt &&
-                          moment() < moment(primaryProgramPlan.soldAt)
-                            ? primaryProgramPlan.salePrice
-                            : undefined
-                        }
-                        listPrice={primaryProgramPlan?.listPrice}
-                        period={primaryProgramPlan?.period || undefined}
-                      />
-                    </div>
+                    <ProgramElement
+                      editing={props.editing}
+                      id={program.id}
+                      title={program.title}
+                      abstract={program.abstract || ''}
+                      totalDuration={program.totalDuration || 0}
+                      coverUrl={program.coverUrl}
+                      instructorIds={program.roles.map(programRole => programRole.member.id)}
+                      salePrice={
+                        typeof primaryProgramPlan?.salePrice === 'number' &&
+                        primaryProgramPlan?.soldAt &&
+                        moment() < moment(primaryProgramPlan.soldAt)
+                          ? primaryProgramPlan.salePrice
+                          : undefined
+                      }
+                      listPrice={primaryProgramPlan?.listPrice}
+                      period={primaryProgramPlan?.period || undefined}
+                    />
                   )
                 }}
               />
@@ -136,6 +134,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
 
 const collectCustomCollection = (options: ProductCustomSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
+    const tracking = useTracking()
     const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),
       {
@@ -150,24 +149,20 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         },
       },
     )
-    const orderedData = {
-      ...data,
-      program: (options.idList || [])
-        .filter(programId => data?.program.find(p => p.id === programId))
-        .map(programId => data?.program.find(p => p.id === programId))
-        .filter(notEmpty),
-    }
-
-    const tracking = useTracking()
-    tracking.impress(
-      composeCollectionData(orderedData).map(v => ({ id: v.id, type: 'Program' })),
-      { collection: window.location.pathname },
-    )
+    const programCollectionData =
+      data &&
+      composeCollectionData({
+        ...data,
+        program: (options.idList || [])
+          .filter(programId => data?.program.find(p => p.id === programId))
+          .map(programId => data?.program.find(p => p.id === programId))
+          .filter(notEmpty),
+      })
 
     return children({
       loading,
       errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(orderedData),
+      data: programCollectionData,
     })
   }
   return ProgramElementCollection
@@ -203,12 +198,6 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
       },
     )
     const composedData = data ? composeCollectionData(data) : []
-
-    const tracking = useTracking()
-    tracking.impress(
-      composedData.map(v => ({ id: v.id, type: 'Program' })),
-      { collection: window.location.pathname },
-    )
 
     return children({
       loading,
@@ -261,12 +250,6 @@ const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
       },
     )
     const composedData = data ? composeCollectionData(data) : []
-
-    const tracking = useTracking()
-    tracking.impress(
-      composedData.map(v => ({ id: v.id, type: 'Program' })),
-      { collection: window.location.pathname },
-    )
 
     return children({
       loading,

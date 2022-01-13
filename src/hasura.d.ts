@@ -757,6 +757,7 @@ export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_plan
   title: string
   list_price: any
   sale_price: any | null
+  sold_at: any | null
 }
 
 export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_categories_category {
@@ -817,15 +818,38 @@ export interface GET_PROGRAM_FAMILY_program_program_plans {
   title: string
   list_price: any
   sale_price: any | null
+  sold_at: any | null
+}
+
+export interface GET_PROGRAM_FAMILY_program_program_content_sections_program_contents {
+  __typename: 'program_content'
+  id: any
+  title: string
+  /**
+   * sec
+   */
+  duration: any | null
+}
+
+export interface GET_PROGRAM_FAMILY_program_program_content_sections {
+  __typename: 'program_content_section'
+  id: any
+  title: string
+  /**
+   * An array relationship
+   */
+  program_contents: GET_PROGRAM_FAMILY_program_program_content_sections_program_contents[]
 }
 
 export interface GET_PROGRAM_FAMILY_program_program_categories_category {
   __typename: 'category'
+  id: string
   name: string
 }
 
 export interface GET_PROGRAM_FAMILY_program_program_categories {
   __typename: 'program_category'
+  id: any
   /**
    * An object relationship
    */
@@ -834,6 +858,7 @@ export interface GET_PROGRAM_FAMILY_program_program_categories {
 
 export interface GET_PROGRAM_FAMILY_program_program_roles {
   __typename: 'program_role'
+  id: any
   /**
    * instructor / assistant
    */
@@ -847,6 +872,10 @@ export interface GET_PROGRAM_FAMILY_program {
    * An array relationship
    */
   program_plans: GET_PROGRAM_FAMILY_program_program_plans[]
+  /**
+   * An array relationship
+   */
+  program_content_sections: GET_PROGRAM_FAMILY_program_program_content_sections[]
   id: any
   title: string
   /**
@@ -869,6 +898,8 @@ export interface GET_PROGRAM_FAMILY {
 export interface GET_PROGRAM_FAMILYVariables {
   programId?: any | null
   programPlanId?: any | null
+  programContentSectionId?: any | null
+  programContentId?: any | null
 }
 
 /* tslint:disable */
@@ -2540,6 +2571,7 @@ export interface trackingProgramPackagePlanFields {
   title: string
   list_price: any
   sale_price: any | null
+  sold_at: any | null
 }
 
 /* tslint:disable */
@@ -2553,11 +2585,13 @@ export interface trackingProgramPackagePlanFields {
 
 export interface trackingProgramFields_program_categories_category {
   __typename: 'category'
+  id: string
   name: string
 }
 
 export interface trackingProgramFields_program_categories {
   __typename: 'program_category'
+  id: any
   /**
    * An object relationship
    */
@@ -2566,6 +2600,7 @@ export interface trackingProgramFields_program_categories {
 
 export interface trackingProgramFields_program_roles {
   __typename: 'program_role'
+  id: any
   /**
    * instructor / assistant
    */
@@ -2602,6 +2637,41 @@ export interface trackingProgramPlanFields {
   title: string
   list_price: any
   sale_price: any | null
+  sold_at: any | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: trackingProgramContentSectionFields
+// ====================================================
+
+export interface trackingProgramContentSectionFields {
+  __typename: 'program_content_section'
+  id: any
+  title: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: trackingProgramContentFields
+// ====================================================
+
+export interface trackingProgramContentFields {
+  __typename: 'program_content'
+  id: any
+  title: string
+  /**
+   * sec
+   */
+  duration: any | null
 }
 
 /* tslint:disable */
@@ -2801,6 +2871,7 @@ export enum activity_ticket_update_column {
 export enum activity_update_column {
   app_id = 'app_id',
   cover_url = 'cover_url',
+  deleted_at = 'deleted_at',
   description = 'description',
   id = 'id',
   is_participants_visible = 'is_participants_visible',
@@ -5786,6 +5857,7 @@ export interface activity_bool_exp {
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
   cover_url?: String_comparison_exp | null
+  deleted_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   is_participants_visible?: Boolean_comparison_exp | null
@@ -6004,6 +6076,7 @@ export interface activity_insert_input {
   app?: app_obj_rel_insert_input | null
   app_id?: string | null
   cover_url?: string | null
+  deleted_at?: any | null
   description?: string | null
   id?: any | null
   is_participants_visible?: boolean | null
@@ -6021,6 +6094,7 @@ export interface activity_insert_input {
 export interface activity_max_order_by {
   app_id?: order_by | null
   cover_url?: order_by | null
+  deleted_at?: order_by | null
   description?: order_by | null
   id?: order_by | null
   organizer_id?: order_by | null
@@ -6035,6 +6109,7 @@ export interface activity_max_order_by {
 export interface activity_min_order_by {
   app_id?: order_by | null
   cover_url?: order_by | null
+  deleted_at?: order_by | null
   description?: order_by | null
   id?: order_by | null
   organizer_id?: order_by | null
@@ -6072,6 +6147,7 @@ export interface activity_order_by {
   app?: app_order_by | null
   app_id?: order_by | null
   cover_url?: order_by | null
+  deleted_at?: order_by | null
   description?: order_by | null
   id?: order_by | null
   is_participants_visible?: order_by | null

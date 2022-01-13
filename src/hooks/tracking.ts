@@ -7,7 +7,7 @@ import ReactPixel from 'react-facebook-pixel'
 import { hotjar } from 'react-hotjar'
 import { useApp } from '../contexts/AppContext'
 import { activityFamilyFields, programFamilyFields } from '../graphql/fragments'
-import { getActivityFamilyQuery, getProgramFamilyQuery } from '../graphql/queries'
+import { getActivityFamilyQuery, getProgramFamilyQuery, getProgramPackageFamilyQuery } from '../graphql/queries'
 import hasura from '../hasura'
 import { getCurrentPrice, notEmpty } from '../helpers'
 
@@ -16,6 +16,7 @@ export type TrackingInstance = {
     | 'ProgramPackage'
     | 'ProgramPackagePlan'
     | 'Program'
+    | 'ProgramContent'
     | 'ProgramPlan'
     | 'Activity'
     | 'ActivityTicket'
@@ -27,6 +28,7 @@ export type TrackingInstance = {
     | 'MerchandiseSpec'
     | 'Project'
     | 'Post'
+    | 'Member'
   id: string
 }
 
@@ -519,12 +521,12 @@ const getTrackingInstancesPayload = async (
       case 'ProgramPackage':
         return apolloClient
           .query<hasura.GET_PROGRAM_PACKAGE_FAMILY, hasura.GET_PROGRAM_PACKAGE_FAMILYVariables>({
-            query: getProgramFamilyQuery(programFamilyFields),
+            query: getProgramPackageFamilyQuery(programFamilyFields),
             variables: { programPackageId: instance.id },
           })
           .then(({ data }) => {
-            const programPackageData = data.program_package.shift()
-            const programPackagePlanData = programPackageData?.program_package_plans.shift()
+            const programPackageData = data.program_package[0]
+            const programPackagePlanData = programPackageData?.program_package_plans[0]
             return programPackageData
               ? {
                   sku,
@@ -546,12 +548,12 @@ const getTrackingInstancesPayload = async (
       case 'ProgramPackagePlan':
         return apolloClient
           .query<hasura.GET_PROGRAM_PACKAGE_FAMILY, hasura.GET_PROGRAM_PACKAGE_FAMILYVariables>({
-            query: getProgramFamilyQuery(programFamilyFields),
+            query: getProgramPackageFamilyQuery(programFamilyFields),
             variables: { programPackagePlanId: instance.id },
           })
           .then(({ data }) => {
-            const programPackageData = data.program_package.shift()
-            const programPackagePlanData = programPackageData?.program_package_plans.shift()
+            const programPackageData = data.program_package[0]
+            const programPackagePlanData = programPackageData?.program_package_plans[0]
             return programPackageData && programPackagePlanData
               ? {
                   sku,
@@ -578,8 +580,8 @@ const getTrackingInstancesPayload = async (
             variables: { programId: instance.id },
           })
           .then(({ data }) => {
-            const programData = data.program.shift()
-            const programPlanData = programData?.program_plans.shift()
+            const programData = data.program[0]
+            const programPlanData = programData?.program_plans[0]
             return programData
               ? {
                   sku,
@@ -603,8 +605,8 @@ const getTrackingInstancesPayload = async (
             variables: { programPlanId: instance.id },
           })
           .then(({ data }) => {
-            const programData = data.program.shift()
-            const programPlanData = programData?.program_plans.shift()
+            const programData = data.program[0]
+            const programPlanData = programData?.program_plans[0]
             return programData && programPlanData
               ? {
                   sku,
@@ -628,8 +630,8 @@ const getTrackingInstancesPayload = async (
             variables: { activityId: instance.id },
           })
           .then(({ data }) => {
-            const activityData = data.activity.shift()
-            const activityTicketData = activityData?.activity_tickets.shift()
+            const activityData = data.activity[0]
+            const activityTicketData = activityData?.activity_tickets[0]
             return activityData
               ? {
                   sku,
@@ -650,8 +652,8 @@ const getTrackingInstancesPayload = async (
             variables: { activityTicketId: instance.id },
           })
           .then(({ data }) => {
-            const activityData = data.activity.shift()
-            const activityTicketData = activityData?.activity_tickets.shift()
+            const activityData = data.activity[0]
+            const activityTicketData = activityData?.activity_tickets[0]
             return activityData && activityTicketData
               ? {
                   sku,

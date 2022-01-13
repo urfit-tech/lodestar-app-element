@@ -32,6 +32,7 @@ const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
   }
 
   const ElementCollection = Collection(
+    'Member',
     props.variant === 'primary'
       ? MemberPrimaryCard
       : props.variant === 'secondary'

@@ -21,7 +21,7 @@ const ProgramElementPage: React.VFC = () => {
         }}
       />
       <hr />
-      <CraftProgramCollection
+      {/* <CraftProgramCollection
         variant="card"
         layout={{
           gap: 8,
@@ -50,7 +50,7 @@ const ProgramElementPage: React.VFC = () => {
             '93c0098f-35db-4c26-ac09-283d48522790',
           ],
         }}
-      />
+      /> */}
     </div>
   )
 }

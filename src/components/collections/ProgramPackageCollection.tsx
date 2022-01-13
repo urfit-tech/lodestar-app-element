@@ -47,7 +47,10 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
     return null
   }
 
-  const ElementCollection = Collection(props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard)
+  const ElementCollection = Collection(
+    'ProgramPackage',
+    props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard,
+  )
   let ContextCollection: ProgramPackageContextCollection
   switch (source.from) {
     case 'publishedAt':
@@ -147,12 +150,6 @@ const collectCustomCollection = (options: ProductCustomSource) => {
     }
     const composedData = data ? composeCollectionData(data) : []
 
-    const tracking = useTracking()
-    tracking.impress(
-      composedData.map(v => ({ id: v.id, type: 'ProgramPackage' })),
-      { collection: window.location.pathname },
-    )
-
     return children({
       loading,
       errors: error && [new Error(error.message)],
@@ -183,12 +180,6 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
       },
     })
     const composedData = data ? composeCollectionData(data) : []
-
-    const tracking = useTracking()
-    tracking.impress(
-      composedData.map(v => ({ id: v.id, type: 'ProgramPackage' })),
-      { collection: window.location.pathname },
-    )
 
     return children({
       loading,

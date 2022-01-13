@@ -1,5 +1,7 @@
 import { repeat } from 'ramda'
+import { useEffect } from 'react'
 import styled from 'styled-components'
+import { TrackingInstance, useTracking } from '../../hooks/tracking'
 import { ElementComponent, ElementProps } from '../../types/element'
 
 export type CollectionLayout = {
@@ -23,16 +25,20 @@ const StyledGrid = styled.div<CollectionLayout>`
   place-items: center;
 `
 
-const Collection =
-  <P extends object>(ElementComponent: ElementComponent<P>) =>
-  <D extends object>(
+// FIXME: type naming is bad
+const Collection = <P extends object>(type: TrackingInstance['type'], ElementComponent: ElementComponent<P>) => {
+  const WrappedComponent = <D extends { id: string }>(
     props: ElementProps<{
       data?: Array<D>
       layout?: CollectionLayout
       renderElement?: (data: D, ElementComponent: ElementComponent<P>) => React.ReactElement<P>
     }>,
   ) => {
+    const tracking = useTracking()
     const loadingProps = { loading: true } as P
+    useEffect(() => {
+      props.data && tracking.impress(props.data.map(d => ({ type, id: d.id })))
+    }, [props.data, tracking])
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
         {props.loading ? (
@@ -52,6 +58,7 @@ const Collection =
           props.data.map((d, idx) => (
             <div
               key={idx}
+              onClick={() => tracking.click({ type, id: d.id })}
               style={{
                 width: 100 / (props.layout?.columns || 2) + '%',
                 padding: `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`,
@@ -64,5 +71,7 @@ const Collection =
       </div>
     )
   }
+  return WrappedComponent
+}
 
 export default Collection

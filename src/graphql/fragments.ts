@@ -15,16 +15,20 @@ export const programFamilyFields = gql`
     title
     list_price
     sale_price
+    sold_at
   }
   fragment trackingProgramFields on program {
     id
     title
     program_categories {
+      id
       category {
+        id
         name
       }
     }
     program_roles {
+      id
       name
       member_id
     }
@@ -34,6 +38,16 @@ export const programFamilyFields = gql`
     title
     list_price
     sale_price
+    sold_at
+  }
+  fragment trackingProgramContentSectionFields on program_content_section {
+    id
+    title
+  }
+  fragment trackingProgramContentFields on program_content {
+    id
+    title
+    duration
   }
 `
 

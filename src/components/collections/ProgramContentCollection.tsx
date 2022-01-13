@@ -40,7 +40,10 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
     return null
   }
 
-  const ElementCollection = Collection(props.variant === 'card' ? ProgramContentCard : ProgramContentCard)
+  const ElementCollection = Collection(
+    'ProgramContent',
+    props.variant === 'card' ? ProgramContentCard : ProgramContentCard,
+  )
   let ContextCollection: ProgramContentContextCollection
   switch (source.from) {
     case 'recentWatched':

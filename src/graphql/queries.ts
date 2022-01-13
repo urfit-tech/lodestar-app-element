@@ -83,10 +83,32 @@ export const getProgramPackageFamilyQuery = (fields: DocumentNode) => gql`
 `
 
 export const getProgramFamilyQuery = (fields: DocumentNode) => gql`
-  query GET_PROGRAM_FAMILY($programId: uuid, $programPlanId: uuid) {
-    program(where: { id: { _eq: $programId }, program_plans: { id: { _eq: $programPlanId } } }) {
+  query GET_PROGRAM_FAMILY(
+    $programId: uuid
+    $programPlanId: uuid
+    $programContentSectionId: uuid
+    $programContentId: uuid
+  ) {
+    program(
+      where: {
+        id: { _eq: $programId }
+        program_plans: { id: { _eq: $programPlanId } }
+        program_content_sections: {
+          id: { _eq: $programContentSectionId }
+          program_contents: { id: { _eq: $programContentId } }
+        }
+      }
+    ) {
       program_plans(where: { id: { _eq: $programPlanId } }) {
         ...trackingProgramPlanFields
+      }
+      program_content_sections(
+        where: { id: { _eq: $programContentSectionId }, program_contents: { id: { _eq: $programContentId } } }
+      ) {
+        ...trackingProgramContentSectionFields
+        program_contents(where: { id: { _eq: $programContentId } }) {
+          ...trackingProgramContentFields
+        }
       }
       ...trackingProgramFields
     }

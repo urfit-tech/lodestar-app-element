@@ -52,7 +52,9 @@ const ProgramCard: React.FC<ProgramElementProps> = props => {
       <StyledCard
         className={classNames('program', 'cursor-pointer', props.className)}
         shadowed
-        onClick={() => !loading && !props.editing && history.push(`/programs/${props.id}`)}
+        onClick={() => {
+          // !loading && !props.editing && history.push(`/programs/${props.id}`)
+        }}
       >
         {loading ? (
           <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />

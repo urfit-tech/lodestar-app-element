@@ -48,7 +48,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection(props.variant === 'card' ? ActivityCard : ActivityCard)
+  const ElementCollection = Collection('Activity', props.variant === 'card' ? ActivityCard : ActivityCard)
   let ContextCollection: ActivityContextCollection
   switch (source.from) {
     case 'publishedAt':
@@ -96,20 +96,18 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
                 layout={props.layout}
                 data={ctx.data?.filter(filter) || []}
                 renderElement={(activity, ActivityElement) => (
-                  <div onClick={() => tracking.click({ type: 'Activity', id: activity.id })}>
-                    <ActivityElement
-                      editing={props.editing}
-                      id={activity.id}
-                      coverUrl={activity.coverUrl}
-                      title={activity.title}
-                      isParticipantsVisible={activity.isParticipantVisible}
-                      startedAt={moment.min(activity.sessions.map(session => moment(session.startedAt))).toDate()}
-                      endedAt={moment.max(activity.sessions.map(session => moment(session.endedAt))).toDate()}
-                      participantCount={activity.totalParticipants}
-                      totalSeats={sum(activity.tickets.map(ticket => ticket.limit))}
-                      categories={activity.categories}
-                    />
-                  </div>
+                  <ActivityElement
+                    editing={props.editing}
+                    id={activity.id}
+                    coverUrl={activity.coverUrl}
+                    title={activity.title}
+                    isParticipantsVisible={activity.isParticipantVisible}
+                    startedAt={moment.min(activity.sessions.map(session => moment(session.startedAt))).toDate()}
+                    endedAt={moment.max(activity.sessions.map(session => moment(session.endedAt))).toDate()}
+                    participantCount={activity.totalParticipants}
+                    totalSeats={sum(activity.tickets.map(ticket => ticket.limit))}
+                    categories={activity.categories}
+                  />
                 )}
               />
             )}
@@ -148,12 +146,6 @@ const collectCustomCollection = (options: ProductCustomSource) => {
     }
     const composedData = data ? composeCollectionData(data) : []
 
-    const tracking = useTracking()
-    tracking.impress(
-      composedData.map(v => ({ id: v.id, type: 'Activity' })),
-      { collection: window.location.pathname },
-    )
-
     return children({
       loading,
       errors: error && [new Error(error.message)],
@@ -191,12 +183,6 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
       },
     )
     const composedData = data ? composeCollectionData(data) : []
-
-    const tracking = useTracking()
-    tracking.impress(
-      composedData.map(v => ({ id: v.id, type: 'Activity' })),
-      { collection: window.location.pathname },
-    )
 
     return children({
       loading,
