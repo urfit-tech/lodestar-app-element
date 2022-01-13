@@ -1,14 +1,13 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { sum, uniqBy } from 'ramda'
-import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { useEvent } from '../../contexts/TrackingContext'
 import { getProgramPackageCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { findCheapestPlan, getCurrentPrice, notEmpty } from '../../helpers'
+import { useTracking } from '../../hooks/tracking'
 import { Category, ProductPlan, ProductRole, ProgramPackage } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -144,7 +143,12 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         .filter(notEmpty),
     }
     const composedData = data ? composeCollectionData(data) : []
-    useEcommerce(composedData)
+
+    const tracking = useTracking()
+    tracking.impress(
+      composedData.map(v => ({ id: v.id, type: 'ProgramPackage' })),
+      { collection: window.location.pathname },
+    )
 
     return children({
       loading,
@@ -176,7 +180,12 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
       },
     })
     const composedData = data ? composeCollectionData(data) : []
-    useEcommerce(composedData)
+
+    const tracking = useTracking()
+    tracking.impress(
+      composedData.map(v => ({ id: v.id, type: 'ProgramPackage' })),
+      { collection: window.location.pathname },
+    )
 
     return children({
       loading,
@@ -218,28 +227,6 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
       ),
     })),
   })) || []
-
-const useEcommerce = (programPackages: ProgramPackageData[]) => {
-  const { impress } = useEvent()
-  useEffect(() => {
-    impress(
-      window.location.pathname,
-      programPackages.map((programPackage, index) => {
-        const price = getCurrentPrice(programPackage.plans[0])
-        return {
-          id: programPackage.id,
-          type: 'program_package',
-          title: programPackage.title,
-          price,
-          categories: programPackage.categories.map(category => category.name) || [],
-          variants: programPackage?.programs.flatMap(program => program.roles?.map(role => role.member.id) || []),
-          quantity: 1,
-          position: index + 1,
-        }
-      }),
-    )
-  }, [programPackages, impress])
-}
 
 const programPackageFields = gql`
   fragment programPackageFields on program_package {

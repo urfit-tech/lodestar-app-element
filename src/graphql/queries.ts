@@ -65,6 +65,54 @@ export const getActivityCollectionQuery = (activityFields: DocumentNode) => gql`
   ${activityFields}
 `
 
+export const getProgramFamilyQuery = (fields: DocumentNode) => gql`
+  query GET_PROGRAM_FAMILY(
+    $programPackageId: uuid
+    $programPackagePlanId: uuid
+    $programId: uuid
+    $programPlanId: uuid
+  ) {
+    program_package(
+      where: {
+        id: { _eq: $programPackageId }
+        program_package_plans: { id: { _eq: $programPackagePlanId } }
+        program_package_programs: {
+          program_id: { _eq: $programId }
+          program: { program_plans: { id: { _eq: $programPlanId } } }
+        }
+      }
+    ) {
+      program_package_programs(
+        where: { program_id: { _eq: $programId }, program: { program_plans: { id: { _eq: $programPlanId } } } }
+      ) {
+        program {
+          program_plans(where: { id: { _eq: $programPlanId } }) {
+            ...trackingProgramPlanFields
+          }
+          ...trackingProgramFields
+        }
+      }
+      program_package_plans(where: { id: { _eq: $programPackagePlanId } }) {
+        ...trackingProgramPackagePlanFields
+      }
+      ...trackingProgramPackageFields
+    }
+  }
+  ${fields}
+`
+
+export const getActivityFamilyQuery = (fields: DocumentNode) => gql`
+  query GET_ACTIVITY_FAMILY($activityId: uuid, $activityTicketId: uuid) {
+    activity(where: { id: { _eq: $activityId }, activity_tickets: { id: { _eq: $activityTicketId } } }) {
+      activity_tickets(where: { id: { _eq: $activityTicketId } }) {
+        ...trackingActivityTicketFields
+      }
+      ...trackingActivityFields
+    }
+  }
+  ${fields}
+`
+
 // export const getMemberCollectionQuery = (memberFields: DocumentNode) => gql`
 //   query GET_PUBLIC_MEMBER_COLLECTION(
 //     $whereClause: member_public_bool_exp

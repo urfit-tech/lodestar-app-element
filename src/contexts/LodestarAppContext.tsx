@@ -4,7 +4,6 @@ import { AppProvider } from './AppContext'
 import { AppThemeProvider } from './AppThemeContext'
 import { AuthProvider } from './AuthContext'
 import { LanguageProvider } from './LanguageContext'
-import { TrackingProvider } from './TrackingContext'
 
 export const LodestarAppProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
   const LodestarAppContext = createContext({ appId })
@@ -14,9 +13,7 @@ export const LodestarAppProvider: React.FC<{ appId: string }> = ({ appId, childr
         <ApiProvider appId={appId}>
           <AppProvider appId={appId}>
             <LanguageProvider>
-              <AppThemeProvider>
-                <TrackingProvider>{children}</TrackingProvider>
-              </AppThemeProvider>
+              <AppThemeProvider>{children}</AppThemeProvider>
             </LanguageProvider>
           </AppProvider>
         </ApiProvider>

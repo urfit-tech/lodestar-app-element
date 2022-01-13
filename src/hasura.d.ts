@@ -743,6 +743,189 @@ export interface GET_ACTIVITY_COLLECTIONVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_PROGRAM_FAMILY
+// ====================================================
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_programs_program_program_plans {
+  __typename: 'program_plan'
+  id: any
+  title: string
+  list_price: any
+  sale_price: any | null
+}
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_programs_program_program_categories_category {
+  __typename: 'category'
+  name: string
+}
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_programs_program_program_categories {
+  __typename: 'program_category'
+  /**
+   * An object relationship
+   */
+  category: GET_PROGRAM_FAMILY_program_package_program_package_programs_program_program_categories_category
+}
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_programs_program_program_roles {
+  __typename: 'program_role'
+  /**
+   * instructor / assistant
+   */
+  name: string
+  member_id: string
+}
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_programs_program {
+  __typename: 'program'
+  /**
+   * An array relationship
+   */
+  program_plans: GET_PROGRAM_FAMILY_program_package_program_package_programs_program_program_plans[]
+  id: any
+  title: string
+  /**
+   * An array relationship
+   */
+  program_categories: GET_PROGRAM_FAMILY_program_package_program_package_programs_program_program_categories[]
+  /**
+   * An array relationship
+   */
+  program_roles: GET_PROGRAM_FAMILY_program_package_program_package_programs_program_program_roles[]
+}
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_programs {
+  __typename: 'program_package_program'
+  /**
+   * An object relationship
+   */
+  program: GET_PROGRAM_FAMILY_program_package_program_package_programs_program
+}
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_plans {
+  __typename: 'program_package_plan'
+  id: any
+  title: string
+  list_price: any
+  sale_price: any | null
+}
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_categories_category {
+  __typename: 'category'
+  name: string
+}
+
+export interface GET_PROGRAM_FAMILY_program_package_program_package_categories {
+  __typename: 'program_package_category'
+  /**
+   * An object relationship
+   */
+  category: GET_PROGRAM_FAMILY_program_package_program_package_categories_category
+}
+
+export interface GET_PROGRAM_FAMILY_program_package {
+  __typename: 'program_package'
+  /**
+   * An array relationship
+   */
+  program_package_programs: GET_PROGRAM_FAMILY_program_package_program_package_programs[]
+  /**
+   * An array relationship
+   */
+  program_package_plans: GET_PROGRAM_FAMILY_program_package_program_package_plans[]
+  id: any
+  title: string
+  /**
+   * An array relationship
+   */
+  program_package_categories: GET_PROGRAM_FAMILY_program_package_program_package_categories[]
+}
+
+export interface GET_PROGRAM_FAMILY {
+  /**
+   * fetch data from the table: "program_package"
+   */
+  program_package: GET_PROGRAM_FAMILY_program_package[]
+}
+
+export interface GET_PROGRAM_FAMILYVariables {
+  programPackageId?: any | null
+  programPackagePlanId?: any | null
+  programId?: any | null
+  programPlanId?: any | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_ACTIVITY_FAMILY
+// ====================================================
+
+export interface GET_ACTIVITY_FAMILY_activity_activity_tickets {
+  __typename: 'activity_ticket'
+  id: any
+  title: string
+  price: any
+}
+
+export interface GET_ACTIVITY_FAMILY_activity_organizer {
+  __typename: 'member_public'
+  id: string | null
+  name: string | null
+}
+
+export interface GET_ACTIVITY_FAMILY_activity_activity_categories_category {
+  __typename: 'category'
+  name: string
+}
+
+export interface GET_ACTIVITY_FAMILY_activity_activity_categories {
+  __typename: 'activity_category'
+  /**
+   * An object relationship
+   */
+  category: GET_ACTIVITY_FAMILY_activity_activity_categories_category
+}
+
+export interface GET_ACTIVITY_FAMILY_activity {
+  __typename: 'activity'
+  /**
+   * An array relationship
+   */
+  activity_tickets: GET_ACTIVITY_FAMILY_activity_activity_tickets[]
+  id: any
+  title: string
+  /**
+   * An object relationship
+   */
+  organizer: GET_ACTIVITY_FAMILY_activity_organizer | null
+  /**
+   * An array relationship
+   */
+  activity_categories: GET_ACTIVITY_FAMILY_activity_activity_categories[]
+}
+
+export interface GET_ACTIVITY_FAMILY {
+  /**
+   * fetch data from the table: "activity"
+   */
+  activity: GET_ACTIVITY_FAMILY_activity[]
+}
+
+export interface GET_ACTIVITY_FAMILYVariables {
+  activityId?: any | null
+  activityTicketId?: any | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_ENROLLED_CARD_IDS
 // ====================================================
 
@@ -1689,6 +1872,149 @@ export interface UPDATE_MEMBER_METADATAVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_PAYMENT
+// ====================================================
+
+export interface GET_PAYMENT_payment_log_by_pk {
+  __typename: 'payment_log'
+  /**
+   * spgateway, tappay, ezfund,paypal
+   */
+  gateway: string | null
+  options: any | null
+}
+
+export interface GET_PAYMENT {
+  /**
+   * fetch data from the table: "payment_log" using primary key columns
+   */
+  payment_log_by_pk: GET_PAYMENT_payment_log_by_pk | null
+}
+
+export interface GET_PAYMENTVariables {
+  paymentNo: any
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_ORDER
+// ====================================================
+
+export interface GET_ORDER_order_log_by_pk_order_products {
+  __typename: 'order_product'
+  product_id: string
+  name: string
+  price: any
+  options: any | null
+}
+
+export interface GET_ORDER_order_log_by_pk_order_discounts {
+  __typename: 'order_discount'
+  name: string
+  price: any
+}
+
+export interface GET_ORDER_order_log_by_pk {
+  __typename: 'order_log'
+  /**
+   * An array relationship
+   */
+  order_products: GET_ORDER_order_log_by_pk_order_products[]
+  /**
+   * An array relationship
+   */
+  order_discounts: GET_ORDER_order_log_by_pk_order_discounts[]
+}
+
+export interface GET_ORDER {
+  /**
+   * fetch data from the table: "order_log" using primary key columns
+   */
+  order_log_by_pk: GET_ORDER_order_log_by_pk | null
+}
+
+export interface GET_ORDERVariables {
+  orderId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_PRODUCT_COLLECTION
+// ====================================================
+
+export interface GET_PRODUCT_COLLECTION_product {
+  __typename: 'product'
+  /**
+   * {type}_{target}, ex: Program_123-456, ProgramPlan_123-456
+   */
+  id: string
+  sku: string | null
+}
+
+export interface GET_PRODUCT_COLLECTION {
+  /**
+   * fetch data from the table: "product"
+   */
+  product: GET_PRODUCT_COLLECTION_product[]
+}
+
+export interface GET_PRODUCT_COLLECTIONVariables {
+  productIds: string[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_PROGRAM_ROLE_COLLECTION
+// ====================================================
+
+export interface GET_PROGRAM_ROLE_COLLECTION_program_role_member {
+  __typename: 'member_public'
+  name: string | null
+}
+
+export interface GET_PROGRAM_ROLE_COLLECTION_program_role {
+  __typename: 'program_role'
+  /**
+   * instructor / assistant
+   */
+  name: string
+  program_id: any
+  member_id: string
+  /**
+   * An object relationship
+   */
+  member: GET_PROGRAM_ROLE_COLLECTION_program_role_member | null
+}
+
+export interface GET_PROGRAM_ROLE_COLLECTION {
+  /**
+   * fetch data from the table: "program_role"
+   */
+  program_role: GET_PROGRAM_ROLE_COLLECTION_program_role[]
+}
+
+export interface GET_PROGRAM_ROLE_COLLECTIONVariables {
+  programIds: any[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: activityFields
 // ====================================================
 
@@ -2156,6 +2482,175 @@ export interface projectFields {
 // @generated
 // This file was automatically generated and should not be edited.
 
+// ====================================================
+// GraphQL fragment: trackingProgramPackageFields
+// ====================================================
+
+export interface trackingProgramPackageFields_program_package_categories_category {
+  __typename: 'category'
+  name: string
+}
+
+export interface trackingProgramPackageFields_program_package_categories {
+  __typename: 'program_package_category'
+  /**
+   * An object relationship
+   */
+  category: trackingProgramPackageFields_program_package_categories_category
+}
+
+export interface trackingProgramPackageFields {
+  __typename: 'program_package'
+  id: any
+  title: string
+  /**
+   * An array relationship
+   */
+  program_package_categories: trackingProgramPackageFields_program_package_categories[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: trackingProgramPackagePlanFields
+// ====================================================
+
+export interface trackingProgramPackagePlanFields {
+  __typename: 'program_package_plan'
+  id: any
+  title: string
+  list_price: any
+  sale_price: any | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: trackingProgramFields
+// ====================================================
+
+export interface trackingProgramFields_program_categories_category {
+  __typename: 'category'
+  name: string
+}
+
+export interface trackingProgramFields_program_categories {
+  __typename: 'program_category'
+  /**
+   * An object relationship
+   */
+  category: trackingProgramFields_program_categories_category
+}
+
+export interface trackingProgramFields_program_roles {
+  __typename: 'program_role'
+  /**
+   * instructor / assistant
+   */
+  name: string
+  member_id: string
+}
+
+export interface trackingProgramFields {
+  __typename: 'program'
+  id: any
+  title: string
+  /**
+   * An array relationship
+   */
+  program_categories: trackingProgramFields_program_categories[]
+  /**
+   * An array relationship
+   */
+  program_roles: trackingProgramFields_program_roles[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: trackingProgramPlanFields
+// ====================================================
+
+export interface trackingProgramPlanFields {
+  __typename: 'program_plan'
+  id: any
+  title: string
+  list_price: any
+  sale_price: any | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: trackingActivityFields
+// ====================================================
+
+export interface trackingActivityFields_organizer {
+  __typename: 'member_public'
+  id: string | null
+  name: string | null
+}
+
+export interface trackingActivityFields_activity_categories_category {
+  __typename: 'category'
+  name: string
+}
+
+export interface trackingActivityFields_activity_categories {
+  __typename: 'activity_category'
+  /**
+   * An object relationship
+   */
+  category: trackingActivityFields_activity_categories_category
+}
+
+export interface trackingActivityFields {
+  __typename: 'activity'
+  id: any
+  title: string
+  /**
+   * An object relationship
+   */
+  organizer: trackingActivityFields_organizer | null
+  /**
+   * An array relationship
+   */
+  activity_categories: trackingActivityFields_activity_categories[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: trackingActivityTicketFields
+// ====================================================
+
+export interface trackingActivityTicketFields {
+  __typename: 'activity_ticket'
+  id: any
+  title: string
+  price: any
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
@@ -2232,6 +2727,7 @@ export enum activity_session_ticket_update_column {
  */
 export enum activity_session_update_column {
   activity_id = 'activity_id',
+  deleted_at = 'deleted_at',
   description = 'description',
   ended_at = 'ended_at',
   id = 'id',
@@ -2273,6 +2769,7 @@ export enum activity_ticket_update_column {
   activity_id = 'activity_id',
   count = 'count',
   currency_id = 'currency_id',
+  deleted_at = 'deleted_at',
   description = 'description',
   ended_at = 'ended_at',
   id = 'id',
@@ -4264,6 +4761,9 @@ export enum product_inventory_update_column {
  * update columns of table "product"
  */
 export enum product_update_column {
+  coin_back = 'coin_back',
+  coin_period_amount = 'coin_period_amount',
+  coin_period_type = 'coin_period_type',
   id = 'id',
   sku = 'sku',
   target = 'target',
@@ -5613,6 +6113,7 @@ export interface activity_session_bool_exp {
   activity_enrollments?: activity_enrollment_bool_exp | null
   activity_id?: uuid_comparison_exp | null
   activity_session_tickets?: activity_session_ticket_bool_exp | null
+  deleted_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -5632,6 +6133,7 @@ export interface activity_session_insert_input {
   activity_attendances?: activity_attendance_arr_rel_insert_input | null
   activity_id?: any | null
   activity_session_tickets?: activity_session_ticket_arr_rel_insert_input | null
+  deleted_at?: any | null
   description?: string | null
   ended_at?: any | null
   id?: any | null
@@ -5647,6 +6149,7 @@ export interface activity_session_insert_input {
  */
 export interface activity_session_max_order_by {
   activity_id?: order_by | null
+  deleted_at?: order_by | null
   description?: order_by | null
   ended_at?: order_by | null
   id?: order_by | null
@@ -5662,6 +6165,7 @@ export interface activity_session_max_order_by {
  */
 export interface activity_session_min_order_by {
   activity_id?: order_by | null
+  deleted_at?: order_by | null
   description?: order_by | null
   ended_at?: order_by | null
   id?: order_by | null
@@ -6110,6 +6614,7 @@ export interface activity_ticket_bool_exp {
   count?: Int_comparison_exp | null
   currency?: currency_bool_exp | null
   currency_id?: String_comparison_exp | null
+  deleted_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -6144,6 +6649,7 @@ export interface activity_ticket_insert_input {
   count?: number | null
   currency?: currency_obj_rel_insert_input | null
   currency_id?: string | null
+  deleted_at?: any | null
   description?: string | null
   ended_at?: any | null
   id?: any | null
@@ -6160,6 +6666,7 @@ export interface activity_ticket_max_order_by {
   activity_id?: order_by | null
   count?: order_by | null
   currency_id?: order_by | null
+  deleted_at?: order_by | null
   description?: order_by | null
   ended_at?: order_by | null
   id?: order_by | null
@@ -6175,6 +6682,7 @@ export interface activity_ticket_min_order_by {
   activity_id?: order_by | null
   count?: order_by | null
   currency_id?: order_by | null
+  deleted_at?: order_by | null
   description?: order_by | null
   ended_at?: order_by | null
   id?: order_by | null
@@ -13233,6 +13741,9 @@ export interface product_bool_exp {
   _or?: (product_bool_exp | null)[] | null
   card_discounts?: card_discount_bool_exp | null
   cart_products?: cart_product_bool_exp | null
+  coin_back?: numeric_comparison_exp | null
+  coin_period_amount?: Int_comparison_exp | null
+  coin_period_type?: String_comparison_exp | null
   coupon_plan_products?: coupon_plan_product_bool_exp | null
   id?: String_comparison_exp | null
   order_products?: order_product_bool_exp | null
@@ -13266,6 +13777,9 @@ export interface product_enrollment_bool_exp {
 export interface product_insert_input {
   card_discounts?: card_discount_arr_rel_insert_input | null
   cart_products?: cart_product_arr_rel_insert_input | null
+  coin_back?: any | null
+  coin_period_amount?: number | null
+  coin_period_type?: string | null
   coupon_plan_products?: coupon_plan_product_arr_rel_insert_input | null
   id?: string | null
   order_products?: order_product_arr_rel_insert_input | null

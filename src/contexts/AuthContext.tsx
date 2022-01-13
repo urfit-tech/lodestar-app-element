@@ -21,6 +21,7 @@ type AuthProps = {
     email: string
     pictureUrl: string
     role: UserRole
+    options: { [key: string]: any }
   } | null
   permissions: { [key: string]: boolean }
   refreshToken?: () => Promise<void>
@@ -100,6 +101,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
           email: payload.email,
           pictureUrl: payload.pictureUrl,
           role: payload.role,
+          options: payload.options || {},
         },
         permissions: payload?.permissions
           ? payload.permissions.reduce((accumulator: { [key: string]: boolean }, currentValue: string) => {

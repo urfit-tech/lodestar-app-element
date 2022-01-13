@@ -2,14 +2,13 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
-import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { useEvent } from '../../contexts/TrackingContext'
 import { getActivityCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
+import { useTracking } from '../../hooks/tracking'
 import { Activity, Category } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -145,7 +144,12 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         .filter(notEmpty),
     }
     const composedData = data ? composeCollectionData(data) : []
-    useEcommerce(composedData)
+
+    const tracking = useTracking()
+    tracking.impress(
+      composedData.map(v => ({ id: v.id, type: 'Activity' })),
+      { collection: window.location.pathname },
+    )
 
     return children({
       loading,
@@ -184,7 +188,12 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
       },
     )
     const composedData = data ? composeCollectionData(data) : []
-    useEcommerce(composedData)
+
+    const tracking = useTracking()
+    tracking.impress(
+      composedData.map(v => ({ id: v.id, type: 'Activity' })),
+      { collection: window.location.pathname },
+    )
 
     return children({
       loading,
@@ -216,27 +225,6 @@ const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityDa
     })),
     totalParticipants: 0, // TODO
   })) || []
-
-const useEcommerce = (activities: ActivityData[]) => {
-  const { impress } = useEvent()
-  useEffect(() => {
-    impress(
-      window.location.pathname,
-      activities.map((activity, index) => {
-        return {
-          id: activity.id,
-          type: 'activity',
-          title: activity.title,
-          price: activity.tickets[0]?.price || 0,
-          categories: activity.categories?.map(category => category.name) || [],
-          variants: [activity.organizerId],
-          quantity: 1,
-          position: index + 1,
-        }
-      }),
-    )
-  }, [activities, impress])
-}
 
 const activityFields = gql`
   fragment activityFields on activity {

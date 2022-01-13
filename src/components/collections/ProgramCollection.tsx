@@ -2,14 +2,13 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
-import { useEffect } from 'react'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { useEvent } from '../../contexts/TrackingContext'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { getCurrentPrice, notEmpty } from '../../helpers'
+import { notEmpty } from '../../helpers'
+import { useTracking } from '../../hooks/tracking'
 import { Category, PeriodType, ProductRole, Program } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCurrentPriceSource, ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -155,7 +154,12 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         .map(programId => data?.program.find(p => p.id === programId))
         .filter(notEmpty),
     }
-    useEcommerce(composeCollectionData(orderedData))
+
+    const tracking = useTracking()
+    tracking.impress(
+      composeCollectionData(orderedData).map(v => ({ id: v.id, type: 'Program' })),
+      { collection: window.location.pathname },
+    )
 
     return children({
       loading,
@@ -196,7 +200,12 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
       },
     )
     const composedData = data ? composeCollectionData(data) : []
-    useEcommerce(composedData)
+
+    const tracking = useTracking()
+    tracking.impress(
+      composedData.map(v => ({ id: v.id, type: 'Program' })),
+      { collection: window.location.pathname },
+    )
 
     return children({
       loading,
@@ -249,7 +258,12 @@ const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
       },
     )
     const composedData = data ? composeCollectionData(data) : []
-    useEcommerce(composedData)
+
+    const tracking = useTracking()
+    tracking.impress(
+      composedData.map(v => ({ id: v.id, type: 'Program' })),
+      { collection: window.location.pathname },
+    )
 
     return children({
       loading,
@@ -296,28 +310,6 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
       })),
     categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
   }))
-
-const useEcommerce = (programs: ProgramData[]) => {
-  const { impress } = useEvent()
-  useEffect(() => {
-    impress(
-      window.location.pathname,
-      programs.map((program, index) => {
-        const price = getCurrentPrice(program.plans[0])
-        return {
-          id: program.id,
-          type: 'program',
-          title: program.title,
-          price,
-          categories: program.categories.map(category => category.name) || [],
-          variants: program.roles.map(role => role.member.id),
-          quantity: 1,
-          position: index + 1,
-        }
-      }),
-    )
-  }, [programs, impress])
-}
 
 const programFields = gql`
   fragment programFields on program {
