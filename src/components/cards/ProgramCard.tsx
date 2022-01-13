@@ -53,7 +53,7 @@ const ProgramCard: React.FC<ProgramElementProps> = props => {
         className={classNames('program', 'cursor-pointer', props.className)}
         shadowed
         onClick={() => {
-          // !loading && !props.editing && history.push(`/programs/${props.id}`)
+          !loading && !props.editing && history.push(`/programs/${props.id}`)
         }}
       >
         {loading ? (
