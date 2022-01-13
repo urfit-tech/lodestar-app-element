@@ -506,7 +506,6 @@ const getTrackingInstancesPayload = async (
   return trackingResourceIds
     .map((trackingResourceId, idx) => {
       const resourceData = data.resource.find(resource => (resource.id = trackingResourceId))
-      console.log(resourceData)
       return resourceData
         ? {
             id: trackingInstances[idx].id,
