@@ -746,6 +746,11 @@ export interface GET_ACTIVITY_COLLECTIONVariables {
 // GraphQL query operation: GET_PROGRAM_PACKAGE_FAMILY
 // ====================================================
 
+export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs {
+  __typename: 'program_package_program'
+  program_id: any
+}
+
 export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_plans {
   __typename: 'program_package_plan'
   id: any
@@ -769,6 +774,10 @@ export interface GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_cate
 
 export interface GET_PROGRAM_PACKAGE_FAMILY_program_package {
   __typename: 'program_package'
+  /**
+   * An array relationship
+   */
+  program_package_programs: GET_PROGRAM_PACKAGE_FAMILY_program_package_program_package_programs[]
   /**
    * An array relationship
    */

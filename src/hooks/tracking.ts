@@ -526,7 +526,7 @@ const getTrackingInstancesPayload = async (
                   categories: programPackageData.program_package_categories.map(v => v.category.name),
                   variants: programPackageData.program_package_programs
                     .flatMap(v =>
-                      programRolesMap[v.program.id]
+                      programRolesMap[v.program_id]
                         ?.filter(programRole => programRole.role === 'instructor')
                         .map(programRole => programRole.name),
                     )
@@ -553,7 +553,7 @@ const getTrackingInstancesPayload = async (
                   categories: programPackageData.program_package_categories.map(v => v.category.name),
                   variants: programPackageData.program_package_programs
                     .flatMap(v =>
-                      programRolesMap[v.program.id]
+                      programRolesMap[v.program_id]
                         ?.filter(programRole => programRole.role === 'instructor')
                         .map(programRole => programRole.name),
                     )
