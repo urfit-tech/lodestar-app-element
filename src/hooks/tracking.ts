@@ -170,14 +170,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
             payload
               ? {
                   id: payload.id,
-                  type:
-                    payload.type === 'Program' || payload.type === 'ProgramPlan'
-                      ? 'program'
-                      : payload.type === 'ProgramPackage' || payload.type === 'ProgramPackagePlan'
-                      ? 'program_package'
-                      : payload.type === 'Activity' || payload.type === 'ActivityTicket'
-                      ? 'activity'
-                      : 'other',
+                  type: payload.type,
                   item: payload?.sku,
                   title: payload?.title,
                   url: window.location.href,
@@ -314,14 +307,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
             payload
               ? {
                   id: payload.id,
-                  type:
-                    payload.type === 'Program' || payload.type === 'ProgramPlan'
-                      ? 'program'
-                      : payload.type === 'ProgramPackage' || payload.type === 'ProgramPackagePlan'
-                      ? 'program_package'
-                      : payload.type === 'Activity' || payload.type === 'ActivityTicket'
-                      ? 'activity'
-                      : 'other',
+                  type: payload.type,
                   item: payload?.sku,
                   title: payload?.title,
                   url: window.location.href,
@@ -457,14 +443,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
             payload
               ? {
                   id: payload.id,
-                  type:
-                    payload.type === 'Program' || payload.type === 'ProgramPlan'
-                      ? 'program'
-                      : payload.type === 'ProgramPackage' || payload.type === 'ProgramPackagePlan'
-                      ? 'program_package'
-                      : payload.type === 'Activity' || payload.type === 'ActivityTicket'
-                      ? 'activity'
-                      : 'other',
+                  type: payload.type,
                   item: payload?.sku,
                   title: payload?.title,
                   url: window.location.href,
@@ -508,6 +487,7 @@ const getTrackingInstancesPayload = async (
   apolloClient: ApolloClient<object>,
   trackingInstances: TrackingInstance[],
 ): Promise<TrackingInstancePayload[]> => {
+  const trackingResourceIds = trackingInstances.map(instance => `${appId}:${instance.type}:${instance.id}`)
   const { data } = await apolloClient.query<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>({
     query: gql`
       query GET_RESOURCE_COLLECTION($resourceIds: [String!]!) {
@@ -521,18 +501,24 @@ const getTrackingInstancesPayload = async (
         }
       }
     `,
-    variables: { resourceIds: trackingInstances.map(instance => `${appId}:${instance.type}:${instance.id}`) },
+    variables: { resourceIds: trackingResourceIds },
   })
-  return data.resource.map(v => {
-    const [_, type, id] = v.id?.split(':') || []
-    return {
-      urn: v.id || '',
-      id: id || '',
-      type: type || 'unknown',
-      title: v.name || '',
-      categories: v.categories || [],
-      variants: v.variants || [],
-      sku: v.sku || undefined,
-    }
-  })
+  return trackingResourceIds
+    .map((trackingResourceId, idx) => {
+      const resourceData = data.resource.find(resource => (resource.id = trackingResourceId))
+      console.log(resourceData)
+      return resourceData
+        ? {
+            id: trackingInstances[idx].id,
+            type: trackingInstances[idx].id,
+            urn: resourceData.id || '',
+            title: resourceData.name || '',
+            price: resourceData.price || undefined,
+            categories: resourceData.categories || [],
+            variants: resourceData.variants || [],
+            sku: resourceData.sku || undefined,
+          }
+        : null
+    })
+    .filter(notEmpty)
 }
