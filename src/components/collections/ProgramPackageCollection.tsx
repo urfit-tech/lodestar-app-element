@@ -39,6 +39,7 @@ export type ProgramPackageCollectionProps = {
   withSelector?: boolean
 }
 const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> = props => {
+  const tracking = useTracking()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -96,15 +97,17 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                 renderElement={(programPackage, ProgramPackageElement) => {
                   const cheapestPlan = findCheapestPlan(programPackage.plans)
                   return (
-                    <ProgramPackageElement
-                      editing={props.editing}
-                      coverUrl={programPackage.coverUrl || undefined}
-                      title={programPackage.title}
-                      link={`/program-packages/${programPackage.id}`}
-                      totalPrograms={programPackage.programs.length}
-                      totalDuration={sum(programPackage.programs.map(program => program.totalDuration))}
-                      currentPrice={cheapestPlan ? getCurrentPrice(cheapestPlan) : 0}
-                    />
+                    <div onClick={() => tracking.click({ type: 'ProgramPackage', id: programPackage.id })}>
+                      <ProgramPackageElement
+                        editing={props.editing}
+                        coverUrl={programPackage.coverUrl || undefined}
+                        title={programPackage.title}
+                        link={`/program-packages/${programPackage.id}`}
+                        totalPrograms={programPackage.programs.length}
+                        totalDuration={sum(programPackage.programs.map(program => program.totalDuration))}
+                        currentPrice={cheapestPlan ? getCurrentPrice(cheapestPlan) : 0}
+                      />
+                    </div>
                   )
                 }}
               />

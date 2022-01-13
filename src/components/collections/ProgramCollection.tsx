@@ -42,6 +42,7 @@ export type ProgramCollectionProps = {
   withSelector?: boolean
 }
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
+  const tracking = useTracking()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -102,24 +103,26 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                 renderElement={(program, ProgramElement) => {
                   const primaryProgramPlan = program.plans[0] || null
                   return (
-                    <ProgramElement
-                      editing={props.editing}
-                      id={program.id}
-                      title={program.title}
-                      abstract={program.abstract || ''}
-                      totalDuration={program.totalDuration || 0}
-                      coverUrl={program.coverUrl}
-                      instructorIds={program.roles.map(programRole => programRole.member.id)}
-                      salePrice={
-                        typeof primaryProgramPlan?.salePrice === 'number' &&
-                        primaryProgramPlan?.soldAt &&
-                        moment() < moment(primaryProgramPlan.soldAt)
-                          ? primaryProgramPlan.salePrice
-                          : undefined
-                      }
-                      listPrice={primaryProgramPlan?.listPrice}
-                      period={primaryProgramPlan?.period || undefined}
-                    />
+                    <div onClick={() => tracking.click({ type: 'Program', id: program.id })}>
+                      <ProgramElement
+                        editing={props.editing}
+                        id={program.id}
+                        title={program.title}
+                        abstract={program.abstract || ''}
+                        totalDuration={program.totalDuration || 0}
+                        coverUrl={program.coverUrl}
+                        instructorIds={program.roles.map(programRole => programRole.member.id)}
+                        salePrice={
+                          typeof primaryProgramPlan?.salePrice === 'number' &&
+                          primaryProgramPlan?.soldAt &&
+                          moment() < moment(primaryProgramPlan.soldAt)
+                            ? primaryProgramPlan.salePrice
+                            : undefined
+                        }
+                        listPrice={primaryProgramPlan?.listPrice}
+                        period={primaryProgramPlan?.period || undefined}
+                      />
+                    </div>
                   )
                 }}
               />

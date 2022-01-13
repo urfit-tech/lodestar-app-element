@@ -40,6 +40,7 @@ export type ActivityCollectionProps = {
   withSelector?: boolean
 }
 const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
+  const tracking = useTracking()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -95,18 +96,20 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
                 layout={props.layout}
                 data={ctx.data?.filter(filter) || []}
                 renderElement={(activity, ActivityElement) => (
-                  <ActivityElement
-                    editing={props.editing}
-                    id={activity.id}
-                    coverUrl={activity.coverUrl}
-                    title={activity.title}
-                    isParticipantsVisible={activity.isParticipantVisible}
-                    startedAt={moment.min(activity.sessions.map(session => moment(session.startedAt))).toDate()}
-                    endedAt={moment.max(activity.sessions.map(session => moment(session.endedAt))).toDate()}
-                    participantCount={activity.totalParticipants}
-                    totalSeats={sum(activity.tickets.map(ticket => ticket.limit))}
-                    categories={activity.categories}
-                  />
+                  <div onClick={() => tracking.click({ type: 'Activity', id: activity.id })}>
+                    <ActivityElement
+                      editing={props.editing}
+                      id={activity.id}
+                      coverUrl={activity.coverUrl}
+                      title={activity.title}
+                      isParticipantsVisible={activity.isParticipantVisible}
+                      startedAt={moment.min(activity.sessions.map(session => moment(session.startedAt))).toDate()}
+                      endedAt={moment.max(activity.sessions.map(session => moment(session.endedAt))).toDate()}
+                      participantCount={activity.totalParticipants}
+                      totalSeats={sum(activity.tickets.map(ticket => ticket.limit))}
+                      categories={activity.categories}
+                    />
+                  </div>
                 )}
               />
             )}
