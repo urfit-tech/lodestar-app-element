@@ -2,9 +2,6 @@ import { useApolloClient } from '@apollo/react-hooks'
 import ApolloClient from 'apollo-client'
 import gql from 'graphql-tag'
 import { sum } from 'ramda'
-import { useEffect } from 'react'
-import ReactPixel from 'react-facebook-pixel'
-import { hotjar } from 'react-hotjar'
 import { useApp } from '../contexts/AppContext'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
@@ -27,6 +24,7 @@ export type TrackingInstance = {
     | 'project'
     | 'post'
     | 'member'
+    | 'unknown'
   id: string
 }
 
@@ -35,22 +33,6 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
   const apolloClient = useApolloClient()
   const currencyId = appCurrencyId || trackingOptions.currencyId
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
-  const enabledPixel = settings['tracking.fb_pixel_id']
-  const enabledHotjar = settings['tracking.hotjar_id'] && settings['tracking.hotjar_sv']
-  // initialize
-  useEffect(() => {
-    try {
-      enabledPixel && ReactPixel.init(settings['tracking.fb_pixel_id'])
-    } catch (error) {
-      process.env.NODE_ENV === 'development' && console.error('cannot initialize facebook pixel', error)
-    }
-    try {
-      enabledHotjar &&
-        hotjar.initialize(parseInt(settings['tracking.hotjar_id']), parseInt(settings['tracking.hotjar_sv']))
-    } catch (error) {
-      process.env.NODE_ENV === 'development' && console.error('cannot initialize hotjar', error)
-    }
-  }, [enabledHotjar, enabledPixel, settings])
 
   return {
     view: async () => {},
@@ -99,33 +81,35 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
       },
     ) => {
       const trackingPayload = await getTrackingInstancesPayload(appId, apolloClient, [instance])
-      // EEC -> GTM dataLayer
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'productClick',
-        ecommerce: {
-          currencyCode: currencyId,
-          click: {
-            actionField: { list: options?.collection },
-            products: trackingPayload
-              .map(payload =>
-                payload
-                  ? {
-                      id: payload.sku || payload.id,
-                      name: payload.title,
-                      price: payload.price,
-                      brand: document.title,
-                      category: payload.categories?.join(trackingOptions.separator),
-                      variant: payload.variants?.join(trackingOptions.separator),
-                      position: options?.position,
-                    }
-                  : null,
-              )
-              .filter(notEmpty),
+      if (trackingPayload.length > 0) {
+        // EEC -> GTM dataLayer
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: 'productClick',
+          ecommerce: {
+            currencyCode: currencyId,
+            click: {
+              actionField: { list: options?.collection },
+              products: trackingPayload
+                .map(payload =>
+                  payload
+                    ? {
+                        id: payload.sku || payload.id,
+                        name: payload.title,
+                        price: payload.price,
+                        brand: document.title,
+                        category: payload.categories?.join(trackingOptions.separator),
+                        variant: payload.variants?.join(trackingOptions.separator),
+                        position: options?.position,
+                      }
+                    : null,
+                )
+                .filter(notEmpty),
+            },
           },
-        },
-      })
+        })
+      }
     },
     detail: async (
       instance: TrackingInstance,
@@ -206,32 +190,34 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
       },
     ) => {
       const trackingPayload = await getTrackingInstancesPayload(appId, apolloClient, [instance])
-      // EEC -> GTM dataLayer
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: options?.direct ? 'addToCartNow' : 'addToCart',
-        ecommerce: {
-          currencyCode: currencyId,
-          add: {
-            products: trackingPayload
-              .map(payload =>
-                payload
-                  ? {
-                      id: payload.sku || payload.id,
-                      name: payload.title,
-                      price: payload.price,
-                      brand: document.title,
-                      category: payload.categories?.join(trackingOptions.separator),
-                      variant: payload.variants?.join(trackingOptions.separator),
-                      quantity: 1, // TODO: use the inventory
-                    }
-                  : null,
-              )
-              .filter(notEmpty),
+      if (trackingPayload.length > 0) {
+        // EEC -> GTM dataLayer
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: options?.direct ? 'addToCartNow' : 'addToCart',
+          ecommerce: {
+            currencyCode: currencyId,
+            add: {
+              products: trackingPayload
+                .map(payload =>
+                  payload
+                    ? {
+                        id: payload.sku || payload.id,
+                        name: payload.title,
+                        price: payload.price,
+                        brand: document.title,
+                        category: payload.categories?.join(trackingOptions.separator),
+                        variant: payload.variants?.join(trackingOptions.separator),
+                        quantity: 1, // TODO: use the inventory
+                      }
+                    : null,
+                )
+                .filter(notEmpty),
+            },
           },
-        },
-      })
+        })
+      }
     },
     removeFromCart: async (
       instance: TrackingInstance,
@@ -240,32 +226,34 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
       },
     ) => {
       const trackingPayload = await getTrackingInstancesPayload(appId, apolloClient, [instance])
-      // EEC -> GTM dataLayer
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'removeFromCart',
-        ecommerce: {
-          currencyCode: currencyId,
-          remove: {
-            products: trackingPayload
-              .map(payload =>
-                payload
-                  ? {
-                      id: payload.sku || payload.id,
-                      name: payload.title,
-                      price: payload.price,
-                      brand: document.title,
-                      category: payload.categories?.join(trackingOptions.separator),
-                      variant: payload.variants?.join(trackingOptions.separator),
-                      quantity: 1, // TODO: use the inventory
-                    }
-                  : null,
-              )
-              .filter(notEmpty),
+      if (trackingPayload.length > 0) {
+        // EEC -> GTM dataLayer
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: 'removeFromCart',
+          ecommerce: {
+            currencyCode: currencyId,
+            remove: {
+              products: trackingPayload
+                .map(payload =>
+                  payload
+                    ? {
+                        id: payload.sku || payload.id,
+                        name: payload.title,
+                        price: payload.price,
+                        brand: document.title,
+                        category: payload.categories?.join(trackingOptions.separator),
+                        variant: payload.variants?.join(trackingOptions.separator),
+                        quantity: 1, // TODO: use the inventory
+                      }
+                    : null,
+                )
+                .filter(notEmpty),
+            },
           },
-        },
-      })
+        })
+      }
     },
     checkout: async (
       instances: TrackingInstance[],
@@ -274,63 +262,65 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
       },
     ) => {
       const trackingPayload = await getTrackingInstancesPayload(appId, apolloClient, instances)
-      // EEC -> GTM dataLayer
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'checkout',
-        ecommerce: {
-          currencyCode: currencyId,
-          checkout: {
-            actionField: { step: options?.step || 1 },
-            products: trackingPayload
-              .map((payload, idx) =>
-                payload
-                  ? {
-                      id: payload.sku || payload.id,
-                      name: payload.title,
-                      price: payload.price,
-                      brand: document.title,
-                      category: payload.categories?.join(trackingOptions.separator),
-                      variant: payload.variants?.join(trackingOptions.separator),
-                      quantity: 1, // TODO: use the cart product
-                    }
-                  : null,
-              )
-              .filter(notEmpty),
-          },
-        },
-      })
-      if (enabledCW) {
-        const cwProducts = trackingPayload
-          .map(payload =>
-            payload
-              ? {
-                  id: payload.id,
-                  type: payload.type,
-                  item: payload?.sku,
-                  title: payload?.title,
-                  url: window.location.href,
-                  price: payload?.price,
-                  authors: payload.variants?.map(v => ({ name: v })),
-                  channels: {
-                    master: {
-                      id: payload.categories?.join(trackingOptions.separator),
-                    },
-                  },
-                  keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
-                }
-              : null,
-          )
-          .filter(notEmpty)
+      if (trackingPayload.length > 0) {
+        // EEC -> GTM dataLayer
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
-          event: 'cwData',
-          itemData: {
-            products: cwProducts,
-            program: cwProducts[0],
-            article: cwProducts[0],
+          event: 'checkout',
+          ecommerce: {
+            currencyCode: currencyId,
+            checkout: {
+              actionField: { step: options?.step || 1 },
+              products: trackingPayload
+                .map((payload, idx) =>
+                  payload
+                    ? {
+                        id: payload.sku || payload.id,
+                        name: payload.title,
+                        price: payload.price,
+                        brand: document.title,
+                        category: payload.categories?.join(trackingOptions.separator),
+                        variant: payload.variants?.join(trackingOptions.separator),
+                        quantity: 1, // TODO: use the cart product
+                      }
+                    : null,
+                )
+                .filter(notEmpty),
+            },
           },
         })
+        if (enabledCW) {
+          const cwProducts = trackingPayload
+            .map(payload =>
+              payload
+                ? {
+                    id: payload.id,
+                    type: payload.type,
+                    item: payload?.sku,
+                    title: payload?.title,
+                    url: window.location.href,
+                    price: payload?.price,
+                    authors: payload.variants?.map(v => ({ name: v })),
+                    channels: {
+                      master: {
+                        id: payload.categories?.join(trackingOptions.separator),
+                      },
+                    },
+                    keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+                  }
+                : null,
+            )
+            .filter(notEmpty)
+          ;(window as any).dataLayer.push({
+            event: 'cwData',
+            itemData: {
+              products: cwProducts,
+              program: cwProducts[0],
+              article: cwProducts[0],
+            },
+          })
+        }
       }
     },
     addPaymentInfo: async (
@@ -487,6 +477,7 @@ const getTrackingInstancesPayload = async (
   apolloClient: ApolloClient<object>,
   trackingInstances: TrackingInstance[],
 ): Promise<TrackingInstancePayload[]> => {
+  if (!appId) return []
   const trackingResourceIds = trackingInstances.map(instance => `${appId}:${instance.type}:${instance.id}`)
   const { data } = await apolloClient.query<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>({
     query: gql`
