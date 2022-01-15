@@ -35,49 +35,49 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
   const currencyId = appCurrencyId || trackingOptions.currencyId
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
 
-  return {
-    view: async () => {},
-    impress: useCallback(
-      async (
-        instances: TrackingInstance[],
-        options?: {
-          collection?: string
-        },
-      ) => {
-        const trackingPayload = await getTrackingInstancesPayload(appId, apolloClient, instances)
-        // EEC -> GTM dataLayer
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        const impressions = trackingPayload
-          .map((payload, idx) =>
-            payload
-              ? {
-                  id: payload.sku || payload.id,
-                  name: payload.title,
-                  price: payload.price,
-                  brand: settings['name'] || document.title,
-                  category: payload.categories?.join(trackingOptions.separator),
-                  variant: payload.variants?.join(trackingOptions.separator),
-                  quantity: 1, // TODO: use the inventory
-                  list: options?.collection || window.location.pathname,
-                  position: idx + 1,
-                }
-              : null,
-          )
-          .filter(notEmpty)
-        if (impressions.length > 0) {
-          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-          ;(window as any).dataLayer.push({
-            event: 'productImpression',
-            ecommerce: {
-              currencyCode: currencyId,
-              impressions,
-            },
-          })
-        }
+  const impress = useCallback(
+    async (
+      instances: TrackingInstance[],
+      options?: {
+        collection?: string
       },
-      [apolloClient, appId, currencyId, settings, trackingOptions.separator],
-    ),
-    click: async (
+    ) => {
+      const trackingPayload = await getTrackingInstancesPayload(appId, apolloClient, instances)
+      // EEC -> GTM dataLayer
+      ;(window as any).dataLayer = (window as any).dataLayer || []
+      const impressions = trackingPayload
+        .map((payload, idx) =>
+          payload
+            ? {
+                id: payload.sku || payload.id,
+                name: payload.title,
+                price: payload.price,
+                brand: settings['name'] || document.title,
+                category: payload.categories?.join(trackingOptions.separator),
+                variant: payload.variants?.join(trackingOptions.separator),
+                quantity: 1, // TODO: use the inventory
+                list: options?.collection || window.location.pathname,
+                position: idx + 1,
+              }
+            : null,
+        )
+        .filter(notEmpty)
+      if (impressions.length > 0) {
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: 'productImpression',
+          ecommerce: {
+            currencyCode: currencyId,
+            impressions,
+          },
+        })
+      }
+    },
+    [apolloClient, appId, currencyId, settings, trackingOptions.separator],
+  )
+
+  const click = useCallback(
+    async (
       instance: TrackingInstance,
       options?: {
         collection?: string
@@ -115,7 +115,11 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
         })
       }
     },
-    detail: async (
+    [apolloClient, appId, currencyId, settings, trackingOptions.separator],
+  )
+
+  const detail = useCallback(
+    async (
       instance: TrackingInstance,
       options?: {
         collection?: string
@@ -186,7 +190,11 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
         }
       }
     },
-    addToCart: async (
+    [apolloClient, appId, currencyId, enabledCW, settings, trackingOptions.separator],
+  )
+
+  const addToCart = useCallback(
+    async (
       instance: TrackingInstance,
       options?: {
         direct?: boolean
@@ -223,7 +231,11 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
         })
       }
     },
-    removeFromCart: async (
+    [apolloClient, appId, currencyId, settings, trackingOptions.separator],
+  )
+
+  const removeFromCart = useCallback(
+    async (
       instance: TrackingInstance,
       options?: {
         quantity?: number
@@ -259,7 +271,11 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
         })
       }
     },
-    checkout: async (
+    [apolloClient, appId, currencyId, settings, trackingOptions.separator],
+  )
+
+  const checkout = useCallback(
+    async (
       instances: TrackingInstance[],
       options?: {
         step?: number
@@ -327,7 +343,11 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
         }
       }
     },
-    addPaymentInfo: async (
+    [apolloClient, appId, currencyId, enabledCW, settings, trackingOptions.separator],
+  )
+
+  const addPaymentInfo = useCallback(
+    async (
       paymentNo: string,
       options?: {
         step?: number
@@ -363,7 +383,11 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
         },
       })
     },
-    purchase: async (
+    [apolloClient],
+  )
+
+  const purchase = useCallback(
+    async (
       orderId: string,
       options?: {
         step?: number
@@ -463,6 +487,19 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
         })
       }
     },
+    [apolloClient, appId, enabledCW, settings, trackingOptions.separator],
+  )
+
+  return {
+    view: async () => {},
+    impress,
+    click,
+    detail,
+    addToCart,
+    removeFromCart,
+    checkout,
+    addPaymentInfo,
+    purchase,
   }
 }
 

@@ -27,6 +27,7 @@ const StyledGrid = styled.div<CollectionLayout>`
 
 // FIXME: type naming is bad
 const Collection = <P extends object>(type: TrackingInstance['type'], ElementComponent: ElementComponent<P>) => {
+  const tracking = useTracking()
   const WrappedComponent = <D extends { id: string }>(
     props: ElementProps<{
       data?: Array<D>
@@ -34,11 +35,10 @@ const Collection = <P extends object>(type: TrackingInstance['type'], ElementCom
       renderElement?: (data: D, ElementComponent: ElementComponent<P>) => React.ReactElement<P>
     }>,
   ) => {
-    const tracking = useTracking()
     const loadingProps = { loading: true } as P
     useEffect(() => {
-      props.data && tracking.impress(props.data.map(d => ({ type, id: d.id })))
-    }, [props.data, tracking])
+      props.data && props.data?.length > 0 && tracking.impress(props.data.map(d => ({ type, id: d.id })))
+    }, [props.data])
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
         {props.loading ? (
