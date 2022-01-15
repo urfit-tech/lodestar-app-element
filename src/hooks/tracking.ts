@@ -52,12 +52,12 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
                 id: payload.sku || payload.id,
                 name: payload.title,
                 price: payload.price,
-                brand: document.title,
+                brand: settings['name'] || document.title,
                 category: payload.categories?.join(trackingOptions.separator),
                 variant: payload.variants?.join(trackingOptions.separator),
                 quantity: 1, // TODO: use the inventory
-                list: options?.collection,
-                position: idx,
+                list: options?.collection || window.location.pathname,
+                position: idx + 1,
               }
             : null,
         )
@@ -98,7 +98,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
                         id: payload.sku || payload.id,
                         name: payload.title,
                         price: payload.price,
-                        brand: document.title,
+                        brand: settings['name'] || document.title,
                         category: payload.categories?.join(trackingOptions.separator),
                         variant: payload.variants?.join(trackingOptions.separator),
                         position: options?.position,
@@ -127,7 +127,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
                 id: payload.sku || payload.id,
                 name: payload.title,
                 price: payload.price,
-                brand: document.title,
+                brand: settings['name'] || document.title,
                 category: payload.categories?.join(trackingOptions.separator),
                 variant: payload.variants?.join(trackingOptions.separator),
               }
@@ -206,7 +206,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
                         id: payload.sku || payload.id,
                         name: payload.title,
                         price: payload.price,
-                        brand: document.title,
+                        brand: settings['name'] || document.title,
                         category: payload.categories?.join(trackingOptions.separator),
                         variant: payload.variants?.join(trackingOptions.separator),
                         quantity: 1, // TODO: use the inventory
@@ -242,7 +242,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
                         id: payload.sku || payload.id,
                         name: payload.title,
                         price: payload.price,
-                        brand: document.title,
+                        brand: settings['name'] || document.title,
                         category: payload.categories?.join(trackingOptions.separator),
                         variant: payload.variants?.join(trackingOptions.separator),
                         quantity: 1, // TODO: use the inventory
@@ -279,7 +279,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
                         id: payload.sku || payload.id,
                         name: payload.title,
                         price: payload.price,
-                        brand: document.title,
+                        brand: settings['name'] || document.title,
                         category: payload.categories?.join(trackingOptions.separator),
                         variant: payload.variants?.join(trackingOptions.separator),
                         quantity: 1, // TODO: use the cart product
@@ -416,7 +416,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
                       id: payload.sku || payload.id,
                       name: payload.title,
                       price: payload.price,
-                      brand: document.title,
+                      brand: settings['name'] || document.title,
                       category: payload.categories?.join(trackingOptions.separator),
                       variant: payload.variants?.join(trackingOptions.separator),
                       quantity: 1, // TODO: use the inventory

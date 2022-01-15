@@ -1,8 +1,6 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { createContext, useContext, useEffect, useMemo } from 'react'
-import ReactPixel from 'react-facebook-pixel'
-import { hotjar } from 'react-hotjar'
 import hasura from '../hasura'
 import { getCookie } from '../hooks/util'
 import { AppProps, NavProps } from '../types/app'
@@ -202,21 +200,5 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     }
   }, [appId, currentMember, enabledCW])
 
-  const enabledPixel = settings['tracking.fb_pixel_id']
-  const enabledHotjar = settings['tracking.hotjar_id'] && settings['tracking.hotjar_sv']
-  // initialize
-  useEffect(() => {
-    try {
-      enabledPixel && ReactPixel.init(settings['tracking.fb_pixel_id'])
-    } catch (error) {
-      process.env.NODE_ENV === 'development' && console.error('cannot initialize facebook pixel', error)
-    }
-    try {
-      enabledHotjar &&
-        hotjar.initialize(parseInt(settings['tracking.hotjar_id']), parseInt(settings['tracking.hotjar_sv']))
-    } catch (error) {
-      process.env.NODE_ENV === 'development' && console.error('cannot initialize hotjar', error)
-    }
-  }, [enabledHotjar, enabledPixel, settings])
   return <AppContext.Provider value={app}>{children}</AppContext.Provider>
 }

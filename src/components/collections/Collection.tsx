@@ -58,7 +58,7 @@ const Collection = <P extends object>(type: TrackingInstance['type'], ElementCom
           props.data.map((d, idx) => (
             <div
               key={idx}
-              onClick={() => tracking.click({ type, id: d.id }, { collection: window.location.pathname })}
+              onClick={() => tracking.click({ type, id: d.id }, { position: idx + 1 })}
               style={{
                 width: 100 / (props.layout?.columns || 2) + '%',
                 padding: `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`,
