@@ -96,8 +96,14 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     },
   )
 
-  const settings = Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || [])
-  const secrets = Object.fromEntries(data?.app_by_pk?.app_secrets.map(v => [v.key, v.value]) || [])
+  const settings = useMemo(
+    () => Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || []),
+    [data?.app_by_pk?.app_settings],
+  )
+  const secrets = useMemo(
+    () => Object.fromEntries(data?.app_by_pk?.app_secrets.map(v => [v.key, v.value]) || []),
+    [data?.app_by_pk?.app_secrets],
+  )
 
   const app: AppContextProps = useMemo(
     () =>

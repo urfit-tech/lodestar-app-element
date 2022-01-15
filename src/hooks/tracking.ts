@@ -2,6 +2,7 @@ import { useApolloClient } from '@apollo/react-hooks'
 import ApolloClient from 'apollo-client'
 import gql from 'graphql-tag'
 import { sum } from 'ramda'
+import { useCallback } from 'react'
 import { useApp } from '../contexts/AppContext'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
@@ -36,43 +37,46 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
 
   return {
     view: async () => {},
-    impress: async (
-      instances: TrackingInstance[],
-      options?: {
-        collection?: string
+    impress: useCallback(
+      async (
+        instances: TrackingInstance[],
+        options?: {
+          collection?: string
+        },
+      ) => {
+        const trackingPayload = await getTrackingInstancesPayload(appId, apolloClient, instances)
+        // EEC -> GTM dataLayer
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        const impressions = trackingPayload
+          .map((payload, idx) =>
+            payload
+              ? {
+                  id: payload.sku || payload.id,
+                  name: payload.title,
+                  price: payload.price,
+                  brand: settings['name'] || document.title,
+                  category: payload.categories?.join(trackingOptions.separator),
+                  variant: payload.variants?.join(trackingOptions.separator),
+                  quantity: 1, // TODO: use the inventory
+                  list: options?.collection || window.location.pathname,
+                  position: idx + 1,
+                }
+              : null,
+          )
+          .filter(notEmpty)
+        if (impressions.length > 0) {
+          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+          ;(window as any).dataLayer.push({
+            event: 'productImpression',
+            ecommerce: {
+              currencyCode: currencyId,
+              impressions,
+            },
+          })
+        }
       },
-    ) => {
-      const trackingPayload = await getTrackingInstancesPayload(appId, apolloClient, instances)
-      // EEC -> GTM dataLayer
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      const impressions = trackingPayload
-        .map((payload, idx) =>
-          payload
-            ? {
-                id: payload.sku || payload.id,
-                name: payload.title,
-                price: payload.price,
-                brand: settings['name'] || document.title,
-                category: payload.categories?.join(trackingOptions.separator),
-                variant: payload.variants?.join(trackingOptions.separator),
-                quantity: 1, // TODO: use the inventory
-                list: options?.collection || window.location.pathname,
-                position: idx + 1,
-              }
-            : null,
-        )
-        .filter(notEmpty)
-      if (impressions.length > 0) {
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        ;(window as any).dataLayer.push({
-          event: 'productImpression',
-          ecommerce: {
-            currencyCode: currencyId,
-            impressions,
-          },
-        })
-      }
-    },
+      [apolloClient, appId, currencyId, settings, trackingOptions.separator],
+    ),
     click: async (
       instance: TrackingInstance,
       options?: {
