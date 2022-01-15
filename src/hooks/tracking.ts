@@ -94,7 +94,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
           ecommerce: {
             currencyCode: currencyId,
             click: {
-              actionField: { list: options?.collection },
+              actionField: { list: options?.collection || window.location.pathname },
               products: trackingPayload
                 .map(payload =>
                   payload
@@ -149,7 +149,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
           ecommerce: {
             currencyCode: currencyId,
             detail: {
-              actionField: { list: options?.collection },
+              actionField: { list: options?.collection || window.location.pathname },
               products: ecProducts,
             },
           },
