@@ -6,6 +6,7 @@ import { useCallback } from 'react'
 import { useApp } from '../contexts/AppContext'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
+import { getResourceByProductId } from './util'
 
 export type TrackingInstance = {
   type:
@@ -417,10 +418,7 @@ export const useTracking = (trackingOptions = { separator: '|', currencyId: 'TWD
       const trackingPayload = await getTrackingInstancesPayload(
         appId,
         apolloClient,
-        data.order_log_by_pk?.order_products.map(v => {
-          const [type, id] = v.product_id.split('_')
-          return { type, id } as TrackingInstance
-        }) || [],
+        data.order_log_by_pk?.order_products.map(v => getResourceByProductId(v.product_id)) || [],
       )
       // EEC -> GTM dataLayer
       ;(window as any).dataLayer = (window as any).dataLayer || []

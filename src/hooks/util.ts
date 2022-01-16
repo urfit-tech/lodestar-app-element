@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { useApp } from '../contexts/AppContext'
 import LanguageContext from '../contexts/LanguageContext'
+import { TrackingInstance } from './tracking'
 
 export const useCurrency = (currencyId?: string, coinUnit?: string) => {
   const { locale } = useContext(LanguageContext)
@@ -36,4 +37,22 @@ export const getCookie = (cookieName: string) => {
     cookie[key.trim()] = value
   })
   return cookie[cookieName.trim()] || ''
+}
+
+export const getResourceByProductId = (productId: string): TrackingInstance => {
+  const [productType, productTarget] = productId.split('_')
+  switch (productType) {
+    case 'ProgramPackage':
+      return { type: 'program_package', id: productTarget }
+    case 'ProgramPackagePlan':
+      return { type: 'program_package_plan', id: productTarget }
+    case 'Program':
+      return { type: 'program', id: productTarget }
+    case 'ProgramPlan':
+      return { type: 'program_plan', id: productTarget }
+    case 'Activity':
+      return { type: 'activity', id: productTarget }
+    default:
+      return { type: 'unknown', id: productTarget }
+  }
 }
