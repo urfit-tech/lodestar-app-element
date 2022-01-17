@@ -94,7 +94,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
               <ElementCollection
                 layout={props.layout}
                 data={ctx.data?.filter(filter) || []}
-                renderElement={(project, ProjectElement) => (
+                renderElement={({ data: project, ElementComponent: ProjectElement }) => (
                   <ProjectElement
                     editing={props.editing}
                     id={project.id}

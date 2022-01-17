@@ -70,7 +70,7 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
               <ElementCollection
                 layout={props.layout}
                 data={ctx.data || []}
-                renderElement={(programContent, ProgramContentElement) => {
+                renderElement={({ data: programContent, ElementComponent: ProgramContentElement }) => {
                   return (
                     <ProgramContentElement
                       editing={props.editing}

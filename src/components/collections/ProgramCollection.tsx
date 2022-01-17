@@ -2,13 +2,13 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
+import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { useTracking } from '../../hooks/tracking'
 import { Category, PeriodType, ProductRole, Program } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCurrentPriceSource, ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -42,6 +42,7 @@ export type ProgramCollectionProps = {
   withSelector?: boolean
 }
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
+  const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -100,7 +101,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
               <ElementCollection
                 layout={props.layout}
                 data={ctx.data?.filter(programFilter) || []}
-                renderElement={(program, ProgramElement) => {
+                renderElement={({ data: program, ElementComponent: ProgramElement, onClick }) => {
                   const primaryProgramPlan = program.plans[0] || null
                   return (
                     <ProgramElement
@@ -120,6 +121,10 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       }
                       listPrice={primaryProgramPlan?.listPrice}
                       period={primaryProgramPlan?.period || undefined}
+                      onClick={() => {
+                        onClick?.()
+                        !props.editing && history.push(`/programs/${program.id}`)
+                      }}
                     />
                   )
                 }}
@@ -134,7 +139,6 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
 
 const collectCustomCollection = (options: ProductCustomSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
-    const tracking = useTracking()
     const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),
       {

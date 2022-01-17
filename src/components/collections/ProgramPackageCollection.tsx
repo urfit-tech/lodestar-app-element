@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { sum, uniqBy } from 'ramda'
+import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
@@ -38,6 +39,7 @@ export type ProgramPackageCollectionProps = {
   withSelector?: boolean
 }
 const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> = props => {
+  const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -95,7 +97,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
               <ElementCollection
                 layout={props.layout}
                 data={ctx.data?.filter(filter) || []}
-                renderElement={(programPackage, ProgramPackageElement) => {
+                renderElement={({ data: programPackage, ElementComponent: ProgramPackageElement, onClick }) => {
                   const cheapestPlan = findCheapestPlan(programPackage.plans)
                   return (
                     <ProgramPackageElement
@@ -106,6 +108,10 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                       totalPrograms={programPackage.programs.length}
                       totalDuration={sum(programPackage.programs.map(program => program.totalDuration))}
                       currentPrice={cheapestPlan ? getCurrentPrice(cheapestPlan) : 0}
+                      onClick={() => {
+                        onClick?.()
+                        !props.editing && history.push(`/program-packages/${programPackage.id}`)
+                      }}
                     />
                   )
                 }}

@@ -1,7 +1,7 @@
 import { Skeleton } from '@chakra-ui/react'
+import classNames from 'classnames'
 import moment from 'moment'
 import { useIntl } from 'react-intl'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { productMessages } from '../../helpers/translation'
 import EmptyCover from '../../images/empty-cover.png'
@@ -44,44 +44,42 @@ const ActivityCard: React.FC<ActivityElementProps> = props => {
   const endDate = !loading && props.endedAt ? moment(props.endedAt).format('YYYY-MM-DD(dd)') : ''
 
   return (
-    <Link
-      to={loading ? '#!' : `/activities/${props.id}`}
-      onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
+    <StyledCard
+      className={classNames('activity', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
+      onClick={props.onClick}
     >
-      <StyledCard>
-        {loading ? (
-          <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
-        ) : (
-          <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
-        )}
+      {loading ? (
+        <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+      ) : (
+        <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+      )}
 
-        <Card.Content>
-          <StyledTitle>{loading ? '---' : props.title}</StyledTitle>
-          <StyledMeta className="mb-2">
-            {!loading && props.isParticipantsVisible && (
-              <div className="d-flex align-items-center">
-                <UserOIcon />
-                <span className="ml-2">
-                  {formatMessage(productMessages.activity.content.remaining)}
-                  {props.participantCount && props.totalSeats
-                    ? props.totalSeats - props.participantCount
-                    : props.totalSeats}
-                </span>
-              </div>
-            )}
-          </StyledMeta>
-          <StyledMeta className="d-flex align-items-center">
-            <CalendarOIcon />
-            {startDate && endDate ? (
+      <Card.Content>
+        <StyledTitle>{loading ? '---' : props.title}</StyledTitle>
+        <StyledMeta className="mb-2">
+          {!loading && props.isParticipantsVisible && (
+            <div className="d-flex align-items-center">
+              <UserOIcon />
               <span className="ml-2">
-                {startDate}
-                {startDate !== endDate ? ` ~ ${endDate}` : ''}
+                {formatMessage(productMessages.activity.content.remaining)}
+                {props.participantCount && props.totalSeats
+                  ? props.totalSeats - props.participantCount
+                  : props.totalSeats}
               </span>
-            ) : null}
-          </StyledMeta>
-        </Card.Content>
-      </StyledCard>
-    </Link>
+            </div>
+          )}
+        </StyledMeta>
+        <StyledMeta className="d-flex align-items-center">
+          <CalendarOIcon />
+          {startDate && endDate ? (
+            <span className="ml-2">
+              {startDate}
+              {startDate !== endDate ? ` ~ ${endDate}` : ''}
+            </span>
+          ) : null}
+        </StyledMeta>
+      </Card.Content>
+    </StyledCard>
   )
 }
 

@@ -8,6 +8,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   const brand = settings['name'] || document.title
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
   return {
+    view: () => {},
     impress: (
       resources: Resource[],
       options?: {

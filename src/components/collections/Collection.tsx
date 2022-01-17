@@ -44,7 +44,11 @@ const Collection = <P extends object>(type: ResourceType, ElementComponent: Elem
     props: ElementProps<{
       data?: Array<D>
       layout?: CollectionLayout
-      renderElement?: (data: D, ElementComponent: ElementComponent<P>) => React.ReactElement<P>
+      renderElement?: (options: {
+        data: D
+        ElementComponent: ElementComponent<P>
+        onClick?: () => void
+      }) => React.ReactElement<P>
     }>,
   ) => {
     const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [])
@@ -71,13 +75,18 @@ const Collection = <P extends object>(type: ResourceType, ElementComponent: Elem
           props.data.map((d, idx) => (
             <div
               key={idx}
-              onClick={() => tracking.click(resourceCollection[idx], { position: idx + 1 })}
               style={{
                 width: 100 / (props.layout?.columns || 2) + '%',
                 padding: `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`,
               }}
             >
-              {props.renderElement?.(d, ElementComponent)}
+              {props.renderElement?.({
+                data: d,
+                ElementComponent,
+                onClick: () => {
+                  tracking.click(resourceCollection[idx], { position: idx + 1 })
+                },
+              })}
             </div>
           ))
         ) : null}

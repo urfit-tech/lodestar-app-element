@@ -64,7 +64,7 @@ const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
               <ElementCollection
                 layout={props.layout}
                 data={ctx.data}
-                renderElement={(member, MemberElement) => (
+                renderElement={({ data: member, ElementComponent: MemberElement }) => (
                   <MemberElement
                     editing={props.editing}
                     id={member.id}

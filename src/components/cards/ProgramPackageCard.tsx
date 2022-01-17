@@ -1,6 +1,5 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { defineMessages, useIntl } from 'react-intl'
-import { useHistory } from 'react-router'
 import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProgramPackageElementProps } from '../../types/element'
@@ -14,15 +13,11 @@ const messages = defineMessages({
 const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
   const { loading, errors } = props
   const { formatMessage } = useIntl()
-  const history = useHistory()
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
   return (
-    <Card
-      className={!loading && props.link ? `cursor-pointer ${props.className}` : props.className}
-      onClick={() => !loading && !props.editing && props.link && history.push(props.link)}
-    >
+    <Card className={props.onClick ? `cursor-pointer ${props.className}` : props.className} onClick={props.onClick}>
       {loading ? (
         <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
       ) : (

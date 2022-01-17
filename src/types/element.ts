@@ -5,7 +5,7 @@ export type PropsWithState<P> = { editing?: boolean } & (
   | ({ loading?: never; errors: Error[] } & Partial<P>)
   | ({ loading?: never; errors?: never } & P)
 )
-export type ElementBaseProps<P> = P & { className?: string; children?: React.ReactNode }
+export type ElementBaseProps<P> = P & { className?: string; children?: React.ReactNode; onClick?: () => void }
 export type ElementProps<P> = ElementBaseProps<PropsWithState<P>>
 export type ElementComponent<P = {}> = React.ComponentType<ElementProps<P>>
 

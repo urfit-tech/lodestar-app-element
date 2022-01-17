@@ -2,13 +2,13 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
+import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getActivityCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
-import { useTracking } from '../../hooks/tracking'
 import { Activity, Category } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -40,7 +40,7 @@ export type ActivityCollectionProps = {
   withSelector?: boolean
 }
 const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
-  const tracking = useTracking()
+  const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -95,7 +95,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
               <ElementCollection
                 layout={props.layout}
                 data={ctx.data?.filter(filter) || []}
-                renderElement={(activity, ActivityElement) => (
+                renderElement={({ data: activity, ElementComponent: ActivityElement, onClick }) => (
                   <ActivityElement
                     editing={props.editing}
                     id={activity.id}
@@ -107,6 +107,10 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
                     participantCount={activity.totalParticipants}
                     totalSeats={sum(activity.tickets.map(ticket => ticket.limit))}
                     categories={activity.categories}
+                    onClick={() => {
+                      onClick?.()
+                      !props.editing && history.push(`/activities/${activity.id}`)
+                    }}
                   />
                 )}
               />
