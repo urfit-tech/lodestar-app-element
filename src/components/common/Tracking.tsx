@@ -4,7 +4,7 @@ import { StringParam, useQueryParam } from 'use-query-params'
 import { Resource } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
 
-const Impression: React.FC<{ resources: Resource[] }> = React.memo(({ resources }) => {
+const Impression: React.FC<{ resources: (Resource | null)[] }> = React.memo(({ resources }) => {
   const tracking = useTracking()
   useEffect(() => {
     tracking.impress(resources)
@@ -21,13 +21,17 @@ const Detail: React.FC<{ resources: Resource[] }> = React.memo(({ resources }) =
   return <></>
 }, equals)
 
-const Checkout: React.FC<{ resources: Resource[] }> = React.memo(({ resources }) => {
-  const tracking = useTracking()
-  useEffect(() => {
-    tracking.checkout(resources)
-  }, [resources, tracking])
-  return <></>
-}, equals)
+const Checkout: React.FC<{ resources: Resource[]; onCheckout?: () => void }> = React.memo(
+  ({ resources, onCheckout }) => {
+    const tracking = useTracking()
+    useEffect(() => {
+      tracking.checkout(resources)
+      onCheckout?.()
+    }, [onCheckout, resources, tracking])
+    return <></>
+  },
+  equals,
+)
 
 const Purchase: React.FC<{ orderId: string; products: (Resource & { quantity: number })[]; discounts: Resource[] }> =
   React.memo(({ orderId, products, discounts }) => {

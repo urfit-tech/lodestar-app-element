@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { useMemo } from 'react'
 import hasura from '../hasura'
-import { notEmpty } from '../helpers'
 
 export type ResourceType =
   | 'program_package'
@@ -41,26 +40,24 @@ export const useResourceCollection = (urns: string[]) => {
       variables: { urns },
     },
   )
-  const resourceCollection: Resource[] = useMemo(
+  const resourceCollection: (Resource | null)[] = useMemo(
     () =>
-      data?.resource
-        .map((resourceData, idx) => {
-          const urn = urns[idx]
-          const [, resourceType, resourceId] = urn.split(':')
-          return resourceData
-            ? {
-                urn,
-                id: resourceId,
-                type: resourceType as ResourceType,
-                title: resourceData.name || '',
-                price: resourceData.price || undefined,
-                categories: resourceData.categories || [],
-                variants: resourceData.variants || [],
-                sku: resourceData.sku || undefined,
-              }
-            : null
-        })
-        .filter(notEmpty) || [],
+      urns.map(urn => {
+        const resourceData = data?.resource.find(v => v.id === urn)
+        const [, resourceType, resourceId] = urn.split(':')
+        return resourceData
+          ? {
+              urn,
+              id: resourceId,
+              type: resourceType as ResourceType,
+              title: resourceData.name || '',
+              price: resourceData.price || undefined,
+              categories: resourceData.categories || [],
+              variants: resourceData.variants || [],
+              sku: resourceData.sku || undefined,
+            }
+          : null
+      }),
     [data, urns],
   )
   return {

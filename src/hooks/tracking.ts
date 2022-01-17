@@ -10,7 +10,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   return {
     view: () => {},
     impress: (
-      resources: Resource[],
+      resources: (Resource | null)[],
       options?: {
         collection?: string
       },

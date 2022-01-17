@@ -61,7 +61,8 @@ const Collection = <P extends object>(type: ResourceType, ElementComponent: Elem
                 data: d,
                 ElementComponent,
                 onClick: () => {
-                  tracking.click(resourceCollection[idx], { position: idx + 1 })
+                  const resource = resourceCollection[idx]
+                  resource && tracking.click(resource, { position: idx + 1 })
                 },
               })}
             </div>
