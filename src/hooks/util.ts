@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useApp } from '../contexts/AppContext'
 import LanguageContext from '../contexts/LanguageContext'
-import { TrackingInstance } from './tracking'
+import { ResourceType } from './resource'
 
 export const useCurrency = (currencyId?: string, coinUnit?: string) => {
   const { locale } = useContext(LanguageContext)
@@ -39,20 +39,20 @@ export const getCookie = (cookieName: string) => {
   return cookie[cookieName.trim()] || ''
 }
 
-export const getResourceByProductId = (productId: string): TrackingInstance => {
+export const getResourceByProductId = (productId: string): { type: ResourceType; target: string } => {
   const [productType, productTarget] = productId.split('_')
   switch (productType) {
     case 'ProgramPackage':
-      return { type: 'program_package', id: productTarget }
+      return { type: 'program_package', target: productTarget }
     case 'ProgramPackagePlan':
-      return { type: 'program_package_plan', id: productTarget }
+      return { type: 'program_package_plan', target: productTarget }
     case 'Program':
-      return { type: 'program', id: productTarget }
+      return { type: 'program', target: productTarget }
     case 'ProgramPlan':
-      return { type: 'program_plan', id: productTarget }
+      return { type: 'program_plan', target: productTarget }
     case 'Activity':
-      return { type: 'activity', id: productTarget }
+      return { type: 'activity', target: productTarget }
     default:
-      return { type: 'unknown', id: productTarget }
+      return { type: 'unknown', target: productTarget }
   }
 }

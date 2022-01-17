@@ -1,7 +1,9 @@
 import { repeat } from 'ramda'
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import { TrackingInstance, useTracking } from '../../hooks/tracking'
+import { useApp } from '../../contexts/AppContext'
+import { ResourceType, useResourceCollection } from '../../hooks/resource'
+import { useTracking } from '../../hooks/tracking'
 import { ElementComponent, ElementProps } from '../../types/element'
 
 export type CollectionLayout = {
@@ -25,9 +27,19 @@ const StyledGrid = styled.div<CollectionLayout>`
   place-items: center;
 `
 
+// const ProgramCardCollection = Collection(ProgramCard)
+
+// const Page = () => {
+// return <ProgramCardCollection data={} renderElement={} onClick={(index) => {
+//   tracking
+// }} />
+
+// }
+
 // FIXME: type naming is bad
-const Collection = <P extends object>(type: TrackingInstance['type'], ElementComponent: ElementComponent<P>) => {
+const Collection = <P extends object>(type: ResourceType, ElementComponent: ElementComponent<P>) => {
   const tracking = useTracking()
+  const { id: appId } = useApp()
   const WrappedComponent = <D extends { id: string }>(
     props: ElementProps<{
       data?: Array<D>
@@ -35,10 +47,11 @@ const Collection = <P extends object>(type: TrackingInstance['type'], ElementCom
       renderElement?: (data: D, ElementComponent: ElementComponent<P>) => React.ReactElement<P>
     }>,
   ) => {
+    const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [])
     const loadingProps = { loading: true } as P
     useEffect(() => {
-      props.data && props.data?.length > 0 && tracking.impress(props.data.map(d => ({ type, id: d.id })))
-    }, [props.data])
+      resourceCollection.length > 0 && tracking.impress(resourceCollection)
+    }, [resourceCollection])
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
         {props.loading ? (
@@ -58,7 +71,7 @@ const Collection = <P extends object>(type: TrackingInstance['type'], ElementCom
           props.data.map((d, idx) => (
             <div
               key={idx}
-              onClick={() => tracking.click({ type, id: d.id }, { position: idx + 1 })}
+              onClick={() => tracking.click(resourceCollection[idx], { position: idx + 1 })}
               style={{
                 width: 100 / (props.layout?.columns || 2) + '%',
                 padding: `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`,

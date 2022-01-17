@@ -1926,6 +1926,36 @@ export interface UPDATE_MEMBER_METADATAVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_RESOURCE_COLLECTION
+// ====================================================
+
+export interface GET_RESOURCE_COLLECTION_resource {
+  __typename: 'resource'
+  id: string | null
+  name: string | null
+  price: number | null
+  categories: any | null
+  variants: any | null
+  sku: string | null
+}
+
+export interface GET_RESOURCE_COLLECTION {
+  /**
+   * fetch data from the table: "resource"
+   */
+  resource: GET_RESOURCE_COLLECTION_resource[]
+}
+
+export interface GET_RESOURCE_COLLECTIONVariables {
+  urns: string[]
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_PAYMENT
 // ====================================================
 
@@ -1993,104 +2023,6 @@ export interface GET_ORDER {
 
 export interface GET_ORDERVariables {
   orderId: string
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_RESOURCE_COLLECTION
-// ====================================================
-
-export interface GET_RESOURCE_COLLECTION_resource {
-  __typename: 'resource'
-  id: string | null
-  name: string | null
-  price: number | null
-  categories: any | null
-  variants: any | null
-  sku: string | null
-}
-
-export interface GET_RESOURCE_COLLECTION {
-  /**
-   * fetch data from the table: "resource"
-   */
-  resource: GET_RESOURCE_COLLECTION_resource[]
-}
-
-export interface GET_RESOURCE_COLLECTIONVariables {
-  resourceIds: string[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_PRODUCT_COLLECTION
-// ====================================================
-
-export interface GET_PRODUCT_COLLECTION_product {
-  __typename: 'product'
-  /**
-   * {type}_{target}, ex: Program_123-456, ProgramPlan_123-456
-   */
-  id: string
-  sku: string | null
-}
-
-export interface GET_PRODUCT_COLLECTION {
-  /**
-   * fetch data from the table: "product"
-   */
-  product: GET_PRODUCT_COLLECTION_product[]
-}
-
-export interface GET_PRODUCT_COLLECTIONVariables {
-  productIds: string[]
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_PROGRAM_ROLE_COLLECTION
-// ====================================================
-
-export interface GET_PROGRAM_ROLE_COLLECTION_program_role_member {
-  __typename: 'member_public'
-  name: string | null
-}
-
-export interface GET_PROGRAM_ROLE_COLLECTION_program_role {
-  __typename: 'program_role'
-  /**
-   * instructor / assistant
-   */
-  name: string
-  program_id: any
-  member_id: string
-  /**
-   * An object relationship
-   */
-  member: GET_PROGRAM_ROLE_COLLECTION_program_role_member | null
-}
-
-export interface GET_PROGRAM_ROLE_COLLECTION {
-  /**
-   * fetch data from the table: "program_role"
-   */
-  program_role: GET_PROGRAM_ROLE_COLLECTION_program_role[]
-}
-
-export interface GET_PROGRAM_ROLE_COLLECTIONVariables {
-  programIds: any[]
 }
 
 /* tslint:disable */
