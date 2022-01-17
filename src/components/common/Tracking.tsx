@@ -12,12 +12,12 @@ const Impression: React.FC<{ resources: (Resource | null)[] }> = React.memo(({ r
   return <></>
 }, equals)
 
-const Detail: React.FC<{ resources: Resource[] }> = React.memo(({ resources }) => {
+const Detail: React.FC<{ resource: Resource }> = React.memo(({ resource }) => {
   const tracking = useTracking()
   const [pageFrom] = useQueryParam('pageFrom', StringParam)
   useEffect(() => {
-    resources[0] && tracking.detail(resources[0], { collection: pageFrom || undefined })
-  }, [pageFrom, resources, tracking])
+    tracking.detail(resource, { collection: pageFrom || undefined })
+  }, [pageFrom, resource, tracking])
   return <></>
 }, equals)
 
