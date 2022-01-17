@@ -1,9 +1,9 @@
 import { repeat } from 'ramda'
-import { useEffect } from 'react'
 import { useApp } from '../../contexts/AppContext'
 import { ResourceType, useResourceCollection } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
 import { ElementComponent, ElementProps } from '../../types/element'
+import Tracking from '../common/Tracking'
 
 export type CollectionLayout = {
   gutter?: number
@@ -32,11 +32,9 @@ const Collection = <P extends object>(type: ResourceType, ElementComponent: Elem
   ) => {
     const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [])
     const loadingProps = { loading: true } as P
-    useEffect(() => {
-      resourceCollection.length > 0 && tracking.impress(resourceCollection)
-    }, [resourceCollection])
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
+        <Tracking.Impression resources={resourceCollection} />
         {props.loading ? (
           repeat(
             <div
