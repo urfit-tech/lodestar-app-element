@@ -1,6 +1,5 @@
 import { repeat } from 'ramda'
 import { useEffect } from 'react'
-import styled from 'styled-components'
 import { useApp } from '../../contexts/AppContext'
 import { ResourceType, useResourceCollection } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
@@ -15,26 +14,6 @@ export type CollectionLayout = {
 export type ContextCollection<D> = React.FC<{
   children: (context: { loading?: boolean; errors?: Error[]; data?: Array<D> }) => React.ReactElement
 }>
-
-const StyledGrid = styled.div<CollectionLayout>`
-  display: grid;
-  grid-template-columns: ${props =>
-    new Array(props.columns || 2)
-      .fill(1)
-      .map(() => `minmax(0, 1fr)`)
-      .join(' ')};
-  grid-gap: ${props => `${props.gap || 16}px ${props.gutter || 16}px`};
-  place-items: center;
-`
-
-// const ProgramCardCollection = Collection(ProgramCard)
-
-// const Page = () => {
-// return <ProgramCardCollection data={} renderElement={} onClick={(index) => {
-//   tracking
-// }} />
-
-// }
 
 // FIXME: type naming is bad
 const Collection = <P extends object>(type: ResourceType, ElementComponent: ElementComponent<P>) => {
