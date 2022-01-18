@@ -36,6 +36,7 @@ type ProgramData = DeepPick<
 type ProgramContextCollection = ContextCollection<ProgramData>
 
 export type ProgramCollectionProps = {
+  name?: string
   source?: ProductCustomSource | ProductPublishedAtSource | ProductCurrentPriceSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
