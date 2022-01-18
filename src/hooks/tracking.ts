@@ -191,32 +191,35 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         step?: number
       },
     ) => {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'checkout',
-        ecommerce: {
-          currencyCode: appCurrencyId,
-          checkout: {
-            actionField: { step: options?.step || 1 },
-            products: resources
-              .map(resource =>
-                resource
-                  ? {
-                      id: resource.sku || resource.id,
-                      name: resource.title,
-                      price: resource.price,
-                      brand,
-                      category: resource.categories?.join(trackingOptions.separator),
-                      variant: resource.variants?.join(trackingOptions.separator),
-                      quantity: 1, // TODO: use the cart product
-                    }
-                  : null,
-              )
-              .filter(notEmpty),
+      const ecProducts = resources
+        .map(resource =>
+          resource
+            ? {
+                id: resource.sku || resource.id,
+                name: resource.title,
+                price: resource.price,
+                brand,
+                category: resource.categories?.join(trackingOptions.separator),
+                variant: resource.variants?.join(trackingOptions.separator),
+                quantity: 1, // TODO: use the cart product
+              }
+            : null,
+        )
+        .filter(notEmpty)
+      if (ecProducts.length > 0) {
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: 'checkout',
+          ecommerce: {
+            currencyCode: appCurrencyId,
+            checkout: {
+              actionField: { step: options?.step || 1 },
+              products: ecProducts,
+            },
           },
-        },
-      })
+        })
+      }
       if (enabledCW) {
         const cwProducts = resources
           .map(resource =>
@@ -239,14 +242,16 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               : null,
           )
           .filter(notEmpty)
-        ;(window as any).dataLayer.push({
-          event: 'cwData',
-          itemData: {
-            products: cwProducts,
-            program: cwProducts[0],
-            article: cwProducts[0],
-          },
-        })
+        if (cwProducts.length > 0) {
+          ;(window as any).dataLayer.push({
+            event: 'cwData',
+            itemData: {
+              products: cwProducts,
+              program: cwProducts[0],
+              article: cwProducts[0],
+            },
+          })
+        }
       }
     },
     addPaymentInfo: (options?: { step?: number; gateway?: string; method?: string }) => {
@@ -272,31 +277,34 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         step?: number
       },
     ) => {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'purchase',
-        ecommerce: {
-          purchase: {
-            actionField: {
-              id: orderId,
-              affiliation: document.title,
-              revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
-              coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
+      const ecProducts =
+        orderProducts.map(product => ({
+          id: product.sku || product.id,
+          name: product.title,
+          price: product.price,
+          brand,
+          category: product.categories?.join(trackingOptions.separator),
+          variant: product.variants?.join(trackingOptions.separator),
+          quantity: product.quantity,
+        })) || []
+      if (ecProducts.length > 0) {
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: 'purchase',
+          ecommerce: {
+            purchase: {
+              actionField: {
+                id: orderId,
+                affiliation: document.title,
+                revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
+                coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
+              },
+              products: ecProducts,
             },
-            products:
-              orderProducts.map(product => ({
-                id: product.sku || product.id,
-                name: product.title,
-                price: product.price,
-                brand,
-                category: product.categories?.join(trackingOptions.separator),
-                variant: product.variants?.join(trackingOptions.separator),
-                quantity: product.quantity,
-              })) || [],
           },
-        },
-      })
+        })
+      }
       if (enabledCW) {
         const cwProducts =
           orderProducts.map(product => ({
@@ -314,14 +322,16 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             },
             keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
           })) || []
-        ;(window as any).dataLayer.push({
-          event: 'cwData',
-          itemData: {
-            products: cwProducts,
-            program: cwProducts[0],
-            article: cwProducts[0],
-          },
-        })
+        if (cwProducts.length > 0) {
+          ;(window as any).dataLayer.push({
+            event: 'cwData',
+            itemData: {
+              products: cwProducts,
+              program: cwProducts[0],
+              article: cwProducts[0],
+            },
+          })
+        }
       }
     },
   }
