@@ -266,10 +266,10 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     },
     purchase: (
       orderId: string,
+      orderProducts: (Resource & { quantity: number })[],
+      orderDiscounts: { name: string; price: number }[],
       options?: {
         step?: number
-        products?: (Resource & { quantity: number })[]
-        discounts?: Resource[]
       },
     ) => {
       ;(window as any).dataLayer = (window as any).dataLayer || []
@@ -281,13 +281,11 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             actionField: {
               id: orderId,
               affiliation: document.title,
-              revenue:
-                sum(options?.products?.map(v => v.price || 0) || []) -
-                sum(options?.discounts?.map(v => v.price || 0) || []),
-              coupon: options?.discounts?.map(v => v.title).join(trackingOptions.separator),
+              revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
+              coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
             },
             products:
-              options?.products?.map(product => ({
+              orderProducts.map(product => ({
                 id: product.sku || product.id,
                 name: product.title,
                 price: product.price,
@@ -301,7 +299,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       })
       if (enabledCW) {
         const cwProducts =
-          options?.products?.map(product => ({
+          orderProducts.map(product => ({
             id: product.id,
             type: product.type,
             item: product?.sku,

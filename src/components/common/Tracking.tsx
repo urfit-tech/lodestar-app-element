@@ -33,14 +33,17 @@ const Checkout: React.FC<{ resources: Resource[]; onCheckout?: () => void }> = R
   equals,
 )
 
-const Purchase: React.FC<{ orderId: string; products: (Resource & { quantity: number })[]; discounts: Resource[] }> =
-  React.memo(({ orderId, products, discounts }) => {
-    const tracking = useTracking()
-    useEffect(() => {
-      tracking.purchase(orderId, { products, discounts })
-    }, [discounts, orderId, products, tracking])
-    return <></>
-  }, equals)
+const Purchase: React.FC<{
+  orderId: string
+  products: (Resource & { quantity: number })[]
+  discounts: { name: string; price: number }[]
+}> = React.memo(({ orderId, products, discounts }) => {
+  const tracking = useTracking()
+  useEffect(() => {
+    tracking.purchase(orderId, products, discounts)
+  }, [discounts, orderId, products, tracking])
+  return <></>
+}, equals)
 
 const Tracking = {
   Detail,
