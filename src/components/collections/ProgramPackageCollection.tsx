@@ -33,6 +33,7 @@ type ProgramPackageData = DeepPick<
 type ProgramPackageContextCollection = ContextCollection<ProgramPackageData>
 
 export type ProgramPackageCollectionProps = {
+  name?: string
   source?: ProductCustomSource | ProductPublishedAtSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
@@ -48,6 +49,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
   }
 
   const ElementCollection = Collection(
+    props.name || window.location.pathname,
     'program_package',
     props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard,
   )

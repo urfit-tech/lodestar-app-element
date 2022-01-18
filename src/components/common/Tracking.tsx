@@ -4,13 +4,16 @@ import { StringParam, useQueryParam } from 'use-query-params'
 import { Resource } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
 
-const Impression: React.FC<{ resources: (Resource | null)[] }> = React.memo(({ resources }) => {
-  const tracking = useTracking()
-  useEffect(() => {
-    tracking.impress(resources)
-  }, [resources, tracking])
-  return <></>
-}, equals)
+const Impression: React.FC<{ resources: (Resource | null)[]; collection?: string }> = React.memo(
+  ({ resources, collection }) => {
+    const tracking = useTracking()
+    useEffect(() => {
+      tracking.impress(resources, { collection })
+    }, [collection, resources, tracking])
+    return <></>
+  },
+  equals,
+)
 
 const Detail: React.FC<{ resource: Resource }> = React.memo(({ resource }) => {
   const tracking = useTracking()

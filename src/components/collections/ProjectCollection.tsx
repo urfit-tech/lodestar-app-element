@@ -34,6 +34,7 @@ type ProjectData = DeepPick<
 type ProjectContextCollection = ContextCollection<ProjectData>
 
 export type ProjectCollectionProps = {
+  name?: string
   source?: ProductCustomSource | ProductPublishedAtSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
@@ -47,7 +48,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection('project', ProjectCard)
+  const ElementCollection = Collection(props.name || window.location.pathname, 'project', ProjectCard)
   let ContextCollection: ProjectContextCollection
   switch (source.from) {
     case 'publishedAt':

@@ -34,6 +34,7 @@ type ActivityData = DeepPick<
 type ActivityContextCollection = ContextCollection<ActivityData>
 
 export type ActivityCollectionProps = {
+  name?: string
   source?: ProductCustomSource | ProductPublishedAtSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
@@ -48,7 +49,11 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection('activity', props.variant === 'card' ? ActivityCard : ActivityCard)
+  const ElementCollection = Collection(
+    props.name || window.location.pathname,
+    'activity',
+    props.variant === 'card' ? ActivityCard : ActivityCard,
+  )
   let ContextCollection: ActivityContextCollection
   switch (source.from) {
     case 'publishedAt':

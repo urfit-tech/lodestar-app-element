@@ -16,7 +16,7 @@ export type ContextCollection<D> = React.FC<{
 }>
 
 // FIXME: type naming is bad
-const Collection = <P extends object>(type: ResourceType, ElementComponent: ElementComponent<P>) => {
+const Collection = <P extends object>(name: string, type: ResourceType, ElementComponent: ElementComponent<P>) => {
   const tracking = useTracking()
   const { id: appId } = useApp()
   const WrappedComponent = <D extends { id: string }>(
@@ -34,7 +34,7 @@ const Collection = <P extends object>(type: ResourceType, ElementComponent: Elem
     const loadingProps = { loading: true } as P
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
-        <Tracking.Impression resources={resourceCollection} />
+        <Tracking.Impression collection={name} resources={resourceCollection} />
         {props.loading ? (
           repeat(
             <div
