@@ -7,6 +7,7 @@ import * as CraftResolvers from './components/common/CraftElement'
 import CheckoutProductModal from './components/modals/CheckoutProductModal'
 import { LodestarAppProvider } from './contexts/LodestarAppContext'
 import ActivityPage from './pages/ActivityPage'
+import AuthPage from './pages/AuthPage'
 import CarouselPage from './pages/CarouselPage'
 import ImagePage from './pages/ImagePage'
 import LayoutPage from './pages/LayoutPage'
@@ -19,6 +20,7 @@ import TextPage from './pages/TextPage'
 
 const routes = [
   { name: 'Home', path: '/', render: () => null },
+  { name: 'Auth', path: '/auth', component: AuthPage },
   { name: 'Member', path: '/member', component: MemberElementPage },
   { name: 'Program', path: '/programs', component: ProgramElementPage },
   { name: 'Program content', path: '/program-contents', component: ProgramContentCollectionPage },

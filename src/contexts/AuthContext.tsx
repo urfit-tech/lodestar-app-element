@@ -271,15 +271,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
           }),
         logout: async () => {
           localStorage.clear()
-          Axios(`${process.env.REACT_APP_API_BASE_ROOT}/auth/logout`, {
-            method: 'POST',
-            withCredentials: true,
-          }).then(({ data: { code, message, result } }) => {
-            setAuthToken(null)
-            if (code !== 'SUCCESS') {
-              throw new Error(code)
-            }
-          })
+          window.location.assign(`${process.env.REACT_APP_API_BASE_ROOT}/auth/logout?redirect=${window.location.href}`)
         },
         sendSmsCode: async ({ phoneNumber }) =>
           Axios.post(
