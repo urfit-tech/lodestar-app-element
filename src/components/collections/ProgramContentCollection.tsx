@@ -28,6 +28,7 @@ type ProgramContentData = DeepPick<
 type ProgramContentContextCollection = ContextCollection<ProgramContentData>
 
 export type ProgramContentCollectionProps = {
+  name?: string
   source?: ProductCustomSource | ProductRecentWatchedSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
@@ -42,6 +43,7 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
   }
 
   const ElementCollection = Collection(
+    props.name || window.location.pathname,
     'program_content',
     props.variant === 'card' ? ProgramContentCard : ProgramContentCard,
   )

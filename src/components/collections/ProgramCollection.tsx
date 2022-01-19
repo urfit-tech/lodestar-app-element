@@ -36,6 +36,7 @@ type ProgramData = DeepPick<
 type ProgramContextCollection = ContextCollection<ProgramData>
 
 export type ProgramCollectionProps = {
+  name?: string
   source?: ProductCustomSource | ProductPublishedAtSource | ProductCurrentPriceSource
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
@@ -50,7 +51,11 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection('program', props.variant === 'card' ? ProgramCard : ProgramSecondaryCard)
+  const ElementCollection = Collection(
+    props.name || window.location.pathname,
+    'program',
+    props.variant === 'card' ? ProgramCard : ProgramSecondaryCard,
+  )
   let ContextCollection: ProgramContextCollection
   switch (source.from) {
     case 'publishedAt':

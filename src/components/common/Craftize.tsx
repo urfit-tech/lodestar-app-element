@@ -10,7 +10,6 @@ import {
 import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserComponent } from '@craftjs/core'
 import { getRandomId } from '@craftjs/utils'
 import { clone, mergeDeepRight } from 'ramda'
-import { useIntl } from 'react-intl'
 import { useMediaQuery } from 'react-responsive'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent, ElementProps } from '../../types/element'
@@ -119,7 +118,6 @@ const StyledControllerItem = styled.button`
 const CraftController: React.FC = () => {
   const editor = useEditor(state => ({ nodes: state.nodes }))
   const node = useNode(node => node)
-  const { formatMessage } = useIntl()
 
   return (
     <StyledController>

@@ -18,6 +18,7 @@ type MemberData = DeepPick<Member, 'id' | 'name' | 'title' | 'abstract' | 'pictu
 type MemberContextCollection = ContextCollection<MemberData>
 
 export type MemberCollectionProps = {
+  name?: string
   source?: ProductCustomSource | ProductRoleSource
   variant?: 'primary' | 'secondary'
   layout?: CollectionLayout
@@ -32,6 +33,7 @@ const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
   }
 
   const ElementCollection = Collection(
+    props.name || window.location.pathname,
     'member',
     props.variant === 'primary'
       ? MemberPrimaryCard
