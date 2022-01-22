@@ -1,4 +1,4 @@
-export type metaProductType =
+export type MetaProductType =
   | 'Program'
   | 'ProgramPackage'
   | 'Project'
