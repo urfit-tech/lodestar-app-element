@@ -1,7 +1,25 @@
 import { sum } from 'ramda'
 import { useApp } from '../contexts/AppContext'
 import { notEmpty } from '../helpers'
-import { Resource } from './resource'
+import { Resource, ResourceType } from './resource'
+
+const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) => ResourceType = (
+  originalType: ResourceType,
+  toMetaProduct: boolean = true,
+) => {
+  switch (originalType) {
+    case 'program_plan':
+      return toMetaProduct ? ('program' as ResourceType) : originalType
+    case 'program_package_plan':
+      return toMetaProduct ? ('program_package' as ResourceType) : originalType
+    case 'activity_ticket':
+      return toMetaProduct ? ('activity' as ResourceType) : originalType
+    case 'merchandise_spec':
+      return toMetaProduct ? ('merchandise' as ResourceType) : originalType
+    default:
+      return originalType
+  }
+}
 
 export const useTracking = (trackingOptions = { separator: '|' }) => {
   const { settings, currencyId: appCurrencyId, id: appId } = useApp()
@@ -307,21 +325,25 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       }
       if (enabledCW) {
         const cwProducts =
-          orderProducts.map(product => ({
-            id: product.id,
-            type: product.type,
-            item: product?.sku,
-            title: product?.title,
-            url: window.location.href,
-            price: product?.price,
-            authors: product.variants?.map(v => ({ name: v })),
-            channels: {
-              master: {
-                id: product.categories || [],
+          orderProducts.map(product => {
+            const productType = convertProductType(product.type, true)
+            return {
+              id: product.id,
+              order_number: orderId,
+              type: productType === 'program_package' ? 'package' : productType,
+              item: product?.sku,
+              title: product?.title,
+              url: window.location.href,
+              price: product?.price,
+              authors: product.variants?.map(v => ({ name: v })),
+              channels: {
+                master: {
+                  id: product.categories || [],
+                },
               },
-            },
-            keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
-          })) || []
+              keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+            }
+          }) || []
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer.push({
             event: 'cwData',

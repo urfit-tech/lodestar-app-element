@@ -51,7 +51,7 @@ export const useResourceCollection = (urns: string[]) => {
               id: resourceId,
               type: resourceType as ResourceType,
               title: resourceData.name || '',
-              price: resourceData.price || undefined,
+              price: resourceData.price || 0,
               categories: resourceData.categories || [],
               variants: resourceData.variants || [],
               sku: resourceData.sku || undefined,
