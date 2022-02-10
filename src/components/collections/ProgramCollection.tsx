@@ -130,6 +130,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       }
                       listPrice={primaryProgramPlan?.listPrice}
                       period={primaryProgramPlan?.period || undefined}
+                      categories={program.categories}
                       onClick={() => {
                         onClick?.()
                         !props.editing && history.push(`/programs/${program.id}`)
