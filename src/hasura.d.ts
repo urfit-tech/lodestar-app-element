@@ -1956,73 +1956,34 @@ export interface GET_RESOURCE_COLLECTIONVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GET_PAYMENT
+// GraphQL query operation: GET_REVIEW_AGGREGATE
 // ====================================================
 
-export interface GET_PAYMENT_payment_log_by_pk {
-  __typename: 'payment_log'
+export interface GET_REVIEW_AGGREGATE_review_public_aggregate_aggregate_avg {
+  __typename: 'review_public_avg_fields'
+  score: number | null
+}
+
+export interface GET_REVIEW_AGGREGATE_review_public_aggregate_aggregate {
+  __typename: 'review_public_aggregate_fields'
+  avg: GET_REVIEW_AGGREGATE_review_public_aggregate_aggregate_avg | null
+  count: number | null
+}
+
+export interface GET_REVIEW_AGGREGATE_review_public_aggregate {
+  __typename: 'review_public_aggregate'
+  aggregate: GET_REVIEW_AGGREGATE_review_public_aggregate_aggregate | null
+}
+
+export interface GET_REVIEW_AGGREGATE {
   /**
-   * spgateway, tappay, ezfund,paypal
+   * fetch aggregated fields from the table: "review_public"
    */
-  gateway: string | null
-  options: any | null
+  review_public_aggregate: GET_REVIEW_AGGREGATE_review_public_aggregate
 }
 
-export interface GET_PAYMENT {
-  /**
-   * fetch data from the table: "payment_log" using primary key columns
-   */
-  payment_log_by_pk: GET_PAYMENT_payment_log_by_pk | null
-}
-
-export interface GET_PAYMENTVariables {
-  paymentNo: any
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GET_ORDER
-// ====================================================
-
-export interface GET_ORDER_order_log_by_pk_order_products {
-  __typename: 'order_product'
-  product_id: string
-  name: string
-  price: any
-  options: any | null
-}
-
-export interface GET_ORDER_order_log_by_pk_order_discounts {
-  __typename: 'order_discount'
-  name: string
-  price: any
-}
-
-export interface GET_ORDER_order_log_by_pk {
-  __typename: 'order_log'
-  /**
-   * An array relationship
-   */
-  order_products: GET_ORDER_order_log_by_pk_order_products[]
-  /**
-   * An array relationship
-   */
-  order_discounts: GET_ORDER_order_log_by_pk_order_discounts[]
-}
-
-export interface GET_ORDER {
-  /**
-   * fetch data from the table: "order_log" using primary key columns
-   */
-  order_log_by_pk: GET_ORDER_order_log_by_pk | null
-}
-
-export interface GET_ORDERVariables {
-  orderId: string
+export interface GET_REVIEW_AGGREGATEVariables {
+  path?: string | null
 }
 
 /* tslint:disable */
@@ -2889,6 +2850,7 @@ export enum app_admin_update_column {
  */
 export enum app_constraint {
   App_pkey = 'App_pkey',
+  app_symbol_key = 'app_symbol_key',
 }
 
 /**
@@ -4242,7 +4204,7 @@ export enum order_log_update_column {
  * unique or primary key constraints on table "order_product"
  */
 export enum order_product_constraint {
-  order_product_order_id_product_id_key = 'order_product_order_id_product_id_key',
+  order_product_order_id_name_product_id_key = 'order_product_order_id_name_product_id_key',
   order_product_pkey = 'order_product_pkey',
 }
 
@@ -5299,12 +5261,31 @@ export enum project_plan_constraint {
 }
 
 /**
+ * unique or primary key constraints on table "project_plan_product"
+ */
+export enum project_plan_product_constraint {
+  project_plan_product_pkey = 'project_plan_product_pkey',
+  project_plan_product_project_plan_id_product_id_key = 'project_plan_product_project_plan_id_product_id_key',
+}
+
+/**
+ * update columns of table "project_plan_product"
+ */
+export enum project_plan_product_update_column {
+  id = 'id',
+  options = 'options',
+  product_id = 'product_id',
+  project_plan_id = 'project_plan_id',
+}
+
+/**
  * update columns of table "project_plan"
  */
 export enum project_plan_update_column {
   auto_renewed = 'auto_renewed',
   cover_url = 'cover_url',
   created_at = 'created_at',
+  currency_id = 'currency_id',
   deliverables = 'deliverables',
   description = 'description',
   discount_down_price = 'discount_down_price',
@@ -12396,7 +12377,7 @@ export interface payment_log_bool_exp {
   custom_no?: String_comparison_exp | null
   gateway?: String_comparison_exp | null
   method?: String_comparison_exp | null
-  no?: numeric_comparison_exp | null
+  no?: String_comparison_exp | null
   options?: jsonb_comparison_exp | null
   order_id?: String_comparison_exp | null
   order_log?: order_log_bool_exp | null
@@ -12416,7 +12397,7 @@ export interface payment_log_insert_input {
   custom_no?: string | null
   gateway?: string | null
   method?: string | null
-  no?: any | null
+  no?: string | null
   options?: any | null
   order_id?: string | null
   order_log?: order_log_obj_rel_insert_input | null
@@ -17503,6 +17484,7 @@ export interface project_plan_bool_exp {
   auto_renewed?: Boolean_comparison_exp | null
   cover_url?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
+  currency_id?: String_comparison_exp | null
   deliverables?: String_comparison_exp | null
   description?: String_comparison_exp | null
   discount_down_price?: numeric_comparison_exp | null
@@ -17520,6 +17502,7 @@ export interface project_plan_bool_exp {
   project_id?: uuid_comparison_exp | null
   project_plan_enrollments?: project_plan_enrollment_bool_exp | null
   project_plan_inventory_status?: project_plan_inventory_status_bool_exp | null
+  project_plan_products?: project_plan_product_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
@@ -17548,6 +17531,7 @@ export interface project_plan_insert_input {
   auto_renewed?: boolean | null
   cover_url?: string | null
   created_at?: any | null
+  currency_id?: string | null
   deliverables?: string | null
   description?: string | null
   discount_down_price?: any | null
@@ -17563,6 +17547,7 @@ export interface project_plan_insert_input {
   position?: number | null
   project?: project_obj_rel_insert_input | null
   project_id?: any | null
+  project_plan_products?: project_plan_product_arr_rel_insert_input | null
   published_at?: any | null
   sale_price?: any | null
   sold_at?: any | null
@@ -17590,6 +17575,7 @@ export interface project_plan_inventory_status_bool_exp {
 export interface project_plan_max_order_by {
   cover_url?: order_by | null
   created_at?: order_by | null
+  currency_id?: order_by | null
   deliverables?: order_by | null
   description?: order_by | null
   discount_down_price?: order_by | null
@@ -17611,6 +17597,7 @@ export interface project_plan_max_order_by {
 export interface project_plan_min_order_by {
   cover_url?: order_by | null
   created_at?: order_by | null
+  currency_id?: order_by | null
   deliverables?: order_by | null
   description?: order_by | null
   discount_down_price?: order_by | null
@@ -17627,12 +17614,64 @@ export interface project_plan_min_order_by {
 }
 
 /**
+ * input type for inserting object relation for remote table "project_plan"
+ */
+export interface project_plan_obj_rel_insert_input {
+  data: project_plan_insert_input
+  on_conflict?: project_plan_on_conflict | null
+}
+
+/**
  * on conflict condition type for table "project_plan"
  */
 export interface project_plan_on_conflict {
   constraint: project_plan_constraint
   update_columns: project_plan_update_column[]
   where?: project_plan_bool_exp | null
+}
+
+/**
+ * input type for inserting array relation for remote table "project_plan_product"
+ */
+export interface project_plan_product_arr_rel_insert_input {
+  data: project_plan_product_insert_input[]
+  on_conflict?: project_plan_product_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "project_plan_product". All fields are combined with a logical 'AND'.
+ */
+export interface project_plan_product_bool_exp {
+  _and?: (project_plan_product_bool_exp | null)[] | null
+  _not?: project_plan_product_bool_exp | null
+  _or?: (project_plan_product_bool_exp | null)[] | null
+  id?: uuid_comparison_exp | null
+  options?: jsonb_comparison_exp | null
+  product?: product_bool_exp | null
+  product_id?: String_comparison_exp | null
+  project_plan?: project_plan_bool_exp | null
+  project_plan_id?: uuid_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "project_plan_product"
+ */
+export interface project_plan_product_insert_input {
+  id?: any | null
+  options?: any | null
+  product?: product_obj_rel_insert_input | null
+  product_id?: string | null
+  project_plan?: project_plan_obj_rel_insert_input | null
+  project_plan_id?: any | null
+}
+
+/**
+ * on conflict condition type for table "project_plan_product"
+ */
+export interface project_plan_product_on_conflict {
+  constraint: project_plan_product_constraint
+  update_columns: project_plan_product_update_column[]
+  where?: project_plan_product_bool_exp | null
 }
 
 /**
