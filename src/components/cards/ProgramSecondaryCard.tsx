@@ -62,7 +62,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
             {averageScore !== 0 && (
               <StyledScore className="d-flex align-items-center">
                 {averageScore.toFixed(1)}
-                <StarIcon w="16px" h="16px" className="ml-1" />
+                <StarIcon className="ml-1" style={{ width: '16px', height: '16px' }} />
               </StyledScore>
             )}
           </div>
