@@ -1,58 +1,74 @@
+import { StarIcon } from '@chakra-ui/icons'
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import { durationFormatter } from '../../helpers'
+import { useReviewAggregate } from '../../hooks/review'
+import EmptyCover from '../../images/empty-cover.png'
 import { ProgramElementProps } from '../../types/element'
 import { MultiLineTruncationMixin } from '../common'
-import PriceLabel from '../labels/PriceLabel'
-import Card from './Card'
+import { CustomRatioImage } from '../common/Image'
 
 const StyledTitle = styled.div`
   ${MultiLineTruncationMixin}
-  margin-bottom: 1.25rem;
-  height: 3em;
+  margin-top: 1rem;
   color: var(--gray-darker);
   font-size: 18px;
   font-weight: bold;
   letter-spacing: 0.8px;
 `
+const StyledCategories = styled.div`
+  width: 70%;
+  margin-top: 0.25rem;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  color: var(--gray-dark);
+`
+const StyledScore = styled.div`
+  color: ${props => props.theme['@primary-color']};
+`
 
 const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
   const { loading, errors } = props
+  const { loading: loadingReviewAggregate, averageScore } = useReviewAggregate(`/programs/${props.id}`)
   const history = useHistory()
 
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
   return (
-    <Card
-      className={classNames('cursor-pointer', props.className)}
-      onClick={() => !loading && !props.editing && history.push(`/programs/${props.id}`)}
+    <div
+      className={classNames('program', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
+      onClick={props.onClick}
     >
-      <Card.Content>
+      {loading ? (
+        <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+      ) : (
+        <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+      )}
+      <div>
         {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{props.title}</StyledTitle>}
-        <Card.Description>
-          {loading ? <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} /> : props.abstract}
-        </Card.Description>
-        <Card.MetaBlock className="d-flex flex-row-reverse justify-content-between align-items-center">
-          <div>
-            {loading ? (
-              <Skeleton width="10" height={4} />
-            ) : props.listPrice !== undefined ? (
-              <PriceLabel
-                variant="inline"
-                listPrice={props.listPrice}
-                salePrice={props.salePrice}
-                periodAmount={props.period?.amount}
-                periodType={props.period?.type}
-              />
-            ) : null}
+        {loading || loadingReviewAggregate ? (
+          <SkeletonText className="mb-3" />
+        ) : (
+          <div className="d-flex justify-content-between align-items-center">
+            <StyledCategories>
+              {props.categories
+                .filter((_, i) => i < 3)
+                .map(category => category.name)
+                .join('・')}
+            </StyledCategories>
+            {averageScore !== 0 && (
+              <StyledScore className="d-flex align-items-center">
+                {averageScore.toFixed(1)}
+                <StarIcon w="16px" h="16px" className="ml-1" />
+              </StyledScore>
+            )}
           </div>
-          <div>{loading ? <SkeletonText /> : durationFormatter(props.totalDuration)}</div>
-        </Card.MetaBlock>
-      </Card.Content>
-    </Card>
+        )}
+      </div>
+    </div>
   )
 }
 

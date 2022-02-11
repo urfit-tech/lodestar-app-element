@@ -12,7 +12,7 @@ import { notEmpty } from '../../helpers'
 import { Category, PeriodType, ProductRole, Program } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCurrentPriceSource, ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
-import ProgramCard from '../cards/ProgramCard'
+import ProgramPrimaryCard from '../cards/ProgramPrimaryCard'
 import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
 import Collection, { CollectionLayout, ContextCollection } from '../collections/Collection'
 import CategorySelector from '../common/CategorySelector'
@@ -38,7 +38,7 @@ type ProgramContextCollection = ContextCollection<ProgramData>
 export type ProgramCollectionProps = {
   name?: string
   source?: ProductCustomSource | ProductPublishedAtSource | ProductCurrentPriceSource
-  variant?: 'card' | 'tile'
+  variant?: 'primary' | 'secondary'
   layout?: CollectionLayout
   withSelector?: boolean
 }
@@ -54,7 +54,11 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   const ElementCollection = Collection(
     props.name || window.location.pathname,
     'program',
-    props.variant === 'card' ? ProgramCard : ProgramSecondaryCard,
+    props.variant === 'primary'
+      ? ProgramPrimaryCard
+      : props.variant === 'secondary'
+      ? ProgramSecondaryCard
+      : ProgramPrimaryCard,
   )
   let ContextCollection: ProgramContextCollection
   switch (source.from) {
@@ -126,6 +130,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       }
                       listPrice={primaryProgramPlan?.listPrice}
                       period={primaryProgramPlan?.period || undefined}
+                      categories={program.categories}
                       onClick={() => {
                         onClick?.()
                         !props.editing && history.push(`/programs/${program.id}`)

@@ -29,7 +29,7 @@ const StyledCard = styled(Card)`
   padding: 0;
   overflow: hidden;
 `
-const ProgramCard: React.FC<ProgramElementProps> = props => {
+const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
   const { loading, errors } = props
   const history = useHistory()
   if (errors) {
@@ -96,4 +96,4 @@ export function withReviews<P>(
   return ComponentWithReview
 }
 
-export default ProgramCard
+export default ProgramPrimaryCard

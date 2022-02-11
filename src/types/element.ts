@@ -20,6 +20,7 @@ export type ProgramElementProps = ElementProps<{
   instructorIds: string[]
   salePrice?: number
   listPrice?: number
+  categories: Category[]
   period?: {
     amount: number
     type: PeriodType
