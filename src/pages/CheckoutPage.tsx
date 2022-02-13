@@ -15,6 +15,22 @@ const CheckoutPage = () => {
               onOpen?.()
             }}
           >
+            Free auto subscription
+          </Button>
+        )}
+        defaultProductId={`ProgramPlan_baa1aa67-13ba-4371-9146-93dcc011fa55`}
+      />
+
+      <CheckoutProductModal
+        renderTrigger={({ onOpen, disable, isLoginAlert }) => (
+          <Button
+            colorScheme="primary"
+            disabled={disable}
+            onClick={() => {
+              if (isLoginAlert) return window.alert('請先登入')
+              onOpen?.()
+            }}
+          >
             CheckoutProductModal
           </Button>
         )}

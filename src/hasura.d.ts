@@ -80,6 +80,34 @@ export interface GET_RECENT_PROGRAM_PROGRESSVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_MEMBER_CREDIT_CARDS
+// ====================================================
+
+export interface GET_MEMBER_CREDIT_CARDS_member_card {
+  __typename: 'member_card'
+  id: string
+  card_identifier: string
+  card_info: any
+  card_holder: any | null
+}
+
+export interface GET_MEMBER_CREDIT_CARDS {
+  /**
+   * fetch data from the table: "member_card"
+   */
+  member_card: GET_MEMBER_CREDIT_CARDS_member_card[]
+}
+
+export interface GET_MEMBER_CREDIT_CARDSVariables {
+  memberId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_APP
 // ====================================================
 
@@ -3584,6 +3612,7 @@ export enum member_card_update_column {
   card_secret = 'card_secret',
   id = 'id',
   member_id = 'member_id',
+  priority = 'priority',
 }
 
 /**
@@ -9823,6 +9852,7 @@ export interface member_card_bool_exp {
   id?: String_comparison_exp | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
+  priority?: Int_comparison_exp | null
 }
 
 /**
@@ -9836,6 +9866,7 @@ export interface member_card_insert_input {
   id?: string | null
   member?: member_obj_rel_insert_input | null
   member_id?: string | null
+  priority?: number | null
 }
 
 /**

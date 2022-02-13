@@ -240,6 +240,12 @@ export const craftPageMessages = {
 }
 
 export const checkoutMessages = {
+  form: {
+    label: defineMessages({
+      cardNo: { id: 'checkout.form.label.cardNo', defaultMessage: '卡號' },
+      cardExp: { id: 'checkout.form.label.cardExp', defaultMessage: '有效期' },
+    }),
+  },
   coupon: defineMessages({
     fromNow: { id: 'checkout.coupon.fromNow', defaultMessage: '即日起' },
     noPeriod: { id: 'checkout.coupon.noPeriod', defaultMessage: '無使用期限' },

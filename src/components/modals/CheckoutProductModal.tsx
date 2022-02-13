@@ -1,4 +1,5 @@
 import { Button, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
+import axios from 'axios'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
@@ -21,13 +22,16 @@ import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
 import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
+import { useTappay } from '../../hooks/util'
 import { InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ShippingMethodProps } from '../../types/merchandise'
 import { BREAK_POINT } from '../common/Responsive'
 import CheckoutGroupBuyingForm, { StyledBlockTitle, StyledListItem } from '../forms/CheckoutGroupBuyingForm'
+import TapPayForm, { TPCreditCard } from '../forms/TapPayForm'
 import CheckoutProductReferrerInput from '../inputs/CheckoutProductReferrerInput'
 import InvoiceInput, { validateInvoice } from '../inputs/InvoiceInput'
 import ShippingInput, { validateShipping } from '../inputs/ShippingInput'
+import { useMemberCreditCards } from '../selectors/CreditCardSelector'
 
 export const StyledTitle = styled.h1`
   ${CommonTitleMixin}
@@ -130,8 +134,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const history = useHistory()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { enabledModules, settings } = useApp()
-  const { currentMemberId } = useAuth()
+  const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
+  const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
   const [sharingCode = window.sessionStorage.getItem(sessionStorageKey)] = useQueryParam('sharing', StringParam)
@@ -249,20 +254,27 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       },
     },
   })
+  const { TPDirect } = useTappay()
   const [isValidating, setIsValidating] = useState(false)
   const [referrerEmail, setReferrerEmail] = useState('')
+  const [tpCreditCard, setTpCreditCard] = useState<TPCreditCard | null>(null)
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
+  console.log(tpCreditCard)
+  const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
 
+  if (isAuthenticating) {
+    return renderTrigger?.({ isLoading: true })
+  }
   if (currentMember === null) {
     return renderTrigger?.({ isLoginAlert: true })
   }
 
   if (target === null || payment === undefined) {
-    return renderTrigger?.({ isLoading: true, disable: true })
+    return renderTrigger?.({ isLoading: isAuthenticating, disable: true })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     !isValidating && setIsValidating(true)
     let isValidShipping = false
     let isValidInvoice = false
@@ -318,6 +330,36 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       ReactGA.ga('send', 'event', 'UX', 'click', 'add to cart')
     }
 
+    // free subscription should bind card first
+    if (target.isSubscription && totalPrice <= 0 && memberCreditCards.length === 0) {
+      await new Promise((resolve, reject) => {
+        TPDirect.card.getPrime(({ status, card: { prime } }: { status: number; card: { prime: string } }) => {
+          axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_API_BASE_ROOT}/payment/credit-cards`,
+            withCredentials: true,
+            data: {
+              prime,
+              cardHolder: {
+                name: currentMember.name,
+                email: currentMember.email,
+                phoneNumber: currentMember.phone || '0987654321',
+              },
+            },
+            headers: { authorization: `Bearer ${authToken}` },
+          })
+            .then(({ data: { code, result } }) => {
+              if (code === 'SUCCESS') {
+                resolve(result.memberCreditCardId)
+              }
+
+              reject(code)
+            })
+            .catch(reject)
+        })
+      })
+    }
+
     placeOrder(
       target.isSubscription ? 'subscription' : 'perpetual',
       {
@@ -349,6 +391,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       {renderTrigger({
         onOpen,
         onProductChange: productId => setProductId(productId),
+        isLoading: isAuthenticating,
         isSubscription: target.isSubscription,
         disable:
           (target.endedAt ? new Date(target.endedAt) < new Date(now()) : false) ||
@@ -415,6 +458,10 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           </div>
         )}
 
+        {totalPrice <= 0 && target.isSubscription && memberCreditCards.length === 0 && (
+          <TapPayForm onUpdate={setTpCreditCard} />
+        )}
+
         {(totalPrice > 0 || target.discountDownPrice) && (
           <>
             <div ref={invoiceRef} className="mb-5">
@@ -466,7 +513,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
               ))}
 
               {check.orderDiscounts.map(orderDiscount => (
-                <CheckoutProductItem key={orderDiscount.name} name={orderDiscount.name} price={orderDiscount.price} />
+                <CheckoutProductItem key={orderDiscount.name} name={orderDiscount.name} price={-orderDiscount.price} />
               ))}
 
               {check.shippingOption && (
@@ -488,7 +535,12 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           <Button variant="outline" onClick={onClose} className="mr-3">
             {formatMessage(commonMessages.ui.cancel)}
           </Button>
-          <Button colorScheme="primary" isLoading={orderPlacing} onClick={handleSubmit}>
+          <Button
+            colorScheme="primary"
+            isLoading={orderPlacing}
+            onClick={handleSubmit}
+            disabled={target.isSubscription && !isCreditCardReady}
+          >
             {target.isSubscription
               ? formatMessage(commonMessages.button.subscribeNow)
               : formatMessage(checkoutMessages.button.cartSubmit)}
