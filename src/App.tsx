@@ -1,14 +1,13 @@
-import { Button } from '@chakra-ui/react'
 import { Editor, Frame } from '@craftjs/core'
 import { useState } from 'react'
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 import { QueryParamProvider } from 'use-query-params'
 import * as CraftResolvers from './components/common/CraftElement'
-import CheckoutProductModal from './components/modals/CheckoutProductModal'
 import { LodestarAppProvider } from './contexts/LodestarAppContext'
 import ActivityPage from './pages/ActivityPage'
 import AuthPage from './pages/AuthPage'
 import CarouselPage from './pages/CarouselPage'
+import CheckoutPage from './pages/CheckoutPage'
 import ImagePage from './pages/ImagePage'
 import LayoutPage from './pages/LayoutPage'
 import MemberElementPage from './pages/MemberElementPage'
@@ -31,6 +30,7 @@ const routes = [
   { name: 'Text', path: '/text', component: TextPage },
   { name: 'Carousel', path: '/carousel', component: CarouselPage },
   { name: 'Image', path: '/image', component: ImagePage },
+  { name: 'Checkout', path: '/checkout', component: CheckoutPage },
 ]
 const App: React.VFC = () => {
   const [editing, setEditing] = useState(false)
@@ -66,51 +66,6 @@ const App: React.VFC = () => {
                 <Route key={route.path} path={route.path} render={route.render} component={route.component} />
               ))}
               <br />
-              <CheckoutProductModal
-                renderTrigger={({ onOpen, disable, isLoginAlert }) => (
-                  <Button
-                    colorScheme="primary"
-                    disabled={disable}
-                    onClick={() => {
-                      if (isLoginAlert) return window.alert('請先登入')
-                      onOpen?.()
-                    }}
-                  >
-                    CheckoutProductModal
-                  </Button>
-                )}
-                defaultProductId={`ProjectPlan_ddc70edd-3140-4463-a2ae-7ecf77984b06`}
-              />
-              <CheckoutProductModal
-                renderTrigger={({ onOpen, disable, isLoginAlert }) => (
-                  <Button
-                    colorScheme="primary"
-                    disabled={disable}
-                    onClick={() => {
-                      if (isLoginAlert) return window.alert('請先登入')
-                      onOpen?.()
-                    }}
-                  >
-                    CheckoutProductModal
-                  </Button>
-                )}
-                defaultProductId={`ProgramPlan_551ec07a-03ec-4c5e-9541-cf141dab1f97`}
-              />
-              <CheckoutProductModal
-                renderTrigger={({ onOpen, disable, isLoginAlert }) => (
-                  <Button
-                    colorScheme="primary"
-                    disabled={disable}
-                    onClick={() => {
-                      if (isLoginAlert) return window.alert('請先登入')
-                      onOpen?.()
-                    }}
-                  >
-                    CheckoutProductModal
-                  </Button>
-                )}
-                defaultProductId={`ActivityTicket_f317da80-f4b8-4ae7-b7b8-06bd90547875`}
-              />
             </QueryParamProvider>
           </BrowserRouter>
         </Frame>

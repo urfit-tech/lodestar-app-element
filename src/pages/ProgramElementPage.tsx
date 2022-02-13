@@ -5,7 +5,7 @@ const ProgramElementPage: React.VFC = () => {
     <div className="container">
       <CraftProgramCollection
         withSelector
-        variant="card"
+        variant="primary"
         source={{
           from: 'currentPrice',
           // min: 10,
