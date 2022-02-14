@@ -11,7 +11,12 @@ import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
 import { Category, PeriodType, ProductRole, Program } from '../../types/data'
 import { ElementComponent } from '../../types/element'
-import { ProductCurrentPriceSource, ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
+import {
+  ProductCurrentPriceSource,
+  ProductCustomSource,
+  ProductPublishedAtSource,
+  ProductRecentWatchedSource,
+} from '../../types/options'
 import ProgramPrimaryCard from '../cards/ProgramPrimaryCard'
 import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
 import Collection, { CollectionLayout, ContextCollection } from '../collections/Collection'
@@ -37,7 +42,7 @@ type ProgramContextCollection = ContextCollection<ProgramData>
 
 export type ProgramCollectionProps = {
   name?: string
-  source?: ProductCustomSource | ProductPublishedAtSource | ProductCurrentPriceSource
+  source?: ProductCustomSource | ProductPublishedAtSource | ProductCurrentPriceSource | ProductRecentWatchedSource
   variant?: 'primary' | 'secondary'
   layout?: CollectionLayout
   withSelector?: boolean
@@ -67,6 +72,9 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
       break
     case 'currentPrice':
       ContextCollection = collectCurrentPriceCollection(source)
+      break
+    case 'recentWatched':
+      ContextCollection = collectRecentWatchedCollection(source)
       break
     case 'custom':
       ContextCollection = collectCustomCollection(source)
@@ -263,6 +271,52 @@ const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
               },
               { _and: [{ sold_at: { _gt: 'now()' } }, { sale_price: { _gte: options.min, _lte: options.max } }] },
             ],
+          },
+        },
+      },
+    )
+    const composedData = data ? composeCollectionData(data) : []
+
+    return children({
+      loading,
+      errors: error && [new Error(error.message)],
+      data: composedData,
+    })
+  }
+  return ProgramElementCollection
+}
+
+const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => {
+  const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
+    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+      getProgramCollectionQuery(programFields),
+      {
+        variables: {
+          limit: options.limit,
+          orderByClause: [
+            {
+              program_content_progress_enrollments_aggregate: {
+                max: { updated_at: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
+              },
+            },
+          ],
+          whereClause: {
+            is_private: { _eq: false },
+            published_at: { _lt: 'now()' },
+            program_categories: options.defaultCategoryIds?.length
+              ? {
+                  category_id: {
+                    _in: options.defaultCategoryIds,
+                  },
+                }
+              : undefined,
+            program_tags: options.defaultTagNames?.length
+              ? {
+                  tag_name: {
+                    _in: options.defaultTagNames,
+                  },
+                }
+              : undefined,
           },
         },
       },

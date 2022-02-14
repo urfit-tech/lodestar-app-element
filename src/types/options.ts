@@ -25,6 +25,9 @@ export type ProductRecentWatchedSource = ProductSource<
   {
     watchedAt?: Date
     limit?: number
+    asc?: boolean
+    defaultTagNames?: string[]
+    defaultCategoryIds?: string[]
   }
 >
 
