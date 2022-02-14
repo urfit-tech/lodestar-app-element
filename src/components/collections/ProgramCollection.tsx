@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
-import { sum, uniqBy } from 'ramda'
+import { pipe, prop, sortBy, sum, uniqBy } from 'ramda'
 import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
@@ -81,12 +81,16 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
         const categories =
           ctx.loading || ctx.errors
             ? []
-            : uniqBy((category: Category) => category.id)(
+            : pipe(
+                uniqBy((category: Category) => category.id),
+                sortBy(prop('position')),
+              )(
                 ctx.data
                   ?.flatMap(d => d.categories)
                   .filter(category => source.from === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
                   [],
               )
+
         const programFilter = (d: ProgramData) =>
           !props.withSelector ||
           !activeCategoryId ||
@@ -308,7 +312,11 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
             : null,
         isPrimary: pp.is_primary,
       })),
-    categories: p.program_categories.map(pc => ({ id: pc.category.id, name: pc.category.name })),
+    categories: p.program_categories.map(pc => ({
+      id: pc.category.id,
+      name: pc.category.name,
+      position: pc.category.position,
+    })),
   }))
 
 const programFields = gql`
@@ -320,10 +328,11 @@ const programFields = gql`
     list_price
     sale_price
     sold_at
-    program_categories {
+    program_categories(order_by: { position: asc }) {
       category {
         id
         name
+        position
       }
     }
     program_roles(where: { name: { _eq: "instructor" } }, order_by: { created_at: asc }) {

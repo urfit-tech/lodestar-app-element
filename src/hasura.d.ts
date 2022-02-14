@@ -356,6 +356,7 @@ export interface GET_PROGRAM_COLLECTION_program_program_categories_category {
   __typename: 'category'
   id: string
   name: string
+  position: number
 }
 
 export interface GET_PROGRAM_COLLECTION_program_program_categories {
@@ -2120,6 +2121,7 @@ export interface programFields_program_categories_category {
   __typename: 'category'
   id: string
   name: string
+  position: number
 }
 
 export interface programFields_program_categories {

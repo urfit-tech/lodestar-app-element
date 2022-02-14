@@ -1,7 +1,6 @@
 import { StarIcon } from '@chakra-ui/icons'
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
-import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { useReviewAggregate } from '../../hooks/review'
 import EmptyCover from '../../images/empty-cover.png'
@@ -26,13 +25,13 @@ const StyledCategories = styled.div`
   color: var(--gray-dark);
 `
 const StyledScore = styled.div`
+  font-size: 14px;
   color: ${props => props.theme['@primary-color']};
 `
 
 const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
   const { loading, errors } = props
   const { loading: loadingReviewAggregate, averageScore } = useReviewAggregate(`/programs/${props.id}`)
-  const history = useHistory()
 
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
@@ -62,7 +61,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
             {averageScore !== 0 && (
               <StyledScore className="d-flex align-items-center">
                 {averageScore.toFixed(1)}
-                <StarIcon className="ml-1" style={{ width: '16px', height: '16px' }} />
+                <StarIcon className="ml-1" style={{ width: '14px', height: '14px' }} />
               </StyledScore>
             )}
           </div>

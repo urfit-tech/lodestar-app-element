@@ -8,6 +8,7 @@ export type ProductRole<R = 'owner' | 'instructor'> = {
 export type Category = {
   id: string
   name: string
+  position?: number
 }
 
 export type PeriodType = 'D' | 'W' | 'M' | 'Y'
