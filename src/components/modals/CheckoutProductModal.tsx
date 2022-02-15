@@ -260,7 +260,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const [tpCreditCard, setTpCreditCard] = useState<TPCreditCard | null>(null)
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
-  console.log(tpCreditCard)
   const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
 
   if (isAuthenticating) {
@@ -539,7 +538,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             colorScheme="primary"
             isLoading={orderPlacing}
             onClick={handleSubmit}
-            disabled={target.isSubscription && !isCreditCardReady}
+            disabled={totalPrice === 0 && target.isSubscription && !isCreditCardReady}
           >
             {target.isSubscription
               ? formatMessage(commonMessages.button.subscribeNow)
