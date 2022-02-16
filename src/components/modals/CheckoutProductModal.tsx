@@ -457,9 +457,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           </div>
         )}
 
-        {totalPrice <= 0 && target.isSubscription && memberCreditCards.length === 0 && (
-          <TapPayForm onUpdate={setTpCreditCard} />
-        )}
+        {totalPrice <= 0 && target.isSubscription && <TapPayForm onUpdate={setTpCreditCard} />}
 
         {(totalPrice > 0 || target.discountDownPrice) && (
           <>
