@@ -1,9 +1,9 @@
-import styled, { css } from 'styled-components'
+import styled, { css, CSSObject } from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
 export type ImageProps = {
-  width?: number
-  height?: number
+  width?: string | number
+  height?: string | number
   ratio?: number
   shape?: 'circle' | 'rounded' | 'square'
 }
@@ -12,11 +12,12 @@ export const StyledImage = styled.div<ImageProps>`
   background-size: cover;
   background-position: center;
   ${props => {
-    const width = props.width ? props.width + 'px' : '100%'
+    const width = (typeof props.width === 'number' ? props.width + 'px' : props.width) || '100%'
+    const height = typeof props.height === 'number' ? props.height + 'px' : props.height
     const ratio = props.ratio || 3 / 4
     return css`
       width: ${width};
-      padding-top: ${props.height ? props.height + 'px' : `calc(${width} * ${ratio})`};
+      padding-top: ${height || `calc(${width} * ${ratio})`};
     `
   }}
   background-size: cover;
@@ -25,11 +26,17 @@ export const StyledImage = styled.div<ImageProps>`
     props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : undefined};
 `
 
-const Image: ElementComponent<ImageProps> = props => {
+const Image: ElementComponent<ImageProps & { customStyle?: CSSObject }> = props => {
   if (props.loading || props.errors) {
     return null
   }
-  return <StyledImage {...props} />
+  return (
+    <StyledImage
+      {...props}
+      width={props.customStyle?.width || props.width}
+      height={props.customStyle?.height || props.height}
+    />
+  )
 }
 
 type CustomRatioImageProps = {
