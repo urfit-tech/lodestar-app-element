@@ -164,7 +164,9 @@ const InvoiceInput: React.VFC<{
       phone: shippingPhone || phoneRef.current?.input.value || '',
       email: emailRef.current?.input.value || '',
       phoneBarCode:
-        currentInvoiceOption === 'use-phone-bar-code' ? phoneBarCodeRef.current?.input.value || '' : undefined,
+        currentInvoiceOption === 'use-phone-bar-code'
+          ? phoneBarCodeRef.current?.input.value.toLocaleUpperCase() || ''
+          : undefined,
       citizenCode:
         currentInvoiceOption === 'citizen-digital-certificate' ? citizenCodeRef.current?.input.value || '' : undefined,
       uniformNumber:
