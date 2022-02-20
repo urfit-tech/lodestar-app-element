@@ -375,6 +375,7 @@ const InvoiceInput: React.VFC<{
               help={formatMessage(checkoutMessages.message.phoneBarCodeText)}
             >
               <Input
+                style={{ textTransform: 'uppercase' }}
                 ref={phoneBarCodeRef}
                 defaultValue={value ? value.phoneBarCode : undefined}
                 onBlur={() => handleChange({})}
