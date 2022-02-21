@@ -19,6 +19,7 @@ const CraftRefBlock = styled.div<{
   editing?: boolean
   hovered?: boolean
   selected?: boolean
+  customStyle?: CSSObject
 }>`
   ${props =>
     props?.editing &&
@@ -28,6 +29,7 @@ const CraftRefBlock = styled.div<{
       ${props?.hovered && CraftHoveredMixin}
       ${props?.selected && CraftSelectedMixin}
     `}
+  ${props => props.customStyle?.width === '100%' && `justify-self: stretch;`}
 `
 
 export const CraftHoveredMixin = css`
@@ -82,6 +84,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
         editing={editor.editing}
         hovered={node.events.hovered}
         selected={node.events.selected}
+        customStyle={props.customStyle}
       >
         {editor.editing && node.events.hovered && <CraftController />}
         <StyledCraftElement
