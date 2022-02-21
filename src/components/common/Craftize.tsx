@@ -29,7 +29,7 @@ const CraftRefBlock = styled.div<{
       ${props?.hovered && CraftHoveredMixin}
       ${props?.selected && CraftSelectedMixin}
     `}
-  ${props => props.customStyle?.width === '100%' && `justify-self: stretch;`}
+  ${props => props.customStyle?.width?.toString().includes('%') && `justify-self: stretch;`}
 `
 
 export const CraftHoveredMixin = css`
