@@ -71,6 +71,7 @@ export type Module =
   | 'commonhealth'
   | 'parenting_login'
   | 'coin_back'
+  | 'project_auto_delivery'
 
 export type Currency = {
   id: string
