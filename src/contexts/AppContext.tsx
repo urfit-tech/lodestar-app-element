@@ -190,7 +190,6 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
         memberData: {
           id: currentMember.options[appId]?.id || '',
           social_id: currentMember.options[appId]?.social_id || '',
-          uid_id: currentMember.options[appId]?.uid_id || '',
           uid: currentMember.options[appId]?.uid || '',
           uuid: currentMember.options[appId]?.uuid || '',
           env:
@@ -201,6 +200,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
               : 'prod',
           email: currentMember.email,
           dmp_id: getCookie('__eruid'),
+          salesforce_id: currentMember.options[appId]?.salesforce_id || '',
         },
       })
     }
