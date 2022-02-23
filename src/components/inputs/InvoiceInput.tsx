@@ -168,7 +168,9 @@ const InvoiceInput: React.VFC<{
           ? phoneBarCodeRef.current?.input.value.toLocaleUpperCase() || ''
           : undefined,
       citizenCode:
-        currentInvoiceOption === 'citizen-digital-certificate' ? citizenCodeRef.current?.input.value || '' : undefined,
+        currentInvoiceOption === 'citizen-digital-certificate'
+          ? citizenCodeRef.current?.input.value.toLocaleUpperCase() || ''
+          : undefined,
       uniformNumber:
         currentInvoiceType === 'uniform-number' || currentInvoiceType === 'hardcopy-uniform-number'
           ? uniformNumberRef.current?.input.value || ''
@@ -395,6 +397,7 @@ const InvoiceInput: React.VFC<{
               help={formatMessage(checkoutMessages.message.citizenCodeText)}
             >
               <Input
+                style={{ textTransform: 'uppercase' }}
                 ref={citizenCodeRef}
                 defaultValue={value ? value.citizenCode : undefined}
                 onBlur={() => handleChange({})}
