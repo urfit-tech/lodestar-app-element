@@ -3,6 +3,7 @@ export type Module =
   | 'invoice'
   | 'locale'
   | 'search'
+  | 'search_advanced'
   | 'social_connect'
   | 'permission'
   | 'customer_review'
