@@ -95,11 +95,12 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
         <StyledCraftElement
           {...(responsiveProps as ElementProps<P>)}
           customStyle={{
-            ...props.customStyle,
-            width: props.customStyle?.width?.toString().includes('%') ? '100%' : props.customStyle?.width,
-            [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: props.responsive?.mobile?.customStyle,
-            [`@media (min-width: ${TABLET_BREAK_POINT}px)`]: props.responsive?.tablet?.customStyle,
-            [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: props.responsive?.desktop?.customStyle,
+            ...customStyleFormat(props.customStyle),
+            [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: customStyleFormat(
+              props.responsive?.mobile?.customStyle,
+            ),
+            [`@media (min-width: ${TABLET_BREAK_POINT}px)`]: customStyleFormat(props.responsive?.tablet?.customStyle),
+            [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: customStyleFormat(props.responsive?.desktop?.customStyle),
           }}
           editing={editor.editing}
         />
@@ -234,4 +235,8 @@ const cloneNodeTree = (tree: NodeTree): NodeTree => {
     nodes: newNodes,
   }
 }
+const customStyleFormat = (customStyle?: CSSObject): CSSObject => ({
+  ...customStyle,
+  width: customStyle?.width?.toString().includes('%') ? '100%' : customStyle?.width,
+})
 export default Craftize
