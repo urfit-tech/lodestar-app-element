@@ -9,7 +9,6 @@ const StyledLayout = styled.div<LayoutProps>`
   display: grid;
   grid-template-columns: ${props => props.ratios?.map(ratio => `minmax(0, ${ratio}fr)`).join(' ')};
   grid-gap: 1.5rem;
-  place-items: center;
 `
 
 const Layout: ElementComponent<LayoutProps> = props => {

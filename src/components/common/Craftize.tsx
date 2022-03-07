@@ -29,7 +29,11 @@ const CraftRefBlock = styled.div<{
       ${props?.hovered && CraftHoveredMixin}
       ${props?.selected && CraftSelectedMixin}
     `}
-  ${props => props.customStyle?.width?.toString().includes('%') && `justify-self: stretch;`}
+  ${props =>
+    props.customStyle?.width?.toString().includes('%') &&
+    css`
+      width: ${props.customStyle?.width};
+    `}
 `
 
 export const CraftHoveredMixin = css`
@@ -78,6 +82,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       props,
       props.responsive?.[device as keyof typeof props.responsive] || {},
     ) as PropsWithCraft<P>
+
     return (
       <CraftRefBlock
         ref={ref => ref && editor.editing && node.connectors.connect(ref)}
@@ -91,6 +96,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
           {...(responsiveProps as ElementProps<P>)}
           customStyle={{
             ...props.customStyle,
+            width: props.customStyle?.width?.toString().includes('%') ? '100%' : props.customStyle?.width,
             [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: props.responsive?.mobile?.customStyle,
             [`@media (min-width: ${TABLET_BREAK_POINT}px)`]: props.responsive?.tablet?.customStyle,
             [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: props.responsive?.desktop?.customStyle,
