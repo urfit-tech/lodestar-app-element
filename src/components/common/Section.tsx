@@ -66,8 +66,8 @@ const Section: ElementComponent<SectionProps> = props => {
         display:
           props.display === 'hide'
             ? 'none'
-            : props.display === 'appearAfterLogin' && currentMemberId
-            ? 'flex'
+            : props.display === 'appearAfterLogin' && !currentMemberId
+            ? 'none'
             : props.display === 'disappearAfterLogin' && currentMemberId
             ? 'none'
             : 'flex',
