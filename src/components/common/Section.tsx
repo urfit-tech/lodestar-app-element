@@ -66,12 +66,10 @@ const Section: ElementComponent<SectionProps> = props => {
         display:
           props.display === 'hide'
             ? 'none'
-            : currentMemberId
-            ? props.display === 'appearAfterLogin'
-              ? 'flex'
-              : props.display === 'disappearAfterLogin'
-              ? 'none'
-              : 'flex'
+            : props.display === 'appearAfterLogin' && currentMemberId
+            ? 'flex'
+            : props.display === 'disappearAfterLogin' && currentMemberId
+            ? 'none'
             : 'flex',
       }}
       className={classNames(props.className, { 'cursor-pointer': props.link })}
