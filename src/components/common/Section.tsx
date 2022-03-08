@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { useHistory } from 'react-router'
 import styled, { css } from 'styled-components'
+import { useAuth } from '../../contexts/AuthContext'
 import { ElementComponent } from '../../types/element'
 
 export type SectionProps = {
@@ -13,7 +14,6 @@ export type SectionProps = {
 
 const StyledSection = styled.section<SectionProps>`
   width: 100%;
-  display: flex;
   position: relative;
   background-size: cover;
   background-position: center;
@@ -54,12 +54,26 @@ const StyledSection = styled.section<SectionProps>`
 
 const Section: ElementComponent<SectionProps> = props => {
   const history = useHistory()
+  const { currentMemberId } = useAuth()
+
   if (props.loading || props.errors) {
     return null
   }
   return (
     <StyledSection
       {...props}
+      style={{
+        display:
+          props.display === 'hide'
+            ? 'none'
+            : currentMemberId
+            ? props.display === 'appearAfterLogin'
+              ? 'flex'
+              : props.display === 'disappearAfterLogin'
+              ? 'none'
+              : 'flex'
+            : 'flex',
+      }}
       className={classNames(props.className, { 'cursor-pointer': props.link })}
       onClick={e =>
         props.editing || !props.link
