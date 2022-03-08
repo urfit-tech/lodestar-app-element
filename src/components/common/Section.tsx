@@ -8,6 +8,7 @@ export type SectionProps = {
   openTab?: boolean
   horizontal?: boolean
   darkMode?: boolean
+  display?: 'normal' | 'hide' | 'appearAfterLogin' | 'disappearAfterLogin'
 }
 
 const StyledSection = styled.section<SectionProps>`
