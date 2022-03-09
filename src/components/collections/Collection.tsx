@@ -1,4 +1,5 @@
 import { repeat } from 'ramda'
+import useDeepCompareEffect from 'use-deep-compare-effect'
 import { useApp } from '../../contexts/AppContext'
 import { ResourceType, useResourceCollection } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
@@ -30,6 +31,9 @@ const Collection = <P extends object>(name: string, type: ResourceType, ElementC
       }) => React.ReactElement<P>
     }>,
   ) => {
+    useDeepCompareEffect(() => {
+      props.data && console.log(name, type, props.data)
+    }, [props.data])
     const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [])
     const loadingProps = { loading: true } as P
     return (
