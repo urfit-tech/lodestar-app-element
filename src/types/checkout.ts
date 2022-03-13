@@ -107,3 +107,5 @@ export type PaymentProps =
       gateway: Exclude<PaymentGatewayType, 'spgateway'>
       method: Extract<PaymentMethodType, 'credit'>
     }
+
+export type ContactInfo = { name: string; phone: string; email: string }

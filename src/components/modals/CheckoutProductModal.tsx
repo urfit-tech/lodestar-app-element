@@ -1,4 +1,4 @@
-import { Button, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
 import axios from 'axios'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
@@ -23,12 +23,13 @@ import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
 import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
 import { useTappay } from '../../hooks/util'
-import { InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
+import { ContactInfo, InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ShippingMethodProps } from '../../types/merchandise'
 import { BREAK_POINT } from '../common/Responsive'
 import CheckoutGroupBuyingForm, { StyledBlockTitle, StyledListItem } from '../forms/CheckoutGroupBuyingForm'
 import TapPayForm, { TPCreditCard } from '../forms/TapPayForm'
 import CheckoutProductReferrerInput from '../inputs/CheckoutProductReferrerInput'
+import ContactInfoInput from '../inputs/ContactInfoInput'
 import InvoiceInput, { validateInvoice } from '../inputs/InvoiceInput'
 import ShippingInput, { validateShipping } from '../inputs/ShippingInput'
 import { useMemberCreditCards } from '../selectors/CreditCardSelector'
@@ -146,6 +147,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     shipping: ShippingProps | null
     invoice: InvoiceProps | null
     payment: PaymentProps | null
+    contactInfo: ContactInfo | null
   }>(() => {
     const defaultCartInfo = {
       shipping: null,
@@ -155,6 +157,11 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         email: currentMember?.email || '',
       },
       payment: null,
+      contactInfo: {
+        name: currentMember?.name || '',
+        phone: currentMember?.phone || '',
+        email: currentMember?.email || '',
+      },
     }
     try {
       const cachedShipping = localStorage.getItem('kolable.cart.shipping')
@@ -165,7 +172,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       cachedCartInfo.payment = cachedPayment && JSON.parse(cachedPayment)
     } catch {}
     return defaultCartInfo
-  }, [currentMember?.name, currentMember?.email])
+  }, [currentMember?.name, currentMember?.email, currentMember?.phone])
 
   // checkout
   const [productId, setProductId] = useState(defaultProductId)
@@ -225,11 +232,19 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     }
   }, [target?.isSubscription, initialPayment])
 
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({
+    name: currentMember?.name || '',
+    phone: currentMember?.phone || '',
+    email: currentMember?.email || '',
+    ...cachedCartInfo.contactInfo,
+  })
+
   const shippingRef = useRef<HTMLDivElement | null>(null)
   const invoiceRef = useRef<HTMLDivElement | null>(null)
   const referrerRef = useRef<HTMLDivElement | null>(null)
   const groupBuyingRef = useRef<HTMLDivElement | null>(null)
   const paymentMethodRef = useRef<HTMLDivElement | null>(null)
+  const contactInfoRef = useRef<HTMLDivElement | null>(null)
 
   const [discountId, setDiscountId] = useState('')
   const [groupBuying, setGroupBuying] = useState<{
@@ -413,6 +428,12 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             }
           />
         </div>
+
+        {settings['feature.contact_info.enabled'] === '1' && totalPrice === 0 && (
+          <Box ref={contactInfoRef} mb="3">
+            <ContactInfoInput value={contactInfo} onChange={v => setContactInfo(v)} isValidating={isValidating} />
+          </Box>
+        )}
 
         {renderProductSelector && (
           <div className="mb-5">
