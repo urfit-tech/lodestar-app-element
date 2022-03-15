@@ -101,7 +101,7 @@ export const validationRegExp: { [fieldId: string]: RegExp } = {
 export const validateContactInfo: (contactInfo: ContactInfo) => string[] = contactInfo => {
   const errorFields: string[] = []
   contactInfo.name.length === 0 && errorFields.push('name')
-  contactInfo.phone.length === 0 || (!validationRegExp['phone']?.test(contactInfo.phone) && errorFields.push('phone'))
-  contactInfo.email.length === 0 || (!validationRegExp['email']?.test(contactInfo.email) && errorFields.push('email'))
+  ;(contactInfo.phone.length === 0 || !validationRegExp['phone']?.test(contactInfo.phone)) && errorFields.push('phone')
+  ;(contactInfo.email.length === 0 || !validationRegExp['email']?.test(contactInfo.email)) && errorFields.push('email')
   return errorFields
 }
