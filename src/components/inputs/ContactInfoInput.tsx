@@ -1,17 +1,16 @@
 import { Box, SimpleGrid } from '@chakra-ui/react'
 import { Form, Input } from 'antd'
 import { useIntl } from 'react-intl'
-import { validationRegExp } from '../../helpers'
+import { validateContactInfo } from '../../helpers'
 import { ContactInfo } from '../../types/checkout'
 import inputMessages from './translation'
 
 const ContactInfoInput: React.VFC<{
   value: ContactInfo
-  onChange: (value: ContactInfo & { withError: boolean }) => void
-  isValidating?: boolean
-}> = ({ value, onChange, isValidating }) => {
+  onChange: (value: ContactInfo) => void
+}> = ({ value, onChange }) => {
   const { formatMessage } = useIntl()
-  const errorFields = isValidating && value ? validateContactInfo(value) : []
+  const errorFields = validateContactInfo(value)
 
   return (
     <>
@@ -24,44 +23,30 @@ const ContactInfoInput: React.VFC<{
         <Form.Item
           required
           label={formatMessage(inputMessages.ContactInfoInput.name)}
-          help={errorFields.includes('phone') && formatMessage(inputMessages.ContactInfoInput.nameHelpText)}
+          validateStatus={errorFields.includes('name') ? 'error' : ''}
+          help={errorFields.includes('name') ? formatMessage(inputMessages.ContactInfoInput.nameHelpText) : null}
         >
-          <Input
-            defaultValue={value.name}
-            onChange={v => onChange({ ...value, name: v.target.value, withError: !(errorFields.length === 0) })}
-          />
+          <Input defaultValue={value.name} onChange={v => onChange({ ...value, name: v.target.value })} />
         </Form.Item>
         <Form.Item
           required
           label={formatMessage(inputMessages.ContactInfoInput.phone)}
-          help={errorFields.includes('phone') && formatMessage(inputMessages.ContactInfoInput.phoneHelpText)}
+          validateStatus={errorFields.includes('phone') ? 'error' : ''}
+          help={errorFields.includes('phone') ? formatMessage(inputMessages.ContactInfoInput.phoneHelpText) : null}
         >
-          <Input
-            defaultValue={value.phone}
-            onChange={v => onChange({ ...value, phone: v.target.value, withError: !(errorFields.length === 0) })}
-          />
+          <Input defaultValue={value.phone} onChange={v => onChange({ ...value, phone: v.target.value })} />
         </Form.Item>
         <Form.Item
           required
           label={formatMessage(inputMessages.ContactInfoInput.email)}
-          help={errorFields.includes('phone') && formatMessage(inputMessages.ContactInfoInput.emailHelpText)}
+          validateStatus={errorFields.includes('email') ? 'error' : ''}
+          help={errorFields.includes('email') ? formatMessage(inputMessages.ContactInfoInput.emailHelpText) : null}
         >
-          <Input
-            defaultValue={value.email}
-            onChange={v => onChange({ ...value, email: v.target.value, withError: !(errorFields.length === 0) })}
-          />
+          <Input defaultValue={value.email} onChange={v => onChange({ ...value, email: v.target.value })} />
         </Form.Item>
       </SimpleGrid>
     </>
   )
-}
-
-const validateContactInfo: (contactInfo: ContactInfo) => string[] = contactInfo => {
-  const errorFields: string[] = []
-  !contactInfo.name && errorFields.push('name')
-  !contactInfo.phone || (!validationRegExp['phone']?.test(contactInfo.phone) && errorFields.push('phone'))
-  !contactInfo.email || (!validationRegExp['email']?.test(contactInfo.email) && errorFields.push('email'))
-  return errorFields
 }
 
 export default ContactInfoInput

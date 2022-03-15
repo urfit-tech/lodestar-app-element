@@ -18,6 +18,7 @@ import GroupBuyingRuleModal from '../../components/modals/GroupBuyingRuleModal'
 import PaymentSelector from '../../components/selectors/PaymentSelector'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
+import { validateContactInfo } from '../../helpers'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
@@ -324,6 +325,14 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       return
     }
 
+    if (totalPrice <= 0 && settings['feature.contact_info.enabled'] === '1') {
+      setInvoice({ name: contactInfo.name, phone: contactInfo.phone, email: contactInfo.email })
+      if (validateContactInfo(contactInfo).length !== 0) {
+        contactInfoRef.current?.scrollIntoView({ behavior: 'smooth' })
+        return
+      }
+    }
+
     if (settings['tracking.fb_pixel_id']) {
       ReactPixel.track('AddToCart', {
         content_name: target.title || productId,
@@ -431,7 +440,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
         {settings['feature.contact_info.enabled'] === '1' && totalPrice === 0 && (
           <Box ref={contactInfoRef} mb="3">
-            <ContactInfoInput value={contactInfo} onChange={v => setContactInfo(v)} isValidating={isValidating} />
+            <ContactInfoInput value={contactInfo} onChange={v => setContactInfo(v)} />
           </Box>
         )}
 
