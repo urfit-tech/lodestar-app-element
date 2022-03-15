@@ -55,7 +55,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
           event: 'productImpression',
-          label: impressions.map(impression => impression.list).join('|'),
+          label: impressions.map(impression => impression.name).join('|'),
           value: sum(impressions.map(impression => impression.price || 0)),
           ecommerce: {
             currencyCode: appCurrencyId,
