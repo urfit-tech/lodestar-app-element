@@ -233,13 +233,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     }
   }, [target?.isSubscription, initialPayment])
 
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    name: currentMember?.name || '',
-    phone: currentMember?.phone || '',
-    email: currentMember?.email || '',
-    ...cachedCartInfo.contactInfo,
-  })
-
   const shippingRef = useRef<HTMLDivElement | null>(null)
   const invoiceRef = useRef<HTMLDivElement | null>(null)
   const referrerRef = useRef<HTMLDivElement | null>(null)
@@ -326,8 +319,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     }
 
     if (totalPrice <= 0 && settings['feature.contact_info.enabled'] === '1') {
-      setInvoice({ name: contactInfo.name, phone: contactInfo.phone, email: contactInfo.email })
-      if (validateContactInfo(contactInfo).length !== 0) {
+      if (validateContactInfo(invoice).length !== 0) {
         contactInfoRef.current?.scrollIntoView({ behavior: 'smooth' })
         return
       }
@@ -440,7 +432,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
         {settings['feature.contact_info.enabled'] === '1' && totalPrice === 0 && (
           <Box ref={contactInfoRef} mb="3">
-            <ContactInfoInput value={contactInfo} onChange={v => setContactInfo(v)} />
+            <ContactInfoInput value={invoice} onChange={v => setInvoice(v)} />
           </Box>
         )}
 
