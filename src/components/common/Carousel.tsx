@@ -24,6 +24,10 @@ const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`
   .slick-next {
     right: 4px;
   }
+  .slick-next:before,
+  .slick-prev:before {
+    color: ${props => props.theme['@primary-color']};
+  }
   .slick-dots {
     z-index: 1;
     bottom: 8px;
