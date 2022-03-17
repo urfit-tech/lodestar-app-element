@@ -1857,7 +1857,7 @@
   resolved "https://registry.yarnpkg.com/@craftjs/core/-/core-0.1.0-beta.20.tgz#7d9140fdb8f962cb4ff701024f7a3cf43f6bdfa6"
   integrity sha512-AdX597cnoY8ktPKnh8tE6FRe+uz82DAsy9GyruRUQc7/mClvoO45zjCVFT2MngwW8PaH9xAVeEko2si8ScGeDw==
   dependencies:
-    "@craftjs/utils" "^0.1.0-beta.20"
+    "@craftjs/utils" "0.1.0-beta.20"
     "@types/react" "^17.0.5"
     debounce "^1.2.0"
     lodash "^4.17.20"
