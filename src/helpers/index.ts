@@ -3,6 +3,7 @@ import moment from 'moment'
 import queryString from 'query-string'
 import { css, FlattenSimpleInterpolation } from 'styled-components'
 import { BREAK_POINT } from '../components/common/Responsive'
+import { ContactInfo } from '../types/checkout'
 import { ProductPlan } from '../types/data'
 
 export const durationFullFormatter = (seconds: number) => {
@@ -95,4 +96,12 @@ export const validationRegExp: { [fieldId: string]: RegExp } = {
   phoneBarCode: /^\/{1}[0-9A-Z+-.]{7}$/,
   citizenCode: /^[A-Z]{2}[0-9]{14}$/,
   uniformNumber: /^[0-9]{8}$/,
+}
+
+export const validateContactInfo: (contactInfo: ContactInfo) => string[] = contactInfo => {
+  const errorFields: string[] = []
+  contactInfo.name.length === 0 && errorFields.push('name')
+  ;(contactInfo.phone.length === 0 || !validationRegExp['phone']?.test(contactInfo.phone)) && errorFields.push('phone')
+  ;(contactInfo.email.length === 0 || !validationRegExp['email']?.test(contactInfo.email)) && errorFields.push('email')
+  return errorFields
 }
