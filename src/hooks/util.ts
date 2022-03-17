@@ -58,18 +58,9 @@ export const getCookie = (cookieName: string) => {
 
 export const getResourceByProductId = (productId: string): { type: ResourceType; target: string } => {
   const [productType, productTarget] = productId.split('_')
-  switch (productType) {
-    case 'ProgramPackage':
-      return { type: 'program_package', target: productTarget }
-    case 'ProgramPackagePlan':
-      return { type: 'program_package_plan', target: productTarget }
-    case 'Program':
-      return { type: 'program', target: productTarget }
-    case 'ProgramPlan':
-      return { type: 'program_plan', target: productTarget }
-    case 'Activity':
-      return { type: 'activity', target: productTarget }
-    default:
-      return { type: 'unknown', target: productTarget }
-  }
+  var resourceType = productType
+    .split(/(?=[A-Z])/)
+    .join('_')
+    .toLowerCase() as ResourceType
+  return { type: resourceType, target: productTarget }
 }

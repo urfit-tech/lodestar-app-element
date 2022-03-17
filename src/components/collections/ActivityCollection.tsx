@@ -13,8 +13,10 @@ import { Activity, Category } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
 import ActivityCard from '../cards/ActivityCard'
+import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
+import CollectionCarousel from './CollectionCarousel'
 
 // @ts-ignore
 type ActivityData = DeepPick<
@@ -39,6 +41,8 @@ export type ActivityCollectionProps = {
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
+  collectionVariant?: 'grid' | 'carousel'
+  carousel?: BaseCarouselProps
 }
 const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
   const history = useHistory()
@@ -49,11 +53,13 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection(
-    props.name || window.location.pathname,
-    'activity',
-    props.variant === 'card' ? ActivityCard : ActivityCard,
-  )
+  const collectionName = props.name || window.location.pathname
+  const EntityElement = props.variant === 'card' ? ActivityCard : ActivityCard
+  const ElementCollection =
+    props.collectionVariant === 'carousel'
+      ? CollectionCarousel(collectionName, 'activity', EntityElement, props.carousel)
+      : Collection(collectionName, 'activity', EntityElement)
+
   let ContextCollection: ActivityContextCollection
   switch (source.from) {
     case 'publishedAt':

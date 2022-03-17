@@ -11,7 +11,9 @@ import { ProgramContent } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductRecentWatchedSource } from '../../types/options'
 import ProgramContentCard from '../cards/ProgramContentCard'
+import { BaseCarouselProps } from '../common/BaseCarousel'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
+import CollectionCarousel from './CollectionCarousel'
 
 // @ts-ignore
 type ProgramContentData = DeepPick<
@@ -33,6 +35,8 @@ export type ProgramContentCollectionProps = {
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
+  collectionVariant?: 'grid' | 'carousel'
+  carousel?: BaseCarouselProps
 }
 const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
@@ -42,11 +46,13 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
     return null
   }
 
-  const ElementCollection = Collection(
-    props.name || window.location.pathname,
-    'program_content',
-    props.variant === 'card' ? ProgramContentCard : ProgramContentCard,
-  )
+  const collectionName = props.name || window.location.pathname
+  const EntityElement = props.variant === 'card' ? ProgramContentCard : ProgramContentCard
+  const ElementCollection =
+    props.collectionVariant === 'carousel'
+      ? CollectionCarousel(collectionName, 'program_content', EntityElement, props.carousel)
+      : Collection(collectionName, 'program_content', EntityElement)
+
   let ContextCollection: ProgramContentContextCollection
   switch (source.from) {
     case 'recentWatched':

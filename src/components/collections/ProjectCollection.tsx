@@ -11,8 +11,10 @@ import { Category, Project } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
 import ProjectCard from '../cards/ProjectCard'
+import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
+import CollectionCarousel from './CollectionCarousel'
 
 type ProjectData = DeepPick<
   Project,
@@ -39,6 +41,8 @@ export type ProjectCollectionProps = {
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
+  collectionVariant?: 'grid' | 'carousel'
+  carousel?: BaseCarouselProps
 }
 const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
@@ -48,7 +52,13 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection(props.name || window.location.pathname, 'project', ProjectCard)
+  const collectionName = props.name || window.location.pathname
+  const EntityElement = ProjectCard
+  const ElementCollection =
+    props.collectionVariant === 'carousel'
+      ? CollectionCarousel(collectionName, 'project', EntityElement, props.carousel)
+      : Collection(collectionName, 'project', EntityElement)
+
   let ContextCollection: ProjectContextCollection
   switch (source.from) {
     case 'publishedAt':

@@ -11,7 +11,9 @@ import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductRoleSource } from '../../types/options'
 import MemberPrimaryCard from '../cards/MemberPrimaryCard'
 import MemberSecondaryCard from '../cards/MemberSecondaryCard'
+import { BaseCarouselProps } from '../common/BaseCarousel'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
+import CollectionCarousel from './CollectionCarousel'
 
 type MemberData = DeepPick<Member, 'id' | 'name' | 'title' | 'abstract' | 'pictureUrl' | 'description'>
 
@@ -23,6 +25,8 @@ export type MemberCollectionProps = {
   variant?: 'primary' | 'secondary'
   layout?: CollectionLayout
   withSelector?: boolean
+  collectionVariant?: 'grid' | 'carousel'
+  carousel?: BaseCarouselProps
 }
 const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
@@ -32,15 +36,18 @@ const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection(
-    props.name || window.location.pathname,
-    'member',
+  const collectionName = props.name || window.location.pathname
+  const EntityElement =
     props.variant === 'primary'
       ? MemberPrimaryCard
       : props.variant === 'secondary'
       ? MemberSecondaryCard
-      : MemberPrimaryCard,
-  )
+      : MemberPrimaryCard
+  const ElementCollection =
+    props.collectionVariant === 'carousel'
+      ? CollectionCarousel(collectionName, 'member', EntityElement, props.carousel)
+      : Collection(collectionName, 'member', EntityElement)
+
   let ContextCollection: MemberContextCollection
   switch (source.from) {
     case 'role':

@@ -12,8 +12,10 @@ import { Category, ProductPlan, ProductRole, ProgramPackage } from '../../types/
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
 import ProgramPackageCard from '../cards/ProgramPackageCard'
+import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
+import CollectionCarousel from './CollectionCarousel'
 
 // @ts-ignore
 type ProgramPackageData = DeepPick<
@@ -38,6 +40,8 @@ export type ProgramPackageCollectionProps = {
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
   withSelector?: boolean
+  collectionVariant?: 'grid' | 'carousel'
+  carousel?: BaseCarouselProps
 }
 const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> = props => {
   const history = useHistory()
@@ -48,11 +52,13 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
     return null
   }
 
-  const ElementCollection = Collection(
-    props.name || window.location.pathname,
-    'program_package',
-    props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard,
-  )
+  const collectionName = props.name || window.location.pathname
+  const EntityElement = props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard
+  const ElementCollection =
+    props.collectionVariant === 'carousel'
+      ? CollectionCarousel(collectionName, 'program_package', EntityElement, props.carousel)
+      : Collection(collectionName, 'program_package', EntityElement)
+
   let ContextCollection: ProgramPackageContextCollection
   switch (source.from) {
     case 'publishedAt':
