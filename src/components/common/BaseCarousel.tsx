@@ -30,14 +30,30 @@ export type BaseCarouselProps = BaseSliderProps & { variant?: 'cover'; currentSl
 
 const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`
   .slick-arrow {
+    z-index: 1;
     pointer-events: ${props => props.editing && 'none'};
+  }
+  .slick-prev {
+    left: 4px;
+  }
+  .slick-next {
+    right: 4px;
   }
   .slick-next:before,
   .slick-prev:before {
     color: ${props => props.theme['@primary-color']};
   }
   .slick-dots {
+    z-index: 1;
+    bottom: 8px;
     pointer-events: ${props => props.editing && 'none'};
+    button::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #cdcdcd;
+    }
     .slick-active button::before {
       background-color: ${props => props.theme['@primary-color']};
     }
