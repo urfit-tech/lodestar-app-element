@@ -105,7 +105,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
-        event: 'detail',
+        event: 'productDetail',
         label: resource.title,
         value: resource.price,
         ecommerce: {
@@ -162,12 +162,13 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
-        event: options?.direct ? 'addToCartNow' : 'addToCart',
+        event: 'addToCart',
         label: resource.title,
         value: resource.price,
         ecommerce: {
           currencyCode: appCurrencyId,
           add: {
+            direct: options?.direct,
             products: [
               {
                 id: resource.sku || resource.id,
