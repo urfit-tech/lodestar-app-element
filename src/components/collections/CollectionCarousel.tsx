@@ -21,7 +21,6 @@ const CollectionCarousel = <P extends object>(
   name: string,
   type: ResourceType,
   ElementComponent: ElementComponent<P>,
-  carouselProps?: BaseCarouselProps,
 ) => {
   const tracking = useTracking()
   const { id: appId } = useApp()
@@ -29,6 +28,7 @@ const CollectionCarousel = <P extends object>(
     props: ElementProps<{
       data?: Array<D>
       layout?: CollectionLayout
+      carouselProps?: BaseCarouselProps
       renderElement?: (options: {
         data: D
         ElementComponent: ElementComponent<P>
@@ -41,7 +41,7 @@ const CollectionCarousel = <P extends object>(
     return (
       <div>
         <Tracking.Impression collection={name} resources={resourceCollection} />
-        <BaseCarousel {...carouselProps}>
+        <BaseCarousel {...props.carouselProps}>
           {props.loading ? (
             repeat(
               <div

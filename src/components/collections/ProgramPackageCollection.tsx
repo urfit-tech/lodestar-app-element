@@ -56,7 +56,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
   const EntityElement = props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
-      ? CollectionCarousel(collectionName, 'program_package', EntityElement, props.carousel)
+      ? CollectionCarousel(collectionName, 'program_package', EntityElement)
       : Collection(collectionName, 'program_package', EntityElement)
 
   let ContextCollection: ProgramPackageContextCollection
@@ -98,12 +98,13 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
             )}
             {children}
             {ctx.loading ? (
-              <ElementCollection layout={props.layout} loading />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
             ) : ctx.errors ? (
-              <ElementCollection layout={props.layout} errors={ctx.errors} />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={ctx.errors} />
             ) : (
               <ElementCollection
                 layout={props.layout}
+                carouselProps={props.carousel}
                 data={ctx.data?.filter(filter) || []}
                 renderElement={({ data: programPackage, ElementComponent: ProgramPackageElement, onClick }) => {
                   const cheapestPlan = findCheapestPlan(programPackage.plans)

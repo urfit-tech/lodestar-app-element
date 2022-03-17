@@ -56,7 +56,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
   const EntityElement = ProjectCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
-      ? CollectionCarousel(collectionName, 'project', EntityElement, props.carousel)
+      ? CollectionCarousel(collectionName, 'project', EntityElement)
       : Collection(collectionName, 'project', EntityElement)
 
   let ContextCollection: ProjectContextCollection
@@ -98,12 +98,13 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
             )}
             {children}
             {ctx.loading ? (
-              <ElementCollection layout={props.layout} loading />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
             ) : ctx.errors ? (
-              <ElementCollection layout={props.layout} errors={ctx.errors} />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={ctx.errors} />
             ) : (
               <ElementCollection
                 layout={props.layout}
+                carouselProps={props.carousel}
                 data={ctx.data?.filter(filter) || []}
                 renderElement={({ data: project, ElementComponent: ProjectElement }) => (
                   <ProjectElement

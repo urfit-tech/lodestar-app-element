@@ -45,7 +45,7 @@ const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
       : MemberPrimaryCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
-      ? CollectionCarousel(collectionName, 'member', EntityElement, props.carousel)
+      ? CollectionCarousel(collectionName, 'member', EntityElement)
       : Collection(collectionName, 'member', EntityElement)
 
   let ContextCollection: MemberContextCollection
@@ -66,12 +66,13 @@ const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
         return (
           <div className={props.className}>
             {ctx.loading ? (
-              <ElementCollection layout={props.layout} loading />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
             ) : ctx.errors ? (
-              <ElementCollection layout={props.layout} errors={ctx.errors} />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={ctx.errors} />
             ) : (
               <ElementCollection
                 layout={props.layout}
+                carouselProps={props.carousel}
                 data={ctx.data}
                 renderElement={({ data: member, ElementComponent: MemberElement }) => (
                   <MemberElement

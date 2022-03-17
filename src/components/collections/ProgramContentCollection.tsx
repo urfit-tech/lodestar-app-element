@@ -50,7 +50,7 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
   const EntityElement = props.variant === 'card' ? ProgramContentCard : ProgramContentCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
-      ? CollectionCarousel(collectionName, 'program_content', EntityElement, props.carousel)
+      ? CollectionCarousel(collectionName, 'program_content', EntityElement)
       : Collection(collectionName, 'program_content', EntityElement)
 
   let ContextCollection: ProgramContentContextCollection
@@ -71,12 +71,13 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
         return (
           <div className={props.className}>
             {ctx.loading ? (
-              <ElementCollection layout={props.layout} loading />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
             ) : ctx.errors ? (
-              <ElementCollection layout={props.layout} errors={ctx.errors} />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={ctx.errors} />
             ) : (
               <ElementCollection
                 layout={props.layout}
+                carouselProps={props.carousel}
                 data={ctx.data || []}
                 renderElement={({ data: programContent, ElementComponent: ProgramContentElement }) => {
                   return (

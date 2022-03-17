@@ -57,7 +57,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
   const EntityElement = props.variant === 'card' ? ActivityCard : ActivityCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
-      ? CollectionCarousel(collectionName, 'activity', EntityElement, props.carousel)
+      ? CollectionCarousel(collectionName, 'activity', EntityElement)
       : Collection(collectionName, 'activity', EntityElement)
 
   let ContextCollection: ActivityContextCollection
@@ -99,12 +99,13 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
             )}
             {children}
             {ctx.loading ? (
-              <ElementCollection layout={props.layout} loading />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
             ) : ctx.errors ? (
-              <ElementCollection layout={props.layout} errors={ctx.errors} />
+              <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={ctx.errors} />
             ) : (
               <ElementCollection
                 layout={props.layout}
+                carouselProps={props.carousel}
                 data={ctx.data?.filter(filter) || []}
                 renderElement={({ data: activity, ElementComponent: ActivityElement, onClick }) => (
                   <ActivityElement
