@@ -1,47 +1,50 @@
 import { Children, useEffect, useRef } from 'react'
 import { isFragment } from 'react-is'
-import Slider, { Settings } from 'react-slick'
+import Slider, { Settings as SliderProps } from 'react-slick'
 import styled from 'styled-components'
 import { ElementComponent, ElementProps } from '../../types/element'
-import { BaseCarouselProps } from './BaseCarousel'
+
+type BaseSliderProps = Pick<
+  SliderProps,
+  | 'adaptiveHeight'
+  | 'arrows'
+  | 'autoplay'
+  | 'autoplaySpeed'
+  | 'centerMode'
+  | 'centerPadding'
+  | 'dots'
+  | 'dotsClass'
+  | 'draggable'
+  | 'fade'
+  | 'infinite'
+  | 'rows'
+  | 'slidesPerRow'
+  | 'slidesToScroll'
+  | 'slidesToShow'
+  | 'speed'
+  | 'swipeToSlide'
+  | 'swipe'
+  | 'vertical'
+>
+export type BaseCarouselProps = BaseSliderProps & { variant?: 'cover'; currentSlide?: number }
 
 const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`
-  overflow: hidden;
-  min-height: 200px;
-  .slick-list {
-    position: absolute;
-    width: 100%;
-    top: 50%;
-    transform: translate(0, -50%) !important; // !important for the iframe of lodestar-app-admin
-  }
   .slick-arrow {
-    z-index: 1;
     pointer-events: ${props => props.editing && 'none'};
   }
-  .slick-prev {
-    left: 4px;
-  }
-  .slick-next {
-    right: 4px;
+  .slick-next:before,
+  .slick-prev:before {
+    color: ${props => props.theme['@primary-color']};
   }
   .slick-dots {
-    z-index: 1;
-    bottom: 8px;
     pointer-events: ${props => props.editing && 'none'};
-    button::before {
-      content: '';
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: #cdcdcd;
-    }
     .slick-active button::before {
       background-color: ${props => props.theme['@primary-color']};
     }
   }
 `
 
-const Carousel: ElementComponent<BaseCarouselProps> = props => {
+const BaseCarousel: ElementComponent<BaseCarouselProps> = props => {
   const sliderRef = useRef<Slider>(null)
   useEffect(() => {
     sliderRef.current?.slickGoTo(props.currentSlide || 0)
@@ -57,16 +60,25 @@ const Carousel: ElementComponent<BaseCarouselProps> = props => {
     const { children: fragmentChildren } = props.children.props
     children = fragmentChildren
   }
-  const settings: Settings = {
+  const settings: BaseSliderProps = {
+    adaptiveHeight: props.adaptiveHeight,
     arrows: props.arrows,
-    dots: props.dots,
-    slidesToShow: props.slidesToShow || 1,
-    slidesToScroll: props.slidesToScroll || 1,
     autoplay: props.autoplay,
     autoplaySpeed: props.autoplaySpeed || 3000,
-    swipe: props.swipe,
+    centerMode: props.centerMode,
+    centerPadding: props.centerPadding,
+    dots: props.dots,
+    dotsClass: props.dotsClass,
     draggable: props.draggable,
     infinite: props.infinite,
+    rows: props.rows || 1,
+    slidesPerRow: props.slidesPerRow || 1,
+    slidesToScroll: props.slidesToScroll || 1,
+    slidesToShow: props.slidesToShow || 1,
+    speed: props.speed,
+    swipeToSlide: props.swipeToSlide,
+    swipe: props.swipe,
+    vertical: props.vertical || false,
   }
   return (
     <StyledSlider
@@ -83,4 +95,4 @@ const Carousel: ElementComponent<BaseCarouselProps> = props => {
   )
 }
 
-export default Carousel
+export default BaseCarousel

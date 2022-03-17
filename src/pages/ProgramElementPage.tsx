@@ -6,18 +6,28 @@ const ProgramElementPage: React.VFC = () => {
       <CraftProgramCollection
         withSelector
         variant="primary"
-        source={{
-          from: 'currentPrice',
-          // min: 10,
-          max: 1000,
-          asc: true,
-          limit: 3,
-          defaultTagNames: ['教學', 'tag_1'],
-        }}
+        // source={{
+        //   from: 'currentPrice',
+        //   // min: 10,
+        //   max: 1000,
+        //   asc: true,
+        //   limit: 3,
+        //   defaultTagNames: ['教學', 'tag_1'],
+        // }}
         customStyle={{
           '.program .content': {
             backgroundColor: 'red',
           },
+        }}
+        collectionVariant="carousel"
+        carousel={{
+          // slidesToShow: 3,
+          arrows: true,
+          centerMode: true,
+          centerPadding: '60px',
+          infinite: true,
+          rows: 2,
+          slidesPerRow: 4,
         }}
       />
       <hr />

@@ -20,7 +20,9 @@ import {
 import ProgramPrimaryCard from '../cards/ProgramPrimaryCard'
 import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
 import Collection, { CollectionLayout, ContextCollection } from '../collections/Collection'
+import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
+import CollectionCarousel from './CollectionCarousel'
 
 // @ts-ignore
 type ProgramData = DeepPick<
@@ -46,6 +48,8 @@ export type ProgramCollectionProps = {
   variant?: 'primary' | 'secondary'
   layout?: CollectionLayout
   withSelector?: boolean
+  collectionVariant?: 'grid' | 'carousel'
+  carousel?: BaseCarouselProps
 }
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   const history = useHistory()
@@ -56,15 +60,17 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
     return null
   }
 
-  const ElementCollection = Collection(
-    props.name || window.location.pathname,
-    'program',
+  const collectionName = props.name || window.location.pathname
+  const EntityElement =
     props.variant === 'primary'
       ? ProgramPrimaryCard
       : props.variant === 'secondary'
       ? ProgramSecondaryCard
-      : ProgramPrimaryCard,
-  )
+      : ProgramPrimaryCard
+  const ElementCollection =
+    props.collectionVariant === 'carousel'
+      ? CollectionCarousel(collectionName, 'program', EntityElement, props.carousel)
+      : Collection(collectionName, 'program', EntityElement)
   let ContextCollection: ProgramContextCollection
   switch (source.from) {
     case 'publishedAt':
