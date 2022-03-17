@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/react-hooks'
+import ApolloClient from 'apollo-client'
 import gql from 'graphql-tag'
 import { useMemo } from 'react'
 import hasura from '../hasura'
@@ -33,6 +34,37 @@ export type Resource = {
   variants?: string[]
 }
 
+const composeResourceCollection = (urns: string[], data?: hasura.GET_RESOURCE_COLLECTION): (Resource | null)[] => {
+  return urns.map(urn => {
+    const resourceData = data?.resource.find(v => v.id === urn)
+    const [, resourceType, resourceId] = urn.split(':')
+    return resourceData
+      ? {
+          urn,
+          id: resourceId,
+          type: resourceType as ResourceType,
+          title: resourceData.name || '',
+          price: resourceData.price || 0,
+          categories: resourceData.categories || [],
+          variants: resourceData.variants || [],
+          sku: resourceData.sku || undefined,
+        }
+      : null
+  })
+}
+
+export const getResourceCollection = async (
+  apolloClient: ApolloClient<unknown>,
+  urns: string[],
+): Promise<(Resource | null)[]> => {
+  const { data } = await apolloClient.query<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>({
+    query: GET_RESOURCE_COLLECTION,
+    variables: { urns },
+  })
+  const resourceCollection = composeResourceCollection(urns, data)
+  return resourceCollection
+}
+
 export const useResourceCollection = (urns: string[]) => {
   const { data } = useQuery<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>(
     GET_RESOURCE_COLLECTION,
@@ -40,26 +72,7 @@ export const useResourceCollection = (urns: string[]) => {
       variables: { urns },
     },
   )
-  const resourceCollection: (Resource | null)[] = useMemo(
-    () =>
-      urns.map(urn => {
-        const resourceData = data?.resource.find(v => v.id === urn)
-        const [, resourceType, resourceId] = urn.split(':')
-        return resourceData
-          ? {
-              urn,
-              id: resourceId,
-              type: resourceType as ResourceType,
-              title: resourceData.name || '',
-              price: resourceData.price || 0,
-              categories: resourceData.categories || [],
-              variants: resourceData.variants || [],
-              sku: resourceData.sku || undefined,
-            }
-          : null
-      }),
-    [data, urns],
-  )
+  const resourceCollection: (Resource | null)[] = useMemo(() => composeResourceCollection(urns, data), [data, urns])
   return {
     resourceCollection,
   }

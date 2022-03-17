@@ -44,7 +44,7 @@ export const useMemberValidation = (email: string) => {
 
 export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Date }) => {
   const { formatMessage } = useIntl()
-  const [, targetId] = id.split('_')
+  const [type, targetId] = id.split('_')
 
   const { loading, error, data } = useQuery<hasura.GET_PRODUCT_SIMPLE, hasura.GET_PRODUCT_SIMPLEVariables>(
     GET_PRODUCT_SIMPLE,
@@ -198,6 +198,7 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
     loading,
     error,
     target,
+    type,
   }
 }
 

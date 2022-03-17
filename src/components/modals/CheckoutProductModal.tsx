@@ -18,14 +18,17 @@ import GroupBuyingRuleModal from '../../components/modals/GroupBuyingRuleModal'
 import PaymentSelector from '../../components/selectors/PaymentSelector'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
+import { notEmpty } from '../../helpers'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
 import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
+import { useResourceCollection } from '../../hooks/resource'
 import { useTappay } from '../../hooks/util'
 import { InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ShippingMethodProps } from '../../types/merchandise'
 import { BREAK_POINT } from '../common/Responsive'
+import Tracking from '../common/Tracking'
 import CheckoutGroupBuyingForm, { StyledBlockTitle, StyledListItem } from '../forms/CheckoutGroupBuyingForm'
 import TapPayForm, { TPCreditCard } from '../forms/TapPayForm'
 import CheckoutProductReferrerInput from '../inputs/CheckoutProductReferrerInput'
@@ -133,10 +136,11 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { formatMessage } = useIntl()
   const history = useHistory()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { enabledModules, settings } = useApp()
+  const { enabledModules, settings, id: appId } = useApp()
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
+  const [checkoutAlready, setCheckoutAlready] = useState(false)
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
   const [sharingCode = window.sessionStorage.getItem(sessionStorageKey)] = useQueryParam('sharing', StringParam)
@@ -169,7 +173,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   // checkout
   const [productId, setProductId] = useState(defaultProductId)
-  const { target } = useSimpleProduct({ id: productId, startedAt })
+  const { type: productType, target: productTarget } = useSimpleProduct({ id: productId, startedAt })
+  const { resourceCollection } = useResourceCollection([`${appId}:${productType}:${productTarget}`])
 
   // cart information
   const memberCartInfo: {
@@ -205,7 +210,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   const initialPayment = useMemo(
     () =>
-      (target?.isSubscription
+      (productTarget?.isSubscription
         ? {
             gateway: settings['payment.subscription.default_gateway'] || 'tappay',
             method: 'credit',
@@ -216,14 +221,14 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             ...memberCartInfo.payment,
             ...cachedCartInfo.payment,
           }) as PaymentProps,
-    [target?.isSubscription, settings, memberCartInfo.payment, cachedCartInfo.payment],
+    [productTarget?.isSubscription, settings, memberCartInfo.payment, cachedCartInfo.payment],
   )
 
   useEffect(() => {
-    if (typeof target?.isSubscription === 'boolean') {
+    if (typeof productTarget?.isSubscription === 'boolean') {
       setPayment(initialPayment)
     }
-  }, [target?.isSubscription, initialPayment])
+  }, [productTarget?.isSubscription, initialPayment])
 
   const shippingRef = useRef<HTMLDivElement | null>(null)
   const invoiceRef = useRef<HTMLDivElement | null>(null)
@@ -240,7 +245,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { totalPrice, placeOrder, check, orderChecking, orderPlacing } = useCheck({
     productIds: [productId],
     discountId,
-    shipping: target?.isPhysical
+    shipping: productTarget?.isPhysical
       ? shipping
       : productId.startsWith('MerchandiseSpec_')
       ? { address: currentMember?.email }
@@ -269,7 +274,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     return renderTrigger?.({ isLoginAlert: true })
   }
 
-  if (target === null || payment === undefined) {
+  if (productTarget === null || payment === undefined) {
     return renderTrigger?.({ isLoading: isAuthenticating, disable: true })
   }
 
@@ -280,7 +285,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     if (isFieldsValidate) {
       ;({ isValidInvoice, isValidShipping } = isFieldsValidate({ invoice, shipping }))
     } else {
-      isValidShipping = !target.isPhysical || validateShipping(shipping)
+      isValidShipping = !productTarget.isPhysical || validateShipping(shipping)
       isValidInvoice = settings['feature.invoice.disable'] ? true : validateInvoice(invoice).length === 0
     }
 
@@ -291,7 +296,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     if (!isValidShipping) {
       shippingRef.current?.scrollIntoView({ behavior: 'smooth' })
       return
-    } else if ((totalPrice > 0 || target.discountDownPrice) && !isValidInvoice) {
+    } else if ((totalPrice > 0 || productTarget.discountDownPrice) && !isValidInvoice) {
       invoiceRef.current?.scrollIntoView({ behavior: 'smooth' })
       return
     }
@@ -311,7 +316,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
     if (settings['tracking.fb_pixel_id']) {
       ReactPixel.track('AddToCart', {
-        content_name: target.title || productId,
+        content_name: productTarget.title || productId,
         value: totalPrice,
         currency: 'TWD',
       })
@@ -319,7 +324,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     if (settings['tracking.ga_id']) {
       ReactGA.plugin.execute('ec', 'addProduct', {
         id: productId,
-        name: target.title || productId,
+        name: productTarget.title || productId,
         category: productId.split('_')[0] || 'Unknown',
         price: `${totalPrice}`,
         quantity: '1',
@@ -330,7 +335,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     }
 
     // free subscription should bind card first
-    if (target.isSubscription && totalPrice <= 0 && memberCreditCards.length === 0) {
+    if (productTarget.isSubscription && totalPrice <= 0 && memberCreditCards.length === 0) {
       await new Promise((resolve, reject) => {
         TPDirect.card.getPrime(({ status, card: { prime } }: { status: number; card: { prime: string } }) => {
           axios({
@@ -360,7 +365,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     }
 
     placeOrder(
-      target.isSubscription ? 'subscription' : 'perpetual',
+      productTarget.isSubscription ? 'subscription' : 'perpetual',
       {
         ...invoice,
         referrerEmail: referrerEmail || undefined,
@@ -387,14 +392,21 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   return (
     <>
+      {!checkoutAlready && (
+        <Tracking.Checkout
+          resources={resourceCollection.filter(notEmpty)}
+          onCheckout={() => setCheckoutAlready(true)}
+        />
+      )}
+
       {renderTrigger({
         onOpen,
         onProductChange: productId => setProductId(productId),
         isLoading: isAuthenticating,
-        isSubscription: target.isSubscription,
+        isSubscription: productTarget.isSubscription,
         disable:
-          (target.endedAt ? new Date(target.endedAt) < new Date(now()) : false) ||
-          (target.expiredAt ? new Date(target.expiredAt) < new Date(now()) : false),
+          (productTarget.endedAt ? new Date(productTarget.endedAt) < new Date(now()) : false) ||
+          (productTarget.expiredAt ? new Date(productTarget.expiredAt) < new Date(now()) : false),
       })}
       <CommonModal
         title={<StyledTitle className="mb-4">{formatMessage(checkoutMessages.title.cart)}</StyledTitle>}
@@ -422,7 +434,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
         {!!warningText && <StyledWarningText>{warningText}</StyledWarningText>}
 
-        {target.isPhysical && (
+        {productTarget.isPhysical && (
           <div ref={shippingRef}>
             <ShippingInput
               value={shipping}
@@ -433,7 +445,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           </div>
         )}
 
-        {enabledModules.group_buying && !!target.groupBuyingPeople && target.groupBuyingPeople > 1 && (
+        {enabledModules.group_buying && !!productTarget.groupBuyingPeople && productTarget.groupBuyingPeople > 1 && (
           <div ref={groupBuyingRef}>
             <StyledBlockTitle className="mb-3">{formatMessage(checkoutMessages.label.groupBuying)}</StyledBlockTitle>
             <OrderedList className="mb-4">
@@ -444,22 +456,22 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
               </StyledListItem>
             </OrderedList>
             <CheckoutGroupBuyingForm
-              title={target.title || ''}
-              partnerCount={target.groupBuyingPeople - 1}
+              title={productTarget.title || ''}
+              partnerCount={productTarget.groupBuyingPeople - 1}
               onChange={value => setGroupBuying(value)}
             />
           </div>
         )}
 
-        {totalPrice > 0 && target.isSubscription === false && (
+        {totalPrice > 0 && productTarget.isSubscription === false && (
           <div className="mb-5" ref={paymentMethodRef}>
             <PaymentSelector value={payment} onChange={v => setPayment(v)} isValidating={isValidating} />
           </div>
         )}
 
-        {totalPrice <= 0 && target.isSubscription && <TapPayForm onUpdate={setTpCreditCard} />}
+        {totalPrice <= 0 && productTarget.isSubscription && <TapPayForm onUpdate={setTpCreditCard} />}
 
-        {(totalPrice > 0 || target.discountDownPrice) && (
+        {(totalPrice > 0 || productTarget.discountDownPrice) && (
           <>
             <div ref={invoiceRef} className="mb-5">
               {renderInvoice?.({ invoice, setInvoice, isValidating }) ||
@@ -468,7 +480,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                     value={invoice}
                     onChange={value => setInvoice(value)}
                     isValidating={isValidating}
-                    shouldSameToShippingCheckboxDisplay={target.isPhysical}
+                    shouldSameToShippingCheckboxDisplay={productTarget.isPhysical}
                   />
                 ))}
             </div>
@@ -536,9 +548,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             colorScheme="primary"
             isLoading={orderPlacing}
             onClick={handleSubmit}
-            disabled={totalPrice === 0 && target.isSubscription && !isCreditCardReady}
+            disabled={totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady}
           >
-            {target.isSubscription
+            {productTarget.isSubscription
               ? formatMessage(commonMessages.button.subscribeNow)
               : formatMessage(checkoutMessages.button.cartSubmit)}
           </Button>
