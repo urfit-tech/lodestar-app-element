@@ -21,13 +21,11 @@ const ProgramElementPage: React.VFC = () => {
         }}
         collectionVariant="carousel"
         carousel={{
-          // slidesToShow: 3,
+          slidesToShow: 3,
           arrows: true,
-          centerMode: true,
-          centerPadding: '60px',
+          dots: true,
+          // centerPadding: '60px',
           infinite: true,
-          rows: 2,
-          slidesPerRow: 4,
         }}
       />
       <hr />

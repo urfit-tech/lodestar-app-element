@@ -62,15 +62,23 @@ const Carousel: ElementComponent<BaseCarouselProps> = props => {
     children = fragmentChildren
   }
   const settings: Settings = {
-    arrows: props.arrows,
-    dots: props.dots,
-    slidesToShow: props.slidesToShow || 1,
-    slidesToScroll: props.slidesToScroll || 1,
-    autoplay: props.autoplay,
-    autoplaySpeed: props.autoplaySpeed || 3000,
-    swipe: props.swipe,
-    draggable: props.draggable,
-    infinite: props.infinite,
+    adaptiveHeight: Boolean(props.adaptiveHeight),
+    arrows: Boolean(props.arrows),
+    autoplay: Boolean(props.autoplay),
+    autoplaySpeed: Number(props.autoplaySpeed) || 3000,
+    centerMode: Boolean(props.centerMode),
+    centerPadding: props.centerPadding,
+    dots: Boolean(props.dots),
+    draggable: Boolean(props.draggable),
+    infinite: Boolean(props.infinite),
+    rows: Number(props.rows) || 1,
+    slidesPerRow: Number(props.slidesPerRow) || 1,
+    slidesToScroll: Number(props.slidesToScroll) || 1,
+    slidesToShow: Number(props.slidesToShow) || 1,
+    speed: Number(props.speed) || 500,
+    swipeToSlide: Boolean(props.swipeToSlide),
+    swipe: Boolean(props.swipe),
+    vertical: Boolean(props.vertical),
   }
   return (
     <StyledSlider
