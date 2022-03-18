@@ -11,6 +11,7 @@ import { Node, NodeId, NodeTree, SerializedNodes, useEditor, useNode, UserCompon
 import { getRandomId } from '@craftjs/utils'
 import { clone, mergeDeepRight } from 'ramda'
 import { useMediaQuery } from 'react-responsive'
+import { stringify as stringifyStyle } from 'react-style-editor'
 import styled, { css, CSSObject } from 'styled-components'
 import { ElementBaseProps, ElementComponent, ElementProps } from '../../types/element'
 import { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
@@ -92,6 +93,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
         customStyle={props.customStyle}
       >
         {editor.editing && node.events.hovered && <CraftController />}
+        <style>{stringifyStyle(node.data.custom?.style || [])}</style>
         <StyledCraftElement
           {...(responsiveProps as ElementProps<P>)}
           customStyle={{

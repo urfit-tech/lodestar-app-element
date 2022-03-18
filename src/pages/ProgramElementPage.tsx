@@ -6,14 +6,10 @@ const ProgramElementPage: React.VFC = () => {
       <CraftProgramCollection
         withSelector
         variant="primary"
-        // source={{
-        //   from: 'currentPrice',
-        //   // min: 10,
-        //   max: 1000,
-        //   asc: true,
-        //   limit: 3,
-        //   defaultTagNames: ['教學', 'tag_1'],
-        // }}
+        source={{
+          from: 'publishedAt',
+          limit: 3,
+        }}
         customStyle={{
           '.program .content': {
             backgroundColor: 'red',
