@@ -95,12 +95,12 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
             ) : (
               <StyledExtraBlock>
                 <div className="d-flex align-items-center">
-                  <Icon mr="1" as={AiOutlineClockCircle} />
+                  <Icon className="mr-1" as={AiOutlineClockCircle} />
                   {durationFormatter(props.totalDuration)}
                 </div>
                 {props.isEnrolledCountVisible && (
                   <div className="d-flex align-items-center">
-                    <Icon mr="1" as={AiOutlineUser} />
+                    <Icon className="mr-1" as={AiOutlineUser} />
                     {enrolledCount}
                   </div>
                 )}
