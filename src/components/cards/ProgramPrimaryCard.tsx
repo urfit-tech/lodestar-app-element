@@ -1,8 +1,11 @@
+import { Icon } from '@chakra-ui/react'
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
+import { AiOutlineClockCircle, AiOutlineUser } from 'react-icons/ai'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
+import { useProgramEnrollmentAggregate } from '../../hooks/program'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProgramElementProps } from '../../types/element'
 import { MultiLineTruncationMixin } from '../common'
@@ -29,9 +32,17 @@ const StyledCard = styled(Card)`
   padding: 0;
   overflow: hidden;
 `
+const StyledExtraBlock = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`
 const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
   const { loading, errors } = props
   const history = useHistory()
+  const { data: enrolledCount, loading: enrolledCountLoading } = useProgramEnrollmentAggregate(props.id || '', {
+    skip: !props.id || !props.isEnrolledCountVisible,
+  })
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
@@ -78,7 +89,23 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
                 />
               ) : null}
             </div>
-            <div>{loading ? <SkeletonText /> : durationFormatter(props.totalDuration)}</div>
+
+            {loading ? (
+              <SkeletonText />
+            ) : (
+              <StyledExtraBlock>
+                <div className="d-flex align-items-center">
+                  <Icon mr="1" as={AiOutlineClockCircle} />
+                  {durationFormatter(props.totalDuration)}
+                </div>
+                {props.isEnrolledCountVisible && (
+                  <div className="d-flex align-items-center">
+                    <Icon mr="1" as={AiOutlineUser} />
+                    {enrolledCount}
+                  </div>
+                )}
+              </StyledExtraBlock>
+            )}
           </Card.MetaBlock>
         </Card.Content>
       </StyledCard>

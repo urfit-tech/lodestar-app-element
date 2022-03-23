@@ -79,6 +79,7 @@ export type Program = {
   salePrice: number | null
   soldAt: Date | null
   totalDuration: number
+  isEnrolledCountVisible: boolean
   roles: ProductRole[]
   plans: ProductPlan[]
   contentSections: Omit<ProgramContentSection, 'program'>[]

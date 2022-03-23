@@ -457,6 +457,7 @@ export interface GET_PROGRAM_COLLECTION_program {
   list_price: any | null
   sale_price: any | null
   sold_at: any | null
+  is_enrolled_count_visible: boolean
   /**
    * An array relationship
    */
@@ -1955,6 +1956,36 @@ export interface UPDATE_MEMBER_METADATAVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_PROGRAM_ENROLLMENT_AGGREGATE
+// ====================================================
+
+export interface GET_PROGRAM_ENROLLMENT_AGGREGATE_program_plan_enrollment_aggregate_aggregate {
+  __typename: 'program_plan_enrollment_aggregate_fields'
+  count: number | null
+}
+
+export interface GET_PROGRAM_ENROLLMENT_AGGREGATE_program_plan_enrollment_aggregate {
+  __typename: 'program_plan_enrollment_aggregate'
+  aggregate: GET_PROGRAM_ENROLLMENT_AGGREGATE_program_plan_enrollment_aggregate_aggregate | null
+}
+
+export interface GET_PROGRAM_ENROLLMENT_AGGREGATE {
+  /**
+   * fetch aggregated fields from the table: "program_plan_enrollment"
+   */
+  program_plan_enrollment_aggregate: GET_PROGRAM_ENROLLMENT_AGGREGATE_program_plan_enrollment_aggregate
+}
+
+export interface GET_PROGRAM_ENROLLMENT_AGGREGATEVariables {
+  programId: any
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_RESOURCE_COLLECTION
 // ====================================================
 
@@ -1962,7 +1993,7 @@ export interface GET_RESOURCE_COLLECTION_resource {
   __typename: 'resource'
   id: string | null
   name: string | null
-  price: number | null
+  price: any | null
   categories: any | null
   variants: any | null
   sku: string | null
@@ -2222,6 +2253,7 @@ export interface programFields {
   list_price: any | null
   sale_price: any | null
   sold_at: any | null
+  is_enrolled_count_visible: boolean
   /**
    * An array relationship
    */
@@ -3226,9 +3258,11 @@ export enum category_constraint {
 export enum category_update_column {
   app_id = 'app_id',
   class = 'class',
+  created_at = 'created_at',
   id = 'id',
   name = 'name',
   position = 'position',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -3365,8 +3399,10 @@ export enum coupon_code_update_column {
   code = 'code',
   count = 'count',
   coupon_plan_id = 'coupon_plan_id',
+  created_at = 'created_at',
   id = 'id',
   remaining = 'remaining',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -3406,6 +3442,7 @@ export enum coupon_plan_product_update_column {
 export enum coupon_plan_update_column {
   amount = 'amount',
   constraint = 'constraint',
+  created_at = 'created_at',
   description = 'description',
   ended_at = 'ended_at',
   id = 'id',
@@ -4217,6 +4254,7 @@ export enum order_log_update_column {
   expired_at = 'expired_at',
   id = 'id',
   invoice = 'invoice',
+  invoice_issued_at = 'invoice_issued_at',
   is_deleted = 'is_deleted',
   last_paid_at = 'last_paid_at',
   member_id = 'member_id',
@@ -4369,6 +4407,7 @@ export enum payment_log_update_column {
   created_at = 'created_at',
   custom_no = 'custom_no',
   gateway = 'gateway',
+  invoice_issued_at = 'invoice_issued_at',
   method = 'method',
   no = 'no',
   options = 'options',
@@ -4746,8 +4785,10 @@ export enum post_update_column {
   description = 'description',
   id = 'id',
   is_deleted = 'is_deleted',
+  meta_tag = 'meta_tag',
   position = 'position',
   published_at = 'published_at',
+  source = 'source',
   title = 'title',
   updated_at = 'updated_at',
   video_url = 'video_url',
@@ -4829,10 +4870,12 @@ export enum product_update_column {
   coin_back = 'coin_back',
   coin_period_amount = 'coin_period_amount',
   coin_period_type = 'coin_period_type',
+  created_at = 'created_at',
   id = 'id',
   sku = 'sku',
   target = 'target',
   type = 'type',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -5116,6 +5159,7 @@ export enum program_package_update_column {
   creator_id = 'creator_id',
   description = 'description',
   id = 'id',
+  meta_tag = 'meta_tag',
   published_at = 'published_at',
   title = 'title',
 }
@@ -5245,12 +5289,14 @@ export enum program_update_column {
   in_advance = 'in_advance',
   is_countdown_timer_visible = 'is_countdown_timer_visible',
   is_deleted = 'is_deleted',
+  is_enrolled_count_visible = 'is_enrolled_count_visible',
   is_introduction_section_visible = 'is_introduction_section_visible',
   is_issues_open = 'is_issues_open',
   is_private = 'is_private',
   is_sold_out = 'is_sold_out',
   is_subscription = 'is_subscription',
   list_price = 'list_price',
+  meta_tag = 'meta_tag',
   position = 'position',
   published_at = 'published_at',
   sale_price = 'sale_price',
@@ -5411,6 +5457,24 @@ export enum property_update_column {
  */
 export enum review_constraint {
   review_pkey = 'review_pkey',
+}
+
+/**
+ * unique or primary key constraints on table "review_reaction"
+ */
+export enum review_reaction_constraint {
+  review_reaction_pkey = 'review_reaction_pkey',
+  review_reaction_review_id_member_id_key = 'review_reaction_review_id_member_id_key',
+}
+
+/**
+ * update columns of table "review_reaction"
+ */
+export enum review_reaction_update_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  review_id = 'review_id',
 }
 
 /**
@@ -5636,6 +5700,7 @@ export enum voucher_plan_product_update_column {
  */
 export enum voucher_plan_update_column {
   app_id = 'app_id',
+  created_at = 'created_at',
   description = 'description',
   ended_at = 'ended_at',
   id = 'id',
@@ -5643,6 +5708,7 @@ export enum voucher_plan_update_column {
   product_quantity_limit = 'product_quantity_limit',
   started_at = 'started_at',
   title = 'title',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -8484,6 +8550,7 @@ export interface category_bool_exp {
   activity_categories?: activity_category_bool_exp | null
   app_id?: String_comparison_exp | null
   class?: String_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
   creator_categories?: creator_category_bool_exp | null
   id?: String_comparison_exp | null
   member_categories?: member_category_bool_exp | null
@@ -8496,6 +8563,7 @@ export interface category_bool_exp {
   program_categories?: program_category_bool_exp | null
   program_package_categories?: program_package_category_bool_exp | null
   project_categories?: project_category_bool_exp | null
+  updated_at?: timestamptz_comparison_exp | null
 }
 
 /**
@@ -8505,6 +8573,7 @@ export interface category_insert_input {
   activity_categories?: activity_category_arr_rel_insert_input | null
   app_id?: string | null
   class?: string | null
+  created_at?: any | null
   creator_categories?: creator_category_arr_rel_insert_input | null
   id?: string | null
   member_categories?: member_category_arr_rel_insert_input | null
@@ -8517,6 +8586,7 @@ export interface category_insert_input {
   program_categories?: program_category_arr_rel_insert_input | null
   program_package_categories?: program_package_category_arr_rel_insert_input | null
   project_categories?: project_category_arr_rel_insert_input | null
+  updated_at?: any | null
 }
 
 /**
@@ -8942,8 +9012,10 @@ export interface coupon_code_bool_exp {
   coupon_plan?: coupon_plan_bool_exp | null
   coupon_plan_id?: uuid_comparison_exp | null
   coupons?: coupon_bool_exp | null
+  created_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
   remaining?: Int_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
 }
 
 /**
@@ -8956,8 +9028,10 @@ export interface coupon_code_insert_input {
   coupon_plan?: coupon_plan_obj_rel_insert_input | null
   coupon_plan_id?: any | null
   coupons?: coupon_arr_rel_insert_input | null
+  created_at?: any | null
   id?: any | null
   remaining?: number | null
+  updated_at?: any | null
 }
 
 /**
@@ -9018,6 +9092,7 @@ export interface coupon_plan_bool_exp {
   constraint?: numeric_comparison_exp | null
   coupon_codes?: coupon_code_bool_exp | null
   coupon_plan_products?: coupon_plan_product_bool_exp | null
+  created_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -9036,6 +9111,7 @@ export interface coupon_plan_insert_input {
   constraint?: any | null
   coupon_codes?: coupon_code_arr_rel_insert_input | null
   coupon_plan_products?: coupon_plan_product_arr_rel_insert_input | null
+  created_at?: any | null
   description?: string | null
   ended_at?: any | null
   id?: any | null
@@ -11782,6 +11858,7 @@ export interface order_log_bool_exp {
   expired_at?: timestamptz_comparison_exp | null
   id?: String_comparison_exp | null
   invoice?: jsonb_comparison_exp | null
+  invoice_issued_at?: timestamptz_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
   last_paid_at?: timestamptz_comparison_exp | null
   member?: member_bool_exp | null
@@ -11821,6 +11898,7 @@ export interface order_log_insert_input {
   expired_at?: any | null
   id?: string | null
   invoice?: any | null
+  invoice_issued_at?: any | null
   is_deleted?: boolean | null
   last_paid_at?: any | null
   member?: member_obj_rel_insert_input | null
@@ -12409,6 +12487,7 @@ export interface payment_log_bool_exp {
   created_at?: timestamptz_comparison_exp | null
   custom_no?: String_comparison_exp | null
   gateway?: String_comparison_exp | null
+  invoice_issued_at?: timestamptz_comparison_exp | null
   method?: String_comparison_exp | null
   no?: String_comparison_exp | null
   options?: jsonb_comparison_exp | null
@@ -12429,6 +12508,7 @@ export interface payment_log_insert_input {
   created_at?: any | null
   custom_no?: string | null
   gateway?: string | null
+  invoice_issued_at?: any | null
   method?: string | null
   no?: string | null
   options?: any | null
@@ -13293,12 +13373,14 @@ export interface post_bool_exp {
   description?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
+  meta_tag?: jsonb_comparison_exp | null
   position?: Int_comparison_exp | null
   post_categories?: post_category_bool_exp | null
   post_merchandises?: post_merchandise_bool_exp | null
   post_roles?: post_role_bool_exp | null
   post_tags?: post_tag_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
+  source?: String_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
   video_url?: String_comparison_exp | null
@@ -13362,12 +13444,14 @@ export interface post_insert_input {
   description?: string | null
   id?: any | null
   is_deleted?: boolean | null
+  meta_tag?: any | null
   position?: number | null
   post_categories?: post_category_arr_rel_insert_input | null
   post_merchandises?: post_merchandise_arr_rel_insert_input | null
   post_roles?: post_role_arr_rel_insert_input | null
   post_tags?: post_tag_arr_rel_insert_input | null
   published_at?: any | null
+  source?: string | null
   title?: string | null
   updated_at?: any | null
   video_url?: string | null
@@ -13387,6 +13471,7 @@ export interface post_max_order_by {
   id?: order_by | null
   position?: order_by | null
   published_at?: order_by | null
+  source?: order_by | null
   title?: order_by | null
   updated_at?: order_by | null
   video_url?: order_by | null
@@ -13450,6 +13535,7 @@ export interface post_min_order_by {
   id?: order_by | null
   position?: order_by | null
   published_at?: order_by | null
+  source?: order_by | null
   title?: order_by | null
   updated_at?: order_by | null
   video_url?: order_by | null
@@ -13836,6 +13922,7 @@ export interface product_bool_exp {
   coin_period_amount?: Int_comparison_exp | null
   coin_period_type?: String_comparison_exp | null
   coupon_plan_products?: coupon_plan_product_bool_exp | null
+  created_at?: timestamptz_comparison_exp | null
   id?: String_comparison_exp | null
   order_products?: order_product_bool_exp | null
   product_enrollments?: product_enrollment_bool_exp | null
@@ -13845,6 +13932,7 @@ export interface product_bool_exp {
   sku?: String_comparison_exp | null
   target?: String_comparison_exp | null
   type?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
   voucher_plan_products?: voucher_plan_product_bool_exp | null
 }
 
@@ -13872,12 +13960,14 @@ export interface product_insert_input {
   coin_period_amount?: number | null
   coin_period_type?: string | null
   coupon_plan_products?: coupon_plan_product_arr_rel_insert_input | null
+  created_at?: any | null
   id?: string | null
   order_products?: order_product_arr_rel_insert_input | null
   product_inventories?: product_inventory_arr_rel_insert_input | null
   sku?: string | null
   target?: string | null
   type?: string | null
+  updated_at?: any | null
   voucher_plan_products?: voucher_plan_product_arr_rel_insert_input | null
 }
 
@@ -14214,12 +14304,14 @@ export interface program_bool_exp {
   in_advance?: Boolean_comparison_exp | null
   is_countdown_timer_visible?: Boolean_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
+  is_enrolled_count_visible?: Boolean_comparison_exp | null
   is_introduction_section_visible?: Boolean_comparison_exp | null
   is_issues_open?: Boolean_comparison_exp | null
   is_private?: Boolean_comparison_exp | null
   is_sold_out?: Boolean_comparison_exp | null
   is_subscription?: Boolean_comparison_exp | null
   list_price?: numeric_comparison_exp | null
+  meta_tag?: jsonb_comparison_exp | null
   package_items?: package_item_bool_exp | null
   position?: Int_comparison_exp | null
   program_announcements?: program_announcement_bool_exp | null
@@ -14229,10 +14321,12 @@ export interface program_bool_exp {
   program_content_enrollments?: program_content_enrollment_bool_exp | null
   program_content_progress_enrollments?: program_content_progress_enrollment_bool_exp | null
   program_content_sections?: program_content_section_bool_exp | null
+  program_duration?: program_duration_bool_exp | null
   program_enrollments?: program_enrollment_bool_exp | null
   program_package_programs?: program_package_program_bool_exp | null
   program_plans?: program_plan_bool_exp | null
   program_related_items?: program_related_item_bool_exp | null
+  program_review_score?: program_review_score_bool_exp | null
   program_roles?: program_role_bool_exp | null
   program_tags?: program_tag_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
@@ -15533,6 +15627,27 @@ export interface program_content_video_on_conflict {
 }
 
 /**
+ * Boolean expression to filter rows from the table "program_duration". All fields are combined with a logical 'AND'.
+ */
+export interface program_duration_bool_exp {
+  _and?: (program_duration_bool_exp | null)[] | null
+  _not?: program_duration_bool_exp | null
+  _or?: (program_duration_bool_exp | null)[] | null
+  duration?: numeric_comparison_exp | null
+  program?: program_bool_exp | null
+  program_id?: uuid_comparison_exp | null
+}
+
+/**
+ * ordering options when selecting data from "program_duration"
+ */
+export interface program_duration_order_by {
+  duration?: order_by | null
+  program?: program_order_by | null
+  program_id?: order_by | null
+}
+
+/**
  * order by aggregate values of table "program_editor"
  */
 export interface program_editor_aggregate_order_by {
@@ -15649,12 +15764,14 @@ export interface program_insert_input {
   in_advance?: boolean | null
   is_countdown_timer_visible?: boolean | null
   is_deleted?: boolean | null
+  is_enrolled_count_visible?: boolean | null
   is_introduction_section_visible?: boolean | null
   is_issues_open?: boolean | null
   is_private?: boolean | null
   is_sold_out?: boolean | null
   is_subscription?: boolean | null
   list_price?: any | null
+  meta_tag?: any | null
   package_items?: package_item_arr_rel_insert_input | null
   position?: number | null
   program_announcements?: program_announcement_arr_rel_insert_input | null
@@ -15747,12 +15864,14 @@ export interface program_order_by {
   in_advance?: order_by | null
   is_countdown_timer_visible?: order_by | null
   is_deleted?: order_by | null
+  is_enrolled_count_visible?: order_by | null
   is_introduction_section_visible?: order_by | null
   is_issues_open?: order_by | null
   is_private?: order_by | null
   is_sold_out?: order_by | null
   is_subscription?: order_by | null
   list_price?: order_by | null
+  meta_tag?: order_by | null
   package_items_aggregate?: package_item_aggregate_order_by | null
   position?: order_by | null
   program_announcements_aggregate?: program_announcement_aggregate_order_by | null
@@ -15762,10 +15881,12 @@ export interface program_order_by {
   program_content_enrollments_aggregate?: program_content_enrollment_aggregate_order_by | null
   program_content_progress_enrollments_aggregate?: program_content_progress_enrollment_aggregate_order_by | null
   program_content_sections_aggregate?: program_content_section_aggregate_order_by | null
+  program_duration?: program_duration_order_by | null
   program_enrollments_aggregate?: program_enrollment_aggregate_order_by | null
   program_package_programs_aggregate?: program_package_program_aggregate_order_by | null
   program_plans_aggregate?: program_plan_aggregate_order_by | null
   program_related_items_aggregate?: program_related_item_aggregate_order_by | null
+  program_review_score?: program_review_score_order_by | null
   program_roles_aggregate?: program_role_aggregate_order_by | null
   program_tags_aggregate?: program_tag_aggregate_order_by | null
   published_at?: order_by | null
@@ -15808,6 +15929,7 @@ export interface program_package_bool_exp {
   creator_id?: String_comparison_exp | null
   description?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
+  meta_tag?: jsonb_comparison_exp | null
   program_package_categories?: program_package_category_bool_exp | null
   program_package_plans?: program_package_plan_bool_exp | null
   program_package_programs?: program_package_program_bool_exp | null
@@ -15963,6 +16085,7 @@ export interface program_package_insert_input {
   creator_id?: string | null
   description?: string | null
   id?: any | null
+  meta_tag?: any | null
   program_package_categories?: program_package_category_arr_rel_insert_input | null
   program_package_plans?: program_package_plan_arr_rel_insert_input | null
   program_package_programs?: program_package_program_arr_rel_insert_input | null
@@ -16027,6 +16150,7 @@ export interface program_package_order_by {
   creator_id?: order_by | null
   description?: order_by | null
   id?: order_by | null
+  meta_tag?: order_by | null
   program_package_categories_aggregate?: program_package_category_aggregate_order_by | null
   program_package_plans_aggregate?: program_package_plan_aggregate_order_by | null
   program_package_programs_aggregate?: program_package_program_aggregate_order_by | null
@@ -16890,6 +17014,27 @@ export interface program_related_item_var_samp_order_by {
  */
 export interface program_related_item_variance_order_by {
   weight?: order_by | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "program_review_score". All fields are combined with a logical 'AND'.
+ */
+export interface program_review_score_bool_exp {
+  _and?: (program_review_score_bool_exp | null)[] | null
+  _not?: program_review_score_bool_exp | null
+  _or?: (program_review_score_bool_exp | null)[] | null
+  program?: program_bool_exp | null
+  program_id?: uuid_comparison_exp | null
+  score?: numeric_comparison_exp | null
+}
+
+/**
+ * ordering options when selecting data from "program_review_score"
+ */
+export interface program_review_score_order_by {
+  program?: program_order_by | null
+  program_id?: order_by | null
+  score?: order_by | null
 }
 
 /**
@@ -18126,6 +18271,7 @@ export interface review_bool_exp {
   member_id?: String_comparison_exp | null
   path?: String_comparison_exp | null
   private_content?: String_comparison_exp | null
+  review_reactions?: review_reaction_bool_exp | null
   review_replies?: review_reply_bool_exp | null
   score?: numeric_comparison_exp | null
   title?: String_comparison_exp | null
@@ -18144,6 +18290,7 @@ export interface review_insert_input {
   member_id?: string | null
   path?: string | null
   private_content?: string | null
+  review_reactions?: review_reaction_arr_rel_insert_input | null
   review_replies?: review_reply_arr_rel_insert_input | null
   score?: any | null
   title?: string | null
@@ -18165,6 +18312,50 @@ export interface review_on_conflict {
   constraint: review_constraint
   update_columns: review_update_column[]
   where?: review_bool_exp | null
+}
+
+/**
+ * input type for inserting array relation for remote table "review_reaction"
+ */
+export interface review_reaction_arr_rel_insert_input {
+  data: review_reaction_insert_input[]
+  on_conflict?: review_reaction_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "review_reaction". All fields are combined with a logical 'AND'.
+ */
+export interface review_reaction_bool_exp {
+  _and?: (review_reaction_bool_exp | null)[] | null
+  _not?: review_reaction_bool_exp | null
+  _or?: (review_reaction_bool_exp | null)[] | null
+  created_at?: timestamptz_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  member?: member_bool_exp | null
+  member_id?: String_comparison_exp | null
+  review?: review_bool_exp | null
+  review_id?: uuid_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "review_reaction"
+ */
+export interface review_reaction_insert_input {
+  created_at?: any | null
+  id?: any | null
+  member?: member_obj_rel_insert_input | null
+  member_id?: string | null
+  review?: review_obj_rel_insert_input | null
+  review_id?: any | null
+}
+
+/**
+ * on conflict condition type for table "review_reaction"
+ */
+export interface review_reaction_on_conflict {
+  constraint: review_reaction_constraint
+  update_columns: review_reaction_update_column[]
+  where?: review_reaction_bool_exp | null
 }
 
 /**
@@ -18790,6 +18981,7 @@ export interface voucher_plan_bool_exp {
   _or?: (voucher_plan_bool_exp | null)[] | null
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -18797,6 +18989,7 @@ export interface voucher_plan_bool_exp {
   product_quantity_limit?: Int_comparison_exp | null
   started_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
   voucher_codes?: voucher_code_bool_exp | null
   voucher_plan_products?: voucher_plan_product_bool_exp | null
 }
@@ -18807,6 +19000,7 @@ export interface voucher_plan_bool_exp {
 export interface voucher_plan_insert_input {
   app?: app_obj_rel_insert_input | null
   app_id?: string | null
+  created_at?: any | null
   description?: string | null
   ended_at?: any | null
   id?: any | null
@@ -18814,6 +19008,7 @@ export interface voucher_plan_insert_input {
   product_quantity_limit?: number | null
   started_at?: any | null
   title?: string | null
+  updated_at?: any | null
   voucher_codes?: voucher_code_arr_rel_insert_input | null
   voucher_plan_products?: voucher_plan_product_arr_rel_insert_input | null
 }
@@ -18823,12 +19018,14 @@ export interface voucher_plan_insert_input {
  */
 export interface voucher_plan_max_order_by {
   app_id?: order_by | null
+  created_at?: order_by | null
   description?: order_by | null
   ended_at?: order_by | null
   id?: order_by | null
   product_quantity_limit?: order_by | null
   started_at?: order_by | null
   title?: order_by | null
+  updated_at?: order_by | null
 }
 
 /**
@@ -18836,12 +19033,14 @@ export interface voucher_plan_max_order_by {
  */
 export interface voucher_plan_min_order_by {
   app_id?: order_by | null
+  created_at?: order_by | null
   description?: order_by | null
   ended_at?: order_by | null
   id?: order_by | null
   product_quantity_limit?: order_by | null
   started_at?: order_by | null
   title?: order_by | null
+  updated_at?: order_by | null
 }
 
 /**

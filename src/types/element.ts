@@ -21,6 +21,7 @@ export type ProgramElementProps = ElementProps<{
   salePrice?: number
   listPrice?: number
   categories: Category[]
+  isEnrolledCountVisible: boolean
   period?: {
     amount: number
     type: PeriodType

@@ -32,6 +32,7 @@ type ProgramData = DeepPick<
   | 'abstract'
   | 'coverUrl'
   | 'totalDuration'
+  | 'isEnrolledCountVisible'
   | 'roles.[].name'
   | 'roles.[].member.id'
   | 'listPrice'
@@ -149,6 +150,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       }
                       listPrice={primaryProgramPlan?.listPrice}
                       period={primaryProgramPlan?.period || undefined}
+                      isEnrolledCountVisible={program.isEnrolledCountVisible}
                       categories={program.categories}
                       onClick={() => {
                         onClick?.()
@@ -356,6 +358,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
     listPrice: p.list_price || 0,
     salePrice: p.sale_price,
     soldAt: p.sold_at && new Date(p.sold_at),
+    isEnrolledCountVisible: p.is_enrolled_count_visible,
     plans: p.program_plans
       .filter(pp => pp.published_at)
       .map(pp => ({
@@ -389,6 +392,7 @@ const programFields = gql`
     list_price
     sale_price
     sold_at
+    is_enrolled_count_visible
     program_categories(order_by: { position: asc }) {
       category {
         id
