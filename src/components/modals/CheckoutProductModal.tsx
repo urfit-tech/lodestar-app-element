@@ -18,7 +18,7 @@ import GroupBuyingRuleModal from '../../components/modals/GroupBuyingRuleModal'
 import PaymentSelector from '../../components/selectors/PaymentSelector'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
-import { validateContactInfo, notEmpty } from '../../helpers'
+import { notEmpty, validateContactInfo } from '../../helpers'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
@@ -271,6 +271,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const [isValidating, setIsValidating] = useState(false)
   const [referrerEmail, setReferrerEmail] = useState('')
   const [tpCreditCard, setTpCreditCard] = useState<TPCreditCard | null>(null)
+  const [errorContactFields, setErrorContactFields] = useState<string[]>([])
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
   const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
@@ -323,7 +324,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     }
 
     if (totalPrice <= 0 && settings['feature.contact_info.enabled'] === '1') {
-      if (validateContactInfo(invoice).length !== 0) {
+      const errorFields = validateContactInfo(invoice)
+      if (errorFields.length !== 0) {
+        setErrorContactFields(errorFields)
         contactInfoRef.current?.scrollIntoView({ behavior: 'smooth' })
         return
       }
@@ -443,7 +446,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
         {settings['feature.contact_info.enabled'] === '1' && totalPrice === 0 && (
           <Box ref={contactInfoRef} mb="3">
-            <ContactInfoInput value={invoice} onChange={v => setInvoice(v)} />
+            <ContactInfoInput value={invoice} onChange={v => setInvoice(v)} errorContactFields={errorContactFields} />
           </Box>
         )}
 
