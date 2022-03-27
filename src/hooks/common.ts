@@ -192,6 +192,16 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
         isCustomized: data.merchandise_spec_by_pk.merchandise.is_customized,
         isSubscription: false,
       }
+    : data?.voucher_plan_by_pk
+    ? {
+        id: data.voucher_plan_by_pk.id,
+        productType: 'VoucherPlan',
+        title: data.voucher_plan_by_pk.title,
+        listPrice: data.voucher_plan_by_pk.sale_price,
+        isOnSale: false,
+        salePrice: data.voucher_plan_by_pk.sale_price,
+        isSubscription: false,
+      }
     : null
 
   return {
@@ -348,6 +358,11 @@ export const GET_PRODUCT_SIMPLE = gql`
           url
         }
       }
+    }
+    voucher_plan_by_pk(id: $targetId) {
+      id
+      title
+      sale_price
     }
   }
 `
