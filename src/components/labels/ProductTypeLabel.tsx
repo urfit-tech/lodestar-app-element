@@ -14,7 +14,7 @@ const messages = defineMessages({
   podcastProgram: { id: 'common.podcast', defaultMessage: '廣播' },
   podcastPlan: { id: 'common.podcast.subscription', defaultMessage: '廣播頻道' },
   appointmentPlan: { id: 'common.appointment', defaultMessage: '預約' },
-  voucherPlan: { id: 'common.voucherPlan', defaultMessage: '兌換方案' },
+  voucherPlan: { id: 'common.voucherPlan', defaultMessage: '兌換票券' },
   unknownType: { id: 'common.unknownType', defaultMessage: '未知' },
 })
 
