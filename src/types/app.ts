@@ -60,6 +60,7 @@ export type Module =
   | 'fb_pixel'
   | 'ga'
   | 'transfer_voucher'
+  | 'sale_voucher'
   | 'gtm'
   | 'hotjar'
   | 'tappay'
