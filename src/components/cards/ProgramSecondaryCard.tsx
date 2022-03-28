@@ -55,7 +55,8 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
             <StyledCategories>
               {props.categories
                 .filter((_, i) => i < 3)
-                .map(category => category.name)
+                // FIXME display subCategory instead split '/' here
+                .map(category => category.name.split('/').pop())
                 .join('・')}
             </StyledCategories>
             {averageScore !== 0 && (
