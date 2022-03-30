@@ -74,6 +74,7 @@ export type Module =
   | 'parenting_login'
   | 'coin_back'
   | 'project_auto_delivery'
+  | 'analysis'
 
 export type Currency = {
   id: string
