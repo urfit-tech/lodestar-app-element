@@ -4,6 +4,58 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_ENROLLED_PROGRAMS
+// ====================================================
+
+export interface GET_ENROLLED_PROGRAMS_program_enrollment {
+  __typename: 'program_enrollment'
+  program_id: any | null
+}
+
+export interface GET_ENROLLED_PROGRAMS_program_plan_enrollment_program_plan {
+  __typename: 'program_plan'
+  id: any
+  program_id: any
+}
+
+export interface GET_ENROLLED_PROGRAMS_program_plan_enrollment {
+  __typename: 'program_plan_enrollment'
+  /**
+   * An object relationship
+   */
+  program_plan: GET_ENROLLED_PROGRAMS_program_plan_enrollment_program_plan | null
+}
+
+export interface GET_ENROLLED_PROGRAMS_program_content_enrollment {
+  __typename: 'program_content_enrollment'
+  program_id: any | null
+}
+
+export interface GET_ENROLLED_PROGRAMS {
+  /**
+   * fetch data from the table: "program_enrollment"
+   */
+  program_enrollment: GET_ENROLLED_PROGRAMS_program_enrollment[]
+  /**
+   * fetch data from the table: "program_plan_enrollment"
+   */
+  program_plan_enrollment: GET_ENROLLED_PROGRAMS_program_plan_enrollment[]
+  /**
+   * fetch data from the table: "program_content_enrollment"
+   */
+  program_content_enrollment: GET_ENROLLED_PROGRAMS_program_content_enrollment[]
+}
+
+export interface GET_ENROLLED_PROGRAMSVariables {
+  memberId?: string | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_RECENT_PROGRAM_PROGRESS
 // ====================================================
 
@@ -3270,6 +3322,7 @@ export enum category_update_column {
   app_id = 'app_id',
   class = 'class',
   created_at = 'created_at',
+  filterable = 'filterable',
   id = 'id',
   name = 'name',
   position = 'position',
@@ -5651,6 +5704,7 @@ export enum tag_constraint {
  */
 export enum tag_update_column {
   created_at = 'created_at',
+  filterable = 'filterable',
   name = 'name',
   type = 'type',
   updated_at = 'updated_at',
@@ -8566,6 +8620,7 @@ export interface category_bool_exp {
   class?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
   creator_categories?: creator_category_bool_exp | null
+  filterable?: Boolean_comparison_exp | null
   id?: String_comparison_exp | null
   member_categories?: member_category_bool_exp | null
   member_tasks?: member_task_bool_exp | null
@@ -8589,6 +8644,7 @@ export interface category_insert_input {
   class?: string | null
   created_at?: any | null
   creator_categories?: creator_category_arr_rel_insert_input | null
+  filterable?: boolean | null
   id?: string | null
   member_categories?: member_category_arr_rel_insert_input | null
   member_tasks?: member_task_arr_rel_insert_input | null
@@ -15078,7 +15134,10 @@ export interface program_content_progress_enrollment_bool_exp {
   last_progress?: numeric_comparison_exp | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
+  program?: program_bool_exp | null
+  program_content?: program_content_bool_exp | null
   program_content_id?: uuid_comparison_exp | null
+  program_content_section?: program_content_section_bool_exp | null
   program_content_section_id?: uuid_comparison_exp | null
   program_id?: uuid_comparison_exp | null
   progress?: numeric_comparison_exp | null
@@ -18765,6 +18824,7 @@ export interface tag_bool_exp {
   _or?: (tag_bool_exp | null)[] | null
   activity_tags?: activity_tag_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
+  filterable?: Boolean_comparison_exp | null
   member_specialities?: member_speciality_bool_exp | null
   member_tags?: member_tag_bool_exp | null
   merchandise_tags?: merchandise_tag_bool_exp | null
@@ -18782,6 +18842,7 @@ export interface tag_bool_exp {
 export interface tag_insert_input {
   activity_tags?: activity_tag_arr_rel_insert_input | null
   created_at?: any | null
+  filterable?: boolean | null
   member_specialities?: member_speciality_arr_rel_insert_input | null
   member_tags?: member_tag_arr_rel_insert_input | null
   merchandise_tags?: merchandise_tag_arr_rel_insert_input | null

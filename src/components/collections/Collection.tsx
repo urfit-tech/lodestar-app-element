@@ -1,9 +1,11 @@
 import { repeat } from 'ramda'
+import { useIntl } from 'react-intl'
 import { useApp } from '../../contexts/AppContext'
 import { ResourceType, useResourceCollection } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
 import { ElementComponent, ElementProps } from '../../types/element'
 import Tracking from '../common/Tracking'
+import collectionsMessages from './translation'
 
 export type CollectionLayout = {
   gutter?: number
@@ -16,8 +18,14 @@ export type ContextCollection<D> = React.FC<{
 }>
 
 // FIXME: type naming is bad
-const Collection = <P extends object>(name: string, type: ResourceType, ElementComponent: ElementComponent<P>) => {
+const Collection = <P extends object>(
+  name: string,
+  type: ResourceType,
+  ElementComponent: ElementComponent<P>,
+  emptyText?: string,
+) => {
   const tracking = useTracking()
+  const { formatMessage } = useIntl()
   const { id: appId } = useApp()
   const WrappedComponent = <D extends { id: string }>(
     props: ElementProps<{
@@ -32,6 +40,8 @@ const Collection = <P extends object>(name: string, type: ResourceType, ElementC
   ) => {
     const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [])
     const loadingProps = { loading: true } as P
+    const width = 100 / (props.layout?.columns || 2) + '%'
+    const padding = `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
         <Tracking.Impression collection={name} resources={resourceCollection} />
@@ -39,22 +49,28 @@ const Collection = <P extends object>(name: string, type: ResourceType, ElementC
           repeat(
             <div
               style={{
-                width: 100 / (props.layout?.columns || 2) + '%',
-                padding: `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`,
+                width,
+                padding,
               }}
             >
               <ElementComponent {...loadingProps} />
             </div>,
           )(4)
         ) : props.errors ? (
-          <div>Error</div>
-        ) : props.data ? (
+          <div
+            style={{
+              padding,
+            }}
+          >
+            {formatMessage(collectionsMessages.Collection.error)}
+          </div>
+        ) : props.data && props.data.length ? (
           props.data.map((d, idx) => (
             <div
               key={idx}
               style={{
-                width: 100 / (props.layout?.columns || 2) + '%',
-                padding: `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`,
+                width,
+                padding,
               }}
             >
               {props.renderElement?.({
@@ -67,6 +83,16 @@ const Collection = <P extends object>(name: string, type: ResourceType, ElementC
               })}
             </div>
           ))
+        ) : props.data?.length === 0 ? (
+          <div
+            style={{
+              padding,
+              fontSize: '14px',
+              color: 'var(--gray-dark)',
+            }}
+          >
+            {emptyText || formatMessage(collectionsMessages.Collection.empty)}
+          </div>
         ) : null}
       </div>
     )

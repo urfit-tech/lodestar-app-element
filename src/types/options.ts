@@ -28,6 +28,8 @@ export type ProductRecentWatchedSource = ProductSource<
     asc?: boolean
     defaultTagNames?: string[]
     defaultCategoryIds?: string[]
+    enrolledProgramIds?: string[]
+    currentMemberId?: string
   }
 >
 

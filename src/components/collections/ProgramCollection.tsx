@@ -1,11 +1,13 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
-import { pipe, prop, sortBy, sum, uniqBy } from 'ramda'
+import { pipe, prop, sortBy, sum, uniq, uniqBy } from 'ramda'
+import { useIntl } from 'react-intl'
 import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
+import { useAuth } from '../../contexts/AuthContext'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
 import { notEmpty } from '../../helpers'
@@ -23,6 +25,7 @@ import Collection, { CollectionLayout, ContextCollection } from '../collections/
 import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
 import CollectionCarousel from './CollectionCarousel'
+import collectionsMessages from './translation'
 
 // @ts-ignore
 type ProgramData = DeepPick<
@@ -55,8 +58,12 @@ export type ProgramCollectionProps = {
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
-
+  const { currentMemberId } = useAuth()
+  const { formatMessage } = useIntl()
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
+  const { enrolledProgramIds, loadingProgramIds } = useEnrolledProgramIds(currentMemberId, {
+    skip: source.from !== 'recentWatched',
+  })
   if (loading || errors) {
     return null
   }
@@ -68,10 +75,16 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
       : props.variant === 'secondary'
       ? ProgramSecondaryCard
       : ProgramPrimaryCard
+  let emptyText = ''
+  switch (source.from) {
+    case 'recentWatched':
+      emptyText = formatMessage(collectionsMessages.ProgramCollection.recentWatchedEmpty)
+      break
+  }
   const ElementCollection =
     props.collectionVariant === 'carousel'
       ? CollectionCarousel(collectionName, 'program', EntityElement)
-      : Collection(collectionName, 'program', EntityElement)
+      : Collection(collectionName, 'program', EntityElement, emptyText)
   let ContextCollection: ProgramContextCollection
   switch (source.from) {
     case 'publishedAt':
@@ -81,7 +94,11 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
       ContextCollection = collectCurrentPriceCollection(source)
       break
     case 'recentWatched':
-      ContextCollection = collectRecentWatchedCollection(source)
+      ContextCollection = collectRecentWatchedCollection({
+        ...source,
+        enrolledProgramIds,
+        currentMemberId: currentMemberId || '',
+      })
       break
     case 'custom':
       ContextCollection = collectCustomCollection(source)
@@ -121,7 +138,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
               />
             )}
             {children}
-            {ctx.loading ? (
+            {ctx.loading || loadingProgramIds ? (
               <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
             ) : ctx.errors ? (
               <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={ctx.errors} />
@@ -166,6 +183,51 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
       }}
     </ContextCollection>
   )
+}
+
+const useEnrolledProgramIds = (memberId: string | null, options?: { skip?: boolean }) => {
+  const { loading, error, data, refetch } = useQuery<
+    hasura.GET_ENROLLED_PROGRAMS,
+    hasura.GET_ENROLLED_PROGRAMSVariables
+  >(
+    gql`
+      query GET_ENROLLED_PROGRAMS($memberId: String) {
+        program_enrollment(where: { member_id: { _eq: $memberId } }, distinct_on: program_id) {
+          program_id
+        }
+        program_plan_enrollment(where: { member_id: { _eq: $memberId } }) {
+          program_plan {
+            id
+            program_id
+          }
+        }
+        program_content_enrollment(where: { member_id: { _eq: $memberId } }, distinct_on: program_id) {
+          program_id
+        }
+      }
+    `,
+    {
+      skip: options?.skip || !memberId,
+      variables: { memberId },
+      fetchPolicy: 'no-cache',
+    },
+  )
+
+  const enrolledProgramIds =
+    loading || error || !data
+      ? []
+      : uniq([
+          ...data.program_enrollment.map(enrollment => enrollment.program_id),
+          ...data.program_plan_enrollment.map(enrollment => enrollment.program_plan?.program_id || ''),
+          ...data.program_content_enrollment.map(enrollment => enrollment.program_id),
+        ])
+
+  return {
+    enrolledProgramIds: loading || error ? [] : enrolledProgramIds,
+    errorProgramIds: error,
+    loadingProgramIds: loading,
+    refetchProgramIds: refetch,
+  }
 }
 
 const collectCustomCollection = (options: ProductCustomSource) => {
@@ -310,8 +372,12 @@ const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => 
             },
           ],
           whereClause: {
+            id: { _in: options.enrolledProgramIds },
             is_private: { _eq: false },
             published_at: { _lt: 'now()' },
+            program_content_progress_enrollments: {
+              member_id: { _eq: options.currentMemberId },
+            },
             program_categories: options.defaultCategoryIds?.length
               ? {
                   category_id: {
