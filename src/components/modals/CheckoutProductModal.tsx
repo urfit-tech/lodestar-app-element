@@ -24,7 +24,7 @@ import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
 import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
 import { useResourceCollection } from '../../hooks/resource'
-import { useTappay } from '../../hooks/util'
+import { getResourceByProductId, useTappay } from '../../hooks/util'
 import { ContactInfo, InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ShippingMethodProps } from '../../types/merchandise'
 import { BREAK_POINT } from '../common/Responsive'
@@ -180,8 +180,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   // checkout
   const [productId, setProductId] = useState(defaultProductId)
-  const { type: productType, target: productTarget } = useSimpleProduct({ id: productId, startedAt })
-  const { resourceCollection } = useResourceCollection([`${appId}:${productType}:${productTarget}`])
+  const { target: productTarget } = useSimpleProduct({ id: productId, startedAt })
+  const { type, target } = getResourceByProductId(productId)
+  const { resourceCollection } = useResourceCollection([`${appId}:${type}:${target}`])
 
   // cart information
   const memberCartInfo: {
