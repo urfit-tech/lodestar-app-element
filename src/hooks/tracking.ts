@@ -33,7 +33,6 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         collection?: string
       },
     ) => {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
       const impressionsWithProducts = resources.reduce<
         {
           id: string
@@ -71,6 +70,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       }, [])
 
       if (impressionsWithProducts.length > 0) {
+        ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
           event: 'productImpression',
@@ -90,8 +90,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         position?: number
       },
     ) => {
-      const clickWithProducts = resource.products ?? [resource]
-      const products = clickWithProducts
+      const resourceOrProducts = resource.products ?? [resource]
+      const products = resourceOrProducts
         .map(resource =>
           resource
             ? {
@@ -128,6 +128,22 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         collection?: string
       },
     ) => {
+      const resourceOrProducts = resource.products ?? [resource]
+      const products = resourceOrProducts
+        .map(resource =>
+          resource
+            ? {
+                id: resource.sku || resource.id,
+                name: resource.title,
+                price: resource.price,
+                brand: settings['name'] || document.title,
+                category: resource.categories?.join(trackingOptions.separator),
+                variant: resource.variants?.join(trackingOptions.separator),
+              }
+            : null,
+        )
+        .filter(notEmpty)
+
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
@@ -138,16 +154,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           currencyCode: appCurrencyId,
           detail: {
             actionField: { list: options?.collection || window.location.pathname },
-            products: [
-              {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand: settings['name'] || document.title,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: resource.variants?.join(trackingOptions.separator),
-              },
-            ],
+            products,
           },
         },
       })
