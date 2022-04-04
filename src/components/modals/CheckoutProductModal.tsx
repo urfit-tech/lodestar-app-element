@@ -565,7 +565,15 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         )}
 
         <StyledSubmitBlock className="text-right">
-          <Button variant="outline" onClick={onClose} className="mr-3">
+          <Button
+            variant="outline"
+            onClick={() => {
+              onClose()
+              const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection[0]
+              resource && tracking.removeFromCart(resource)
+            }}
+            className="mr-3"
+          >
             {formatMessage(commonMessages.ui.cancel)}
           </Button>
           <Button
