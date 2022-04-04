@@ -2060,6 +2060,7 @@ export interface GET_RESOURCE_COLLECTION_resource {
   categories: any | null
   variants: any | null
   sku: string | null
+  meta_id: string | null
 }
 
 export interface GET_RESOURCE_COLLECTION {
