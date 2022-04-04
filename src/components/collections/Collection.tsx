@@ -38,7 +38,7 @@ const Collection = <P extends object>(
       }) => React.ReactElement<P>
     }>,
   ) => {
-    const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [])
+    const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [], true)
     const loadingProps = { loading: true } as P
     const width = 100 / (props.layout?.columns || 2) + '%'
     const padding = `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`
