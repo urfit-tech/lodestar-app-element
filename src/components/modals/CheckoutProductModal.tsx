@@ -24,11 +24,11 @@ import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
 import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
 import { useResourceCollection } from '../../hooks/resource'
-import { useTappay } from '../../hooks/util'
+import { useTracking } from '../../hooks/tracking'
+import { getResourceByProductId, useTappay } from '../../hooks/util'
 import { ContactInfo, InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ShippingMethodProps } from '../../types/merchandise'
 import { BREAK_POINT } from '../common/Responsive'
-import Tracking from '../common/Tracking'
 import CheckoutGroupBuyingForm, { StyledBlockTitle, StyledListItem } from '../forms/CheckoutGroupBuyingForm'
 import TapPayForm, { TPCreditCard } from '../forms/TapPayForm'
 import CheckoutProductReferrerInput from '../inputs/CheckoutProductReferrerInput'
@@ -141,7 +141,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
-  const [checkoutAlready, setCheckoutAlready] = useState(false)
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
   const [sharingCode = window.sessionStorage.getItem(sessionStorageKey)] = useQueryParam('sharing', StringParam)
@@ -180,8 +179,12 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   // checkout
   const [productId, setProductId] = useState(defaultProductId)
-  const { type: productType, target: productTarget } = useSimpleProduct({ id: productId, startedAt })
-  const { resourceCollection } = useResourceCollection([`${appId}:${productType}:${productTarget}`])
+  const { target: productTarget } = useSimpleProduct({ id: productId, startedAt })
+  const { type, target } = getResourceByProductId(productId)
+  const { resourceCollection } = useResourceCollection([`${appId}:${type}:${target}`])
+
+  // tracking
+  const tracking = useTracking()
 
   // cart information
   const memberCartInfo: {
@@ -410,13 +413,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   return (
     <>
-      {!checkoutAlready && (
-        <Tracking.Checkout
-          resources={resourceCollection.filter(notEmpty)}
-          onCheckout={() => setCheckoutAlready(true)}
-        />
-      )}
-
       {renderTrigger({
         onOpen,
         onProductChange: productId => setProductId(productId),
@@ -430,7 +426,11 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         title={<StyledTitle className="mb-4">{formatMessage(checkoutMessages.title.cart)}</StyledTitle>}
         isOpen={isOpen}
         isFullWidth
-        onClose={onClose}
+        onClose={() => {
+          onClose()
+          const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection[0]
+          resource && tracking.removeFromCart(resource)
+        }}
       >
         <div className="mb-4">
           <ProductItem
@@ -565,7 +565,15 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         )}
 
         <StyledSubmitBlock className="text-right">
-          <Button variant="outline" onClick={onClose} className="mr-3">
+          <Button
+            variant="outline"
+            onClick={() => {
+              onClose()
+              const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection[0]
+              resource && tracking.removeFromCart(resource)
+            }}
+            className="mr-3"
+          >
             {formatMessage(commonMessages.ui.cancel)}
           </Button>
           <Button

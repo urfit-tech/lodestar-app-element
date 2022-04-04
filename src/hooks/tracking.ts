@@ -33,33 +33,52 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         collection?: string
       },
     ) => {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      const impressions = resources
-        .map((resource, idx) =>
-          resource
-            ? {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: resource.variants?.join(trackingOptions.separator),
-                quantity: 1, // TODO: use the inventory
-                list: options?.collection || window.location.pathname,
-                position: idx + 1,
-              }
-            : null,
-        )
-        .filter(notEmpty)
-      if (impressions.length > 0) {
+      const impressionsWithProducts = resources.reduce<
+        {
+          id: string
+          name: string
+          price: number
+          brand: string
+          category?: string
+          variant?: string
+          quantity: number
+          list: string
+          position: number
+        }[]
+      >((prev, curr, index) => {
+        const flattenedResources = curr?.products ?? [curr]
+        const products =
+          flattenedResources
+            ?.map(product =>
+              product
+                ? {
+                    id: product.sku || product.id,
+                    name: product.title,
+                    price: product.price || 0,
+                    brand,
+                    category: product.categories?.join(trackingOptions.separator),
+                    variant: product.variants?.join(trackingOptions.separator),
+                    quantity: 1, // TODO: use the inventory
+                    list: options?.collection || window.location.pathname,
+                    position: index + 1,
+                  }
+                : null,
+            )
+            .filter(notEmpty) || []
+
+        return [...prev, ...products]
+      }, [])
+
+      if (impressionsWithProducts.length > 0) {
+        ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
           event: 'productImpression',
-          label: impressions.map(impression => impression.name).join('|'),
-          value: sum(impressions.map(impression => impression.price || 0)),
+          label: impressionsWithProducts.map(impression => impression.name).join('|'),
+          value: sum(impressionsWithProducts.map(impression => impression.price || 0)),
           ecommerce: {
             currencyCode: appCurrencyId,
-            impressions,
+            impressions: impressionsWithProducts,
           },
         })
       }
@@ -71,6 +90,23 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         position?: number
       },
     ) => {
+      const resourceOrProducts = resource.products ?? [resource]
+      const products = resourceOrProducts
+        .map(resource =>
+          resource
+            ? {
+                id: resource.sku || resource.id,
+                name: resource.title,
+                price: resource.price,
+                brand,
+                category: resource.categories?.join(trackingOptions.separator),
+                variant: resource.variants?.join(trackingOptions.separator),
+                position: options?.position,
+              }
+            : null,
+        )
+        .filter(notEmpty)
+
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
@@ -81,17 +117,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           currencyCode: appCurrencyId,
           click: {
             actionField: { list: options?.collection || window.location.pathname },
-            products: [
-              {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: resource.variants?.join(trackingOptions.separator),
-                position: options?.position,
-              },
-            ],
+            products,
           },
         },
       })
@@ -102,6 +128,22 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         collection?: string
       },
     ) => {
+      const resourceOrProducts = resource.products ?? [resource]
+      const products = resourceOrProducts
+        .map(resource =>
+          resource
+            ? {
+                id: resource.sku || resource.id,
+                name: resource.title,
+                price: resource.price,
+                brand: settings['name'] || document.title,
+                category: resource.categories?.join(trackingOptions.separator),
+                variant: resource.variants?.join(trackingOptions.separator),
+              }
+            : null,
+        )
+        .filter(notEmpty)
+
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
@@ -112,16 +154,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           currencyCode: appCurrencyId,
           detail: {
             actionField: { list: options?.collection || window.location.pathname },
-            products: [
-              {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand: settings['name'] || document.title,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: resource.variants?.join(trackingOptions.separator),
-              },
-            ],
+            products,
           },
         },
       })

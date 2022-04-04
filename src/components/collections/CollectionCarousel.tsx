@@ -36,7 +36,7 @@ const CollectionCarousel = <P extends object>(
       }) => React.ReactElement<P>
     }>,
   ) => {
-    const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [])
+    const { resourceCollection } = useResourceCollection(props.data?.map(d => `${appId}:${type}:${d.id}`) || [], true)
     const loadingProps = { loading: true } as P
     return (
       <div>
