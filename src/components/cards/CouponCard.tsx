@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
@@ -13,15 +13,13 @@ const BoxWrapper = styled(Box)`
   border-radius: 4px;
 `
 
-const CouponCard: React.VFC<
-  BoxProps & {
-    coupon: CouponProps
-  }
-> = ({ coupon, ...boxProps }) => {
+const CouponCard: React.VFC<{
+  coupon: CouponProps
+}> = ({ coupon }) => {
   const { formatMessage } = useIntl()
 
   return (
-    <BoxWrapper {...boxProps} mb="12px" p="24px">
+    <BoxWrapper mb="12px" p="24px">
       <div style={{ fontSize: '20px', fontWeight: 'bold', paddingBottom: '12px' }}>
         {coupon.couponCode.couponPlan.title}
       </div>
