@@ -42,7 +42,7 @@ const CouponCard: React.VFC<
               { id: 'checkout.coupon.proportion', defaultMessage: '比例 {amount}%' },
               { amount: coupon.couponCode.couponPlan.amount },
             )
-          : null}
+          : ''}
       </div>
       <div>
         {coupon.couponCode.couponPlan.startedAt
