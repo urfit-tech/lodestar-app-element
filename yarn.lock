@@ -1863,7 +1863,7 @@
     lodash "^4.17.20"
     tiny-invariant "^1.0.6"
 
-"@craftjs/utils@0.1.0-beta.20":
+"@craftjs/utils@0.1.0-beta.20", "@craftjs/utils@^0.1.0-beta.20":
   version "0.1.0-beta.20"
   resolved "https://registry.yarnpkg.com/@craftjs/utils/-/utils-0.1.0-beta.20.tgz#2ba535b043e45368dc60bcf06614dab5ba2d0899"
   integrity sha512-KevLljnpEvHxpB2nxRZyQG2i4GDivIkY58depi+ynQP2ALonNuxEGVO2QsuDJ+p1z4eOtv0Xi/D3o6Qr84eAzQ==

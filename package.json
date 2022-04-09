@@ -104,5 +104,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "@craftjs/utils": "0.1.0-beta.20"
   }
 }

@@ -2052,22 +2052,24 @@ export interface GET_PROGRAM_ENROLLMENT_AGGREGATEVariables {
 // GraphQL query operation: GET_RESOURCE_COLLECTION
 // ====================================================
 
-export interface GET_RESOURCE_COLLECTION_resource {
-  __typename: 'resource'
+export interface GET_RESOURCE_COLLECTION_resource_1 {
+  __typename: 'resource_1'
   id: string | null
   name: string | null
   price: any | null
   categories: any | null
+  tags: any | null
   variants: any | null
+  owners: any | null
   sku: string | null
   meta_id: string | null
 }
 
 export interface GET_RESOURCE_COLLECTION {
   /**
-   * fetch data from the table: "resource"
+   * fetch data from the table: "resource_1"
    */
-  resource: GET_RESOURCE_COLLECTION_resource[]
+  resource_1: GET_RESOURCE_COLLECTION_resource_1[]
 }
 
 export interface GET_RESOURCE_COLLECTIONVariables {

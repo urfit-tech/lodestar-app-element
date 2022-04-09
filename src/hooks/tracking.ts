@@ -57,7 +57,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                     price: product.price || 0,
                     brand,
                     category: product.categories?.join(trackingOptions.separator),
-                    variant: product.variants?.join(trackingOptions.separator),
+                    variant: product.owners?.map(member => member.name).join(trackingOptions.separator),
                     quantity: 1, // TODO: use the inventory
                     list: options?.collection || window.location.pathname,
                     position: index + 1,
@@ -100,7 +100,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 price: resource.price,
                 brand,
                 category: resource.categories?.join(trackingOptions.separator),
-                variant: resource.variants?.join(trackingOptions.separator),
+                variant: resource.owners?.map(member => member.name).join(trackingOptions.separator),
                 position: options?.position,
               }
             : null,
@@ -138,7 +138,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 price: resource.price,
                 brand: settings['name'] || document.title,
                 category: resource.categories?.join(trackingOptions.separator),
-                variant: resource.variants?.join(trackingOptions.separator),
+                variant: resource.owners?.map(member => member.name).join(trackingOptions.separator),
               }
             : null,
         )
@@ -160,21 +160,29 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       })
 
       if (enabledCW) {
-        const cwProduct = {
-          id: resource.id,
-          type: resource.type,
+        const isProgramContent = resource.type === 'program_content'
+        const cwProductId = isProgramContent ? resource.metaId && resource.metaId.split(':')[2] : resource.id
+        const cwProductTitle = isProgramContent ? resource.variants?.join(trackingOptions.separator) : resource.title
+        const rawProduct = {
+          id: cwProductId,
+          type: resource.type === 'post' ? 'article' : resource.type,
           item: resource?.sku,
-          title: resource?.title,
+          title: cwProductTitle,
           url: window.location.href,
-          price: resource?.price,
-          authors: resource.variants?.map(v => ({ name: v })),
+          authors: resource?.owners,
           channels: {
             master: {
               id: resource.categories || [],
             },
           },
-          keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+          keywords: resource?.tags || document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
         }
+        const cwProduct = isProgramContent
+          ? { ...rawProduct, content_id: resource.id, content_name: resource.title }
+          : { ...rawProduct, price: resource.price }
+
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ itemData: null })
         ;(window as any).dataLayer.push({
           event: 'cwData',
           itemData: {
@@ -239,7 +247,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 price: resource.price,
                 brand: settings['name'] || document.title,
                 category: resource.categories?.join(trackingOptions.separator),
-                variant: resource.variants?.join(trackingOptions.separator),
+                variant: resource.owners?.join(trackingOptions.separator),
                 quantity: 1, // TODO: use the inventory
               },
             ],
@@ -262,7 +270,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 price: resource.price,
                 brand,
                 category: resource.categories?.join(trackingOptions.separator),
-                variant: resource.variants?.join(trackingOptions.separator),
+                variant: resource.owners?.join(trackingOptions.separator),
                 quantity: 1, // TODO: use the cart product
               }
             : null,
@@ -295,18 +303,21 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                   title: resource?.title,
                   url: window.location.href,
                   price: resource?.price,
-                  authors: resource.variants?.map(v => ({ name: v })),
+                  authors: resource?.owners,
                   channels: {
                     master: {
                       id: resource.categories || [],
                     },
                   },
-                  keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+                  keywords:
+                    resource?.tags || document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
                 }
               : null,
           )
           .filter(notEmpty)
         if (cwProducts.length > 0) {
+          ;(window as any).dataLayer = (window as any).dataLayer || []
+          ;(window as any).dataLayer.push({ itemData: null })
           ;(window as any).dataLayer.push({
             event: 'cwData',
             itemData: {
@@ -387,16 +398,18 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               title: product?.title,
               url: window.location.href,
               price: product?.price,
-              authors: product.variants?.map(v => ({ name: v })),
+              authors: product?.owners,
               channels: {
                 master: {
                   id: product.categories || [],
                 },
               },
-              keywords: document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
+              keywords: product?.tags || document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
             }
           }) || []
         if (cwProducts.length > 0) {
+          ;(window as any).dataLayer = (window as any).dataLayer || []
+          ;(window as any).dataLayer.push({ itemData: null })
           ;(window as any).dataLayer.push({
             event: 'cwData',
             itemData: {

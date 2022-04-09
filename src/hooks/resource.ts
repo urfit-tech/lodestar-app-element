@@ -3,6 +3,7 @@ import ApolloClient from 'apollo-client'
 import gql from 'graphql-tag'
 import { useMemo } from 'react'
 import hasura from '../hasura'
+import { Member } from '../types/data'
 
 export type ResourceType =
   | 'program_package'
@@ -28,12 +29,15 @@ export type Resource = {
   urn: string
   type: ResourceType
   title: string
+  owners: Pick<Member, 'id' | 'name'>[]
   sku?: string
   price?: number
   categories?: string[]
-  variants?: string[]
+  tags?: string[]
+  variants?: Pick<Member, 'id' | 'name'>[] | string[] // FIXME: may remove this item and replace by options ?
   products?: (Resource | null)[]
   metaId?: string
+  options?: { [key: string]: any }[]
 }
 
 const composeResourceCollection = (
@@ -42,7 +46,7 @@ const composeResourceCollection = (
   withProducts: boolean = false,
 ): (Resource | null)[] => {
   const resources =
-    data?.resource
+    data?.resource_1
       .filter(v => v.id !== null)
       .map(v => {
         const resourceUrn = v.id as string
@@ -52,11 +56,14 @@ const composeResourceCollection = (
           id: resourceId,
           type: resourceType as ResourceType,
           title: v.name || '',
+          owners: v.owners || [],
           price: v.price || 0,
           categories: v.categories || [],
+          tags: v.tags || [],
           variants: v.variants || [],
           sku: v.sku || undefined,
           metaId: v.meta_id || undefined,
+          options: v.variants || undefined,
         }
       }) || []
 
@@ -109,12 +116,14 @@ export const useResourceCollection = (urns: string[], withProducts: boolean = fa
 
 const GET_RESOURCE_COLLECTION = gql`
   query GET_RESOURCE_COLLECTION($urns: [String!]!) {
-    resource(where: { _or: [{ id: { _in: $urns } }, { meta_id: { _in: $urns } }] }) {
+    resource_1(where: { _or: [{ id: { _in: $urns } }, { meta_id: { _in: $urns } }] }) {
       id
       name
       price
       categories
+      tags
       variants
+      owners
       sku
       meta_id
     }
