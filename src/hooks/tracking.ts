@@ -101,6 +101,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         }[]
       >((prev, curr, index) => {
         const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
+        console.log('impress flattenedResources', flattenedResources)
         const products =
           flattenedResources
             ?.map(product =>
@@ -122,7 +123,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 : null,
             )
             .filter(notEmpty) || []
-
+        console.log('impress products', products)
         return [...prev, ...products]
       }, [])
 
@@ -189,6 +190,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
+      console.log('eec detail resourceOrProducts', resourceOrProducts)
       const products = resourceOrProducts
         .map(resource =>
           resource
@@ -206,30 +208,32 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             : null,
         )
         .filter(notEmpty)
-
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'productDetail',
-        label: resource.title,
-        value: resource.price,
-        ecommerce: {
-          currencyCode: appCurrencyId,
-          detail: {
-            actionField: { list: options?.collection || window.location.pathname },
-            products,
+      console.log('eec detail products', products)
+      if (products.length > 0) {
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: 'productDetail',
+          label: resource.title,
+          value: resource.price,
+          ecommerce: {
+            currencyCode: appCurrencyId,
+            detail: {
+              actionField: { list: options?.collection || window.location.pathname },
+              products,
+            },
           },
-        },
-      })
-
+        })
+      }
       if (enabledCW) {
         const isProgramContent = resource.type === 'program_content'
         const products = isProgramContent
           ? resource.products?.filter(r => r?.type === 'program_plan')
           : resource.products?.filter(r => r?.type !== 'program_content')
         const targetResource = resource && convertCwProduct(resource)
-        const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(resource))
-
+        const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p))
+        console.log('target', targetResource)
+        console.log('sub', subResources)
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ itemData: null })
         ;(window as any).dataLayer.push({
