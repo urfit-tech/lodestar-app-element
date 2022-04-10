@@ -40,7 +40,7 @@ const CollectionCarousel = <P extends object>(
     const loadingProps = { loading: true } as P
     return (
       <div>
-        <Tracking.Impression collection={name} resources={resourceCollection} />
+        <Tracking.Impression collection={name} resources={resourceCollection} ignore={'CUSTOM'} />
         <BaseCarousel {...props.carouselProps}>
           {props.loading ? (
             repeat(

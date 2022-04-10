@@ -3,6 +3,7 @@ import ApolloClient from 'apollo-client'
 import gql from 'graphql-tag'
 import { useMemo } from 'react'
 import hasura from '../hasura'
+import { Member } from '../types/data'
 
 export type ResourceType =
   | 'program_package'
@@ -28,12 +29,15 @@ export type Resource = {
   urn: string
   type: ResourceType
   title: string
+  owners: Pick<Member, 'id' | 'name'>[]
   sku?: string
   price?: number
   categories?: string[]
-  variants?: string[]
+  tags?: string[]
+  variants?: string[] // FIXME: may remove this item and replace by options ?
   products?: (Resource | null)[]
   metaId?: string
+  options?: { [key: string]: any }[]
 }
 
 const composeResourceCollection = (
@@ -52,11 +56,14 @@ const composeResourceCollection = (
           id: resourceId,
           type: resourceType as ResourceType,
           title: v.name || '',
+          owners: v.owners || [],
           price: v.price || 0,
           categories: v.categories || [],
+          tags: v.tags || [],
           variants: v.variants || [],
           sku: v.sku || undefined,
           metaId: v.meta_id || undefined,
+          options: v.variants || undefined,
         }
       }) || []
 
@@ -82,12 +89,13 @@ const composeResourceCollection = (
 export const getResourceCollection = async (
   apolloClient: ApolloClient<unknown>,
   urns: string[],
+  withProductType?: boolean,
 ): Promise<(Resource | null)[]> => {
   const { data } = await apolloClient.query<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>({
     query: GET_RESOURCE_COLLECTION,
     variables: { urns },
   })
-  const resourceCollection = composeResourceCollection(urns, data, false)
+  const resourceCollection = composeResourceCollection(urns, data, withProductType)
   return resourceCollection
 }
 
@@ -114,7 +122,9 @@ const GET_RESOURCE_COLLECTION = gql`
       name
       price
       categories
+      tags
       variants
+      owners
       sku
       meta_id
     }

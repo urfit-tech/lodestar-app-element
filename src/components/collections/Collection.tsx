@@ -44,7 +44,7 @@ const Collection = <P extends object>(
     const padding = `${props.layout?.gap || 16}px ${props.layout?.gutter || 16}px`
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
-        <Tracking.Impression collection={name} resources={resourceCollection} />
+        <Tracking.Impression collection={name} resources={resourceCollection} ignore={'CUSTOM'} />
         {props.loading ? (
           repeat(
             <div

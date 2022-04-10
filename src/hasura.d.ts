@@ -2058,7 +2058,9 @@ export interface GET_RESOURCE_COLLECTION_resource {
   name: string | null
   price: any | null
   categories: any | null
+  tags: any | null
   variants: any | null
+  owners: any | null
   sku: string | null
   meta_id: string | null
 }
