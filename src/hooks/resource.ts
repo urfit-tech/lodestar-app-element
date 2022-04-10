@@ -34,7 +34,7 @@ export type Resource = {
   price?: number
   categories?: string[]
   tags?: string[]
-  variants?: Pick<Member, 'id' | 'name'>[] | string[] // FIXME: may remove this item and replace by options ?
+  variants?: string[] // FIXME: may remove this item and replace by options ?
   products?: (Resource | null)[]
   metaId?: string
   options?: { [key: string]: any }[]

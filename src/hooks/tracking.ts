@@ -21,6 +21,60 @@ const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) =
   }
 }
 
+type CwProductBaseType = {
+  id: string
+  type: string
+  item: string | null
+  title: string
+  url: string
+  authors: { id: string; name: string }[] | null
+  channels: { master: { id: string[] } }
+  keywords: string
+  price?: number
+  content_id?: string
+  content_name?: string
+}
+
+const convertCwProduct: (resource: Resource, options?: { separator: string }) => CwProductBaseType = (
+  resource: Resource,
+  options: { separator: string } = { separator: '|' },
+) => {
+  const baseProduct = {
+    id: resource.id,
+    type: resource.type,
+    title: resource.title,
+    item: resource.sku || null,
+    url: window.location.href,
+    authors: resource.owners,
+    channels: {
+      master: {
+        id: resource.categories || [],
+      },
+    },
+    keywords:
+      resource?.tags?.join(options.separator) ||
+      document.querySelector('meta[name="keywords"]')?.getAttribute('content') ||
+      '',
+  }
+  switch (resource.type) {
+    case 'program_content':
+      return {
+        ...baseProduct,
+        id: (resource.metaId && resource.metaId.split(':')[2]) || '',
+        title: resource.variants?.join(options.separator) || '',
+        content_id: resource.id,
+        content_name: resource.title,
+      }
+    case 'post':
+      return baseProduct
+    default:
+      return {
+        ...baseProduct,
+        price: resource.price,
+      }
+  }
+}
+
 export const useTracking = (trackingOptions = { separator: '|' }) => {
   const { settings, currencyId: appCurrencyId, id: appId } = useApp()
   const brand = settings['name'] || document.title
@@ -46,7 +100,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           position: number
         }[]
       >((prev, curr, index) => {
-        const flattenedResources = curr?.products ?? [curr]
+        const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
         const products =
           flattenedResources
             ?.map(product =>
@@ -93,7 +147,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         position?: number
       },
     ) => {
-      const resourceOrProducts = resource.products ?? [resource]
+      const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
       const products = resourceOrProducts
         .map(resource =>
           resource
@@ -134,7 +188,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         collection?: string
       },
     ) => {
-      const resourceOrProducts = resource.products ?? [resource]
+      const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
       const products = resourceOrProducts
         .map(resource =>
           resource
@@ -170,34 +224,20 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
 
       if (enabledCW) {
         const isProgramContent = resource.type === 'program_content'
-        const cwProductId = isProgramContent ? resource.metaId && resource.metaId.split(':')[2] : resource.id
-        const cwProductTitle = isProgramContent ? resource.variants?.join(trackingOptions.separator) : resource.title
-        const rawProduct = {
-          id: cwProductId,
-          type: resource.type === 'post' ? 'article' : resource.type,
-          item: resource?.sku,
-          title: cwProductTitle,
-          url: window.location.href,
-          authors: resource?.owners,
-          channels: {
-            master: {
-              id: resource.categories || [],
-            },
-          },
-          keywords: resource?.tags || document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
-        }
-        const cwProduct = isProgramContent
-          ? { ...rawProduct, content_id: resource.id, content_name: resource.title }
-          : { ...rawProduct, price: resource.price }
+        const products = isProgramContent
+          ? resource.products?.filter(r => r?.type === 'program_plan')
+          : resource.products?.filter(r => r?.type !== 'program_content')
+        const rawResources = (products ? [resource, ...products] : [resource]).filter(notEmpty)
+        const cwProducts = rawResources.map(r => convertCwProduct(r))
 
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ itemData: null })
         ;(window as any).dataLayer.push({
           event: 'cwData',
           itemData: {
-            products: [cwProduct],
-            program: cwProduct,
-            article: cwProduct,
+            products: cwProducts,
+            program: cwProducts[0],
+            article: cwProducts[0],
           },
         })
       }
@@ -312,26 +352,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       }
       if (enabledCW) {
         const cwProducts = resources
-          .map(resource =>
-            resource
-              ? {
-                  id: resource.id,
-                  type: resource.type,
-                  item: resource?.sku,
-                  title: resource?.title,
-                  url: window.location.href,
-                  price: resource?.price,
-                  authors: resource?.owners,
-                  channels: {
-                    master: {
-                      id: resource.categories || [],
-                    },
-                  },
-                  keywords:
-                    resource?.tags || document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
-                }
-              : null,
-          )
+          .map(resource => (resource ? { ...convertCwProduct(resource), price: resource.price } : null))
           .filter(notEmpty)
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
@@ -412,20 +433,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           orderProducts.map(product => {
             const productType = convertProductType(product.type, true)
             return {
-              id: product.id,
+              ...convertCwProduct(product),
               order_number: orderId,
               type: productType === 'program_package' ? 'package' : productType,
-              item: product?.sku,
-              title: product?.title,
-              url: window.location.href,
-              price: product?.price,
-              authors: product?.owners,
-              channels: {
-                master: {
-                  id: product.categories || [],
-                },
-              },
-              keywords: product?.tags || document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '',
             }
           }) || []
         if (cwProducts.length > 0) {
