@@ -46,7 +46,7 @@ const composeResourceCollection = (
   withProducts: boolean = false,
 ): (Resource | null)[] => {
   const resources =
-    data?.resource_1
+    data?.resource
       .filter(v => v.id !== null)
       .map(v => {
         const resourceUrn = v.id as string
@@ -117,7 +117,7 @@ export const useResourceCollection = (urns: string[], withProducts: boolean = fa
 
 const GET_RESOURCE_COLLECTION = gql`
   query GET_RESOURCE_COLLECTION($urns: [String!]!) {
-    resource_1(where: { _or: [{ id: { _in: $urns } }, { meta_id: { _in: $urns } }] }) {
+    resource(where: { _or: [{ id: { _in: $urns } }, { meta_id: { _in: $urns } }] }) {
       id
       name
       price

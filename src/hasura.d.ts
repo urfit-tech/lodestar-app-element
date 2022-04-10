@@ -2052,8 +2052,8 @@ export interface GET_PROGRAM_ENROLLMENT_AGGREGATEVariables {
 // GraphQL query operation: GET_RESOURCE_COLLECTION
 // ====================================================
 
-export interface GET_RESOURCE_COLLECTION_resource_1 {
-  __typename: 'resource_1'
+export interface GET_RESOURCE_COLLECTION_resource {
+  __typename: 'resource'
   id: string | null
   name: string | null
   price: any | null
@@ -2067,9 +2067,9 @@ export interface GET_RESOURCE_COLLECTION_resource_1 {
 
 export interface GET_RESOURCE_COLLECTION {
   /**
-   * fetch data from the table: "resource_1"
+   * fetch data from the table: "resource"
    */
-  resource_1: GET_RESOURCE_COLLECTION_resource_1[]
+  resource: GET_RESOURCE_COLLECTION_resource[]
 }
 
 export interface GET_RESOURCE_COLLECTIONVariables {
