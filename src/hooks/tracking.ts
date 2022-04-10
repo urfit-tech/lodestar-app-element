@@ -227,17 +227,17 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         const products = isProgramContent
           ? resource.products?.filter(r => r?.type === 'program_plan')
           : resource.products?.filter(r => r?.type !== 'program_content')
-        const rawResources = (products ? [resource, ...products] : [resource]).filter(notEmpty)
-        const cwProducts = rawResources.map(r => convertCwProduct(r))
+        const targetResource = resource && convertCwProduct(resource)
+        const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(resource))
 
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ itemData: null })
         ;(window as any).dataLayer.push({
           event: 'cwData',
           itemData: {
-            products: cwProducts,
-            program: cwProducts[0],
-            article: cwProducts[0],
+            products: subResources || targetResource,
+            program: targetResource,
+            article: targetResource,
           },
         })
       }
