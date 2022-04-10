@@ -89,12 +89,13 @@ const composeResourceCollection = (
 export const getResourceCollection = async (
   apolloClient: ApolloClient<unknown>,
   urns: string[],
+  withProductType?: boolean,
 ): Promise<(Resource | null)[]> => {
   const { data } = await apolloClient.query<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>({
     query: GET_RESOURCE_COLLECTION,
     variables: { urns },
   })
-  const resourceCollection = composeResourceCollection(urns, data, false)
+  const resourceCollection = composeResourceCollection(urns, data, withProductType)
   return resourceCollection
 }
 

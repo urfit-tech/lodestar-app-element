@@ -1,7 +1,8 @@
+import { useApolloClient } from '@apollo/react-hooks'
 import { sum } from 'ramda'
 import { useApp } from '../contexts/AppContext'
 import { notEmpty } from '../helpers'
-import { Resource, ResourceType } from './resource'
+import { getResourceCollection, Resource, ResourceType } from './resource'
 
 const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) => ResourceType = (
   originalType: ResourceType,
@@ -79,66 +80,84 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   const { settings, currencyId: appCurrencyId, id: appId } = useApp()
   const brand = settings['name'] || document.title
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
+  const apolloClient = useApolloClient()
   return {
     view: () => {},
     impress: (
       resources: (Resource | null)[],
       options?: {
         collection?: string
+        ignore?: 'EEC' | 'CUSTOM'
       },
     ) => {
-      const impressionsWithProducts = resources.reduce<
-        {
-          id: string
-          name: string
-          price: number
-          brand: string
-          category?: string
-          variant?: string
-          quantity: number
-          list: string
-          position: number
-        }[]
-      >((prev, curr, index) => {
-        const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
-        console.log('impress flattenedResources', flattenedResources)
-        const products =
-          flattenedResources
-            ?.map(product =>
-              product
-                ? {
-                    id: product.sku || product.id,
-                    name: product.title,
-                    price: product.price || 0,
-                    brand,
-                    category: product.categories?.join(trackingOptions.separator),
-                    variant:
-                      product.type === 'program_package' || product.type === 'program_package_plan'
-                        ? product?.variants?.join(trackingOptions.separator)
-                        : product.owners?.map(member => member.name).join(trackingOptions.separator),
-                    quantity: 1, // TODO: use the inventory
-                    list: options?.collection || window.location.pathname,
-                    position: index + 1,
-                  }
-                : null,
-            )
-            .filter(notEmpty) || []
-        console.log('impress products', products)
-        return [...prev, ...products]
-      }, [])
+      if (options?.ignore !== 'EEC') {
+        const impressionsWithProducts = resources.reduce<
+          {
+            id: string
+            name: string
+            price: number
+            brand: string
+            category?: string
+            variant?: string
+            quantity: number
+            list: string
+            position: number
+          }[]
+        >((prev, curr, index) => {
+          const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
+          console.log('impress flattenedResources', flattenedResources)
+          const products =
+            flattenedResources
+              ?.map(product =>
+                product
+                  ? {
+                      id: product.sku || product.id,
+                      name: product.title,
+                      price: product.price || 0,
+                      brand,
+                      category: product.categories?.join(trackingOptions.separator),
+                      variant:
+                        product.type === 'program_package' || product.type === 'program_package_plan'
+                          ? product?.variants?.join(trackingOptions.separator)
+                          : product.owners?.map(member => member.name).join(trackingOptions.separator),
+                      quantity: 1, // TODO: use the inventory
+                      list: options?.collection || window.location.pathname,
+                      position: index + 1,
+                    }
+                  : null,
+              )
+              .filter(notEmpty) || []
+          console.log('impress products', products)
+          return [...prev, ...products]
+        }, [])
 
-      if (impressionsWithProducts.length > 0) {
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        ;(window as any).dataLayer.push({
-          event: 'productImpression',
-          label: impressionsWithProducts.map(impression => impression.name).join('|'),
-          value: sum(impressionsWithProducts.map(impression => impression.price || 0)),
-          ecommerce: {
-            currencyCode: appCurrencyId,
-            impressions: impressionsWithProducts,
-          },
-        })
+        if (impressionsWithProducts.length > 0) {
+          ;(window as any).dataLayer = (window as any).dataLayer || []
+          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+          ;(window as any).dataLayer.push({
+            event: 'productImpression',
+            label: impressionsWithProducts.map(impression => impression.name).join('|'),
+            value: sum(impressionsWithProducts.map(impression => impression.price || 0)),
+            ecommerce: {
+              currencyCode: appCurrencyId,
+              impressions: impressionsWithProducts,
+            },
+          })
+        }
+      }
+
+      if (enabledCW && options?.ignore !== 'CUSTOM') {
+        const cwProducts = resources.map(r => (r ? convertCwProduct(r) : null)).filter(notEmpty)
+        if (cwProducts.length > 0) {
+          ;(window as any).dataLayer = (window as any).dataLayer || []
+          ;(window as any).dataLayer.push({ itemData: null })
+          ;(window as any).dataLayer.push({
+            event: 'cwData',
+            itemData: {
+              products: cwProducts,
+            },
+          })
+        }
       }
     },
     click: (
@@ -146,90 +165,96 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       options?: {
         collection?: string
         position?: number
+        ignore?: 'EEC' | 'CUSTOM'
       },
     ) => {
-      const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
-      const products = resourceOrProducts
-        .map(resource =>
-          resource
-            ? {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant:
-                  resource.type === 'program_package' || resource.type === 'program_package_plan'
-                    ? resource?.variants?.join(trackingOptions.separator)
-                    : resource.owners?.map(member => member.name).join(trackingOptions.separator),
-                position: options?.position,
-              }
-            : null,
-        )
-        .filter(notEmpty)
+      if (options?.ignore !== 'EEC') {
+        const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
+        const products = resourceOrProducts
+          .map(resource =>
+            resource
+              ? {
+                  id: resource.sku || resource.id,
+                  name: resource.title,
+                  price: resource.price,
+                  brand,
+                  category: resource.categories?.join(trackingOptions.separator),
+                  variant:
+                    resource.type === 'program_package' || resource.type === 'program_package_plan'
+                      ? resource?.variants?.join(trackingOptions.separator)
+                      : resource.owners?.map(member => member.name).join(trackingOptions.separator),
+                  position: options?.position,
+                }
+              : null,
+          )
+          .filter(notEmpty)
 
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'productClick',
-        label: resource.title,
-        value: resource.price,
-        ecommerce: {
-          currencyCode: appCurrencyId,
-          click: {
-            actionField: { list: options?.collection || window.location.pathname },
-            products,
-          },
-        },
-      })
-    },
-    detail: (
-      resource: Resource,
-      options?: {
-        collection?: string
-      },
-    ) => {
-      const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
-      console.log('eec detail resourceOrProducts', resourceOrProducts)
-      const products = resourceOrProducts
-        .map(resource =>
-          resource
-            ? {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand: settings['name'] || document.title,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant:
-                  resource.type === 'program_package' || resource.type === 'program_package_plan'
-                    ? resource.variants?.join(trackingOptions.separator)
-                    : resource.owners?.map(member => member.name).join(trackingOptions.separator),
-              }
-            : null,
-        )
-        .filter(notEmpty)
-      console.log('eec detail products', products)
-      if (products.length > 0) {
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
-          event: 'productDetail',
+          event: 'productClick',
           label: resource.title,
           value: resource.price,
           ecommerce: {
             currencyCode: appCurrencyId,
-            detail: {
+            click: {
               actionField: { list: options?.collection || window.location.pathname },
               products,
             },
           },
         })
       }
-      if (enabledCW) {
+    },
+    detail: async (
+      resource: Resource,
+      options?: {
+        collection?: string
+        ignore?: 'EEC' | 'CUSTOM'
+      },
+    ) => {
+      if (options?.ignore !== 'EEC') {
+        const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
+        const products = resourceOrProducts
+          .map(resource =>
+            resource
+              ? {
+                  id: resource.sku || resource.id,
+                  name: resource.title,
+                  price: resource.price,
+                  brand: settings['name'] || document.title,
+                  category: resource.categories?.join(trackingOptions.separator),
+                  variant:
+                    resource.type === 'program_package' || resource.type === 'program_package_plan'
+                      ? resource.variants?.join(trackingOptions.separator)
+                      : resource.owners?.map(member => member.name).join(trackingOptions.separator),
+                }
+              : null,
+          )
+          .filter(notEmpty)
+        if (products.length > 0) {
+          ;(window as any).dataLayer = (window as any).dataLayer || []
+          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+          ;(window as any).dataLayer.push({
+            event: 'productDetail',
+            label: resource.title,
+            value: resource.price,
+            ecommerce: {
+              currencyCode: appCurrencyId,
+              detail: {
+                actionField: { list: options?.collection || window.location.pathname },
+                products,
+              },
+            },
+          })
+        }
+      }
+      if (enabledCW && options?.ignore !== 'CUSTOM') {
         const isProgramContent = resource.type === 'program_content'
-        const products = isProgramContent
-          ? resource.products?.filter(r => r?.type === 'program_plan')
-          : resource.products?.filter(r => r?.type !== 'program_content')
+        let products = resource.products?.filter(r => r?.type !== 'program_content')
+        if (isProgramContent && resource.metaId) {
+          const metaProducts = await getResourceCollection(apolloClient, [resource.metaId], true)
+          products = metaProducts[0]?.products?.filter(p => p?.type === 'program_plan')
+        }
         const targetResource = resource && convertCwProduct(resource)
         const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p))
         console.log('target', targetResource)
@@ -318,6 +343,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       resources: Resource[],
       options?: {
         step?: number
+        ignore?: 'EEC' | 'CUSTOM'
       },
     ) => {
       const ecProducts = resources
@@ -354,7 +380,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           },
         })
       }
-      if (enabledCW) {
+      if (enabledCW && options?.ignore !== 'CUSTOM') {
         const cwProducts = resources
           .map(resource => (resource ? { ...convertCwProduct(resource), price: resource.price } : null))
           .filter(notEmpty)
@@ -396,6 +422,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       orderDiscounts: { name: string; price: number }[],
       options?: {
         step?: number
+        ignore?: 'EEC' | 'CUSTOM'
       },
     ) => {
       const ecProducts =
@@ -432,7 +459,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           },
         })
       }
-      if (enabledCW) {
+      if (enabledCW && options?.ignore !== 'CUSTOM') {
         const cwProducts =
           orderProducts.map(product => {
             const productType = convertProductType(product.type, true)
