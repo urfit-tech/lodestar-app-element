@@ -105,7 +105,6 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           }[]
         >((prev, curr, index) => {
           const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
-          console.log('impress flattenedResources', flattenedResources)
           const products =
             flattenedResources
               ?.map(product =>
@@ -127,7 +126,6 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                   : null,
               )
               .filter(notEmpty) || []
-          console.log('impress products', products)
           return [...prev, ...products]
         }, [])
 
@@ -257,14 +255,13 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         }
         const targetResource = resource && convertCwProduct(resource)
         const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p))
-        console.log('target', targetResource)
-        console.log('sub', subResources)
+
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ itemData: null })
         ;(window as any).dataLayer.push({
           event: 'cwData',
           itemData: {
-            products: subResources || targetResource,
+            products: subResources || [targetResource],
             program: targetResource,
             article: targetResource,
           },
