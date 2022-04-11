@@ -39,10 +39,12 @@ const Purchase: React.FC<{
   products: (Resource & { quantity: number })[]
   discounts: { name: string; price: number }[]
   ignore?: 'EEC' | 'CUSTOM'
-}> = React.memo(({ orderId, products, discounts, ignore }) => {
+  onTracked?: () => void
+}> = React.memo(({ orderId, products, discounts, ignore, onTracked }) => {
   const tracking = useTracking()
   useEffect(() => {
     tracking.purchase(orderId, products, discounts, { ignore })
+    onTracked?.()
   }, [discounts, orderId, products, tracking, ignore])
   return <></>
 }, equals)
