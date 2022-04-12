@@ -100,7 +100,7 @@ export const getResourceCollection = async (
 }
 
 export const useResourceCollection = (urns: string[], withProducts: boolean = false) => {
-  const { data } = useQuery<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>(
+  const { data, loading } = useQuery<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>(
     GET_RESOURCE_COLLECTION,
     {
       variables: { urns },
@@ -111,6 +111,7 @@ export const useResourceCollection = (urns: string[], withProducts: boolean = fa
     [data, urns, withProducts],
   )
   return {
+    loading,
     resourceCollection,
   }
 }
