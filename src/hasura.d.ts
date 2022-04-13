@@ -63,6 +63,8 @@ export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_co
   __typename: 'program'
   id: any
   cover_url: string | null
+  cover_mobile_url: string | null
+  cover_thumbnail_url: string | null
 }
 
 export interface GET_RECENT_PROGRAM_PROGRESS_program_content_progress_program_content_program_content_section {
@@ -504,6 +506,8 @@ export interface GET_PROGRAM_COLLECTION_program {
   __typename: 'program'
   id: any
   cover_url: string | null
+  cover_mobile_url: string | null
+  cover_thumbnail_url: string | null
   title: string
   abstract: string | null
   list_price: any | null
@@ -554,6 +558,8 @@ export interface GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_
   __typename: 'program'
   id: any
   cover_url: string | null
+  cover_mobile_url: string | null
+  cover_thumbnail_url: string | null
 }
 
 export interface GET_PROGRAM_CONTENT_COLLECTION_program_content_program_content_section {
@@ -2314,6 +2320,8 @@ export interface programFields {
   __typename: 'program'
   id: any
   cover_url: string | null
+  cover_mobile_url: string | null
+  cover_thumbnail_url: string | null
   title: string
   abstract: string | null
   list_price: any | null
@@ -2351,6 +2359,8 @@ export interface programContentFields_program_content_section_program {
   __typename: 'program'
   id: any
   cover_url: string | null
+  cover_mobile_url: string | null
+  cover_thumbnail_url: string | null
 }
 
 export interface programContentFields_program_content_section {
@@ -3203,6 +3213,8 @@ export enum attachment_update_column {
   created_at = 'created_at',
   data = 'data',
   duration = 'duration',
+  family = 'family',
+  file_id = 'file_id',
   filename = 'filename',
   id = 'id',
   is_deleted = 'is_deleted',
@@ -3602,6 +3614,38 @@ export enum exercise_update_column {
   member_id = 'member_id',
   program_content_id = 'program_content_id',
   updated_at = 'updated_at',
+}
+
+/**
+ * unique or primary key constraints on table "file"
+ */
+export enum file_constraint {
+  file_pkey = 'file_pkey',
+}
+
+/**
+ * update columns of table "file"
+ */
+export enum file_update_column {
+  acl = 'acl',
+  checksum = 'checksum',
+  created_at = 'created_at',
+  created_by = 'created_by',
+  excerpt = 'excerpt',
+  id = 'id',
+  metadata = 'metadata',
+  mime_type = 'mime_type',
+  name = 'name',
+  purge_at = 'purge_at',
+  size = 'size',
+  starred_at = 'starred_at',
+  status = 'status',
+  thumbnail = 'thumbnail',
+  updated_at = 'updated_at',
+  updated_by = 'updated_by',
+  uri = 'uri',
+  viewed_at = 'viewed_at',
+  viewed_count = 'viewed_count',
 }
 
 /**
@@ -5348,6 +5392,8 @@ export enum program_tempo_delivery_update_column {
 export enum program_update_column {
   abstract = 'abstract',
   app_id = 'app_id',
+  cover_mobile_url = 'cover_mobile_url',
+  cover_thumbnail_url = 'cover_thumbnail_url',
   cover_url = 'cover_url',
   cover_video_url = 'cover_video_url',
   created_at = 'created_at',
@@ -8228,6 +8274,9 @@ export interface attachment_bool_exp {
   created_at?: timestamptz_comparison_exp | null
   data?: jsonb_comparison_exp | null
   duration?: numeric_comparison_exp | null
+  family?: String_comparison_exp | null
+  file?: file_bool_exp | null
+  file_id?: uuid_comparison_exp | null
   filename?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
@@ -8252,6 +8301,9 @@ export interface attachment_insert_input {
   created_at?: any | null
   data?: any | null
   duration?: any | null
+  family?: string | null
+  file?: file_obj_rel_insert_input | null
+  file_id?: any | null
   filename?: string | null
   id?: any | null
   is_deleted?: boolean | null
@@ -9515,6 +9567,76 @@ export interface exercise_on_conflict {
   constraint: exercise_constraint
   update_columns: exercise_update_column[]
   where?: exercise_bool_exp | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "file". All fields are combined with a logical 'AND'.
+ */
+export interface file_bool_exp {
+  _and?: (file_bool_exp | null)[] | null
+  _not?: file_bool_exp | null
+  _or?: (file_bool_exp | null)[] | null
+  acl?: String_comparison_exp | null
+  checksum?: String_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
+  created_by?: String_comparison_exp | null
+  excerpt?: String_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  metadata?: jsonb_comparison_exp | null
+  mime_type?: String_comparison_exp | null
+  name?: String_comparison_exp | null
+  purge_at?: timestamptz_comparison_exp | null
+  size?: numeric_comparison_exp | null
+  starred_at?: timestamptz_comparison_exp | null
+  status?: String_comparison_exp | null
+  thumbnail?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+  updated_by?: String_comparison_exp | null
+  uri?: String_comparison_exp | null
+  viewed_at?: timestamptz_comparison_exp | null
+  viewed_count?: Int_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "file"
+ */
+export interface file_insert_input {
+  acl?: string | null
+  checksum?: string | null
+  created_at?: any | null
+  created_by?: string | null
+  excerpt?: string | null
+  id?: any | null
+  metadata?: any | null
+  mime_type?: string | null
+  name?: string | null
+  purge_at?: any | null
+  size?: any | null
+  starred_at?: any | null
+  status?: string | null
+  thumbnail?: string | null
+  updated_at?: any | null
+  updated_by?: string | null
+  uri?: string | null
+  viewed_at?: any | null
+  viewed_count?: number | null
+}
+
+/**
+ * input type for inserting object relation for remote table "file"
+ */
+export interface file_obj_rel_insert_input {
+  data: file_insert_input
+  on_conflict?: file_on_conflict | null
+}
+
+/**
+ * on conflict condition type for table "file"
+ */
+export interface file_on_conflict {
+  constraint: file_constraint
+  update_columns: file_update_column[]
+  where?: file_bool_exp | null
 }
 
 /**
@@ -14368,6 +14490,8 @@ export interface program_bool_exp {
   abstract?: String_comparison_exp | null
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
+  cover_mobile_url?: String_comparison_exp | null
+  cover_thumbnail_url?: String_comparison_exp | null
   cover_url?: String_comparison_exp | null
   cover_video_url?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
@@ -15831,6 +15955,8 @@ export interface program_insert_input {
   abstract?: string | null
   app?: app_obj_rel_insert_input | null
   app_id?: string | null
+  cover_mobile_url?: string | null
+  cover_thumbnail_url?: string | null
   cover_url?: string | null
   cover_video_url?: string | null
   created_at?: any | null
@@ -15873,6 +15999,8 @@ export interface program_insert_input {
 export interface program_max_order_by {
   abstract?: order_by | null
   app_id?: order_by | null
+  cover_mobile_url?: order_by | null
+  cover_thumbnail_url?: order_by | null
   cover_url?: order_by | null
   cover_video_url?: order_by | null
   created_at?: order_by | null
@@ -15893,6 +16021,8 @@ export interface program_max_order_by {
 export interface program_min_order_by {
   abstract?: order_by | null
   app_id?: order_by | null
+  cover_mobile_url?: order_by | null
+  cover_thumbnail_url?: order_by | null
   cover_url?: order_by | null
   cover_video_url?: order_by | null
   created_at?: order_by | null
@@ -15931,6 +16061,8 @@ export interface program_order_by {
   abstract?: order_by | null
   app?: app_order_by | null
   app_id?: order_by | null
+  cover_mobile_url?: order_by | null
+  cover_thumbnail_url?: order_by | null
   cover_url?: order_by | null
   cover_video_url?: order_by | null
   created_at?: order_by | null

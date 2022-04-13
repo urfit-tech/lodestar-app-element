@@ -34,6 +34,8 @@ type ProgramData = DeepPick<
   | 'title'
   | 'abstract'
   | 'coverUrl'
+  | 'coverMobileUrl'
+  | 'coverThumbnailUrl'
   | 'totalDuration'
   | 'isEnrolledCountVisible'
   | 'roles.[].name'
@@ -156,7 +158,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       title={program.title}
                       abstract={program.abstract || ''}
                       totalDuration={program.totalDuration || 0}
-                      coverUrl={program.coverUrl}
+                      coverUrl={program.coverThumbnailUrl || program.coverMobileUrl || program.coverUrl}
                       instructorIds={program.roles.map(programRole => programRole.member.id)}
                       salePrice={
                         typeof primaryProgramPlan?.salePrice === 'number' &&
@@ -413,6 +415,8 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
     title: p.title,
     abstract: p.abstract || '',
     coverUrl: p.cover_url,
+    coverMobileUrl: p.cover_mobile_url,
+    coverThumbnailUrl: p.cover_thumbnail_url,
     totalDuration: sum(
       p.program_content_sections.map(pcs => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0),
     ),
@@ -453,6 +457,8 @@ const programFields = gql`
   fragment programFields on program {
     id
     cover_url
+    cover_mobile_url
+    cover_thumbnail_url
     title
     abstract
     list_price

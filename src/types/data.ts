@@ -72,6 +72,8 @@ export type Program = {
   id: string
   title: string
   coverUrl: string | null
+  coverMobileUrl: string | null
+  coverThumbnailUrl: string | null
   abstract: string
   publishedAt: Date | null
   isPrivate: boolean

@@ -26,6 +26,8 @@ type ProgramContentData = DeepPick<
   | 'videos.[].id'
   | 'contentSection.program.id'
   | 'contentSection.program.coverUrl'
+  | 'contentSection.program.coverMobileUrl'
+  | 'contentSection.program.coverThumbnailUrl'
 >
 type ProgramContentContextCollection = ContextCollection<ProgramContentData>
 
@@ -85,7 +87,11 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
                       editing={props.editing}
                       title={programContent.title}
                       link={`/programs/${programContent.contentSection.program.id}/contents/${programContent.id}`}
-                      coverUrl={programContent.contentSection.program.coverUrl}
+                      coverUrl={
+                        programContent.contentSection.program.coverThumbnailUrl ||
+                        programContent.contentSection.program.coverMobileUrl ||
+                        programContent.contentSection.program.coverUrl
+                      }
                       type={programContent.videos.length > 0 ? ('video' as const) : ('text' as const)}
                       duration={programContent.duration}
                       progress={programContent.progress}
@@ -138,6 +144,8 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           program: {
             id: pc.program_content_section.program.id,
             coverUrl: pc.program_content_section.program.cover_url,
+            coverMobileUrl: pc.program_content_section.program.cover_mobile_url,
+            coverThumbnailUrl: pc.program_content_section.program.cover_thumbnail_url,
           },
         },
         videos: pc.program_content_videos.map(pcv => ({ id: pcv.attachment_id })),
@@ -180,6 +188,8 @@ const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => 
           program: {
             id: pcp.program_content.program_content_section.program.id,
             coverUrl: pcp.program_content.program_content_section.program.cover_url,
+            coverMobileUrl: pcp.program_content.program_content_section.program.cover_mobile_url,
+            coverThumbnailUrl: pcp.program_content.program_content_section.program.cover_thumbnail_url,
           },
         },
         videos: pcp.program_content.program_content_videos.map(pcv => ({ id: pcv.attachment_id })),
@@ -202,6 +212,8 @@ const programContentFields = gql`
       program {
         id
         cover_url
+        cover_mobile_url
+        cover_thumbnail_url
       }
     }
     program_content_progress {
