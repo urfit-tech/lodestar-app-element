@@ -89,8 +89,8 @@ const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> 
                       link={`/programs/${programContent.contentSection.program.id}/contents/${programContent.id}`}
                       coverUrl={
                         programContent.contentSection.program.coverThumbnailUrl ||
-                        programContent.contentSection.program.coverMobileUrl ||
-                        programContent.contentSection.program.coverUrl
+                        programContent.contentSection.program.coverUrl ||
+                        programContent.contentSection.program.coverMobileUrl
                       }
                       type={programContent.videos.length > 0 ? ('video' as const) : ('text' as const)}
                       duration={programContent.duration}
