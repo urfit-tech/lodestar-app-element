@@ -6,29 +6,32 @@ import { useTracking } from '../../hooks/tracking'
 
 const Impression: React.FC<{ resources: (Resource | null)[]; collection?: string; ignore?: 'EEC' | 'CUSTOM' }> =
   React.memo(({ resources, collection, ignore }) => {
+    const [utmSource] = useQueryParam('utmSource', StringParam)
     const tracking = useTracking()
     useEffect(() => {
-      tracking.impress(resources, { collection, ignore })
+      tracking.impress(resources, { collection, ignore, utmSource: utmSource || '' })
     }, [collection, resources, tracking])
     return <></>
   }, equals)
 
 const Detail: React.FC<{ resource: Resource; ignore?: 'EEC' | 'CUSTOM' }> = React.memo(({ resource, ignore }) => {
-  const tracking = useTracking()
   const [pageFrom] = useQueryParam('pageFrom', StringParam)
+  const [utmSource] = useQueryParam('utmSource', StringParam)
+  const tracking = useTracking()
   useEffect(() => {
-    tracking.detail(resource, { collection: pageFrom || undefined, ignore })
-  }, [pageFrom, resource, tracking, ignore])
+    tracking.detail(resource, { collection: pageFrom || undefined, ignore, utmSource: utmSource || '' })
+  }, [pageFrom, utmSource, resource, tracking, ignore])
   return <></>
 }, equals)
 
 const Checkout: React.FC<{ resources: Resource[]; onCheckout?: () => void; ignore?: 'EEC' | 'CUSTOM' }> = React.memo(
   ({ resources, onCheckout, ignore }) => {
     const tracking = useTracking()
+    const [utmSource] = useQueryParam('utmSource', StringParam)
     useEffect(() => {
-      tracking.checkout(resources, { ignore })
+      tracking.checkout(resources, { ignore, utmSource: utmSource || '' })
       onCheckout?.()
-    }, [onCheckout, resources, tracking, ignore])
+    }, [onCheckout, utmSource, resources, tracking, ignore])
     return <></>
   },
   equals,
@@ -42,10 +45,11 @@ const Purchase: React.FC<{
   onTracked?: () => void
 }> = React.memo(({ orderId, products, discounts, ignore, onTracked }) => {
   const tracking = useTracking()
+  const [utmSource] = useQueryParam('utmSource', StringParam)
   useEffect(() => {
-    tracking.purchase(orderId, products, discounts, { ignore })
+    tracking.purchase(orderId, products, discounts, { ignore, utmSource: utmSource || '' })
     onTracked?.()
-  }, [discounts, orderId, products, tracking, ignore])
+  }, [discounts, utmSource, orderId, products, tracking, ignore])
   return <></>
 }, equals)
 

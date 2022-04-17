@@ -1,6 +1,5 @@
 import { useApolloClient } from '@apollo/react-hooks'
 import { sum } from 'ramda'
-import { StringParam, useQueryParam } from 'use-query-params'
 import { useApp } from '../contexts/AppContext'
 import { notEmpty } from '../helpers'
 import { getResourceCollection, Resource, ResourceType } from './resource'
@@ -95,7 +94,6 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   const { settings, currencyId: appCurrencyId, id: appId } = useApp()
   const brand = settings['name'] || document.title
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
-  const [utmSource] = useQueryParam('utm_source', StringParam)
   const apolloClient = useApolloClient()
   return {
     view: () => {},
@@ -104,6 +102,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       options?: {
         collection?: string
         ignore?: 'EEC' | 'CUSTOM'
+        utmSource?: string
       },
     ) => {
       if (options?.ignore !== 'EEC') {
@@ -161,7 +160,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       }
 
       if (enabledCW && options?.ignore !== 'CUSTOM') {
-        const cwProducts = resources.map(r => (r ? convertCwProduct(r, utmSource || undefined) : null)).filter(notEmpty)
+        const cwProducts = resources.map(r => (r ? convertCwProduct(r, options?.utmSource) : null)).filter(notEmpty)
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
           ;(window as any).dataLayer.push({ itemData: null })
@@ -224,6 +223,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       options?: {
         collection?: string
         ignore?: 'EEC' | 'CUSTOM'
+        utmSource?: string
       },
     ) => {
       if (options?.ignore !== 'EEC') {
@@ -269,8 +269,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           const metaProducts = await getResourceCollection(apolloClient, [resource.metaId], true)
           products = metaProducts[0]?.products?.filter(p => p?.type === 'program_plan')
         }
-        const targetResource = resource && convertCwProduct(resource, utmSource || undefined)
-        const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p, utmSource || undefined))
+        const targetResource = resource && convertCwProduct(resource, options?.utmSource)
+        const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p, options?.utmSource))
 
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ itemData: null })
@@ -357,6 +357,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       options?: {
         step?: number
         ignore?: 'EEC' | 'CUSTOM'
+        utmSource?: string
       },
     ) => {
       const ecProducts = resources
@@ -396,7 +397,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       if (enabledCW && options?.ignore !== 'CUSTOM') {
         const cwProducts = resources
           .map(resource =>
-            resource ? { ...convertCwProduct(resource, utmSource || undefined), price: resource.price } : null,
+            resource ? { ...convertCwProduct(resource, options?.utmSource), price: resource.price } : null,
           )
           .filter(notEmpty)
         if (cwProducts.length > 0) {
@@ -438,6 +439,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       options?: {
         step?: number
         ignore?: 'EEC' | 'CUSTOM'
+        utmSource?: string
       },
     ) => {
       const ecProducts =
@@ -452,6 +454,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               ? product?.variants?.join(trackingOptions.separator)
               : product.owners?.map(member => member.name).join(trackingOptions.separator),
           quantity: product.quantity,
+          utmSource: options?.utmSource,
         })) || []
       if (ecProducts.length > 0) {
         ;(window as any).dataLayer = (window as any).dataLayer || []
@@ -479,7 +482,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           orderProducts.map(product => {
             const productType = convertProductType(product.type, true)
             return {
-              ...convertCwProduct(product, utmSource || undefined),
+              ...convertCwProduct(product, options?.utmSource || undefined),
               order_number: orderId,
               type: productType === 'program_package' ? 'package' : productType,
             }
