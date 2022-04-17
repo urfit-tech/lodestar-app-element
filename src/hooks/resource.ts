@@ -37,7 +37,7 @@ export type Resource = {
   variants?: string[] // FIXME: may remove this item and replace by options ?
   products?: (Resource | null)[]
   metaId?: string
-  options?: { [key: string]: any }[]
+  options?: { [key: string]: any }
 }
 
 const composeResourceCollection = (
@@ -63,7 +63,6 @@ const composeResourceCollection = (
           variants: v.variants || [],
           sku: v.sku || undefined,
           metaId: v.meta_id || undefined,
-          options: v.variants || undefined,
         }
       }) || []
 
