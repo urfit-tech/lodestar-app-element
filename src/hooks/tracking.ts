@@ -1,5 +1,6 @@
 import { useApolloClient } from '@apollo/react-hooks'
 import { sum } from 'ramda'
+import { StringParam, useQueryParam } from 'use-query-params'
 import { useApp } from '../contexts/AppContext'
 import { notEmpty } from '../helpers'
 import { getResourceCollection, Resource, ResourceType } from './resource'
@@ -32,12 +33,25 @@ type CwProductBaseType = {
   channels: { master: { id: string[] } }
   keywords: string
   price?: number
-  content_id?: string
-  content_name?: string
+  utmSource?: string
 }
 
-const convertCwProduct: (resource: Resource, options?: { separator: string }) => CwProductBaseType = (
+type CwProductContentType = CwProductBaseType & {
+  content_id: string
+  content_name: string
+}
+
+type CwProductSalesType = CwProductBaseType & {
+  price: number
+}
+
+const convertCwProduct: (
   resource: Resource,
+  utmSource?: string,
+  options?: { separator: string },
+) => CwProductBaseType | CwProductContentType | CwProductSalesType = (
+  resource: Resource,
+  utmSource: string | undefined,
   options: { separator: string } = { separator: '|' },
 ) => {
   const baseProduct = {
@@ -56,6 +70,7 @@ const convertCwProduct: (resource: Resource, options?: { separator: string }) =>
       resource?.tags?.join(options.separator) ||
       document.querySelector('meta[name="keywords"]')?.getAttribute('content') ||
       '',
+    utmSource,
   }
   switch (resource.type) {
     case 'program_content':
@@ -80,6 +95,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   const { settings, currencyId: appCurrencyId, id: appId } = useApp()
   const brand = settings['name'] || document.title
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
+  const [utmSource] = useQueryParam('utm_source', StringParam)
   const apolloClient = useApolloClient()
   return {
     view: () => {},
@@ -145,7 +161,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       }
 
       if (enabledCW && options?.ignore !== 'CUSTOM') {
-        const cwProducts = resources.map(r => (r ? convertCwProduct(r) : null)).filter(notEmpty)
+        const cwProducts = resources.map(r => (r ? convertCwProduct(r, utmSource || undefined) : null)).filter(notEmpty)
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
           ;(window as any).dataLayer.push({ itemData: null })
@@ -253,8 +269,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           const metaProducts = await getResourceCollection(apolloClient, [resource.metaId], true)
           products = metaProducts[0]?.products?.filter(p => p?.type === 'program_plan')
         }
-        const targetResource = resource && convertCwProduct(resource)
-        const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p))
+        const targetResource = resource && convertCwProduct(resource, utmSource || undefined)
+        const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p, utmSource || undefined))
 
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ itemData: null })
@@ -379,7 +395,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       }
       if (enabledCW && options?.ignore !== 'CUSTOM') {
         const cwProducts = resources
-          .map(resource => (resource ? { ...convertCwProduct(resource), price: resource.price } : null))
+          .map(resource =>
+            resource ? { ...convertCwProduct(resource, utmSource || undefined), price: resource.price } : null,
+          )
           .filter(notEmpty)
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
@@ -461,7 +479,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           orderProducts.map(product => {
             const productType = convertProductType(product.type, true)
             return {
-              ...convertCwProduct(product),
+              ...convertCwProduct(product, utmSource || undefined),
               order_number: orderId,
               type: productType === 'program_package' ? 'package' : productType,
             }

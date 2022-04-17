@@ -201,6 +201,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
           email: currentMember.email,
           dmp_id: getCookie('__eruid'),
           salesforce_id: currentMember.options[appId]?.salesforce_id || '',
+          member_type: '會員',
         },
       })
     }
