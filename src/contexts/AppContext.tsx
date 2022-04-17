@@ -184,10 +184,12 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
   }, [currentMember, enabledCW])
   useEffect(() => {
     if (currentMember && enabledCW) {
+      const memberType = '會員'
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({
         event: 'cwData',
         memberData: {
+          member_type: memberType,
           id: currentMember.options[appId]?.id || '',
           social_id: currentMember.options[appId]?.social_id || '',
           uid: currentMember.options[appId]?.uid || '',
@@ -201,7 +203,6 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
           email: currentMember.email,
           dmp_id: getCookie('__eruid'),
           salesforce_id: currentMember.options[appId]?.salesforce_id || '',
-          member_type: '會員',
         },
       })
     }
