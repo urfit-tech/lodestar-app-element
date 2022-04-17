@@ -6,7 +6,7 @@ import { useTracking } from '../../hooks/tracking'
 
 const Impression: React.FC<{ resources: (Resource | null)[]; collection?: string; ignore?: 'EEC' | 'CUSTOM' }> =
   React.memo(({ resources, collection, ignore }) => {
-    const [utmSource] = useQueryParam('utmSource', StringParam)
+    const [utmSource] = useQueryParam('utm_source', StringParam)
     const tracking = useTracking()
     useEffect(() => {
       tracking.impress(resources, { collection, ignore, utmSource: utmSource || '' })
@@ -16,7 +16,7 @@ const Impression: React.FC<{ resources: (Resource | null)[]; collection?: string
 
 const Detail: React.FC<{ resource: Resource; ignore?: 'EEC' | 'CUSTOM' }> = React.memo(({ resource, ignore }) => {
   const [pageFrom] = useQueryParam('pageFrom', StringParam)
-  const [utmSource] = useQueryParam('utmSource', StringParam)
+  const [utmSource] = useQueryParam('utm_source', StringParam)
   const tracking = useTracking()
   useEffect(() => {
     tracking.detail(resource, { collection: pageFrom || undefined, ignore, utmSource: utmSource || '' })
@@ -27,7 +27,7 @@ const Detail: React.FC<{ resource: Resource; ignore?: 'EEC' | 'CUSTOM' }> = Reac
 const Checkout: React.FC<{ resources: Resource[]; onCheckout?: () => void; ignore?: 'EEC' | 'CUSTOM' }> = React.memo(
   ({ resources, onCheckout, ignore }) => {
     const tracking = useTracking()
-    const [utmSource] = useQueryParam('utmSource', StringParam)
+    const [utmSource] = useQueryParam('utm_source', StringParam)
     useEffect(() => {
       tracking.checkout(resources, { ignore, utmSource: utmSource || '' })
       onCheckout?.()
@@ -45,7 +45,7 @@ const Purchase: React.FC<{
   onTracked?: () => void
 }> = React.memo(({ orderId, products, discounts, ignore, onTracked }) => {
   const tracking = useTracking()
-  const [utmSource] = useQueryParam('utmSource', StringParam)
+  const [utmSource] = useQueryParam('utm_source', StringParam)
   useEffect(() => {
     tracking.purchase(orderId, products, discounts, { ignore, utmSource: utmSource || '' })
     onTracked?.()
