@@ -396,9 +396,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       }
       if (enabledCW && options?.ignore !== 'CUSTOM') {
         const cwProducts = resources
-          .map(resource =>
-            resource ? { ...convertCwProduct(resource, options?.utmSource), price: resource.price } : null,
-          )
+          .map(resource => (resource ? convertCwProduct(resource, options?.utmSource) : null))
           .filter(notEmpty)
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
