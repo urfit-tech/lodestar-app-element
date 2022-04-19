@@ -47,7 +47,7 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
     return <div>{JSON.stringify(errors)}</div>
   }
   return (
-    <div>
+    <div className="program">
       <InstructorPlaceHolder>
         {loading ? (
           <MultiAvatar loading memberIdList={[]} />
@@ -68,12 +68,20 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
         {loading ? (
           <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
         ) : (
-          <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+          <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
         )}
         <Card.Content className="content">
-          {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{props.title}</StyledTitle>}
+          {loading ? (
+            <Skeleton className="mb-3" width="20" height={4} />
+          ) : (
+            <StyledTitle className="content__title">{props.title}</StyledTitle>
+          )}
           <Card.Description className="description">
-            {loading ? <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} /> : props.abstract}
+            {loading ? (
+              <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} />
+            ) : (
+              <span className="description__abstract">{props.abstract}</span>
+            )}
           </Card.Description>
           <Card.MetaBlock className="metadata d-flex flex-row-reverse justify-content-between align-items-center">
             <div>
@@ -93,15 +101,15 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
             {loading ? (
               <SkeletonText />
             ) : (
-              <StyledExtraBlock>
-                <div className="d-flex align-items-center">
-                  <Icon className="mr-1" as={AiOutlineClockCircle} />
-                  {durationFormatter(props.totalDuration)}
+              <StyledExtraBlock className="extra">
+                <div className="d-flex align-items-center duration">
+                  <Icon className="mr-1 duration__clockIcon" as={AiOutlineClockCircle} />
+                  <span className="duration__amount">{durationFormatter(props.totalDuration)}</span>
                 </div>
                 {props.isEnrolledCountVisible && (
-                  <div className="d-flex align-items-center">
-                    <Icon className="mr-1" as={AiOutlineUser} />
-                    {enrolledCount}
+                  <div className="d-flex align-items-center enrolledCount">
+                    <Icon className="mr-1 enrolledCount__userIcon" as={AiOutlineUser} />
+                    <span className="enrolledCount__amount">{enrolledCount}</span>
                   </div>
                 )}
               </StyledExtraBlock>

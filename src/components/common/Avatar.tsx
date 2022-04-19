@@ -90,7 +90,7 @@ export const MultiAvatar: React.FC<
   const { member } = usePublicMember(memberId)
 
   return (
-    <div className="d-flex align-items-center">
+    <div className="d-flex align-items-center avatar">
       {loading ? (
         <>
           <SkeletonCircle className="mr-3" />
@@ -100,7 +100,7 @@ export const MultiAvatar: React.FC<
         <>
           {props.renderAvatar?.(member, props.onClick) || (
             <AvatarImage
-              className={classNames({ 'cursor-pointer': Boolean(props.onClick) })}
+              className={classNames('avatar__image', { 'cursor-pointer': Boolean(props.onClick) })}
               src={member?.pictureUrl}
               shape={props.shape}
               size={props.size}
@@ -110,7 +110,7 @@ export const MultiAvatar: React.FC<
           {props.renderText?.(member, props.onClick) ||
             (props.withName && (
               <MemberName
-                className={classNames('ml-3', { 'cursor-pointer': Boolean(props.onClick) })}
+                className={classNames('avatar__name', 'ml-3', { 'cursor-pointer': Boolean(props.onClick) })}
                 onClick={() => props.onClick?.(memberId)}
               >
                 {member?.name}

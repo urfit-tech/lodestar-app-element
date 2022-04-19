@@ -70,33 +70,51 @@ const PriceLabel: React.VFC<
 
   if (variant === 'full-detail') {
     return (
-      <FullDetailPrice>
+      <FullDetailPrice className="price">
         {!!downPrice && (
-          <div>
-            {formatMessage(commonMessages.label.firstPeriod)}
-            {firstPeriodPrice === 0 && !noFreeText && formatMessage(commonMessages.label.free)}
-            {formatCurrency(firstPeriodPrice)}
+          <div className="downPrice">
+            <span className="downPrice__firstPeriod">{formatMessage(commonMessages.label.firstPeriod)}</span>
+            {firstPeriodPrice === 0 && !noFreeText && (
+              <span className="downPrice__free">{formatMessage(commonMessages.label.free)}</span>
+            )}
+            <span className="downPrice__firstPeriodPriceAmount">{formatCurrency(firstPeriodPrice)}</span>
           </div>
         )}
 
         {typeof salePrice === 'number' && (
-          <SalePrice>
-            {!!downPrice && formatMessage(commonMessages.label.fromSecondPeriod)}
-            {salePrice === 0 && !noFreeText && formatMessage(commonMessages.label.free)}
-            {formatCurrency(salePrice)}
-            <span style={{ fontSize: '16px' }}>{periodElem}</span>
+          <SalePrice className="salePrice">
+            {!!downPrice && (
+              <span className="salePrice__fromSecondPeriod">
+                {formatMessage(commonMessages.label.fromSecondPeriod)}
+              </span>
+            )}
+            {salePrice === 0 && !noFreeText && (
+              <span className="salePrice__freeText">{formatMessage(commonMessages.label.free)}</span>
+            )}
+            <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
+            <span className="salePrice__periodUnit" style={{ fontSize: '16px' }}>
+              {periodElem}
+            </span>
           </SalePrice>
         )}
 
-        <ListPrice>
-          {typeof salePrice === 'number'
-            ? formatMessage(commonMessages.label.originalPrice)
-            : !!downPrice
-            ? formatMessage(commonMessages.label.fromSecondPeriod)
-            : ''}
-          {listPrice === 0 && !noFreeText && formatMessage(commonMessages.label.free)}
-          {formatCurrency(listPrice)}
-          <span style={{ fontSize: '16px' }}>{periodElem}</span>
+        <ListPrice className="listPrice">
+          {typeof salePrice === 'number' ? (
+            <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
+          ) : !!downPrice ? (
+            <span className="listPrice__fromSecondPeriodText">
+              {formatMessage(commonMessages.label.fromSecondPeriod)}
+            </span>
+          ) : (
+            ''
+          )}
+          {listPrice === 0 && !noFreeText && (
+            <span className="listPrice__freeText">{formatMessage(commonMessages.label.free)}</span>
+          )}
+          <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
+          <span className="listPrice__periodUnit" style={{ fontSize: '16px' }}>
+            {periodElem}
+          </span>
         </ListPrice>
       </FullDetailPrice>
     )
@@ -104,22 +122,20 @@ const PriceLabel: React.VFC<
 
   if (variant === 'inline') {
     return (
-      <InlinePrice>
-        <span>
-          {formatCurrency(listPrice)}
-          {periodElem}
-        </span>
+      <InlinePrice className="price">
+        <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
+        <span className="listPrice__periodUnit">{periodElem}</span>
         {typeof salePrice === 'number' && (
-          <span>
-            {formatCurrency(salePrice)}
-            {periodElem}
-          </span>
+          <>
+            <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
+            <span className="salePrice__periodUnit">{periodElem}</span>
+          </>
         )}
       </InlinePrice>
     )
   }
 
-  return <>{formatCurrency(listPrice)}</>
+  return <span className="price listPrice__amount">{formatCurrency(listPrice)}</span>
 }
 
 export default PriceLabel
