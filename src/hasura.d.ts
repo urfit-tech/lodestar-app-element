@@ -2028,21 +2028,17 @@ export interface UPDATE_MEMBER_METADATAVariables {
 // GraphQL query operation: GET_PROGRAM_ENROLLMENT_AGGREGATE
 // ====================================================
 
-export interface GET_PROGRAM_ENROLLMENT_AGGREGATE_program_plan_enrollment_aggregate_aggregate {
-  __typename: 'program_plan_enrollment_aggregate_fields'
-  count: number | null
-}
-
-export interface GET_PROGRAM_ENROLLMENT_AGGREGATE_program_plan_enrollment_aggregate {
-  __typename: 'program_plan_enrollment_aggregate'
-  aggregate: GET_PROGRAM_ENROLLMENT_AGGREGATE_program_plan_enrollment_aggregate_aggregate | null
+export interface GET_PROGRAM_ENROLLMENT_AGGREGATE_program_statistics {
+  __typename: 'program_statistics'
+  program_plan_enrolled_count: any | null
+  program_package_plan_enrolled_count: any | null
 }
 
 export interface GET_PROGRAM_ENROLLMENT_AGGREGATE {
   /**
-   * fetch aggregated fields from the table: "program_plan_enrollment"
+   * fetch data from the table: "program_statistics"
    */
-  program_plan_enrollment_aggregate: GET_PROGRAM_ENROLLMENT_AGGREGATE_program_plan_enrollment_aggregate
+  program_statistics: GET_PROGRAM_ENROLLMENT_AGGREGATE_program_statistics[]
 }
 
 export interface GET_PROGRAM_ENROLLMENT_AGGREGATEVariables {
@@ -3465,7 +3461,6 @@ export enum contract_update_column {
  * unique or primary key constraints on table "coupon_code"
  */
 export enum coupon_code_constraint {
-  coupon_code_code_key = 'coupon_code_code_key',
   coupon_plan_code_app_id_code_key = 'coupon_plan_code_app_id_code_key',
   coupon_plan_code_pkey = 'coupon_plan_code_pkey',
 }
@@ -5410,6 +5405,7 @@ export enum program_update_column {
   is_subscription = 'is_subscription',
   list_price = 'list_price',
   meta_tag = 'meta_tag',
+  metadata = 'metadata',
   position = 'position',
   published_at = 'published_at',
   sale_price = 'sale_price',
@@ -14509,6 +14505,7 @@ export interface program_bool_exp {
   is_subscription?: Boolean_comparison_exp | null
   list_price?: numeric_comparison_exp | null
   meta_tag?: jsonb_comparison_exp | null
+  metadata?: jsonb_comparison_exp | null
   package_items?: package_item_bool_exp | null
   position?: Int_comparison_exp | null
   program_announcements?: program_announcement_bool_exp | null
@@ -15974,6 +15971,7 @@ export interface program_insert_input {
   is_subscription?: boolean | null
   list_price?: any | null
   meta_tag?: any | null
+  metadata?: any | null
   package_items?: package_item_arr_rel_insert_input | null
   position?: number | null
   program_announcements?: program_announcement_arr_rel_insert_input | null
@@ -16080,6 +16078,7 @@ export interface program_order_by {
   is_subscription?: order_by | null
   list_price?: order_by | null
   meta_tag?: order_by | null
+  metadata?: order_by | null
   package_items_aggregate?: package_item_aggregate_order_by | null
   position?: order_by | null
   program_announcements_aggregate?: program_announcement_aggregate_order_by | null

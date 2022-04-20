@@ -1,5 +1,6 @@
 import { QueryHookOptions, useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import { sum } from 'ramda'
 import hasura from '../hasura'
 
 export const useProgramEnrollmentAggregate = (programId: string, options?: Pick<QueryHookOptions, 'skip'>) => {
@@ -9,10 +10,9 @@ export const useProgramEnrollmentAggregate = (programId: string, options?: Pick<
   >(
     gql`
       query GET_PROGRAM_ENROLLMENT_AGGREGATE($programId: uuid!) {
-        program_plan_enrollment_aggregate(where: { program_plan: { program_id: { _eq: $programId } } }) {
-          aggregate {
-            count
-          }
+        program_statistics(where: { program_id: { _eq: $programId } }) {
+          program_plan_enrolled_count
+          program_package_plan_enrolled_count
         }
       }
     `,
@@ -23,7 +23,10 @@ export const useProgramEnrollmentAggregate = (programId: string, options?: Pick<
       },
     },
   )
-  const enrolledCount = data?.program_plan_enrollment_aggregate?.aggregate?.count || 0
+  const enrolledCount =
+    sum(
+      data?.program_statistics.map(v => v.program_plan_enrolled_count + v.program_package_plan_enrolled_count) || [],
+    ) || 0
 
   return {
     loading,
