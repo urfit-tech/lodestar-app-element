@@ -44,15 +44,19 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
       {loading ? (
         <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
       ) : (
-        <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+        <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
       )}
-      <div>
-        {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <StyledTitle>{props.title}</StyledTitle>}
+      <div className="content">
+        {loading ? (
+          <Skeleton className="mb-3" width="20" height={4} />
+        ) : (
+          <StyledTitle className="content__title">{props.title}</StyledTitle>
+        )}
         {loading || loadingReviewAggregate ? (
           <SkeletonText className="mb-3" />
         ) : (
           <div className="d-flex justify-content-between align-items-center">
-            <StyledCategories>
+            <StyledCategories className="category">
               {props.categories
                 .filter((_, i) => i < 3)
                 // FIXME display subCategory instead split '/' here
@@ -60,9 +64,9 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
                 .join('・')}
             </StyledCategories>
             {averageScore !== 0 && (
-              <StyledScore className="d-flex align-items-center">
-                {averageScore.toFixed(1)}
-                <StarIcon className="ml-1" style={{ width: '14px', height: '14px' }} />
+              <StyledScore className="d-flex align-items-center score">
+                <span className="score__amount">{averageScore.toFixed(1)}</span>
+                <StarIcon className="ml-1 score__starIcon" style={{ width: '14px', height: '14px' }} />
               </StyledScore>
             )}
           </div>

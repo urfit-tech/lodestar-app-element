@@ -1,11 +1,11 @@
-import { Box, Button, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
 import axios from 'axios'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import ReactPixel from 'react-facebook-pixel'
 import ReactGA from 'react-ga'
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { StringParam, useQueryParam } from 'use-query-params'
@@ -93,6 +93,10 @@ const CheckoutProductItem: React.VFC<{ name: string; price: number; currencyId?:
     </div>
   )
 }
+
+const StyledApprovementBox = styled.div`
+  padding-left: 46px;
+`
 
 export type CheckoutProductModalProps = {
   defaultProductId: string
@@ -217,6 +221,10 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   })
 
   const [payment, setPayment] = useState<PaymentProps | null | undefined>()
+  const [isApproved, setIsApproved] = useState(settings['checkout.approvement'] !== 'true')
+  useEffect(() => {
+    setIsApproved(settings['checkout.approvement'] !== 'true')
+  }, [settings])
 
   const initialPayment = useMemo(
     () =>
@@ -528,6 +536,24 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             </div>
           </div>
         )}
+        {settings['checkout.approvement'] === 'true' && (
+          <div className="my-4">
+            <Checkbox
+              className="mr-2"
+              size="lg"
+              colorScheme="primary"
+              isChecked={isApproved}
+              onChange={() => setIsApproved(prev => !prev)}
+            />
+            <span>
+              {formatMessage(defineMessage({ id: 'checkoutMessages.ui.approved', defaultMessage: '我同意' }))}
+            </span>
+            <StyledApprovementBox
+              className="mt-2"
+              dangerouslySetInnerHTML={{ __html: settings['checkout.approvement_content'] }}
+            />
+          </div>
+        )}
 
         <Divider className="mb-3" />
         {renderTerms && (
@@ -580,7 +606,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             colorScheme="primary"
             isLoading={orderPlacing}
             onClick={handleSubmit}
-            disabled={totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady}
+            disabled={(totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady) || isApproved === false}
           >
             {productTarget.isSubscription
               ? formatMessage(commonMessages.button.subscribeNow)

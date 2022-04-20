@@ -17,24 +17,37 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
     return <div>{JSON.stringify(errors)}</div>
   }
   return (
-    <Card className={props.onClick ? `cursor-pointer ${props.className}` : props.className} onClick={props.onClick}>
+    <Card
+      className={
+        props.onClick ? `programPackage cursor-pointer ${props.className}` : `programPackage ${props.className}`
+      }
+      onClick={props.onClick}
+    >
       {loading ? (
         <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
       ) : (
-        <CustomRatioImage width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+        <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
       )}
-      <Card.Content>
-        {loading ? <Skeleton className="mb-3" width="20" height={4} /> : <Card.Title>{props.title}</Card.Title>}
-        <Card.Description>
+      <Card.Content className="content">
+        {loading ? (
+          <Skeleton className="mb-3" width="20" height={4} />
+        ) : (
+          <Card.Title className="content__title">{props.title}</Card.Title>
+        )}
+        <Card.Description className="description">
           {loading ? (
             <SkeletonText className="mb-3" noOfLines={1} />
           ) : (
-            formatMessage(messages.totalCourses, { count: props.totalPrograms }) +
+            (
+              <span className="description__totalCourses">
+                {formatMessage(messages.totalCourses, { count: props.totalPrograms })}
+              </span>
+            ) +
             '．' +
-            durationFormatter(props.totalDuration)
+            <span className="description__totalDuration">{durationFormatter(props.totalDuration)}</span>
           )}
         </Card.Description>
-        <Card.MetaBlock className="d-flex flex-row-reverse justify-content-between align-items-center">
+        <Card.MetaBlock className="metadata d-flex flex-row-reverse justify-content-between align-items-center">
           <div>
             {loading ? (
               <Skeleton width="10" height={4} />
