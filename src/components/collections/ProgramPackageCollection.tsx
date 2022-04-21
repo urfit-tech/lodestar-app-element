@@ -117,6 +117,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                       totalPrograms={programPackage.programs.length}
                       totalDuration={sum(programPackage.programs.map(program => program.totalDuration))}
                       currentPrice={cheapestPlan ? getCurrentPrice(cheapestPlan) : 0}
+                      listPrice={cheapestPlan?.listPrice}
                       onClick={() => {
                         onClick?.()
                         !props.editing && history.push(`/program-packages/${programPackage.id}`)
