@@ -10,6 +10,7 @@ import Card from './Card'
 const messages = defineMessages({
   totalCourses: { id: 'programPackage.card.totalCourses', defaultMessage: '{count} 堂課' },
 })
+
 const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
   const { loading, errors } = props
   const { formatMessage } = useIntl()
@@ -38,13 +39,13 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
           {loading ? (
             <SkeletonText className="mb-3" noOfLines={1} />
           ) : (
-            (
+            <>
               <span className="description__totalCourses">
                 {formatMessage(messages.totalCourses, { count: props.totalPrograms })}
               </span>
-            ) +
-            '．' +
-            <span className="description__totalDuration">{durationFormatter(props.totalDuration)}</span>
+              <span>.</span>
+              <span className="description__totalDuration">{durationFormatter(props.totalDuration)}</span>
+            </>
           )}
         </Card.Description>
         <Card.MetaBlock className="metadata d-flex flex-row-reverse justify-content-between align-items-center">
