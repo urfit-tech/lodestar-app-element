@@ -42,6 +42,7 @@ type PriceLabelOptions = {
   periodType?: PeriodType
   currencyId?: 'LSC' | string
   coinUnit?: string
+  saleAmount?: number | null
 }
 const PriceLabel: React.VFC<
   PriceLabelOptions & {

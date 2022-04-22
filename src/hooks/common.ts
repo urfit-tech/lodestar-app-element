@@ -197,9 +197,9 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
         id: data.voucher_plan_by_pk.id,
         productType: 'VoucherPlan',
         title: data.voucher_plan_by_pk.title,
-        listPrice: data.voucher_plan_by_pk.sale_price,
         isOnSale: false,
         salePrice: data.voucher_plan_by_pk.sale_price,
+        saleAmount: data.voucher_plan_by_pk?.sale_amount || 1,
         isSubscription: false,
       }
     : null
@@ -363,6 +363,7 @@ export const GET_PRODUCT_SIMPLE = gql`
       id
       title
       sale_price
+      sale_amount
     }
   }
 `

@@ -1445,6 +1445,7 @@ export interface GET_PRODUCT_SIMPLE_voucher_plan_by_pk {
   id: any
   title: string
   sale_price: any | null
+  sale_amount: number | null
 }
 
 export interface GET_PRODUCT_SIMPLE {

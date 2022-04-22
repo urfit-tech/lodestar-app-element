@@ -96,6 +96,7 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
     periodType,
     endedAt,
     isSubscription,
+    saleAmount,
   } = target
 
   switch (variant) {
@@ -178,7 +179,7 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
               className="flex-shrink-0"
             />
           </div>
-          {typeof listPrice == 'number' && (
+          {typeof listPrice === 'number' && (
             <PriceLabel
               variant="full-detail"
               listPrice={listPrice}
@@ -187,6 +188,7 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
               currencyId={currencyId}
               periodType={isSubscription === undefined && periodType ? periodType : undefined}
               periodAmount={isSubscription === undefined && periodType ? periodAmount : undefined}
+              saleAmount={saleAmount}
             />
           )}
           {isSubscription === false && periodType && (
