@@ -22,6 +22,12 @@ const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) =
   }
 }
 
+const convertPathName = (pathName: string) => {
+  const pathPatterns = pathName.match(/^\/([^\/]+)\/?(.*)$/)
+  pathPatterns?.shift()
+  return pathPatterns?.join('_') || '_'
+}
+
 type CwProductBaseType = {
   id: string
   type: string
@@ -135,7 +141,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                           ? product?.variants?.join(trackingOptions.separator)
                           : product.owners?.map(member => member.name).join(trackingOptions.separator),
                       quantity: 1, // TODO: use the inventory
-                      list: options?.collection || window.location.pathname,
+                      list: options?.collection || convertPathName(window.location.pathname),
                       position: index + 1,
                     }
                   : null,
@@ -201,20 +207,22 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               : null,
           )
           .filter(notEmpty)
-
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        ;(window as any).dataLayer.push({
-          event: 'productClick',
-          label: resource.title,
-          value: resource.price,
-          ecommerce: {
-            currencyCode: appCurrencyId,
-            click: {
-              actionField: { list: options?.collection || window.location.pathname },
-              products,
+
+        products.forEach(product => {
+          ;(window as any).dataLayer.push({
+            event: 'productClick',
+            label: product.name,
+            value: product.price,
+            ecommerce: {
+              currencyCode: appCurrencyId,
+              click: {
+                actionField: { list: options?.collection || convertPathName(window.location.pathname) },
+                products: [product],
+              },
             },
-          },
+          })
         })
       }
     },
@@ -245,22 +253,22 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               : null,
           )
           .filter(notEmpty)
-        if (products.length > 0) {
-          ;(window as any).dataLayer = (window as any).dataLayer || []
-          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        products.forEach(product => {
           ;(window as any).dataLayer.push({
             event: 'productDetail',
-            label: resource.title,
-            value: resource.price,
+            label: product.name,
+            value: product.price,
             ecommerce: {
               currencyCode: appCurrencyId,
               detail: {
-                actionField: { list: options?.collection || window.location.pathname },
-                products,
+                actionField: { list: options?.collection || convertPathName(window.location.pathname) },
+                products: [product],
               },
             },
           })
-        }
+        })
       }
       if (enabledCW && options?.ignore !== 'CUSTOM') {
         const isProgramContent = resource.type === 'program_content'
@@ -273,11 +281,27 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p, options?.utmSource))
 
         ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ itemData: null })
+        ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
+
+        if (subResources) {
+          subResources.forEach(resource => {
+            ;(window as any).dataLayer.push({
+              event: 'cwData',
+              itemData: {
+                products: [{ ...targetResource, ...resource }],
+                program: { ...targetResource, ...resource },
+                article: { ...targetResource, ...resource },
+              },
+            })
+          })
+
+          return
+        }
+
         ;(window as any).dataLayer.push({
           event: 'cwData',
           itemData: {
-            products: subResources || [targetResource],
+            products: [targetResource],
             program: targetResource,
             article: targetResource,
           },
@@ -400,7 +424,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           .filter(notEmpty)
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
-          ;(window as any).dataLayer.push({ itemData: null })
+          ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
           ;(window as any).dataLayer.push({
             event: 'cwData',
             itemData: {
@@ -487,7 +511,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           }) || []
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
-          ;(window as any).dataLayer.push({ itemData: null })
+          ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
           ;(window as any).dataLayer.push({
             event: 'cwData',
             itemData: {
