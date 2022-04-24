@@ -20,6 +20,7 @@ export type ResourceType =
   | 'merchandise'
   | 'merchandise_spec'
   | 'project'
+  | 'project_plan'
   | 'post'
   | 'member'
   | 'unknown'

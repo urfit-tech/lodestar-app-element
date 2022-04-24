@@ -9,6 +9,8 @@ const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) =
   toMetaProduct: boolean = true,
 ) => {
   switch (originalType) {
+    case 'program_content':
+      return toMetaProduct ? ('program' as ResourceType) : originalType
     case 'program_plan':
       return toMetaProduct ? ('program' as ResourceType) : originalType
     case 'program_package_plan':
@@ -17,15 +19,16 @@ const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) =
       return toMetaProduct ? ('activity' as ResourceType) : originalType
     case 'merchandise_spec':
       return toMetaProduct ? ('merchandise' as ResourceType) : originalType
+    case 'project_plan':
+      return toMetaProduct ? ('project' as ResourceType) : originalType
     default:
       return originalType
   }
 }
 
 const convertPathName = (pathName: string) => {
-  const pathPatterns = pathName.match(/^\/([^\/]+)\/?(.*)$/)
-  pathPatterns?.shift()
-  return pathPatterns?.join('_') || '_'
+  const pathList = pathName.split('/').filter(p => p !== '')
+  return pathList.join('_') || '_'
 }
 
 type CwProductBaseType = {
@@ -61,7 +64,7 @@ const convertCwProduct: (
 ) => {
   const baseProduct = {
     id: resource.id,
-    type: resource.type,
+    type: convertProductType(resource.type, true),
     title: resource.title,
     item: resource.sku || null,
     url: window.location.href,
@@ -502,11 +505,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       if (enabledCW && options?.ignore !== 'CUSTOM') {
         const cwProducts =
           orderProducts.map(product => {
-            const productType = convertProductType(product.type, true)
             return {
               ...convertCwProduct(product, options?.utmSource || undefined),
               order_number: orderId,
-              type: productType === 'program_package' ? 'package' : productType,
             }
           }) || []
         if (cwProducts.length > 0) {
