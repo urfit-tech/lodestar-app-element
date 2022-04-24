@@ -6,7 +6,7 @@ import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getProjectCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { notEmpty } from '../../helpers'
+import { convertPathName, notEmpty } from '../../helpers'
 import { Category, Project } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -52,7 +52,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
     return null
   }
 
-  const collectionName = props.name || window.location.pathname
+  const collectionName = props.name || convertPathName(window.location.pathname)
   const EntityElement = ProjectCard
   const ElementCollection =
     props.collectionVariant === 'carousel'

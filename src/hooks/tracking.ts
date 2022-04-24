@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/react-hooks'
 import { sum } from 'ramda'
 import { useApp } from '../contexts/AppContext'
-import { notEmpty } from '../helpers'
+import { convertPathName, notEmpty } from '../helpers'
 import { getResourceCollection, Resource, ResourceType } from './resource'
 
 const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) => ResourceType = (
@@ -24,11 +24,6 @@ const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) =
     default:
       return originalType
   }
-}
-
-const convertPathName = (pathName: string) => {
-  const pathList = pathName.split('/').filter(p => p !== '')
-  return pathList.join('_') || '_'
 }
 
 type CwProductBaseType = {

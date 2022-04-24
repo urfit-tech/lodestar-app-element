@@ -8,7 +8,7 @@ import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getActivityCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { notEmpty } from '../../helpers'
+import { convertPathName, notEmpty } from '../../helpers'
 import { Activity, Category } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -53,7 +53,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
     return null
   }
 
-  const collectionName = props.name || window.location.pathname
+  const collectionName = props.name || convertPathName(window.location.pathname)
   const EntityElement = props.variant === 'card' ? ActivityCard : ActivityCard
   const ElementCollection =
     props.collectionVariant === 'carousel'

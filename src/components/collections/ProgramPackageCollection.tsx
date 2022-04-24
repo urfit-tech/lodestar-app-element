@@ -7,7 +7,7 @@ import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getProgramPackageCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { findCheapestPlan, getCurrentPrice, notEmpty } from '../../helpers'
+import { convertPathName, findCheapestPlan, getCurrentPrice, notEmpty } from '../../helpers'
 import { Category, ProductPlan, ProductRole, ProgramPackage } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -52,7 +52,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
     return null
   }
 
-  const collectionName = props.name || window.location.pathname
+  const collectionName = props.name || convertPathName(window.location.pathname)
   const EntityElement = props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard
   const ElementCollection =
     props.collectionVariant === 'carousel'

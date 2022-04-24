@@ -5,7 +5,7 @@ import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getMemberCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { notEmpty } from '../../helpers'
+import { convertPathName, notEmpty } from '../../helpers'
 import { Member } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductRoleSource } from '../../types/options'
@@ -36,7 +36,7 @@ const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
     return null
   }
 
-  const collectionName = props.name || window.location.pathname
+  const collectionName = props.name || convertPathName(window.location.pathname)
   const EntityElement =
     props.variant === 'primary'
       ? MemberPrimaryCard

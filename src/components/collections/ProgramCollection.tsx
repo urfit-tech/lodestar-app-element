@@ -10,7 +10,7 @@ import { useQueryParam } from 'use-query-params'
 import { useAuth } from '../../contexts/AuthContext'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { notEmpty } from '../../helpers'
+import { convertPathName, notEmpty } from '../../helpers'
 import { Category, PeriodType, ProductRole, Program } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import {
@@ -70,7 +70,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
     return null
   }
 
-  const collectionName = props.name || window.location.pathname
+  const collectionName = props.name || convertPathName(window.location.pathname)
   const EntityElement =
     props.variant === 'primary'
       ? ProgramPrimaryCard

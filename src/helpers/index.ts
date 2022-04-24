@@ -105,3 +105,8 @@ export const validateContactInfo: (contactInfo: ContactInfo) => string[] = conta
   ;(contactInfo.email.length === 0 || !validationRegExp['email']?.test(contactInfo.email)) && errorFields.push('email')
   return errorFields
 }
+
+export const convertPathName = (pathName: string) => {
+  const pathList = pathName.split('/').filter(p => p !== '')
+  return pathList.join('_') || '_'
+}
