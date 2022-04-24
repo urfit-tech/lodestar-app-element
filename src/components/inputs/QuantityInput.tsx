@@ -15,9 +15,9 @@ const QuantityInput: React.VFC<{
   value?: number
   min?: number
   max?: number
-  remainQuantity?: boolean
+  isRemainQuantity?: boolean
   onChange?: (value: number | undefined) => void
-}> = ({ value = 0, min = -Infinity, max = Infinity, remainQuantity, onChange }) => {
+}> = ({ value = 0, min = -Infinity, max = Infinity, isRemainQuantity, onChange }) => {
   const [inputValue, setInputValue] = useState(`${value}`)
 
   return (
@@ -29,7 +29,7 @@ const QuantityInput: React.VFC<{
           onChange && onChange(result)
           setInputValue(`${result}`)
         }}
-        disabled={min === value || (remainQuantity && max === 0)}
+        disabled={min === value || (isRemainQuantity && max === 0)}
       />
       <Input
         value={inputValue}
@@ -49,7 +49,7 @@ const QuantityInput: React.VFC<{
           onChange && onChange(result)
           setInputValue(`${result}`)
         }}
-        disabled={max === value || (remainQuantity && max === 0)}
+        disabled={max === value || (isRemainQuantity && max === 0)}
       />
     </StyledInputGroup>
   )
