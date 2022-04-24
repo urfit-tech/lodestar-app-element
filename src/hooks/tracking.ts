@@ -177,6 +177,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             event: 'cwData',
             itemData: {
               products: cwProducts,
+              program: cwProducts,
+              article: cwProducts,
             },
           })
         }
