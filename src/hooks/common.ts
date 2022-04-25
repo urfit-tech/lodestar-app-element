@@ -198,6 +198,7 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
         productType: 'VoucherPlan',
         title: data.voucher_plan_by_pk.title,
         isOnSale: false,
+        listPrice: data.voucher_plan_by_pk.sale_price,
         salePrice: data.voucher_plan_by_pk.sale_price,
         saleAmount: data.voucher_plan_by_pk?.sale_amount || 1,
         isSubscription: false,
@@ -362,6 +363,7 @@ export const GET_SIMPLE_PRODUCT = gql`
     voucher_plan_by_pk(id: $targetId) {
       id
       title
+      list_price
       sale_price
       sale_amount
     }
