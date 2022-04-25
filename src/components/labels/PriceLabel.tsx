@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { commonMessages } from '../../helpers/translation'
+import { commonMessages, productMessages } from '../../helpers/translation'
 import { useCurrency } from '../../hooks/util'
 import { PeriodType } from '../../types/data'
 import ShortenPeriodTypeLabel from './ShortenPeriodTypeLabel'
@@ -51,7 +51,7 @@ const PriceLabel: React.VFC<
     noFreeText?: boolean
   }
 > = ({ variant, render, noFreeText, ...options }) => {
-  const { listPrice, salePrice, downPrice, currencyId, coinUnit, periodAmount, periodType } = options
+  const { listPrice, salePrice, saleAmount, downPrice, currencyId, coinUnit, periodAmount, periodType } = options
   const { formatMessage } = useIntl()
   const { formatCurrency } = useCurrency(currencyId, coinUnit)
 
@@ -92,7 +92,16 @@ const PriceLabel: React.VFC<
             {salePrice === 0 && !noFreeText && (
               <span className="salePrice__freeText">{formatMessage(commonMessages.label.free)}</span>
             )}
-            <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
+            {saleAmount ? (
+              <>
+                <span className="salePrice__saleAmount">
+                  {formatMessage(productMessages.label.voucherPlanPriceLabel, { saleAmount: saleAmount })}
+                </span>
+                <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
+              </>
+            ) : (
+              <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
+            )}
             <span className="salePrice__periodUnit" style={{ fontSize: '16px' }}>
               {periodElem}
             </span>
@@ -100,7 +109,7 @@ const PriceLabel: React.VFC<
         )}
 
         <ListPrice className="listPrice">
-          {typeof salePrice === 'number' ? (
+          {typeof salePrice === 'number' && salePrice !== listPrice ? (
             <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
           ) : !!downPrice ? (
             <span className="listPrice__fromSecondPeriodText">

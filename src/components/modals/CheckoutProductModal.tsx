@@ -155,6 +155,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
+  const [quantity, setQuantity] = useState(1)
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
   const [sharingCode = window.sessionStorage.getItem(sessionStorageKey)] = useQueryParam('sharing', StringParam)
@@ -285,6 +286,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         from: window.location.pathname,
         sharingCode,
         groupBuyingPartnerIds: groupBuying.memberIds,
+        salesAmount: quantity,
       },
     },
   })
@@ -459,6 +461,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                 ? undefined
                 : 'checkout'
             }
+            quantity={quantity}
+            onChange={value => typeof value === 'number' && setQuantity(value)}
           />
         </div>
 

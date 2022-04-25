@@ -46,8 +46,8 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
   const { formatMessage } = useIntl()
   const [type, targetId] = id.split('_')
 
-  const { loading, error, data } = useQuery<hasura.GET_PRODUCT_SIMPLE, hasura.GET_PRODUCT_SIMPLEVariables>(
-    GET_PRODUCT_SIMPLE,
+  const { loading, error, data } = useQuery<hasura.GET_SIMPLE_PRODUCT, hasura.GET_SIMPLE_PRODUCTVariables>(
+    GET_SIMPLE_PRODUCT,
     {
       variables: {
         targetId,
@@ -212,8 +212,8 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
   }
 }
 
-export const GET_PRODUCT_SIMPLE = gql`
-  query GET_PRODUCT_SIMPLE($targetId: uuid!, $startedAt: timestamptz) {
+export const GET_SIMPLE_PRODUCT = gql`
+  query GET_SIMPLE_PRODUCT($targetId: uuid!, $startedAt: timestamptz) {
     program_by_pk(id: $targetId) {
       id
       title
