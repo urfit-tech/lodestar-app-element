@@ -363,7 +363,6 @@ export const GET_SIMPLE_PRODUCT = gql`
     voucher_plan_by_pk(id: $targetId) {
       id
       title
-      list_price
       sale_price
       sale_amount
     }
