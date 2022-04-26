@@ -8,6 +8,7 @@ export type OrderProductProps = {
   autoRenewed: boolean
   options?: {
     quantity?: number
+    amount?: number
     currencyId?: string
     currencyPrice?: number
   }

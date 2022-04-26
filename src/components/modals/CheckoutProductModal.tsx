@@ -94,11 +94,12 @@ const CheckoutProductItem: React.VFC<{
   price: number
   currencyId?: string
   quantity?: number
-}> = ({ name, price, currencyId, quantity }) => {
+  saleAmount?: number
+}> = ({ name, price, currencyId, quantity, saleAmount }) => {
   return (
     <div className="d-flex align-items-center justify-content-between">
       <span className="flex-grow-1 mr-4">{name}</span>
-      {quantity && <span>{` X ${quantity} `}</span>}
+      {quantity && saleAmount && <span>{` X${quantity} (${saleAmount}張)`}</span>}
       <span className="flex-shrink-0">
         <PriceLabel listPrice={price} currencyId={currencyId} />
       </span>
@@ -589,6 +590,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                   name={orderProduct.name}
                   price={orderProduct.price}
                   quantity={quantity}
+                  saleAmount={Number((orderProduct.options?.amount || 1) / quantity)}
                 />
               ))}
 
