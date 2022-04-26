@@ -19,7 +19,7 @@ import PaymentSelector from '../../components/selectors/PaymentSelector'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { notEmpty, validateContactInfo } from '../../helpers'
-import { checkoutMessages, commonMessages, productMessages } from '../../helpers/translation'
+import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
 import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
@@ -94,20 +94,11 @@ const CheckoutProductItem: React.VFC<{
   price: number
   currencyId?: string
   quantity?: number
-  saleAmount?: number
-}> = ({ name, price, currencyId, quantity, saleAmount }) => {
-  const { formatMessage } = useIntl()
+}> = ({ name, price, currencyId, quantity }) => {
   return (
     <div className="d-flex align-items-center justify-content-between">
       <span className="flex-grow-1 mr-4">{name}</span>
-      {quantity && saleAmount && (
-        <span>
-          {formatMessage(productMessages.label.voucherProductItem, {
-            quantity: quantity,
-            totalAmount: saleAmount * quantity,
-          })}
-        </span>
-      )}
+      {quantity && <span>{` X ${quantity} `}</span>}
       <span className="flex-shrink-0">
         <PriceLabel listPrice={price} currencyId={currencyId} />
       </span>
@@ -598,7 +589,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                   name={orderProduct.name}
                   price={orderProduct.price}
                   quantity={quantity}
-                  // saleAmount={}
                 />
               ))}
 
