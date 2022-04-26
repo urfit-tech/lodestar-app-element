@@ -108,24 +108,26 @@ const PriceLabel: React.VFC<
           </SalePrice>
         )}
 
-        <ListPrice className="listPrice">
-          {typeof salePrice === 'number' && salePrice !== listPrice ? (
-            <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
-          ) : !!downPrice ? (
-            <span className="listPrice__fromSecondPeriodText">
-              {formatMessage(commonMessages.label.fromSecondPeriod)}
+        {listPrice !== salePrice && (
+          <ListPrice className="listPrice">
+            {typeof salePrice === 'number' ? (
+              <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
+            ) : !!downPrice ? (
+              <span className="listPrice__fromSecondPeriodText">
+                {formatMessage(commonMessages.label.fromSecondPeriod)}
+              </span>
+            ) : (
+              ''
+            )}
+            {listPrice === 0 && !noFreeText && (
+              <span className="listPrice__freeText">{formatMessage(commonMessages.label.free)}</span>
+            )}
+            <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
+            <span className="listPrice__periodUnit" style={{ fontSize: '16px' }}>
+              {periodElem}
             </span>
-          ) : (
-            ''
-          )}
-          {listPrice === 0 && !noFreeText && (
-            <span className="listPrice__freeText">{formatMessage(commonMessages.label.free)}</span>
-          )}
-          <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
-          <span className="listPrice__periodUnit" style={{ fontSize: '16px' }}>
-            {periodElem}
-          </span>
-        </ListPrice>
+          </ListPrice>
+        )}
       </FullDetailPrice>
     )
   }

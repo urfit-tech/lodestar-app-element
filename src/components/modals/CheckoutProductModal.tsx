@@ -19,7 +19,7 @@ import PaymentSelector from '../../components/selectors/PaymentSelector'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { notEmpty, validateContactInfo } from '../../helpers'
-import { checkoutMessages, commonMessages } from '../../helpers/translation'
+import { checkoutMessages, commonMessages, productMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
 import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
@@ -89,14 +89,25 @@ const StyledCheckbox = styled(Checkbox)`
   }
 `
 
-const CheckoutProductItem: React.VFC<{ name: string; price: number; currencyId?: string }> = ({
-  name,
-  price,
-  currencyId,
-}) => {
+const CheckoutProductItem: React.VFC<{
+  name: string
+  price: number
+  currencyId?: string
+  quantity?: number
+  saleAmount?: number
+}> = ({ name, price, currencyId, quantity, saleAmount }) => {
+  const { formatMessage } = useIntl()
   return (
     <div className="d-flex align-items-center justify-content-between">
       <span className="flex-grow-1 mr-4">{name}</span>
+      {quantity && saleAmount && (
+        <span>
+          {formatMessage(productMessages.label.voucherProductItem, {
+            quantity: quantity,
+            totalAmount: saleAmount * quantity,
+          })}
+        </span>
+      )}
       <span className="flex-shrink-0">
         <PriceLabel listPrice={price} currencyId={currencyId} />
       </span>
@@ -286,7 +297,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         from: window.location.pathname,
         sharingCode,
         groupBuyingPartnerIds: groupBuying.memberIds,
-        salesAmount: quantity,
+        quantity: quantity,
       },
     },
   })
@@ -582,7 +593,13 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           <>
             <StyledCheckoutBlock className="mb-5">
               {check.orderProducts.map(orderProduct => (
-                <CheckoutProductItem key={orderProduct.name} name={orderProduct.name} price={orderProduct.price} />
+                <CheckoutProductItem
+                  key={orderProduct.name}
+                  name={orderProduct.name}
+                  price={orderProduct.price}
+                  quantity={quantity}
+                  // saleAmount={}
+                />
               ))}
 
               {check.orderDiscounts.map(orderDiscount => (

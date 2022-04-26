@@ -62,7 +62,11 @@ export const productMessages = {
     },
     voucherPlanPriceLabel: {
       id: 'product.label.voucherPlanPriceLabel',
-      defaultMessage: '1 份 {saleAmount} 張',
+      defaultMessage: '1 份 {saleAmount} 張 ',
+    },
+    voucherProductItem: {
+      id: 'product.label.voucherProductItem',
+      defaultMessage: '{quantity} 份 {totalAmount} 張',
     },
   }),
 }
