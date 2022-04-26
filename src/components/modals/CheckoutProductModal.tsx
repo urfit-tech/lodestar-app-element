@@ -98,8 +98,11 @@ const CheckoutProductItem: React.VFC<{
 }> = ({ name, price, currencyId, quantity, saleAmount }) => {
   return (
     <div className="d-flex align-items-center justify-content-between">
-      <span className="flex-grow-1 mr-4">{name}</span>
-      {quantity && saleAmount && <span>{` X${quantity} (${saleAmount}張)`}</span>}
+      <span className="flex-grow-1 mr-4">
+        {name}
+        {quantity && saleAmount && <span>{` X${quantity} (${quantity * saleAmount}張)`}</span>}
+      </span>
+
       <span className="flex-shrink-0">
         <PriceLabel listPrice={price} currencyId={currencyId} />
       </span>
