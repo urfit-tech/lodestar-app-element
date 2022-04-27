@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
@@ -9,13 +10,26 @@ const StyledDiv = styled.div<EmbeddedProps>`
 
 export type EmbeddedProps = { iframe: string }
 const Embedded: ElementComponent<EmbeddedProps> = props => {
+  const history = useHistory()
   if (props.loading || props.errors) {
     return null
   }
   // FIXME: escape special characters
+
+  const handleClick = (e: any) => {
+    const targetLink = e.target.closest('a')
+    if (!targetLink) return
+    e.preventDefault()
+    history.push(targetLink.href)
+  }
+
   return (
     <StyledDiv {...props}>
-      {props.iframe ? <div dangerouslySetInnerHTML={{ __html: props.iframe }} /> : '請填入 iframe'}
+      {props.iframe ? (
+        <div dangerouslySetInnerHTML={{ __html: props.iframe }} onClick={handleClick} />
+      ) : (
+        '請填入 iframe'
+      )}
     </StyledDiv>
   )
 }
