@@ -20,8 +20,7 @@ const Embedded: ElementComponent<EmbeddedProps> = props => {
     const targetLink = e.target.closest('a')
     if (!targetLink) return
     e.preventDefault()
-    console.log(targetLink.href)
-    history.push(targetLink.href)
+    window.location.href = targetLink.href
   }
 
   return (
