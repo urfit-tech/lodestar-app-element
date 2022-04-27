@@ -1,4 +1,3 @@
-import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
@@ -10,7 +9,6 @@ const StyledDiv = styled.div<EmbeddedProps>`
 
 export type EmbeddedProps = { iframe: string }
 const Embedded: ElementComponent<EmbeddedProps> = props => {
-  const history = useHistory()
   if (props.loading || props.errors) {
     return null
   }
