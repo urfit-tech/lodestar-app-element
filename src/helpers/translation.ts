@@ -60,6 +60,14 @@ export const productMessages = {
       id: 'programPackage.label.availableForLimitTime',
       defaultMessage: '可觀看 {amount} {unit}',
     },
+    voucherPlanPriceLabel: {
+      id: 'product.label.voucherPlanPriceLabel',
+      defaultMessage: '1 份 {saleAmount} 張 ',
+    },
+    voucherProductItem: {
+      id: 'product.label.voucherProductItem',
+      defaultMessage: '{quantity} 份 {totalAmount} 張',
+    },
   }),
 }
 

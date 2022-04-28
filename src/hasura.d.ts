@@ -1185,31 +1185,31 @@ export interface SEARCH_MEMBERVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GET_PRODUCT_SIMPLE
+// GraphQL query operation: GET_SIMPLE_PRODUCT
 // ====================================================
 
-export interface GET_PRODUCT_SIMPLE_program_by_pk_program_categories_category {
+export interface GET_SIMPLE_PRODUCT_program_by_pk_program_categories_category {
   __typename: 'category'
   id: string
   name: string
 }
 
-export interface GET_PRODUCT_SIMPLE_program_by_pk_program_categories {
+export interface GET_SIMPLE_PRODUCT_program_by_pk_program_categories {
   __typename: 'program_category'
   id: any
   /**
    * An object relationship
    */
-  category: GET_PRODUCT_SIMPLE_program_by_pk_program_categories_category
+  category: GET_SIMPLE_PRODUCT_program_by_pk_program_categories_category
 }
 
-export interface GET_PRODUCT_SIMPLE_program_by_pk_program_roles_member {
+export interface GET_SIMPLE_PRODUCT_program_by_pk_program_roles_member {
   __typename: 'member_public'
   id: string | null
   name: string | null
 }
 
-export interface GET_PRODUCT_SIMPLE_program_by_pk_program_roles {
+export interface GET_SIMPLE_PRODUCT_program_by_pk_program_roles {
   __typename: 'program_role'
   id: any
   /**
@@ -1220,10 +1220,10 @@ export interface GET_PRODUCT_SIMPLE_program_by_pk_program_roles {
   /**
    * An object relationship
    */
-  member: GET_PRODUCT_SIMPLE_program_by_pk_program_roles_member | null
+  member: GET_SIMPLE_PRODUCT_program_by_pk_program_roles_member | null
 }
 
-export interface GET_PRODUCT_SIMPLE_program_by_pk {
+export interface GET_SIMPLE_PRODUCT_program_by_pk {
   __typename: 'program'
   id: any
   title: string
@@ -1235,21 +1235,21 @@ export interface GET_PRODUCT_SIMPLE_program_by_pk {
   /**
    * An array relationship
    */
-  program_categories: GET_PRODUCT_SIMPLE_program_by_pk_program_categories[]
+  program_categories: GET_SIMPLE_PRODUCT_program_by_pk_program_categories[]
   /**
    * An array relationship
    */
-  program_roles: GET_PRODUCT_SIMPLE_program_by_pk_program_roles[]
+  program_roles: GET_SIMPLE_PRODUCT_program_by_pk_program_roles[]
 }
 
-export interface GET_PRODUCT_SIMPLE_program_plan_by_pk_program {
+export interface GET_SIMPLE_PRODUCT_program_plan_by_pk_program {
   __typename: 'program'
   id: any
   title: string
   cover_url: string | null
 }
 
-export interface GET_PRODUCT_SIMPLE_program_plan_by_pk {
+export interface GET_SIMPLE_PRODUCT_program_plan_by_pk {
   __typename: 'program_plan'
   id: any
   title: string
@@ -1264,18 +1264,18 @@ export interface GET_PRODUCT_SIMPLE_program_plan_by_pk {
   /**
    * An object relationship
    */
-  program: GET_PRODUCT_SIMPLE_program_plan_by_pk_program
+  program: GET_SIMPLE_PRODUCT_program_plan_by_pk_program
   auto_renewed: boolean
 }
 
-export interface GET_PRODUCT_SIMPLE_program_package_plan_by_pk_program_package {
+export interface GET_SIMPLE_PRODUCT_program_package_plan_by_pk_program_package {
   __typename: 'program_package'
   id: any
   title: string
   cover_url: string | null
 }
 
-export interface GET_PRODUCT_SIMPLE_program_package_plan_by_pk {
+export interface GET_SIMPLE_PRODUCT_program_package_plan_by_pk {
   __typename: 'program_package_plan'
   id: any
   title: string
@@ -1292,23 +1292,23 @@ export interface GET_PRODUCT_SIMPLE_program_package_plan_by_pk {
   /**
    * An object relationship
    */
-  program_package: GET_PRODUCT_SIMPLE_program_package_plan_by_pk_program_package
+  program_package: GET_SIMPLE_PRODUCT_program_package_plan_by_pk_program_package
 }
 
-export interface GET_PRODUCT_SIMPLE_card_by_pk {
+export interface GET_SIMPLE_PRODUCT_card_by_pk {
   __typename: 'card'
   id: any
   title: string
 }
 
-export interface GET_PRODUCT_SIMPLE_activity_ticket_by_pk_activity {
+export interface GET_SIMPLE_PRODUCT_activity_ticket_by_pk_activity {
   __typename: 'activity'
   id: any
   title: string
   cover_url: string | null
 }
 
-export interface GET_PRODUCT_SIMPLE_activity_ticket_by_pk {
+export interface GET_SIMPLE_PRODUCT_activity_ticket_by_pk {
   __typename: 'activity_ticket'
   id: any
   title: string
@@ -1317,17 +1317,17 @@ export interface GET_PRODUCT_SIMPLE_activity_ticket_by_pk {
   /**
    * An object relationship
    */
-  activity: GET_PRODUCT_SIMPLE_activity_ticket_by_pk_activity
+  activity: GET_SIMPLE_PRODUCT_activity_ticket_by_pk_activity
 }
 
-export interface GET_PRODUCT_SIMPLE_project_plan_by_pk_project {
+export interface GET_SIMPLE_PRODUCT_project_plan_by_pk_project {
   __typename: 'project'
   id: any
   title: string
   expired_at: any | null
 }
 
-export interface GET_PRODUCT_SIMPLE_project_plan_by_pk {
+export interface GET_SIMPLE_PRODUCT_project_plan_by_pk {
   __typename: 'project_plan'
   id: any
   title: string
@@ -1344,13 +1344,13 @@ export interface GET_PRODUCT_SIMPLE_project_plan_by_pk {
   /**
    * An object relationship
    */
-  project: GET_PRODUCT_SIMPLE_project_plan_by_pk_project
+  project: GET_SIMPLE_PRODUCT_project_plan_by_pk_project
   is_limited: boolean
   is_physical: boolean
   is_subscription: boolean
 }
 
-export interface GET_PRODUCT_SIMPLE_podcast_program_by_pk {
+export interface GET_SIMPLE_PRODUCT_podcast_program_by_pk {
   __typename: 'podcast_program'
   id: any
   title: string
@@ -1360,13 +1360,13 @@ export interface GET_PRODUCT_SIMPLE_podcast_program_by_pk {
   sold_at: any | null
 }
 
-export interface GET_PRODUCT_SIMPLE_podcast_plan_by_pk_creator {
+export interface GET_SIMPLE_PRODUCT_podcast_plan_by_pk_creator {
   __typename: 'member_public'
   name: string | null
   username: string | null
 }
 
-export interface GET_PRODUCT_SIMPLE_podcast_plan_by_pk {
+export interface GET_SIMPLE_PRODUCT_podcast_plan_by_pk {
   __typename: 'podcast_plan'
   id: any
   title: string
@@ -1376,25 +1376,25 @@ export interface GET_PRODUCT_SIMPLE_podcast_plan_by_pk {
   /**
    * An object relationship
    */
-  creator: GET_PRODUCT_SIMPLE_podcast_plan_by_pk_creator | null
+  creator: GET_SIMPLE_PRODUCT_podcast_plan_by_pk_creator | null
   is_subscription: boolean
 }
 
-export interface GET_PRODUCT_SIMPLE_appointment_plan_by_pk_creator {
+export interface GET_SIMPLE_PRODUCT_appointment_plan_by_pk_creator {
   __typename: 'member_public'
   name: string | null
   username: string | null
   picture_url: string | null
 }
 
-export interface GET_PRODUCT_SIMPLE_appointment_plan_by_pk_appointment_periods {
+export interface GET_SIMPLE_PRODUCT_appointment_plan_by_pk_appointment_periods {
   __typename: 'appointment_period'
   started_at: any | null
   ended_at: any | null
   booked: boolean | null
 }
 
-export interface GET_PRODUCT_SIMPLE_appointment_plan_by_pk {
+export interface GET_SIMPLE_PRODUCT_appointment_plan_by_pk {
   __typename: 'appointment_plan'
   id: any
   title: string
@@ -1402,20 +1402,20 @@ export interface GET_PRODUCT_SIMPLE_appointment_plan_by_pk {
   /**
    * An object relationship
    */
-  creator: GET_PRODUCT_SIMPLE_appointment_plan_by_pk_creator | null
+  creator: GET_SIMPLE_PRODUCT_appointment_plan_by_pk_creator | null
   /**
    * An array relationship
    */
-  appointment_periods: GET_PRODUCT_SIMPLE_appointment_plan_by_pk_appointment_periods[]
+  appointment_periods: GET_SIMPLE_PRODUCT_appointment_plan_by_pk_appointment_periods[]
 }
 
-export interface GET_PRODUCT_SIMPLE_merchandise_spec_by_pk_merchandise_merchandise_imgs {
+export interface GET_SIMPLE_PRODUCT_merchandise_spec_by_pk_merchandise_merchandise_imgs {
   __typename: 'merchandise_img'
   id: any
   url: string
 }
 
-export interface GET_PRODUCT_SIMPLE_merchandise_spec_by_pk_merchandise {
+export interface GET_SIMPLE_PRODUCT_merchandise_spec_by_pk_merchandise {
   __typename: 'merchandise'
   id: any
   title: string
@@ -1425,10 +1425,10 @@ export interface GET_PRODUCT_SIMPLE_merchandise_spec_by_pk_merchandise {
   /**
    * An array relationship
    */
-  merchandise_imgs: GET_PRODUCT_SIMPLE_merchandise_spec_by_pk_merchandise_merchandise_imgs[]
+  merchandise_imgs: GET_SIMPLE_PRODUCT_merchandise_spec_by_pk_merchandise_merchandise_imgs[]
 }
 
-export interface GET_PRODUCT_SIMPLE_merchandise_spec_by_pk {
+export interface GET_SIMPLE_PRODUCT_merchandise_spec_by_pk {
   __typename: 'merchandise_spec'
   id: any
   title: string
@@ -1437,64 +1437,65 @@ export interface GET_PRODUCT_SIMPLE_merchandise_spec_by_pk {
   /**
    * An object relationship
    */
-  merchandise: GET_PRODUCT_SIMPLE_merchandise_spec_by_pk_merchandise
+  merchandise: GET_SIMPLE_PRODUCT_merchandise_spec_by_pk_merchandise
 }
 
-export interface GET_PRODUCT_SIMPLE_voucher_plan_by_pk {
+export interface GET_SIMPLE_PRODUCT_voucher_plan_by_pk {
   __typename: 'voucher_plan'
   id: any
   title: string
   sale_price: any | null
+  sale_amount: number | null
 }
 
-export interface GET_PRODUCT_SIMPLE {
+export interface GET_SIMPLE_PRODUCT {
   /**
    * fetch data from the table: "program" using primary key columns
    */
-  program_by_pk: GET_PRODUCT_SIMPLE_program_by_pk | null
+  program_by_pk: GET_SIMPLE_PRODUCT_program_by_pk | null
   /**
    * fetch data from the table: "program_plan" using primary key columns
    */
-  program_plan_by_pk: GET_PRODUCT_SIMPLE_program_plan_by_pk | null
+  program_plan_by_pk: GET_SIMPLE_PRODUCT_program_plan_by_pk | null
   /**
    * fetch data from the table: "program_package_plan" using primary key columns
    */
-  program_package_plan_by_pk: GET_PRODUCT_SIMPLE_program_package_plan_by_pk | null
+  program_package_plan_by_pk: GET_SIMPLE_PRODUCT_program_package_plan_by_pk | null
   /**
    * fetch data from the table: "card" using primary key columns
    */
-  card_by_pk: GET_PRODUCT_SIMPLE_card_by_pk | null
+  card_by_pk: GET_SIMPLE_PRODUCT_card_by_pk | null
   /**
    * fetch data from the table: "activity_ticket" using primary key columns
    */
-  activity_ticket_by_pk: GET_PRODUCT_SIMPLE_activity_ticket_by_pk | null
+  activity_ticket_by_pk: GET_SIMPLE_PRODUCT_activity_ticket_by_pk | null
   /**
    * fetch data from the table: "project_plan" using primary key columns
    */
-  project_plan_by_pk: GET_PRODUCT_SIMPLE_project_plan_by_pk | null
+  project_plan_by_pk: GET_SIMPLE_PRODUCT_project_plan_by_pk | null
   /**
    * fetch data from the table: "podcast_program" using primary key columns
    */
-  podcast_program_by_pk: GET_PRODUCT_SIMPLE_podcast_program_by_pk | null
+  podcast_program_by_pk: GET_SIMPLE_PRODUCT_podcast_program_by_pk | null
   /**
    * fetch data from the table: "podcast_plan" using primary key columns
    */
-  podcast_plan_by_pk: GET_PRODUCT_SIMPLE_podcast_plan_by_pk | null
+  podcast_plan_by_pk: GET_SIMPLE_PRODUCT_podcast_plan_by_pk | null
   /**
    * fetch data from the table: "appointment_plan" using primary key columns
    */
-  appointment_plan_by_pk: GET_PRODUCT_SIMPLE_appointment_plan_by_pk | null
+  appointment_plan_by_pk: GET_SIMPLE_PRODUCT_appointment_plan_by_pk | null
   /**
    * fetch data from the table: "merchandise_spec" using primary key columns
    */
-  merchandise_spec_by_pk: GET_PRODUCT_SIMPLE_merchandise_spec_by_pk | null
+  merchandise_spec_by_pk: GET_SIMPLE_PRODUCT_merchandise_spec_by_pk | null
   /**
    * fetch data from the table: "voucher_plan" using primary key columns
    */
-  voucher_plan_by_pk: GET_PRODUCT_SIMPLE_voucher_plan_by_pk | null
+  voucher_plan_by_pk: GET_SIMPLE_PRODUCT_voucher_plan_by_pk | null
 }
 
-export interface GET_PRODUCT_SIMPLEVariables {
+export interface GET_SIMPLE_PRODUCTVariables {
   targetId: any
   startedAt?: any | null
 }

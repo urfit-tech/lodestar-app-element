@@ -9,6 +9,7 @@ export type Target = {
   listPrice?: number
   isOnSale?: boolean
   salePrice?: number
+  saleAmount?: number
   discountDownPrice?: number
   currencyId?: string
   periodAmount?: number

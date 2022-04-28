@@ -89,14 +89,20 @@ const StyledCheckbox = styled(Checkbox)`
   }
 `
 
-const CheckoutProductItem: React.VFC<{ name: string; price: number; currencyId?: string }> = ({
-  name,
-  price,
-  currencyId,
-}) => {
+const CheckoutProductItem: React.VFC<{
+  name: string
+  price: number
+  currencyId?: string
+  quantity?: number
+  saleAmount?: number
+}> = ({ name, price, currencyId, quantity, saleAmount }) => {
   return (
     <div className="d-flex align-items-center justify-content-between">
-      <span className="flex-grow-1 mr-4">{name}</span>
+      <span className="flex-grow-1 mr-4">
+        {name}
+        {quantity && saleAmount && <span>{` X${quantity} (${quantity * saleAmount}張)`}</span>}
+      </span>
+
       <span className="flex-shrink-0">
         <PriceLabel listPrice={price} currencyId={currencyId} />
       </span>
@@ -155,6 +161,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
+  const [quantity, setQuantity] = useState(1)
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
   const [sharingCode = window.sessionStorage.getItem(sessionStorageKey)] = useQueryParam('sharing', StringParam)
@@ -285,6 +292,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         from: window.location.pathname,
         sharingCode,
         groupBuyingPartnerIds: groupBuying.memberIds,
+        quantity: quantity,
       },
     },
   })
@@ -459,6 +467,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                 ? undefined
                 : 'checkout'
             }
+            quantity={quantity}
+            onChange={value => typeof value === 'number' && setQuantity(value)}
           />
         </div>
 
@@ -578,7 +588,13 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           <>
             <StyledCheckoutBlock className="mb-5">
               {check.orderProducts.map(orderProduct => (
-                <CheckoutProductItem key={orderProduct.name} name={orderProduct.name} price={orderProduct.price} />
+                <CheckoutProductItem
+                  key={orderProduct.name}
+                  name={orderProduct.name}
+                  price={orderProduct.price}
+                  quantity={quantity}
+                  saleAmount={Number((orderProduct.options?.amount || 1) / quantity)}
+                />
               ))}
 
               {check.orderDiscounts.map(orderDiscount => (

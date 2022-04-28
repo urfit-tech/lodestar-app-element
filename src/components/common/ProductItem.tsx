@@ -11,6 +11,7 @@ import { commonMessages, productMessages } from '../../helpers/translation'
 import { useSimpleProduct } from '../../hooks/common'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProductType } from '../../types/product'
+import QuantityInput from '../inputs/QuantityInput'
 import { CustomRatioImage } from './Image'
 
 const StyledCoverImage = styled.img`
@@ -70,8 +71,9 @@ type ProductItemProps = {
   startedAt?: Date
   variant?: 'default' | 'simple' | 'simpleCartProduct' | 'checkout' | 'coupon-product'
   quantity?: number
+  onChange?: (value: number | undefined) => void
 }
-const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quantity }) => {
+const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quantity, onChange }) => {
   const { formatMessage } = useIntl()
 
   const { loading, target } = useSimpleProduct({ id, startedAt })
@@ -96,6 +98,7 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
     periodType,
     endedAt,
     isSubscription,
+    saleAmount,
   } = target
 
   switch (variant) {
@@ -178,7 +181,7 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
               className="flex-shrink-0"
             />
           </div>
-          {typeof listPrice == 'number' && (
+          {typeof listPrice === 'number' && (
             <PriceLabel
               variant="full-detail"
               listPrice={listPrice}
@@ -187,6 +190,14 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
               currencyId={currencyId}
               periodType={isSubscription === undefined && periodType ? periodType : undefined}
               periodAmount={isSubscription === undefined && periodType ? periodAmount : undefined}
+              saleAmount={saleAmount}
+            />
+          )}
+          {saleAmount && (
+            <QuantityInput
+              value={quantity}
+              min={1}
+              onChange={value => typeof value === 'number' && onChange && onChange(value)}
             />
           )}
           {isSubscription === false && periodType && (
