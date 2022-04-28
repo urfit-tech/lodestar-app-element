@@ -31,7 +31,7 @@ type AuthProps = {
     email: string
     password: string
     withoutLogin?: boolean
-  }) => Promise<void>
+  }) => Promise<any>
   login?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
   socialLogin?: (data: { provider: ProviderType; providerToken: any; accountLinkToken?: string }) => Promise<void>
   logout?: () => Promise<void>
@@ -221,6 +221,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                       { headers: { Authorization: `Bearer ${result.authToken}` } },
                     )
                 }
+                return result.authToken
               } catch {}
             } else {
               setAuthToken(null)
