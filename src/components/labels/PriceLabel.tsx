@@ -1,5 +1,5 @@
 import { useIntl } from 'react-intl'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { commonMessages, productMessages } from '../../helpers/translation'
 import { useCurrency } from '../../hooks/util'
 import { PeriodType } from '../../types/data'
@@ -16,15 +16,10 @@ const FullDetailPrice = styled.div`
   }
 `
 const SalePrice = styled.div<{ isSaleAmount?: boolean }>`
-  ${props =>
-    props.isSaleAmount
-      ? css`
-          color: ${props.theme['@primary-color']};
-          font-size: 16px;
-          letter-spacing: 0.2px;
-          font-weight: bold;
-        `
-      : undefined};
+  color: ${props => (props.isSaleAmount ? props.theme['@primary-color'] : undefined)};
+  font-size: ${props => (props.isSaleAmount ? '16px' : undefined)};
+  letter-spacing: ${props => (props.isSaleAmount ? '0.2px' : undefined)};
+  font-weight: ${props => (props.isSaleAmount ? 'bold' : undefined)};
 `
 const ListPrice = styled.div`
   ${SalePrice} + && {
