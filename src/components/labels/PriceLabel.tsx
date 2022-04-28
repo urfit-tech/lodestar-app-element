@@ -5,22 +5,18 @@ import { useCurrency } from '../../hooks/util'
 import { PeriodType } from '../../types/data'
 import ShortenPeriodTypeLabel from './ShortenPeriodTypeLabel'
 
-const FullDetailPrice = styled.div`
+const FullDetailPrice = styled.div<{ isSaleAmount?: boolean }>`
   > div:first-child {
-    color: var(--gray-darker);
-    font-size: 28px;
+    color: ${props => (props.isSaleAmount ? props.theme['@primary-color'] : 'var(--gray-darker)')};
+    font-size: ${props => (props.isSaleAmount ? '16px' : '28px')};
+    letter-spacing: ${props => (props.isSaleAmount ? '0.2px' : undefined)};
     font-weight: bold;
   }
   > div:nth-child(2) {
     color: var(--gray-darker);
   }
 `
-const SalePrice = styled.div<{ isSaleAmount?: boolean }>`
-  color: ${props => (props.isSaleAmount ? props.theme['@primary-color'] : undefined)};
-  font-size: ${props => (props.isSaleAmount ? '16px' : undefined)};
-  letter-spacing: ${props => (props.isSaleAmount ? '0.2px' : undefined)};
-  font-weight: ${props => (props.isSaleAmount ? 'bold' : undefined)};
-`
+const SalePrice = styled.div``
 const ListPrice = styled.div`
   ${SalePrice} + && {
     color: var(--black-45);
@@ -76,7 +72,7 @@ const PriceLabel: React.VFC<
 
   if (variant === 'full-detail') {
     return (
-      <FullDetailPrice className="price">
+      <FullDetailPrice className="price" isSaleAmount={!!saleAmount}>
         {!!downPrice && (
           <div className="downPrice">
             <span className="downPrice__firstPeriod">{formatMessage(commonMessages.label.firstPeriod)}</span>
@@ -88,7 +84,7 @@ const PriceLabel: React.VFC<
         )}
 
         {typeof salePrice === 'number' && (
-          <SalePrice className="salePrice" isSaleAmount={!!saleAmount}>
+          <SalePrice className="salePrice">
             {!!downPrice && (
               <span className="salePrice__fromSecondPeriod">
                 {formatMessage(commonMessages.label.fromSecondPeriod)}
