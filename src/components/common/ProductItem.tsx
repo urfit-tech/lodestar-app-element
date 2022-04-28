@@ -161,10 +161,10 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
               noOfLines={2}
               className="flex-grow-1 m-0 mr-5"
               color="var(--gray-darker)"
-              fontSize="20px"
+              fontSize={saleAmount ? '24px' : '20px'}
               fontWeight="bold"
               lineHeight="1.3"
-              letterSpacing="0.77px"
+              letterSpacing={saleAmount ? '0.2px' : '0.77px'}
             >
               <span>{title}</span>
               {!!startedAt && !!endedAt && (
@@ -194,11 +194,13 @@ const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quan
             />
           )}
           {saleAmount && (
-            <QuantityInput
-              value={quantity}
-              min={1}
-              onChange={value => typeof value === 'number' && onChange && onChange(value)}
-            />
+            <div className="mt-3">
+              <QuantityInput
+                value={quantity}
+                min={1}
+                onChange={value => typeof value === 'number' && onChange && onChange(value)}
+              />
+            </div>
           )}
           {isSubscription === false && periodType && (
             <StyledHighlight className="mb-3">

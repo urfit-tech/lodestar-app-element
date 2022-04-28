@@ -1,5 +1,5 @@
 import { useIntl } from 'react-intl'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { commonMessages, productMessages } from '../../helpers/translation'
 import { useCurrency } from '../../hooks/util'
 import { PeriodType } from '../../types/data'
@@ -15,7 +15,17 @@ const FullDetailPrice = styled.div`
     color: var(--gray-darker);
   }
 `
-const SalePrice = styled.div``
+const SalePrice = styled.div<{ isSaleAmount?: boolean }>`
+  ${props =>
+    props.isSaleAmount
+      ? css`
+          color: props.theme[ '@primary-color' ];
+          font-size: 16px;
+          letter-spacing: 0.2px;
+          font-weight: bold;
+        `
+      : undefined};
+`
 const ListPrice = styled.div`
   ${SalePrice} + && {
     color: var(--black-45);
@@ -83,7 +93,7 @@ const PriceLabel: React.VFC<
         )}
 
         {typeof salePrice === 'number' && (
-          <SalePrice className="salePrice">
+          <SalePrice className="salePrice" isSaleAmount={!!saleAmount}>
             {!!downPrice && (
               <span className="salePrice__fromSecondPeriod">
                 {formatMessage(commonMessages.label.fromSecondPeriod)}
