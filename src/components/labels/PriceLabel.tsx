@@ -19,7 +19,7 @@ const SalePrice = styled.div<{ isSaleAmount?: boolean }>`
   ${props =>
     props.isSaleAmount
       ? css`
-          color: props.theme[ '@primary-color' ];
+          color: ${props.theme['@primary-color']};
           font-size: 16px;
           letter-spacing: 0.2px;
           font-weight: bold;
