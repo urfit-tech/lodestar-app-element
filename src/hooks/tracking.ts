@@ -209,20 +209,17 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           .filter(notEmpty)
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-
-        products.forEach(product => {
-          ;(window as any).dataLayer.push({
-            event: 'productClick',
-            label: product.name,
-            value: product.price,
-            ecommerce: {
-              currencyCode: appCurrencyId,
-              click: {
-                actionField: { list: options?.collection || convertPathName(window.location.pathname) },
-                products: [product],
-              },
+        ;(window as any).dataLayer.push({
+          event: 'productClick',
+          label: resource.title,
+          value: resource.price,
+          ecommerce: {
+            currencyCode: appCurrencyId,
+            click: {
+              actionField: { list: options?.collection || convertPathName(window.location.pathname) },
+              products,
             },
-          })
+          },
         })
       }
     },
@@ -255,19 +252,17 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           .filter(notEmpty)
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        products.forEach(product => {
-          ;(window as any).dataLayer.push({
-            event: 'productDetail',
-            label: product.name,
-            value: product.price,
-            ecommerce: {
-              currencyCode: appCurrencyId,
-              detail: {
-                actionField: { list: options?.collection || convertPathName(window.location.pathname) },
-                products: [product],
-              },
+        ;(window as any).dataLayer.push({
+          event: 'productDetail',
+          label: resource.title,
+          value: resource.price,
+          ecommerce: {
+            currencyCode: appCurrencyId,
+            detail: {
+              actionField: { list: options?.collection || convertPathName(window.location.pathname) },
+              products,
             },
-          })
+          },
         })
       }
       if (enabledCW && options?.ignore !== 'CUSTOM') {
@@ -284,17 +279,14 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
 
         if (subResources) {
-          subResources.forEach(resource => {
-            ;(window as any).dataLayer.push({
-              event: 'cwData',
-              itemData: {
-                products: [{ ...targetResource, ...resource }],
-                program: { ...targetResource, ...resource },
-                article: { ...targetResource, ...resource },
-              },
-            })
+          ;(window as any).dataLayer.push({
+            event: 'cwData',
+            itemData: {
+              products: subResources.map(r => ({ ...targetResource, ...r })),
+              program: { ...targetResource, ...subResources[0] },
+              article: { ...targetResource, ...subResources[0] },
+            },
           })
-
           return
         }
 
@@ -490,7 +482,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             purchase: {
               actionField: {
                 id: orderId,
-                affiliation: document.title,
+                affiliation: settings['name'] || document.title,
                 revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
                 coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
               },
