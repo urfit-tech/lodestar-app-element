@@ -4,8 +4,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { useApp } from '../../contexts/AppContext'
+import { useAuth } from '../../contexts/AuthContext'
 import { validationRegExp } from '../../helpers'
 import { checkoutMessages } from '../../helpers/translation'
+import { useMember } from '../../hooks/member'
 import { InvoiceProps, ShippingProps } from '../../types/checkout'
 import { CommonTitleMixin } from '../common'
 
@@ -83,7 +85,9 @@ const InvoiceInput: React.VFC<{
   renderUniformNumber,
 }) => {
   const { formatMessage } = useIntl()
+  const { currentMemberId } = useAuth()
   const { loading, settings, enabledModules } = useApp()
+  const { loadingMember, member } = useMember(currentMemberId || '')
 
   const nameRef = useRef<Input | null>(null)
   const phoneRef = useRef<Input | null>(null)
@@ -139,7 +143,7 @@ const InvoiceInput: React.VFC<{
     } catch (error) {}
   }, [loading, enabledModules.invoice])
 
-  if (loading) {
+  if (loading || loadingMember) {
     return <SkeletonText mt="1" noOfLines={4} spacing="4" />
   }
 
@@ -227,6 +231,8 @@ const InvoiceInput: React.VFC<{
     }
   }
 
+  const isMemberInfoDisable = Boolean(Number(settings['feature.invoice_member_info_input.disable']))
+
   return (
     <StyledWrapper>
       <StyledTitle>{formatMessage(checkoutMessages.label.invoice)}</StyledTitle>
@@ -259,7 +265,7 @@ const InvoiceInput: React.VFC<{
       )}
 
       {renderMemberInfoInput?.({ value, nameRef, phoneRef, emailRef }) || (
-        <div className="row">
+        <div className="row" style={isMemberInfoDisable ? { display: 'none' } : {}}>
           <div className="col-12 col-lg-3">
             <Form.Item
               label={formatMessage(checkoutMessages.label.name)}
@@ -270,7 +276,7 @@ const InvoiceInput: React.VFC<{
               <Input
                 ref={nameRef}
                 placeholder={formatMessage(checkoutMessages.placeholder.nameText)}
-                defaultValue={value ? value.name : ''}
+                defaultValue={isMemberInfoDisable ? member?.name || member?.username : value ? value.name : ''}
                 onBlur={() => handleChange({})}
               />
             </Form.Item>
@@ -285,7 +291,7 @@ const InvoiceInput: React.VFC<{
               <Input
                 ref={phoneRef}
                 placeholder={formatMessage(checkoutMessages.message.phone)}
-                defaultValue={value ? value.phone : ''}
+                defaultValue={isMemberInfoDisable ? member?.phone || '' : value ? value.phone : ''}
                 onBlur={() => handleChange({})}
               />
             </Form.Item>
@@ -300,7 +306,7 @@ const InvoiceInput: React.VFC<{
               <Input
                 ref={emailRef}
                 placeholder={formatMessage(checkoutMessages.message.emailText)}
-                defaultValue={value ? value.email : ''}
+                defaultValue={isMemberInfoDisable ? member?.email : value ? value.email : ''}
                 onBlur={() => handleChange({})}
               />
             </Form.Item>
