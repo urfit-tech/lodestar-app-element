@@ -8,7 +8,7 @@ import { useTracking } from '../../hooks/tracking'
 
 const View: React.VFC<{
   ignore?: 'EEC' | 'CUSTOM'
-}> = ({ ignore }) => {
+}> = React.memo(({ ignore }) => {
   const tracking = useTracking()
   const [utmSource] = useQueryParam('utm_source', StringParam)
   const { settings } = useApp()
@@ -17,10 +17,9 @@ const View: React.VFC<{
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
   useEffect(() => {
     tracking.view(currentMember, { ignore, utmSource: utmSource || '' })
-  }, [enabledCW, currentMember, utmSource])
-
+  }, [enabledCW, currentMember, tracking, utmSource, ignore])
   return <></>
-}
+}, equals)
 
 const Impression: React.FC<{
   resources: (Resource | null)[]
@@ -31,7 +30,7 @@ const Impression: React.FC<{
   const [utmSource] = useQueryParam('utm_source', StringParam)
   useEffect(() => {
     tracking.impress(resources, { collection, ignore, utmSource: utmSource || '' })
-  }, [collection, resources, tracking])
+  }, [collection, resources, tracking, utmSource, ignore])
   return <></>
 }, equals)
 
@@ -55,7 +54,7 @@ const Checkout: React.FC<{
   useEffect(() => {
     tracking.checkout(resources, { ignore, utmSource: utmSource || '' })
     onCheckout?.()
-  }, [onCheckout, resources, tracking, ignore])
+  }, [onCheckout, resources, tracking, utmSource, ignore])
   return <></>
 }, equals)
 

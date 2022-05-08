@@ -2,7 +2,7 @@ export type UserRole = 'app-owner' | 'content-creator' | 'general-member' | 'ano
 export type ProductRole<R = 'owner' | 'instructor'> = {
   id: string
   name: R
-  member: Pick<Member, 'id'>
+  member: Pick<Member, 'id' | 'name' | 'pictureUrl'>
 }
 
 export type Category = {
