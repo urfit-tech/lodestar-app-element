@@ -1,8 +1,26 @@
 import { equals } from 'ramda'
 import React, { useEffect } from 'react'
 import { StringParam, useQueryParam } from 'use-query-params'
+import { useApp } from '../../contexts/AppContext'
+import { useAuth } from '../../contexts/AuthContext'
 import { Resource } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
+
+const View: React.VFC<{
+  ignore?: 'EEC' | 'CUSTOM'
+}> = ({ ignore }) => {
+  const tracking = useTracking()
+  const [utmSource] = useQueryParam('utm_source', StringParam)
+  const { settings } = useApp()
+  const { currentMember } = useAuth()
+
+  const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
+  useEffect(() => {
+    tracking.view(currentMember, { ignore, utmSource: utmSource || '' })
+  }, [enabledCW, currentMember, utmSource])
+
+  return <></>
+}
 
 const Impression: React.FC<{
   resources: (Resource | null)[]
@@ -58,6 +76,7 @@ const Purchase: React.FC<{
 }, equals)
 
 const Tracking = {
+  View,
   Detail,
   Impression,
   Checkout,

@@ -1,9 +1,7 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { createContext, useContext, useEffect, useMemo } from 'react'
-import { StringParam, useQueryParam } from 'use-query-params'
 import hasura from '../hasura'
-import { getCookie } from '../hooks/util'
 import { AppProps, NavProps } from '../types/app'
 import { useAuth } from './AuthContext'
 
@@ -33,7 +31,6 @@ const AppContext = createContext<AppContextProps>(defaultAppContextProps)
 export const useApp = () => useContext(AppContext)
 
 export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
-  const { currentMember } = useAuth()
   const { authToken, refreshToken } = useAuth()
   const { data, loading, error, refetch } = useQuery<hasura.GET_APP, hasura.GET_APPVariables>(
     gql`
@@ -96,8 +93,6 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
       context: { important: true },
     },
   )
-
-  const [utmSource] = useQueryParam('utm_source', StringParam)
   const settings = useMemo(
     () => Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || []),
     [data?.app_by_pk?.app_settings],
@@ -167,51 +162,6 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
       refreshToken?.()
     }
   }, [appId, authToken, refreshToken])
-
-  const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
-  useEffect(() => {
-    ;(window as any).dataLayer = (window as any).dataLayer || []
-    !currentMember && (window as any).dataLayer.push({ event: 'clearMember', member: null })
-  }, [currentMember])
-  useEffect(() => {
-    ;(window as any).dataLayer = (window as any).dataLayer || []
-    if (currentMember && enabledCW) {
-      ;(window as any).dataLayer.push({
-        event: 'updateMember',
-        member: {
-          id: currentMember.id,
-          email: currentMember.email,
-        },
-      })
-    }
-  }, [currentMember, enabledCW])
-  useEffect(() => {
-    if (currentMember && enabledCW) {
-      const memberType = '會員'
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ memberData: null })
-      ;(window as any).dataLayer.push({
-        event: 'cwData',
-        memberData: {
-          member_type: memberType,
-          id: currentMember.options[appId]?.id || '',
-          social_id: currentMember.options[appId]?.social_id || '',
-          uid: currentMember.options[appId]?.uid || '',
-          uuid: currentMember.options[appId]?.uuid || '',
-          env:
-            window.location.href.includes('local') ||
-            window.location.href.includes('dev') ||
-            window.location.href.includes('127.0.0.1')
-              ? 'develop'
-              : 'prod',
-          email: currentMember.email,
-          dmp_id: getCookie('__eruid'),
-          salesforce_id: currentMember.options[appId]?.salesforce_id || '',
-          utm_source: utmSource,
-        },
-      })
-    }
-  }, [appId, currentMember, enabledCW, utmSource])
 
   return <AppContext.Provider value={app}>{children}</AppContext.Provider>
 }

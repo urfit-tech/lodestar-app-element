@@ -2,7 +2,7 @@ export type UserRole = 'app-owner' | 'content-creator' | 'general-member' | 'ano
 export type ProductRole<R = 'owner' | 'instructor'> = {
   id: string
   name: R
-  member: Member
+  member: Pick<Member, 'id'>
 }
 
 export type Category = {
@@ -30,6 +30,7 @@ export type ProductPlan = {
 export type MemberProvider = 'google' | 'facebook' | 'line' | 'cw' | 'parenting' | 'commonhealth'
 export type Member = {
   id: string
+  role: UserRole
   name: string
   username: string
   email: string
@@ -39,6 +40,7 @@ export type Member = {
   description: string | null
   categories: Category[]
   provider: Record<MemberProvider, any>
+  options: { [key: string]: any }
 }
 
 export type PodcastProgram = {

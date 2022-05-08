@@ -2,7 +2,9 @@ import { useApolloClient } from '@apollo/react-hooks'
 import { sum, uniq } from 'ramda'
 import { useApp } from '../contexts/AppContext'
 import { convertPathName, notEmpty } from '../helpers'
+import { Member } from '../types/data'
 import { getResourceCollection, Resource, ResourceType } from './resource'
+import { getCookie } from './util'
 
 const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) => ResourceType = (
   originalType: ResourceType,
@@ -100,7 +102,49 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
   const apolloClient = useApolloClient()
   return {
-    view: () => {},
+    view: (
+      currentMember: Pick<Member, 'id' | 'name' | 'username' | 'email' | 'pictureUrl' | 'role' | 'options'> | null,
+      options?: {
+        ignore?: 'EEC' | 'CUSTOM'
+        utmSource?: string
+      },
+    ) => {
+      ;(window as any).dataLayer = (window as any).dataLayer || []
+      !currentMember && (window as any).dataLayer.push({ event: 'clearMember', member: null })
+      currentMember &&
+        (window as any).dataLayer.push({
+          event: 'updateMember',
+          member: {
+            id: currentMember.id,
+            email: currentMember.email,
+          },
+        })
+      if (currentMember && enabledCW && options?.ignore !== 'CUSTOM') {
+        const memberType = '會員'
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ memberData: null })
+        ;(window as any).dataLayer.push({
+          event: 'cwData',
+          memberData: {
+            member_type: memberType,
+            id: currentMember.options[appId]?.id || '',
+            social_id: currentMember.options[appId]?.social_id || '',
+            uid: currentMember.options[appId]?.uid || '',
+            uuid: currentMember.options[appId]?.uuid || '',
+            env:
+              window.location.href.includes('local') ||
+              window.location.href.includes('dev') ||
+              window.location.href.includes('127.0.0.1')
+                ? 'develop'
+                : 'prod',
+            email: currentMember.email,
+            dmp_id: getCookie('__eruid'),
+            salesforce_id: currentMember.options[appId]?.salesforce_id || '',
+            utm_source: options?.utmSource,
+          },
+        })
+      }
+    },
     impress: (
       resources: (Resource | null)[],
       options?: {
