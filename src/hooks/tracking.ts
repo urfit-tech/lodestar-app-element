@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/react-hooks'
-import { sum } from 'ramda'
+import { sum, uniq } from 'ramda'
 import { useApp } from '../contexts/AppContext'
 import { convertPathName, notEmpty } from '../helpers'
 import { getResourceCollection, Resource, ResourceType } from './resource'
@@ -73,7 +73,7 @@ const convertCwProduct: (
       resource?.tags?.join(options.separator) ||
       document.querySelector('meta[name="keywords"]')?.getAttribute('content') ||
       '',
-    utmSource,
+    utm_source: utmSource,
   }
   switch (resource.type) {
     case 'program_content':
@@ -134,10 +134,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                       price: product.price || 0,
                       brand,
                       category: product.categories?.join(trackingOptions.separator),
-                      variant:
-                        product.type === 'program_package' || product.type === 'program_package_plan'
-                          ? product?.variants?.join(trackingOptions.separator)
-                          : product.owners?.map(member => member.name).join(trackingOptions.separator),
+                      variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
                       quantity: 1, // TODO: use the inventory
                       list: options?.collection || convertPathName(window.location.pathname),
                       position: index + 1,
@@ -167,7 +164,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         const cwProducts = resources.map(r => (r ? convertCwProduct(r, options?.utmSource) : null)).filter(notEmpty)
         if (cwProducts.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
-          ;(window as any).dataLayer.push({ itemData: null })
+          ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
           ;(window as any).dataLayer.push({
             event: 'cwData',
             itemData: {
@@ -198,10 +195,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                   price: resource.price,
                   brand,
                   category: resource.categories?.join(trackingOptions.separator),
-                  variant:
-                    resource.type === 'program_package' || resource.type === 'program_package_plan'
-                      ? resource?.variants?.join(trackingOptions.separator)
-                      : resource.owners?.map(member => member.name).join(trackingOptions.separator),
+                  variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                   position: options?.position,
                 }
               : null,
@@ -242,10 +236,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                   price: resource.price,
                   brand: settings['name'] || document.title,
                   category: resource.categories?.join(trackingOptions.separator),
-                  variant:
-                    resource.type === 'program_package' || resource.type === 'program_package_plan'
-                      ? resource.variants?.join(trackingOptions.separator)
-                      : resource.owners?.map(member => member.name).join(trackingOptions.separator),
+                  variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 }
               : null,
           )
@@ -324,10 +315,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 price: resource.price,
                 brand,
                 category: resource.categories?.join(trackingOptions.separator),
-                variant:
-                  resource.type === 'program_package' || resource.type === 'program_package_plan'
-                    ? resource?.variants?.join(trackingOptions.separator)
-                    : resource.owners?.map(member => member.name).join(trackingOptions.separator),
+                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 quantity: options?.quantity || 1, // TODO: use the inventory
               },
             ],
@@ -357,10 +345,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 price: resource.price,
                 brand: settings['name'] || document.title,
                 category: resource.categories?.join(trackingOptions.separator),
-                variant:
-                  resource.type === 'program_package' || resource.type === 'program_package_plan'
-                    ? resource?.variants?.join(trackingOptions.separator)
-                    : resource.owners?.map(member => member.name).join(trackingOptions.separator),
+                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 quantity: options?.quantity || 1, // TODO: use the inventory
               },
             ],
@@ -385,10 +370,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 price: resource.price,
                 brand,
                 category: resource.categories?.join(trackingOptions.separator),
-                variant:
-                  resource.type === 'program_package' || resource.type === 'program_package_plan'
-                    ? resource?.variants?.join(trackingOptions.separator)
-                    : resource.owners?.map(member => member.name).join(trackingOptions.separator),
+                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 quantity: resource.options?.quantity || 1, // TODO: use the cart product
               }
             : null,
@@ -463,12 +445,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           price: product.price,
           brand,
           category: product.categories?.join(trackingOptions.separator),
-          variant:
-            product.type === 'program_package' || product.type === 'program_package_plan'
-              ? product?.variants?.join(trackingOptions.separator)
-              : product.owners?.map(member => member.name).join(trackingOptions.separator),
+          variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
           quantity: product.quantity,
-          utmSource: options?.utmSource,
         })) || []
       if (ecProducts.length > 0) {
         ;(window as any).dataLayer = (window as any).dataLayer || []
@@ -495,7 +473,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         const cwProducts =
           orderProducts.map(product => {
             return {
-              ...convertCwProduct(product, options?.utmSource || undefined),
+              ...convertCwProduct(product, options?.utmSource),
               order_number: orderId,
             }
           }) || []

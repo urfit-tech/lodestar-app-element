@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { createContext, useContext, useEffect, useMemo } from 'react'
+import { StringParam, useQueryParam } from 'use-query-params'
 import hasura from '../hasura'
 import { getCookie } from '../hooks/util'
 import { AppProps, NavProps } from '../types/app'
@@ -96,6 +97,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     },
   )
 
+  const [utmSource] = useQueryParam('utm_source', StringParam)
   const settings = useMemo(
     () => Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || []),
     [data?.app_by_pk?.app_settings],
@@ -173,19 +175,21 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
   }, [currentMember])
   useEffect(() => {
     ;(window as any).dataLayer = (window as any).dataLayer || []
-    currentMember &&
-      (window as any).dataLayer.push({
+    if (currentMember && enabledCW) {
+      ;(window as any).dataLayer.push({
         event: 'updateMember',
         member: {
           id: currentMember.id,
           email: currentMember.email,
         },
       })
+    }
   }, [currentMember, enabledCW])
   useEffect(() => {
     if (currentMember && enabledCW) {
       const memberType = '會員'
       ;(window as any).dataLayer = (window as any).dataLayer || []
+      ;(window as any).dataLayer.push({ memberData: null })
       ;(window as any).dataLayer.push({
         event: 'cwData',
         memberData: {
@@ -203,10 +207,11 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
           email: currentMember.email,
           dmp_id: getCookie('__eruid'),
           salesforce_id: currentMember.options[appId]?.salesforce_id || '',
+          utm_source: utmSource,
         },
       })
     }
-  }, [appId, currentMember, enabledCW])
+  }, [appId, currentMember, enabledCW, utmSource])
 
   return <AppContext.Provider value={app}>{children}</AppContext.Provider>
 }
