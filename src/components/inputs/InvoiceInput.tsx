@@ -242,7 +242,12 @@ const InvoiceInput: React.VFC<{
             <div className="mb-1">{formatMessage(checkoutMessages.text.invoiceDescription1)}</div>
             <div>
               {formatMessage(checkoutMessages.text.invoiceDescription2)}
-              <a className="primary" href={`${settings['feature.invoice_input_description_href']}`}>
+              <a
+                className="primary"
+                href={`${settings['feature.invoice_input_description_href']}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {formatMessage(checkoutMessages.text.invoiceDescription3)}
               </a>
               {formatMessage(checkoutMessages.text.invoiceDescription4)}
