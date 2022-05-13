@@ -1,5 +1,4 @@
 import Axios from 'axios'
-import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -55,12 +54,6 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
       setPayload(null)
       return
     }
-    const redirectUrl = Cookies.get('redirect')
-    if (redirectUrl) {
-      Cookies.remove('redirect')
-      window.location.assign(redirectUrl)
-    }
-
     // TODO: add auth payload type
     try {
       const tmpPayload: any = jwt.decode(authToken)
