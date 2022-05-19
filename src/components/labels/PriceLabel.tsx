@@ -28,8 +28,14 @@ const ListPrice = styled.div`
 const InlinePrice = styled.div`
   color: ${props => props.theme['@primary-color']};
 
+  & > div {
+    display: inline;
+  }
+
   & > div:first-child:not(:last-child) {
     margin-right: 0.5rem;
+    color: var(--black-45);
+    text-decoration: line-through;
   }
 `
 
@@ -107,26 +113,24 @@ const PriceLabel: React.VFC<
           </SalePrice>
         )}
 
-        {
-          <ListPrice className="listPrice">
-            {typeof salePrice === 'number' ? (
-              <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
-            ) : !!downPrice ? (
-              <span className="listPrice__fromSecondPeriodText">
-                {formatMessage(commonMessages.label.fromSecondPeriod)}
-              </span>
-            ) : (
-              ''
-            )}
-            {listPrice === 0 && !noFreeText && (
-              <span className="listPrice__freeText">{formatMessage(commonMessages.label.free)}</span>
-            )}
-            <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
-            <span className="listPrice__periodUnit" style={{ fontSize: '16px' }}>
-              {periodElem}
+        <ListPrice className="listPrice">
+          {typeof salePrice === 'number' ? (
+            <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
+          ) : !!downPrice ? (
+            <span className="listPrice__fromSecondPeriodText">
+              {formatMessage(commonMessages.label.fromSecondPeriod)}
             </span>
-          </ListPrice>
-        }
+          ) : (
+            ''
+          )}
+          {listPrice === 0 && !noFreeText && (
+            <span className="listPrice__freeText">{formatMessage(commonMessages.label.free)}</span>
+          )}
+          <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
+          <span className="listPrice__periodUnit" style={{ fontSize: '16px' }}>
+            {periodElem}
+          </span>
+        </ListPrice>
       </FullDetailPrice>
     )
   }
@@ -134,18 +138,16 @@ const PriceLabel: React.VFC<
   if (variant === 'inline') {
     return (
       <InlinePrice className="price">
+        <ListPrice className="listPrice">
+          <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
+          <span className="listPrice__periodUnit">{periodElem}</span>
+        </ListPrice>
         {typeof salePrice === 'number' && (
           <SalePrice className="salePrice">
             <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
             <span className="salePrice__periodUnit">{periodElem}</span>
           </SalePrice>
         )}
-        {
-          <ListPrice className="listPrice">
-            <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
-            <span className="listPrice__periodUnit">{periodElem}</span>
-          </ListPrice>
-        }
       </InlinePrice>
     )
   }
