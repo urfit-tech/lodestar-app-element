@@ -28,10 +28,8 @@ const ListPrice = styled.div`
 const InlinePrice = styled.div`
   color: ${props => props.theme['@primary-color']};
 
-  & > span:first-child:not(:last-child) {
+  & > div:first-child:not(:last-child) {
     margin-right: 0.5rem;
-    color: ${props => 'var(--gray-dark);'};
-    text-decoration: line-through;
   }
 `
 
@@ -109,7 +107,7 @@ const PriceLabel: React.VFC<
           </SalePrice>
         )}
 
-        {listPrice !== salePrice && (
+        {
           <ListPrice className="listPrice">
             {typeof salePrice === 'number' ? (
               <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
@@ -128,7 +126,7 @@ const PriceLabel: React.VFC<
               {periodElem}
             </span>
           </ListPrice>
-        )}
+        }
       </FullDetailPrice>
     )
   }
@@ -136,14 +134,18 @@ const PriceLabel: React.VFC<
   if (variant === 'inline') {
     return (
       <InlinePrice className="price">
-        <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
-        <span className="listPrice__periodUnit">{periodElem}</span>
         {typeof salePrice === 'number' && (
-          <>
+          <SalePrice className="salePrice">
             <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
             <span className="salePrice__periodUnit">{periodElem}</span>
-          </>
+          </SalePrice>
         )}
+        {
+          <ListPrice className="listPrice">
+            <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
+            <span className="listPrice__periodUnit">{periodElem}</span>
+          </ListPrice>
+        }
       </InlinePrice>
     )
   }
