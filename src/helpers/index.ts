@@ -77,7 +77,7 @@ export const getCurrentPrice = (plan: Partial<ProductPlan>) =>
   (plan.soldAt && moment() < moment(plan.soldAt) ? plan.salePrice : plan.listPrice) || 0
 
 export const findCheapestPlan = (plans: Partial<ProductPlan>[]) =>
-  plans.reduce(
+  plans.filter(plan => plan.publishedAt !== null).reduce(
     (accum, plan) => (accum === null ? plan : getCurrentPrice(plan) < getCurrentPrice(accum) ? plan : accum),
     null as Partial<ProductPlan> | null,
   )

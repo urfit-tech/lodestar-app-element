@@ -52,15 +52,15 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
           <div>
             {loading ? (
               <Skeleton width="10" height={4} />
-            ) : (
+            ) : props.listPrice || props.currentPrice ? (
               <PriceLabel
                 variant="inline"
-                listPrice={props.listPrice || props.currentPrice || 0}
+                listPrice={props.listPrice || props.currentPrice}
                 salePrice={props.currentPrice}
                 periodAmount={props.period?.amount}
                 periodType={props.period?.type}
               />
-            )}
+            ): ''}
           </div>
         </Card.MetaBlock>
       </Card.Content>
