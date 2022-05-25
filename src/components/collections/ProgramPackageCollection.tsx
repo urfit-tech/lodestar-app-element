@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
 import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
@@ -117,7 +118,11 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                       link={`/program-packages/${programPackage.id}`}
                       totalPrograms={programPackage.programs.length}
                       totalDuration={sum(programPackage.programs.map(program => program.totalDuration))}
-                      currentPrice={cheapestPlan?.salePrice || undefined}
+                      salePrice={
+                        cheapestPlan?.soldAt && moment() < moment(cheapestPlan.soldAt)
+                          ? cheapestPlan?.salePrice
+                          : undefined
+                      }
                       listPrice={cheapestPlan?.listPrice}
                       onClick={() => {
                         onClick?.()

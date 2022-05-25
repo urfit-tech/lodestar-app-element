@@ -41,7 +41,7 @@ export type ProgramPackageElementProps = ElementProps<{
   title: string
   totalPrograms: number
   totalDuration: number
-  currentPrice?: number
+  salePrice?: number | null
   link?: string
   coverUrl?: string
   listPrice?: number

@@ -56,7 +56,7 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
               <PriceLabel
                 variant="inline"
                 listPrice={props.listPrice}
-                salePrice={props.currentPrice}
+                salePrice={props.salePrice}
                 periodAmount={props.period?.amount}
                 periodType={props.period?.type}
               />

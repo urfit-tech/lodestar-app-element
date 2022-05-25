@@ -10,7 +10,7 @@ const ProgramPackagePage: React.VFC = () => {
         coverUrl="https://images.unsplash.com/photo-1593642633279-1796119d5482?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=988&q=80"
         totalDuration={74400}
         totalPrograms={3}
-        currentPrice={19800}
+        salePrice={19800}
       />
       {/* <CraftProgramPackageCollection variant="card" source={{ source: 'publishedAt' }} /> */}
     </div>
