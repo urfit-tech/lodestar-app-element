@@ -436,7 +436,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
         listPrice: pp.list_price,
         salePrice: pp.sale_price,
         soldAt: pp.sold_at && new Date(pp.sold_at),
-        publishedAt: pp.published_at,
+        publishedAt: pp.published_at && new Date(pp.published_at),
         autoRenewed: pp.auto_renewed || false,
         period:
           pp.period_amount && pp.period_type
