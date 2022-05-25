@@ -28,6 +28,7 @@ type ProgramPackageData = DeepPick<
   | 'plans.[].salePrice'
   | 'plans.[].soldAt'
   | 'plans.[].period'
+  | 'plans.[].publishedAt'
   | 'programs.[].roles.[].name'
   | 'programs.[].roles.[].member.id'
   | 'programs.[].totalDuration'
@@ -215,6 +216,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
       listPrice: ppp.list_price,
       salePrice: ppp.sale_price,
       soldAt: ppp.sold_at && new Date(ppp.sold_at),
+      publishedAt: ppp.published_at && new Date(ppp.published_at),
       period: {
         amount: ppp.period_amount,
         type: ppp.period_type,
@@ -263,6 +265,7 @@ const programPackageFields = gql`
       sold_at
       period_amount
       period_type
+      published_at
     }
     program_package_categories {
       category {
