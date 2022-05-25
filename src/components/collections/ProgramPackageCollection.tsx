@@ -7,7 +7,7 @@ import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getProgramPackageCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { convertPathName, findCheapestPlan, getCurrentPrice, notEmpty } from '../../helpers'
+import { convertPathName, findCheapestPlan, notEmpty } from '../../helpers'
 import { Category, ProductPlan, ProductRole, ProgramPackage } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -117,7 +117,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                       link={`/program-packages/${programPackage.id}`}
                       totalPrograms={programPackage.programs.length}
                       totalDuration={sum(programPackage.programs.map(program => program.totalDuration))}
-                      currentPrice={cheapestPlan ? getCurrentPrice(cheapestPlan) : 0}
+                      currentPrice={cheapestPlan?.salePrice || undefined}
                       listPrice={cheapestPlan?.listPrice}
                       onClick={() => {
                         onClick?.()
