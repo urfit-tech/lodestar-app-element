@@ -75,7 +75,7 @@ const convertCwProduct: (
       resource?.tags?.join(options.separator) ||
       document.querySelector('meta[name="keywords"]')?.getAttribute('content') ||
       '',
-    utm_source: utmSource,
+    utm_source: utmSource || '',
   }
   switch (resource.type) {
     case 'program_content':
