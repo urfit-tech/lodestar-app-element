@@ -4,6 +4,7 @@ import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useContext, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
 import { handleError } from '../helpers'
+import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 
 type ProviderType = 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth' | 'cw'
@@ -15,7 +16,7 @@ type AuthProps = {
   currentMemberId: string | null
   authToken: string | null
   currentMember: Pick<Member, 'id' | 'name' | 'username' | 'email' | 'pictureUrl' | 'role' | 'options'> | null
-  permissions: { [key: string]: boolean }
+  permissions: { [key in Permission]?: boolean }
   refreshToken?: () => Promise<void>
   register?: (data: {
     appId?: string
