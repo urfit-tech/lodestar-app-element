@@ -1,6 +1,7 @@
 import BraftEditor from 'braft-editor'
 import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
+import { isHTMLString } from '../../helpers'
 import QuotationLeft from '../../images/quotation-left.png'
 import QuotationRight from '../../images/quotation-right.png'
 
@@ -70,11 +71,16 @@ const OutputMixin = css`
     line-height: 2;
   }
   img {
+    width: 100%;
+    height: auto !important;
     margin-bottom: 1.5rem;
   }
-  img,
   iframe {
-    width: 100% !important;
+    width: 100%;
+    max-width: 100%;
+  }
+  video {
+    width: 100%;
   }
   blockquote {
     position: relative;
@@ -211,7 +217,10 @@ export const BraftContent: React.FC<{ isEditable?: boolean; onEdit?: (content: s
           }
         }}
         dangerouslySetInnerHTML={{
-          __html: BraftEditor.createEditorState(children).toHTML(),
+          __html:
+            typeof children === 'string' && isHTMLString(children)
+              ? children
+              : BraftEditor.createEditorState(children).toHTML(),
         }}
       />
     </div>
