@@ -263,3 +263,4 @@ export type Permission =
   | 'VOUCHER_PLAN_READ'
   | 'VOUCHER_PLAN_WRITE'
   | 'VOUCHER_CODE_EXPORT'
+  | 'null'
