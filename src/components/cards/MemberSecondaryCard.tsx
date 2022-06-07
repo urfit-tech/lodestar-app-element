@@ -1,5 +1,5 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
-import { useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/default-avatar.svg'
 import { ElementComponent, MemberElementProps } from '../../types/element'
@@ -29,27 +29,22 @@ const StyledCreatorAbstract = styled.div`
   font-weight: 500;
 `
 const MemberSecondaryCard: ElementComponent<MemberElementProps> = props => {
-  const history = useHistory()
   const { loading, errors, editing } = props
   return (
-    <div
-      className="m-2"
-      style={{ cursor: 'pointer' }}
-      onClick={e =>
-        loading || editing ? e.preventDefault() : history.push(`/creators/${props.id}?tabkey=introduction`)
-      }
-    >
-      <StyledCreatorAvatar className="mb-2" url={props.avatarUrl || DefaultAvatar} />
-      <StyledCreatorName className="mb-2 text-left">
-        {loading ? <Skeleton width={40} height={6} /> : props.name}
-      </StyledCreatorName>
-      <StyledCreatorTitle className="mb-3 text-left">
-        {loading ? <Skeleton width={20} height={4} /> : props.title}
-      </StyledCreatorTitle>
-      <StyledCreatorAbstract className="text-left">
-        {loading ? <SkeletonText noOfLines={3} /> : props.abstract}
-      </StyledCreatorAbstract>
-    </div>
+    <Link to={loading || editing ? '#!' : `/creators/${props.id}?tabkey=introduction`}>
+      <div className="m-2" style={{ cursor: 'pointer' }}>
+        <StyledCreatorAvatar className="mb-2" url={props.avatarUrl || DefaultAvatar} />
+        <StyledCreatorName className="mb-2 text-left">
+          {loading ? <Skeleton width={40} height={6} /> : props.name}
+        </StyledCreatorName>
+        <StyledCreatorTitle className="mb-3 text-left">
+          {loading ? <Skeleton width={20} height={4} /> : props.title}
+        </StyledCreatorTitle>
+        <StyledCreatorAbstract className="text-left">
+          {loading ? <SkeletonText noOfLines={3} /> : props.abstract}
+        </StyledCreatorAbstract>
+      </div>
+    </Link>
   )
 }
 

@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
-import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
@@ -46,7 +45,6 @@ export type ProgramPackageCollectionProps = {
   carousel?: BaseCarouselProps
 }
 const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> = props => {
-  const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -55,7 +53,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
   }
 
   const collectionName = props.name || convertPathName(window.location.pathname)
-  const EntityElement = props.variant === 'card' ? ProgramPackageCard : ProgramPackageCard
+  const EntityElement = ProgramPackageCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
       ? CollectionCarousel(collectionName, 'program_package', EntityElement)
@@ -126,7 +124,6 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                       listPrice={cheapestPlan?.listPrice}
                       onClick={() => {
                         onClick?.()
-                        !props.editing && history.push(`/program-packages/${programPackage.id}`)
                       }}
                     />
                   )

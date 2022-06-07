@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
-import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
@@ -45,7 +44,6 @@ export type ActivityCollectionProps = {
   carousel?: BaseCarouselProps
 }
 const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
-  const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
@@ -54,7 +52,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
   }
 
   const collectionName = props.name || convertPathName(window.location.pathname)
-  const EntityElement = props.variant === 'card' ? ActivityCard : ActivityCard
+  const EntityElement = ActivityCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
       ? CollectionCarousel(collectionName, 'activity', EntityElement)
@@ -121,7 +119,6 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
                     categories={activity.categories}
                     onClick={() => {
                       onClick?.()
-                      !props.editing && history.push(`/activities/${activity.id}`)
                     }}
                   />
                 )}

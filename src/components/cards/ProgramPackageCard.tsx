@@ -1,5 +1,6 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { defineMessages, useIntl } from 'react-intl'
+import { Link } from 'react-router-dom'
 import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProgramPackageElementProps } from '../../types/element'
@@ -18,53 +19,57 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
     return <div>{JSON.stringify(errors)}</div>
   }
   return (
-    <Card
-      className={
-        props.onClick ? `programPackage cursor-pointer ${props.className}` : `programPackage ${props.className}`
-      }
-      onClick={props.onClick}
-    >
-      {loading ? (
-        <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
-      ) : (
-        <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
-      )}
-      <Card.Content className="content">
+    <Link to={!props.editing && props.link ? props.link : '#!'}>
+      <Card
+        className={
+          props.onClick ? `programPackage cursor-pointer ${props.className}` : `programPackage ${props.className}`
+        }
+        onClick={props.onClick}
+      >
         {loading ? (
-          <Skeleton className="mb-3" width="20" height={4} />
+          <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
         ) : (
-          <Card.Title className="content__title">{props.title}</Card.Title>
+          <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
         )}
-        <Card.Description className="description">
+        <Card.Content className="content">
           {loading ? (
-            <SkeletonText className="mb-3" noOfLines={1} />
+            <Skeleton className="mb-3" width="20" height={4} />
           ) : (
-            <>
-              <span className="description__totalCourses">
-                {formatMessage(messages.totalCourses, { count: props.totalPrograms })}
-              </span>
-              <span>.</span>
-              <span className="description__totalDuration">{durationFormatter(props.totalDuration)}</span>
-            </>
+            <Card.Title className="content__title">{props.title}</Card.Title>
           )}
-        </Card.Description>
-        <Card.MetaBlock className="metadata d-flex flex-row-reverse justify-content-between align-items-center">
-          <div>
+          <Card.Description className="description">
             {loading ? (
-              <Skeleton width="10" height={4} />
-            ) : props.listPrice ? (
-              <PriceLabel
-                variant="inline"
-                listPrice={props.listPrice}
-                salePrice={props.salePrice}
-                periodAmount={props.period?.amount}
-                periodType={props.period?.type}
-              />
-            ): ''}
-          </div>
-        </Card.MetaBlock>
-      </Card.Content>
-    </Card>
+              <SkeletonText className="mb-3" noOfLines={1} />
+            ) : (
+              <>
+                <span className="description__totalCourses">
+                  {formatMessage(messages.totalCourses, { count: props.totalPrograms })}
+                </span>
+                <span>.</span>
+                <span className="description__totalDuration">{durationFormatter(props.totalDuration)}</span>
+              </>
+            )}
+          </Card.Description>
+          <Card.MetaBlock className="metadata d-flex flex-row-reverse justify-content-between align-items-center">
+            <div>
+              {loading ? (
+                <Skeleton width="10" height={4} />
+              ) : props.listPrice ? (
+                <PriceLabel
+                  variant="inline"
+                  listPrice={props.listPrice}
+                  salePrice={props.salePrice}
+                  periodAmount={props.period?.amount}
+                  periodType={props.period?.type}
+                />
+              ) : (
+                ''
+              )}
+            </div>
+          </Card.MetaBlock>
+        </Card.Content>
+      </Card>
+    </Link>
   )
 }
 
