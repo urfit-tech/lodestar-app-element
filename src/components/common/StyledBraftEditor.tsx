@@ -1,22 +1,49 @@
 import BraftEditor from 'braft-editor'
-import React from 'react'
+import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
+import { isHTMLString } from '../../helpers'
 import QuotationLeft from '../../images/quotation-left.png'
 import QuotationRight from '../../images/quotation-right.png'
 
 const OutputMixin = css`
   h1 {
-    margin-bottom: 1.5rem;
+    padding: 4px 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  h2 {
     padding: 4px 20px;
     font-size: 20px;
     font-weight: bold;
-    border-left: 4px solid ${props => props.theme['@primary-color']};
+  }
+  h3 {
+    padding: 4px 16px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  h4 {
+    padding: 4px 16px;
+    font-size: 16px;
+    font-weight: normal;
   }
   h5 {
-    margin-bottom: 1.5rem;
-    color: #9b9b9b;
+    padding: 4px 14px;
     font-size: 14px;
-    letter-spacing: 0.4px;
+    font-weight: bold;
+  }
+  h6 {
+    padding: 4px 14px;
+    font-size: 14px;
+    font-weight: normal;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-bottom: 1.5rem;
+    border-left: 4px solid ${props => props.theme['@primary-color']};
   }
   p {
     margin: 0;
@@ -154,12 +181,6 @@ const StyledBraftEditor = styled(BraftEditor)`
         color: #fff;
       }
     }
-    li.menu-item:nth-child(2),
-    li.menu-item:nth-child(3),
-    li.menu-item:nth-child(4),
-    li.menu-item:nth-child(6) {
-      display: none;
-    }
   }
 
   .public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-listLTR:before {
@@ -175,14 +196,34 @@ const StyledBraftContent = styled.div`
   ${OutputMixin}
 `
 
-export const BraftContent: React.FC = ({ children }) => {
+export const BraftContent: React.FC<{ isEditable?: boolean; onEdit?: (content: string | null) => void }> = ({
+  isEditable,
+  onEdit,
+  children,
+}) => {
+  const ref = useRef<HTMLDivElement | null>(null)
   return (
-    <StyledBraftContent
-      className="braft-output-content"
-      dangerouslySetInnerHTML={{
-        __html: BraftEditor.createEditorState(children).toHTML(),
-      }}
-    />
+    <div className="d-flex align-items-center">
+      <StyledBraftContent
+        ref={ref}
+        className="braft-output-content"
+        contentEditable={isEditable}
+        spellCheck={false}
+        onBlur={e => onEdit?.(e.currentTarget.textContent)}
+        onKeyPress={e => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+            ref.current?.blur()
+          }
+        }}
+        dangerouslySetInnerHTML={{
+          __html:
+            typeof children === 'string' && isHTMLString(children)
+              ? children
+              : BraftEditor.createEditorState(children).toHTML(),
+        }}
+      />
+    </div>
   )
 }
 

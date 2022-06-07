@@ -77,10 +77,12 @@ export const getCurrentPrice = (plan: Partial<ProductPlan>) =>
   (plan.soldAt && moment() < moment(plan.soldAt) ? plan.salePrice : plan.listPrice) || 0
 
 export const findCheapestPlan = (plans: Partial<ProductPlan>[]) =>
-  plans.filter(plan => plan.publishedAt !== null).reduce(
-    (accum, plan) => (accum === null ? plan : getCurrentPrice(plan) < getCurrentPrice(accum) ? plan : accum),
-    null as Partial<ProductPlan> | null,
-  )
+  plans
+    .filter(plan => plan.publishedAt !== null)
+    .reduce(
+      (accum, plan) => (accum === null ? plan : getCurrentPrice(plan) < getCurrentPrice(accum) ? plan : accum),
+      null as Partial<ProductPlan> | null,
+    )
 
 export const desktopViewMixin = (children: FlattenSimpleInterpolation) => css`
   @media (min-width: ${BREAK_POINT}px) {
@@ -110,3 +112,12 @@ export const convertPathName = (pathName: string) => {
   const pathList = pathName.split('/').filter(p => p !== '')
   return pathList.join('_') || '_'
 }
+
+export const isHTMLString = (str: string) =>
+  !(str || '')
+    // replace html tag with content
+    .replace(/<([^>]+?)([^>]*?)>(.*?)<\/\1>/gi, '')
+    // remove remaining self closing tags
+    .replace(/(<([^>]+)>)/gi, '')
+    // remove extra space at start and end
+    .trim()
