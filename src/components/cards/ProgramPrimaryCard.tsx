@@ -56,65 +56,65 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
           </Link>
         )}
       </InstructorPlaceHolder>
-      <Link to={!props.editing ? `/programs/${props.id}` : '#!'}>
-        <StyledCard
-          className={classNames('program', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
-          shadowed
-          onClick={props.onClick}
-        >
+      <StyledCard
+        className={classNames('program', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
+        shadowed
+        onClick={props.onClick}
+      >
+        {loading ? (
+          <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+        ) : (
+          <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+        )}
+        <Card.Content className="content">
           {loading ? (
-            <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+            <Skeleton className="mb-3" width="20" height={4} />
           ) : (
-            <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+            <StyledTitle className="content__title">
+              <Link to={!props.editing ? `/programs/${props.id}` : '#!'}>{props.title} </Link>
+            </StyledTitle>
           )}
-          <Card.Content className="content">
+          <Card.Description className="description">
             {loading ? (
-              <Skeleton className="mb-3" width="20" height={4} />
+              <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} />
             ) : (
-              <StyledTitle className="content__title">{props.title}</StyledTitle>
+              <span className="description__abstract">{props.abstract}</span>
             )}
-            <Card.Description className="description">
+          </Card.Description>
+          <Card.MetaBlock className="metadata d-flex flex-row-reverse justify-content-between align-items-center">
+            <div>
               {loading ? (
-                <SkeletonText className="mb-3" noOfLines={Math.ceil(Math.random() * 3 + 1)} />
-              ) : (
-                <span className="description__abstract">{props.abstract}</span>
-              )}
-            </Card.Description>
-            <Card.MetaBlock className="metadata d-flex flex-row-reverse justify-content-between align-items-center">
-              <div>
-                {loading ? (
-                  <Skeleton width="10" height={4} />
-                ) : props.listPrice !== undefined ? (
-                  <PriceLabel
-                    variant="inline"
-                    listPrice={props.listPrice}
-                    salePrice={props.salePrice}
-                    periodAmount={props.period?.amount}
-                    periodType={props.period?.type}
-                  />
-                ) : null}
-              </div>
+                <Skeleton width="10" height={4} />
+              ) : props.listPrice !== undefined ? (
+                <PriceLabel
+                  variant="inline"
+                  listPrice={props.listPrice}
+                  salePrice={props.salePrice}
+                  periodAmount={props.period?.amount}
+                  periodType={props.period?.type}
+                />
+              ) : null}
+            </div>
 
-              {loading ? (
-                <SkeletonText />
-              ) : (
-                <StyledExtraBlock className="extra">
-                  <div className="d-flex align-items-center duration">
-                    <Icon className="mr-1 duration__clockIcon" as={AiOutlineClockCircle} />
-                    <span className="duration__amount">{durationFormatter(props.totalDuration)}</span>
+            {loading ? (
+              <SkeletonText />
+            ) : (
+              <StyledExtraBlock className="extra">
+                <div className="d-flex align-items-center duration">
+                  <Icon className="mr-1 duration__clockIcon" as={AiOutlineClockCircle} />
+                  <span className="duration__amount">{durationFormatter(props.totalDuration)}</span>
+                </div>
+                {props.isEnrolledCountVisible && (
+                  <div className="d-flex align-items-center enrolledCount">
+                    <Icon className="mr-1 enrolledCount__userIcon" as={AiOutlineUser} />
+                    <span className="enrolledCount__amount">{enrolledCount}</span>
                   </div>
-                  {props.isEnrolledCountVisible && (
-                    <div className="d-flex align-items-center enrolledCount">
-                      <Icon className="mr-1 enrolledCount__userIcon" as={AiOutlineUser} />
-                      <span className="enrolledCount__amount">{enrolledCount}</span>
-                    </div>
-                  )}
-                </StyledExtraBlock>
-              )}
-            </Card.MetaBlock>
-          </Card.Content>
-        </StyledCard>
-      </Link>
+                )}
+              </StyledExtraBlock>
+            )}
+          </Card.MetaBlock>
+        </Card.Content>
+      </StyledCard>
     </div>
   )
 }

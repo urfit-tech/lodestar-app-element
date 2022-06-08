@@ -3,6 +3,7 @@ import gql from 'graphql-tag'
 import moment from 'moment'
 import { pipe, prop, sortBy, sum, uniq, uniqBy } from 'ramda'
 import { useIntl } from 'react-intl'
+import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
@@ -57,6 +58,7 @@ export type ProgramCollectionProps = {
   carousel?: BaseCarouselProps
 }
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
+  const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
   const { currentMemberId } = useAuth()
   const { formatMessage } = useIntl()
@@ -171,6 +173,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       categories={program.categories}
                       onClick={() => {
                         onClick?.()
+                        !props.editing && history.push(`/programs/${program.id}`)
                       }}
                     />
                   )

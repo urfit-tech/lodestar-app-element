@@ -1,11 +1,12 @@
 import { Skeleton } from '@chakra-ui/react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/default-avatar.svg'
 import { ElementComponent, MemberElementProps } from '../../types/element'
 
 const StyledInstructorBlock = styled.div`
   padding: 1rem;
+  cursor: pointer;
 `
 const StyledAvatarWrapper = styled.div`
   position: relative;
@@ -55,20 +56,30 @@ const StyledDescription = styled.div`
 `
 
 const MemberPrimaryCard: ElementComponent<MemberElementProps> = props => {
+  const history = useHistory()
   const { loading, errors, editing } = props
   return (
-    <StyledInstructorBlock key={props.id}>
-      <Link to={loading || editing ? '#!' : `/creators/${props.id}`}>
-        <StyledAvatarWrapper className="mb-4">
-          <StyledAvatar
-            src={props.avatarUrl !== null ? props.avatarUrl : DefaultAvatar}
-            alt={props.name}
-            className="mx-auto"
-          />
-        </StyledAvatarWrapper>
-        <StyledTitle>{loading ? <Skeleton width={40} height={4} /> : props.name}</StyledTitle>
-        <StyledDescription>{props.abstract}</StyledDescription>
-      </Link>
+    <StyledInstructorBlock
+      key={props.id}
+      onClick={() => {
+        !loading && !editing && history.push(`/creators/${props.id}`)
+      }}
+    >
+      <StyledAvatarWrapper className="mb-4">
+        <StyledAvatar
+          src={props.avatarUrl !== null ? props.avatarUrl : DefaultAvatar}
+          alt={props.name}
+          className="mx-auto"
+        />
+      </StyledAvatarWrapper>
+      <StyledTitle>
+        {loading ? (
+          <Skeleton width={40} height={4} />
+        ) : (
+          <Link to={loading || editing ? '#!' : `/creators/${props.id}`}> {props.name}</Link>
+        )}
+      </StyledTitle>
+      <StyledDescription>{props.abstract}</StyledDescription>
     </StyledInstructorBlock>
   )
 }

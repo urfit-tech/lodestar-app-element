@@ -38,44 +38,44 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
     return <div>{JSON.stringify(errors)}</div>
   }
   return (
-    <Link to={!props.editing ? `/programs/${props.id}` : '#!'}>
-      <div
-        className={classNames('program', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
-        onClick={props.onClick}
-      >
+    <div
+      className={classNames('program', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
+      onClick={props.onClick}
+    >
+      {loading ? (
+        <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+      ) : (
+        <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+      )}
+      <div className="content">
         {loading ? (
-          <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+          <Skeleton className="mb-3" width="20" height={4} />
         ) : (
-          <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
+          <StyledTitle className="content__title">
+            <Link to={!props.editing ? `/programs/${props.id}` : '#!'}>{props.title}</Link>
+          </StyledTitle>
         )}
-        <div className="content">
-          {loading ? (
-            <Skeleton className="mb-3" width="20" height={4} />
-          ) : (
-            <StyledTitle className="content__title">{props.title}</StyledTitle>
-          )}
-          {loading || loadingReviewAggregate ? (
-            <SkeletonText className="mb-3" />
-          ) : (
-            <div className="d-flex justify-content-between align-items-center">
-              <StyledCategories className="category">
-                {props.categories
-                  .filter((_, i) => i < 3)
-                  // FIXME display subCategory instead split '/' here
-                  .map(category => category.name.split('/').pop())
-                  .join('・')}
-              </StyledCategories>
-              {averageScore !== 0 && (
-                <StyledScore className="d-flex align-items-center score">
-                  <span className="score__amount">{averageScore.toFixed(1)}</span>
-                  <StarIcon className="ml-1 score__starIcon" style={{ width: '14px', height: '14px' }} />
-                </StyledScore>
-              )}
-            </div>
-          )}
-        </div>
+        {loading || loadingReviewAggregate ? (
+          <SkeletonText className="mb-3" />
+        ) : (
+          <div className="d-flex justify-content-between align-items-center">
+            <StyledCategories className="category">
+              {props.categories
+                .filter((_, i) => i < 3)
+                // FIXME display subCategory instead split '/' here
+                .map(category => category.name.split('/').pop())
+                .join('・')}
+            </StyledCategories>
+            {averageScore !== 0 && (
+              <StyledScore className="d-flex align-items-center score">
+                <span className="score__amount">{averageScore.toFixed(1)}</span>
+                <StarIcon className="ml-1 score__starIcon" style={{ width: '14px', height: '14px' }} />
+              </StyledScore>
+            )}
+          </div>
+        )}
       </div>
-    </Link>
+    </div>
   )
 }
 
