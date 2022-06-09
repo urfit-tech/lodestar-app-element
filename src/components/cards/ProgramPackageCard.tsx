@@ -1,5 +1,6 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { defineMessages, useIntl } from 'react-intl'
+import { Link } from 'react-router-dom'
 import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProgramPackageElementProps } from '../../types/element'
@@ -33,7 +34,9 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
         {loading ? (
           <Skeleton className="mb-3" width="20" height={4} />
         ) : (
-          <Card.Title className="content__title">{props.title}</Card.Title>
+          <Card.Title className="content__title">
+            <Link to={!props.editing && props.link ? props.link : '#!'}>{props.title}</Link>
+          </Card.Title>
         )}
         <Card.Description className="description">
           {loading ? (
@@ -60,7 +63,9 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
                 periodAmount={props.period?.amount}
                 periodType={props.period?.type}
               />
-            ): ''}
+            ) : (
+              ''
+            )}
           </div>
         </Card.MetaBlock>
       </Card.Content>

@@ -2,6 +2,7 @@ import { Skeleton } from '@chakra-ui/react'
 import classNames from 'classnames'
 import moment from 'moment'
 import { useIntl } from 'react-intl'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { productMessages } from '../../helpers/translation'
 import EmptyCover from '../../images/empty-cover.png'
@@ -55,7 +56,11 @@ const ActivityCard: React.FC<ActivityElementProps> = props => {
       )}
 
       <Card.Content>
-        <StyledTitle>{loading ? '---' : props.title}</StyledTitle>
+        <StyledTitle>
+          <Link to={!props.editing && !loading ? `/activities/${props.id}` : '#!'}>
+            {loading ? '---' : props.title}
+          </Link>
+        </StyledTitle>
         <StyledMeta className="mb-2">
           {!loading && props.isParticipantsVisible && (
             <div className="d-flex align-items-center">

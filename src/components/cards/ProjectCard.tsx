@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Circle } from 'rc-progress'
 import { useContext } from 'react'
 import { useIntl } from 'react-intl'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
 import { projectMessages } from '../../helpers/translation'
 import EmptyCover from '../../images/empty-cover.png'
@@ -28,6 +28,7 @@ const StyledPercent = styled.div`
   color: var(--gray-darker);
 `
 const ProjectCard: React.FC<ProjectElementProps> = props => {
+  const history = useHistory()
   const { loading, errors } = props
   const { formatMessage } = useIntl()
   const theme = useContext(ThemeContext)
@@ -37,9 +38,10 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
   }
 
   return (
-    <Link
-      to={loading ? `#!` : `/projects/${props.id}`}
-      onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
+    <div
+      onClick={e => {
+        !loading ? (props.editing ? e.preventDefault() : history.push(`/projects/${props.id}`)) : history.push(`#!`)
+      }}
     >
       <Card className={`project ${props.className}`}>
         <CustomRatioImage
@@ -53,7 +55,11 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
             style={{ height: '3rem', fontSize: '18', textAlign: 'left', fontWeight: 'bold', color: '' }}
             className="mb-3 content__title"
           >
-            {loading ? <Skeleton height={4} width={100} /> : props.title}
+            {loading ? (
+              <Skeleton height={4} width={100} />
+            ) : (
+              <Link to={loading ? `#!` : `/projects/${props.id}`}>{props.title}</Link>
+            )}
           </Card.Title>
           <Card.Description className="mb-3 description">
             {loading ? <SkeletonText noOfLines={5} /> : <span className="description__abstract">{props.abstract}</span>}
@@ -153,7 +159,7 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
           </Card.MetaBlock>
         </Card.Content>
       </Card>
-    </Link>
+    </div>
   )
 }
 

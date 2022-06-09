@@ -1,5 +1,5 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/default-avatar.svg'
 import { ElementComponent, MemberElementProps } from '../../types/element'
@@ -35,13 +35,17 @@ const MemberSecondaryCard: ElementComponent<MemberElementProps> = props => {
     <div
       className="m-2"
       style={{ cursor: 'pointer' }}
-      onClick={e =>
-        loading || editing ? e.preventDefault() : history.push(`/creators/${props.id}?tabkey=introduction`)
-      }
+      onClick={() => {
+        !loading && !editing && history.push(`/creators/${props.id}?tabkey=introduction`)
+      }}
     >
       <StyledCreatorAvatar className="mb-2" url={props.avatarUrl || DefaultAvatar} />
       <StyledCreatorName className="mb-2 text-left">
-        {loading ? <Skeleton width={40} height={6} /> : props.name}
+        {loading ? (
+          <Skeleton width={40} height={6} />
+        ) : (
+          <Link to={loading || editing ? '#!' : `/creators/${props.id}?tabkey=introduction`}>{props.name}</Link>
+        )}
       </StyledCreatorName>
       <StyledCreatorTitle className="mb-3 text-left">
         {loading ? <Skeleton width={20} height={4} /> : props.title}

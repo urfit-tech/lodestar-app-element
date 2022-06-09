@@ -2,7 +2,7 @@ import { Icon } from '@chakra-ui/react'
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
 import { AiOutlineClockCircle, AiOutlineUser } from 'react-icons/ai'
-import { useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import { useProgramEnrollmentAggregate } from '../../hooks/program'
@@ -39,7 +39,6 @@ const StyledExtraBlock = styled.div`
 `
 const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
   const { loading, errors } = props
-  const history = useHistory()
   const { data: enrolledCount, loading: enrolledCountLoading } = useProgramEnrollmentAggregate(props.id || '', {
     skip: !props.id || !props.isEnrolledCountVisible,
   })
@@ -52,14 +51,11 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
         {loading ? (
           <MultiAvatar loading memberIdList={[]} />
         ) : (
-          <MultiAvatar
-            memberIdList={props.instructorIds || []}
-            withName
-            onClick={instructorId => !props.editing && history.push(`/creators/${instructorId}?tabkey=introduction`)}
-          />
+          <Link to={!props.editing ? `/creators/${props.instructorIds}?tabkey=introduction` : '#!'}>
+            <MultiAvatar memberIdList={props.instructorIds || []} withName />
+          </Link>
         )}
       </InstructorPlaceHolder>
-
       <StyledCard
         className={classNames('program', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
         shadowed
@@ -74,7 +70,9 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
           {loading ? (
             <Skeleton className="mb-3" width="20" height={4} />
           ) : (
-            <StyledTitle className="content__title">{props.title}</StyledTitle>
+            <StyledTitle className="content__title">
+              <Link to={!props.editing ? `/programs/${props.id}` : '#!'}>{props.title} </Link>
+            </StyledTitle>
           )}
           <Card.Description className="description">
             {loading ? (

@@ -1,6 +1,7 @@
 import { StarIcon } from '@chakra-ui/icons'
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useReviewAggregate } from '../../hooks/review'
 import EmptyCover from '../../images/empty-cover.png'
@@ -50,7 +51,9 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
         {loading ? (
           <Skeleton className="mb-3" width="20" height={4} />
         ) : (
-          <StyledTitle className="content__title">{props.title}</StyledTitle>
+          <StyledTitle className="content__title">
+            <Link to={!props.editing ? `/programs/${props.id}` : '#!'}>{props.title}</Link>
+          </StyledTitle>
         )}
         {loading || loadingReviewAggregate ? (
           <SkeletonText className="mb-3" />
