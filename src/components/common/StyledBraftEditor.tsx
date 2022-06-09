@@ -6,6 +6,7 @@ import QuotationLeft from '../../images/quotation-left.png'
 import QuotationRight from '../../images/quotation-right.png'
 
 const OutputMixin = css`
+  width: 100%;
   h1 {
     padding: 4px 20px;
     font-size: 24px;
