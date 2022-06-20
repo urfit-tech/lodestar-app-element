@@ -143,7 +143,7 @@ const StyledBraftEditor = styled(BraftEditor)`
     li.menu-item:nth-child(1) {
       position: relative;
       ::before {
-        content: '標題';
+        content: '標題1';
         position: absolute;
         width: 160px;
         height: 41px;
@@ -153,21 +153,6 @@ const StyledBraftEditor = styled(BraftEditor)`
         border-left: 4px solid ${props => props.theme['@primary-color']};
       }
       h1 {
-        visibility: hidden;
-      }
-    }
-    li.menu-item:nth-child(5) {
-      position: relative;
-      ::before {
-        content: '說明';
-        position: absolute;
-        width: 160px;
-        height: 41px;
-        color: #9b9b9b;
-        font-size: 14px;
-        letter-spacing: 0.4px;
-      }
-      h5 {
         visibility: hidden;
       }
     }
