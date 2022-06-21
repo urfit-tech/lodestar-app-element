@@ -75,6 +75,7 @@ export type Module =
   | 'coin_back'
   | 'project_auto_delivery'
   | 'analysis'
+  | 'certificate'
 
 export type Currency = {
   id: string
