@@ -6,3 +6,5 @@ export type MetaProductType =
   | 'Merchandise'
   | 'PodcastProgram'
   | 'PodcastAlbum'
+  | 'Post'
+  | 'Certificate'
