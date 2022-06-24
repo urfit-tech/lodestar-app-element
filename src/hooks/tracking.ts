@@ -62,6 +62,7 @@ const convertCwProduct: (
   const baseProduct = {
     id: resource.id,
     type: convertProductType(resource.type, true),
+    target: resource.metaId?.split(':')[2] || '',
     title: resource.title,
     item: resource.sku || null,
     url: window.location.href,
