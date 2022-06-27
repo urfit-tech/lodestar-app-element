@@ -69,7 +69,7 @@ const Carousel: ElementComponent<BaseCarouselProps> = props => {
     centerMode: Boolean(props.centerMode),
     centerPadding: props.centerPadding,
     dots: Boolean(props.dots),
-    draggable: Boolean(props.draggable),
+    draggable: true,
     infinite: Boolean(props.infinite),
     rows: Number(props.rows) || 1,
     slidesPerRow: Number(props.slidesPerRow) || 1,
@@ -77,7 +77,7 @@ const Carousel: ElementComponent<BaseCarouselProps> = props => {
     slidesToShow: Number(props.slidesToShow) || 1,
     speed: Number(props.speed) || 500,
     swipeToSlide: Boolean(props.swipeToSlide),
-    swipe: Boolean(props.swipe),
+    swipe: true,
     vertical: Boolean(props.vertical),
   }
   return (
