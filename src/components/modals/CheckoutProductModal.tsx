@@ -135,7 +135,6 @@ export type CheckoutProductModalProps = {
   startedAt?: Date
   shippingMethods?: ShippingMethodProps[]
   productQuantity?: number
-  currencyId?: string
   isFieldsValidate?: (fieldsValue: { invoice: InvoiceProps; shipping: ShippingProps }) => {
     isValidInvoice: boolean
     isValidShipping: boolean
@@ -158,7 +157,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   startedAt,
   shippingMethods,
   productQuantity,
-  currencyId,
   isFieldsValidate,
   renderInvoice,
   renderTrigger,
@@ -542,20 +540,21 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         )}
 
         {totalPrice <= 0 && productTarget.isSubscription && <TapPayForm onUpdate={setTpCreditCard} />}
-
-        {(totalPrice > 0 || productTarget.discountDownPrice) && (
+        {((totalPrice > 0 && productTarget?.currencyId !== 'LSC' && productTarget.productType !== 'MerchandiseSpec') ||
+          productTarget.discountDownPrice) && (
           <>
             <div ref={invoiceRef} className="mb-5">
               {renderInvoice?.({ invoice, setInvoice, isValidating }) ||
-                ((settings['feature.invoice.disable'] !== '1' ||
-                  (currencyId !== undefined && currencyId !== 'LSC')) && (
-                  <InvoiceInput
-                    value={invoice}
-                    onChange={value => setInvoice(value)}
-                    isValidating={isValidating}
-                    shouldSameToShippingCheckboxDisplay={productTarget.isPhysical}
-                  />
-                ))}
+                (settings['feature.invoice.disable'] !== '1' &&
+                  productTarget.currencyId !== undefined &&
+                  productTarget.currencyId !== 'LSC' && (
+                    <InvoiceInput
+                      value={invoice}
+                      onChange={value => setInvoice(value)}
+                      isValidating={isValidating}
+                      shouldSameToShippingCheckboxDisplay={productTarget.isPhysical}
+                    />
+                  ))}
             </div>
             <div className="mb-3">
               <DiscountSelectionCard check={check} value={discountId} onChange={setDiscountId} />
@@ -563,7 +562,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           </>
         )}
 
-        {enabledModules.referrer && (
+        {enabledModules.referrer && productTarget.currencyId !== undefined && productTarget.currencyId !== 'LSC' && (
           <div className="row mb-3" ref={referrerRef}>
             <div className="col-12">
               <StyledTitle className="mb-2">{formatMessage(commonMessages.label.referrer)}</StyledTitle>
@@ -616,7 +615,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                   quantity={quantity}
                   saleAmount={Number((orderProduct.options?.amount || 1) / quantity)}
                   defaultProductId={defaultProductId}
-                  currencyId={currencyId}
+                  currencyId={productTarget.currencyId}
                 />
               ))}
 
