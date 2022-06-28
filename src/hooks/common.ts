@@ -191,6 +191,7 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
         isPhysical: data.merchandise_spec_by_pk.merchandise.is_physical,
         isCustomized: data.merchandise_spec_by_pk.merchandise.is_customized,
         isSubscription: false,
+        currencyId: data.merchandise_spec_by_pk.merchandise.currency_id,
       }
     : data?.voucher_plan_by_pk
     ? {
@@ -354,6 +355,7 @@ export const GET_SIMPLE_PRODUCT = gql`
         sold_at
         is_physical
         is_customized
+        currency_id
         merchandise_imgs(where: { type: { _eq: "cover" } }) {
           id
           url
