@@ -95,12 +95,19 @@ const CheckoutProductItem: React.VFC<{
   currencyId?: string
   quantity?: number
   saleAmount?: number
-}> = ({ name, price, currencyId, quantity, saleAmount }) => {
+  defaultProductId?: string
+}> = ({ name, price, currencyId, quantity, saleAmount, defaultProductId }) => {
   return (
     <div className="d-flex align-items-center justify-content-between">
       <span className="flex-grow-1 mr-4">
         {name}
-        {quantity && saleAmount && <span>{` X${quantity} (${quantity * saleAmount}張)`}</span>}
+        {quantity && saleAmount && (
+          <span>{` X${quantity} ${
+            defaultProductId !== undefined && defaultProductId.includes('MerchandiseSpec_')
+              ? ''
+              : `(${quantity * saleAmount} 張)`
+          }`}</span>
+        )}
       </span>
 
       <span className="flex-shrink-0">
@@ -127,6 +134,8 @@ export type CheckoutProductModalProps = {
   warningText?: string
   startedAt?: Date
   shippingMethods?: ShippingMethodProps[]
+  productQuantity?: number
+  currencyId?: string
   isFieldsValidate?: (fieldsValue: { invoice: InvoiceProps; shipping: ShippingProps }) => {
     isValidInvoice: boolean
     isValidShipping: boolean
@@ -148,6 +157,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   warningText,
   startedAt,
   shippingMethods,
+  productQuantity,
+  currencyId,
   isFieldsValidate,
   renderInvoice,
   renderTrigger,
@@ -162,6 +173,11 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
   const [quantity, setQuantity] = useState(1)
+  useEffect(() => {
+    if (productQuantity !== undefined) {
+      setQuantity(productQuantity)
+    }
+  }, [productQuantity])
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
   const [sharingCode = window.sessionStorage.getItem(sessionStorageKey)] = useQueryParam('sharing', StringParam)
@@ -531,7 +547,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           <>
             <div ref={invoiceRef} className="mb-5">
               {renderInvoice?.({ invoice, setInvoice, isValidating }) ||
-                (settings['feature.invoice.disable'] !== '1' && (
+                ((settings['feature.invoice.disable'] !== '1' ||
+                  (currencyId !== undefined && currencyId !== 'LSC')) && (
                   <InvoiceInput
                     value={invoice}
                     onChange={value => setInvoice(value)}
@@ -598,6 +615,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                   price={orderProduct.price}
                   quantity={quantity}
                   saleAmount={Number((orderProduct.options?.amount || 1) / quantity)}
+                  defaultProductId={defaultProductId}
+                  currencyId={currencyId}
                 />
               ))}
 
