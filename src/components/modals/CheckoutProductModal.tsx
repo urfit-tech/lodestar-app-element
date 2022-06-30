@@ -166,7 +166,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { formatMessage } = useIntl()
   const history = useHistory()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { enabledModules, settings, id: appId } = useApp()
+  const { enabledModules, settings, id: appId, currencyId: appCurrencyId } = useApp()
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
@@ -287,6 +287,16 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const contactInfoRef = useRef<HTMLDivElement | null>(null)
 
   const [discountId, setDiscountId] = useState('')
+  useEffect(() => {
+    if (
+      productTarget?.currencyId === 'LSC' &&
+      defaultProductId !== undefined &&
+      defaultProductId.includes('MerchandiseSpec_')
+    ) {
+      setDiscountId('Coin')
+    }
+  }, [productTarget, defaultProductId])
+
   const [groupBuying, setGroupBuying] = useState<{
     memberIds: string[]
     withError: boolean
@@ -615,14 +625,18 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                   quantity={quantity}
                   saleAmount={Number((orderProduct.options?.amount || 1) / quantity)}
                   defaultProductId={defaultProductId}
-                  currencyId={productTarget.currencyId}
+                  currencyId={orderProduct.options?.currencyId || appCurrencyId}
                 />
               ))}
 
               {check.orderDiscounts.map(orderDiscount => (
-                <CheckoutProductItem key={orderDiscount.name} name={orderDiscount.name} price={-orderDiscount.price} />
+                <CheckoutProductItem
+                  key={orderDiscount.name}
+                  name={orderDiscount.name}
+                  price={-orderDiscount.price}
+                  currencyId={productTarget.currencyId}
+                />
               ))}
-
               {check.shippingOption && (
                 <CheckoutProductItem
                   name={formatMessage(
