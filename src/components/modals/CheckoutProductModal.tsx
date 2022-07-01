@@ -604,7 +604,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             />
           </div>
         )}
-
         <Divider className="mb-3" />
         {renderTerms && (
           <StyledCheckoutBlock className="mb-5">
@@ -621,7 +620,11 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                 <CheckoutProductItem
                   key={orderProduct.name}
                   name={orderProduct.name}
-                  price={orderProduct.price}
+                  price={
+                    orderProduct.productId.includes('MerchandiseSpec_') && orderProduct.options?.currencyId === 'LSC'
+                      ? orderProduct.options.currencyPrice || orderProduct.price
+                      : orderProduct.price
+                  }
                   quantity={quantity}
                   saleAmount={Number((orderProduct.options?.amount || 1) / quantity)}
                   defaultProductId={defaultProductId}
@@ -629,11 +632,16 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                 />
               ))}
 
-              {check.orderDiscounts.map(orderDiscount => (
+              {check.orderDiscounts.map((orderDiscount, idx) => (
                 <CheckoutProductItem
                   key={orderDiscount.name}
                   name={orderDiscount.name}
-                  price={-orderDiscount.price}
+                  price={
+                    check.orderProducts[idx].productId.includes('MerchandiseSpec_') &&
+                    check.orderProducts[idx].options?.currencyId === 'LSC'
+                      ? -orderDiscount.options?.coins
+                      : -orderDiscount.price
+                  }
                   currencyId={productTarget.currencyId}
                 />
               ))}
