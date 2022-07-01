@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
@@ -321,6 +321,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     },
   })
   const { TPDirect } = useTappay()
+  const toast = useToast()
   const [isValidating, setIsValidating] = useState(false)
   const [referrerEmail, setReferrerEmail] = useState('')
   const [tpCreditCard, setTpCreditCard] = useState<TPCreditCard | null>(null)
@@ -387,6 +388,22 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         contactInfoRef.current?.scrollIntoView({ behavior: 'smooth' })
         return
       }
+    }
+
+    if (
+      check.orderProducts.length === 1 &&
+      check.orderProducts[0].options?.currencyId === 'LSC' &&
+      check.orderProducts[0].productId.includes('MerchandiseSpec_') &&
+      check.orderProducts[0].options.currencyPrice !== undefined &&
+      check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins
+    ) {
+      toast({
+        title: `代幣不足`,
+        status: 'error',
+        duration: 3000,
+        position: 'top',
+      })
+      return
     }
 
     if (settings['tracking.fb_pixel_id']) {
@@ -676,7 +693,17 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             colorScheme="primary"
             isLoading={orderPlacing}
             onClick={handleSubmit}
-            disabled={(totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady) || isApproved === false}
+            disabled={
+              (totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady) || isApproved === false
+              //   ||
+              //   (
+              //   check.orderProducts.length === 1 &&
+              //   check.orderProducts[0].options?.currencyId === 'LSC' &&
+              //   check.orderProducts[0].productId.includes('MerchandiseSpec_') &&
+              //   check.orderProducts[0].options.currencyPrice !== undefined &&
+              //   check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins
+              // )
+            }
           >
             {productTarget.isSubscription
               ? formatMessage(commonMessages.button.subscribeNow)
