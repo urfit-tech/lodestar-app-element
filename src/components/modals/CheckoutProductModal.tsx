@@ -329,6 +329,19 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
   const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
+  const [isCoinsEnough, setIsCoinsEnough] = useState(false)
+  useEffect(() => {
+    if (
+      check.orderProducts.length === 1 &&
+      check.orderProducts[0].options?.currencyId === 'LSC' &&
+      check.orderProducts[0].productId.includes('MerchandiseSpec_') &&
+      check.orderProducts[0].options.currencyPrice !== undefined &&
+      (check.orderDiscounts.length === 0 ||
+        check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins)
+    ) {
+      setIsCoinsEnough(true)
+    }
+  }, [check])
 
   if (isAuthenticating) {
     return renderTrigger?.({ isLoading: true })
@@ -390,13 +403,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       }
     }
 
-    if (
-      check.orderProducts.length === 1 &&
-      check.orderProducts[0].options?.currencyId === 'LSC' &&
-      check.orderProducts[0].productId.includes('MerchandiseSpec_') &&
-      check.orderProducts[0].options.currencyPrice !== undefined &&
-      check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins
-    ) {
+    if (!isCoinsEnough) {
       toast({
         title: `代幣不足`,
         status: 'error',
@@ -672,7 +679,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
               )}
             </StyledCheckoutBlock>
             <StyledCheckoutPrice className="mb-3">
-              <PriceLabel listPrice={totalPrice} />
+              {isCoinsEnough ? <PriceLabel listPrice={totalPrice} /> : `${settings['coin.unit']} 不足`}
             </StyledCheckoutPrice>
           </>
         )}
@@ -694,15 +701,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             isLoading={orderPlacing}
             onClick={handleSubmit}
             disabled={
-              (totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady) || isApproved === false
-              //   ||
-              //   (
-              //   check.orderProducts.length === 1 &&
-              //   check.orderProducts[0].options?.currencyId === 'LSC' &&
-              //   check.orderProducts[0].productId.includes('MerchandiseSpec_') &&
-              //   check.orderProducts[0].options.currencyPrice !== undefined &&
-              //   check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins
-              // )
+              (totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady) ||
+              isApproved === false ||
+              !isCoinsEnough
             }
           >
             {productTarget.isSubscription
