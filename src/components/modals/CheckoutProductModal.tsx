@@ -329,7 +329,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
   const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
-  const [isCoinsEnough, setIsCoinsEnough] = useState(false)
+  const [isCoinsEnough, setIsCoinsEnough] = useState(true)
   useEffect(() => {
     if (
       check.orderProducts.length === 1 &&
@@ -339,7 +339,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       (check.orderDiscounts.length === 0 ||
         check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins)
     ) {
-      setIsCoinsEnough(true)
+      setIsCoinsEnough(false)
     }
   }, [check])
 
