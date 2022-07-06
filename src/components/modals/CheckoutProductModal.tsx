@@ -103,9 +103,7 @@ const CheckoutProductItem: React.VFC<{
         {name}
         {quantity && saleAmount && (
           <span>{` X${quantity} ${
-            defaultProductId !== undefined && defaultProductId.includes('MerchandiseSpec_')
-              ? ''
-              : `(${quantity * saleAmount} 張)`
+            defaultProductId?.includes('MerchandiseSpec_') ? '' : `(${quantity * saleAmount} 張)`
           }`}</span>
         )}
       </span>
@@ -329,17 +327,22 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
   const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
+  const [isCoinMerchandise, setIsCoinMerchandise] = useState(false)
   const [isCoinsEnough, setIsCoinsEnough] = useState(true)
   useEffect(() => {
     if (
       check.orderProducts.length === 1 &&
       check.orderProducts[0].options?.currencyId === 'LSC' &&
-      check.orderProducts[0].productId.includes('MerchandiseSpec_') &&
-      check.orderProducts[0].options.currencyPrice !== undefined &&
-      (check.orderDiscounts.length === 0 ||
-        check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins)
+      check.orderProducts[0].productId.includes('MerchandiseSpec_')
     ) {
-      setIsCoinsEnough(false)
+      setIsCoinMerchandise(true)
+      if (
+        check.orderProducts[0].options?.currencyPrice !== undefined &&
+        (check.orderDiscounts.length === 0 ||
+          check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins)
+      ) {
+        setIsCoinsEnough(false)
+      }
     }
   }, [check])
 
@@ -679,7 +682,11 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
               )}
             </StyledCheckoutBlock>
             <StyledCheckoutPrice className="mb-3">
-              {isCoinsEnough ? <PriceLabel listPrice={totalPrice} /> : `${settings['coin.unit']} 不足`}
+              {!isCoinMerchandise || isCoinsEnough ? (
+                <PriceLabel listPrice={totalPrice} />
+              ) : (
+                `${settings['coin.unit'] || check.orderProducts[0].options?.currencyId} 不足`
+              )}
             </StyledCheckoutPrice>
           </>
         )}
