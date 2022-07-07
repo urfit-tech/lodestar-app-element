@@ -84,7 +84,7 @@ const BaseCarousel: ElementComponent<BaseCarouselProps> = props => {
     centerMode: Boolean(props.centerMode),
     centerPadding: props.centerPadding,
     dots: Boolean(props.dots),
-    draggable: Boolean(props.draggable),
+    draggable: props.draggable === undefined ? true : Boolean(props.draggable),
     infinite: Boolean(props.infinite),
     rows: Number(props.rows) || 1,
     slidesPerRow: Number(props.slidesPerRow) || 1,
@@ -92,7 +92,7 @@ const BaseCarousel: ElementComponent<BaseCarouselProps> = props => {
     slidesToShow: Number(props.slidesToShow) || 1,
     speed: Number(props.speed) || 500,
     swipeToSlide: Boolean(props.swipeToSlide),
-    swipe: Boolean(props.swipe),
+    swipe: props.swipe === undefined ? true : Boolean(props.swipe),
     vertical: Boolean(props.vertical),
   }
   return (
@@ -100,8 +100,8 @@ const BaseCarousel: ElementComponent<BaseCarouselProps> = props => {
       className={props.className}
       ref={sliderRef}
       {...settings}
-      swipe={props.editing ? false : props.swipe}
-      draggable={props.editing ? false : props.draggable}
+      swipe={props.editing ? false : settings.swipe}
+      draggable={props.editing ? false : settings.draggable}
     >
       {Children.map(children, (child, idx) => (
         <div key={idx}>{child}</div>
