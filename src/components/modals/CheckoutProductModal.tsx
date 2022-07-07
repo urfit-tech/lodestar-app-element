@@ -5,7 +5,7 @@ import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import ReactPixel from 'react-facebook-pixel'
 import ReactGA from 'react-ga'
-import { defineMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { StringParam, useQueryParam } from 'use-query-params'
@@ -408,7 +408,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
     if (!isCoinsEnough) {
       toast({
-        title: `代幣不足`,
+        title: formatMessage(checkoutMessages.message.notEnoughCoins),
         status: 'error',
         duration: 3000,
         position: 'top',
@@ -622,9 +622,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
               isChecked={isApproved}
               onChange={() => setIsApproved(prev => !prev)}
             />
-            <StyledLabel>
-              {formatMessage(defineMessage({ id: 'checkoutMessages.ui.approved', defaultMessage: '我同意' }))}
-            </StyledLabel>
+            <StyledLabel>{formatMessage(checkoutMessages.label.approved)}</StyledLabel>
             <StyledApprovementBox
               className="mt-2"
               dangerouslySetInnerHTML={{ __html: settings['checkout.approvement_content'] }}
@@ -685,7 +683,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
               {!isCoinMerchandise || isCoinsEnough ? (
                 <PriceLabel listPrice={totalPrice} />
               ) : (
-                `${settings['coin.unit'] || check.orderProducts[0].options?.currencyId} 不足`
+                `${settings['coin.unit'] || check.orderProducts[0].options?.currencyId} ${formatMessage(
+                  checkoutMessages.message.notEnough,
+                )}`
               )}
             </StyledCheckoutPrice>
           </>
