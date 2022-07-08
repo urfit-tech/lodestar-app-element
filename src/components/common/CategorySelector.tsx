@@ -26,14 +26,14 @@ const CategorySelector: ElementComponent<CategorySelectorProps> = props => {
     return <div>Cannot read the data.</div>
   }
   return (
-    <div>
+    <div className="category__button__group">
       {loading ? (
-        <Button loading />
+        <Button loading className="category__button" />
       ) : (
         <StyledButton
           colorScheme="primary"
           variant={!props.activeCategoryId ? 'solid' : 'outline'}
-          className="mb-2"
+          className="mb-2 category__button"
           onClick={(e: Event) => (editing ? e.preventDefault() : props.onActive?.(null))}
         >
           {formatMessage(commonMessages.button.allCategory)}
@@ -45,7 +45,7 @@ const CategorySelector: ElementComponent<CategorySelectorProps> = props => {
             key={category.id}
             colorScheme="primary"
             variant={props.activeCategoryId === category.id ? 'solid' : 'outline'}
-            className="ml-2 mb-2"
+            className="ml-2 mb-2 category__button"
             onClick={(e: Event) => (editing ? e.preventDefault() : props.onActive?.(category.id))}
           >
             {category.name}
