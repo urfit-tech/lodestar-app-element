@@ -39,6 +39,11 @@ const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`
   .slick-next {
     right: 4px;
   }
+  .slick-prev,
+  .slick-next {
+    width: auto;
+    height: auto;
+  }
   .slick-next:before,
   .slick-prev:before {
     color: ${props => props.theme['@primary-color']};
