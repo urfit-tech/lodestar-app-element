@@ -6,6 +6,9 @@ export type ImageProps = {
   height?: string | number
   ratio?: number
   shape?: 'circle' | 'rounded' | 'square'
+  isAutoHeight?: boolean
+  widthAspect?: number
+  heightAspect?: number
 }
 
 export const StyledImage = styled.div<ImageProps>`
