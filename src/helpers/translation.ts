@@ -331,6 +331,7 @@ export const checkoutMessages = {
     phoneBarCode: { id: 'checkout.label.phoneBarCode', defaultMessage: '手機條碼' },
     uniformTitle: { id: 'checkout.label.uniformTitle', defaultMessage: '發票抬頭' },
     postCode: { id: 'checkout.label.postCode', defaultMessage: '郵遞區號' },
+    approved: { id: 'checkout.label.approved', defaultMessage: '我同意' },
   }),
   message: defineMessages({
     phone: { id: 'checkout.message.phone', defaultMessage: '手機' },
@@ -368,6 +369,14 @@ export const checkoutMessages = {
     uniformNumberRemark: {
       id: 'checkout.message.uniformNumberRemark',
       defaultMessage: '備註：統編發票將直接寄送至您留下的電子信箱內',
+    },
+    notEnough: {
+      id: 'checkout.message.notEnough',
+      defaultMessage: '不足',
+    },
+    notEnoughCoins: {
+      id: 'checkout.message.notEnoughCoins',
+      defaultMessage: '代幣不足',
     },
   }),
   shipping: defineMessages({

@@ -1,11 +1,11 @@
-import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import ReactPixel from 'react-facebook-pixel'
 import ReactGA from 'react-ga'
-import { defineMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { StringParam, useQueryParam } from 'use-query-params'
@@ -95,12 +95,17 @@ const CheckoutProductItem: React.VFC<{
   currencyId?: string
   quantity?: number
   saleAmount?: number
-}> = ({ name, price, currencyId, quantity, saleAmount }) => {
+  defaultProductId?: string
+}> = ({ name, price, currencyId, quantity, saleAmount, defaultProductId }) => {
   return (
     <div className="d-flex align-items-center justify-content-between">
       <span className="flex-grow-1 mr-4">
         {name}
-        {quantity && saleAmount && <span>{` X${quantity} (${quantity * saleAmount}張)`}</span>}
+        {quantity && saleAmount && (
+          <span>{` X${quantity} ${
+            defaultProductId?.includes('MerchandiseSpec_') ? '' : `(${quantity * saleAmount} 張)`
+          }`}</span>
+        )}
       </span>
 
       <span className="flex-shrink-0">
@@ -127,6 +132,7 @@ export type CheckoutProductModalProps = {
   warningText?: string
   startedAt?: Date
   shippingMethods?: ShippingMethodProps[]
+  productQuantity?: number
   isFieldsValidate?: (fieldsValue: { invoice: InvoiceProps; shipping: ShippingProps }) => {
     isValidInvoice: boolean
     isValidShipping: boolean
@@ -148,6 +154,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   warningText,
   startedAt,
   shippingMethods,
+  productQuantity,
   isFieldsValidate,
   renderInvoice,
   renderTrigger,
@@ -157,11 +164,16 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { formatMessage } = useIntl()
   const history = useHistory()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { enabledModules, settings, id: appId } = useApp()
+  const { enabledModules, settings, id: appId, currencyId: appCurrencyId } = useApp()
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
   const [quantity, setQuantity] = useState(1)
+  useEffect(() => {
+    if (productQuantity !== undefined) {
+      setQuantity(productQuantity)
+    }
+  }, [productQuantity])
 
   const sessionStorageKey = `lodestar.sharing_code.${defaultProductId}`
   const [sharingCode = window.sessionStorage.getItem(sessionStorageKey)] = useQueryParam('sharing', StringParam)
@@ -273,6 +285,16 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const contactInfoRef = useRef<HTMLDivElement | null>(null)
 
   const [discountId, setDiscountId] = useState('')
+  useEffect(() => {
+    if (
+      productTarget?.currencyId === 'LSC' &&
+      defaultProductId !== undefined &&
+      defaultProductId.includes('MerchandiseSpec_')
+    ) {
+      setDiscountId('Coin')
+    }
+  }, [productTarget, defaultProductId])
+
   const [groupBuying, setGroupBuying] = useState<{
     memberIds: string[]
     withError: boolean
@@ -297,6 +319,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     },
   })
   const { TPDirect } = useTappay()
+  const toast = useToast()
   const [isValidating, setIsValidating] = useState(false)
   const [referrerEmail, setReferrerEmail] = useState('')
   const [tpCreditCard, setTpCreditCard] = useState<TPCreditCard | null>(null)
@@ -304,6 +327,24 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { memberId: referrerId, validateStatus: referrerStatus } = useMemberValidation(referrerEmail)
   const updateMemberMetadata = useUpdateMemberMetadata()
   const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
+  const [isCoinMerchandise, setIsCoinMerchandise] = useState(false)
+  const [isCoinsEnough, setIsCoinsEnough] = useState(true)
+  useEffect(() => {
+    if (
+      check.orderProducts.length === 1 &&
+      check.orderProducts[0].options?.currencyId === 'LSC' &&
+      check.orderProducts[0].productId.includes('MerchandiseSpec_')
+    ) {
+      setIsCoinMerchandise(true)
+      if (
+        check.orderProducts[0].options?.currencyPrice !== undefined &&
+        (check.orderDiscounts.length === 0 ||
+          check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins)
+      ) {
+        setIsCoinsEnough(false)
+      }
+    }
+  }, [check])
 
   if (isAuthenticating) {
     return renderTrigger?.({ isLoading: true })
@@ -363,6 +404,16 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         contactInfoRef.current?.scrollIntoView({ behavior: 'smooth' })
         return
       }
+    }
+
+    if (!isCoinsEnough) {
+      toast({
+        title: formatMessage(checkoutMessages.message.notEnoughCoins),
+        status: 'error',
+        duration: 3000,
+        position: 'top',
+      })
+      return
     }
 
     if (settings['tracking.fb_pixel_id']) {
@@ -526,19 +577,21 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         )}
 
         {totalPrice <= 0 && productTarget.isSubscription && <TapPayForm onUpdate={setTpCreditCard} />}
-
-        {(totalPrice > 0 || productTarget.discountDownPrice) && (
+        {((totalPrice > 0 && productTarget?.currencyId !== 'LSC' && productTarget.productType !== 'MerchandiseSpec') ||
+          productTarget.discountDownPrice) && (
           <>
             <div ref={invoiceRef} className="mb-5">
               {renderInvoice?.({ invoice, setInvoice, isValidating }) ||
-                (settings['feature.invoice.disable'] !== '1' && (
-                  <InvoiceInput
-                    value={invoice}
-                    onChange={value => setInvoice(value)}
-                    isValidating={isValidating}
-                    shouldSameToShippingCheckboxDisplay={productTarget.isPhysical}
-                  />
-                ))}
+                (settings['feature.invoice.disable'] !== '1' &&
+                  productTarget.currencyId !== undefined &&
+                  productTarget.currencyId !== 'LSC' && (
+                    <InvoiceInput
+                      value={invoice}
+                      onChange={value => setInvoice(value)}
+                      isValidating={isValidating}
+                      shouldSameToShippingCheckboxDisplay={productTarget.isPhysical}
+                    />
+                  ))}
             </div>
             <div className="mb-3">
               <DiscountSelectionCard check={check} value={discountId} onChange={setDiscountId} />
@@ -546,7 +599,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           </>
         )}
 
-        {enabledModules.referrer && (
+        {enabledModules.referrer && productTarget.currencyId !== undefined && productTarget.currencyId !== 'LSC' && (
           <div className="row mb-3" ref={referrerRef}>
             <div className="col-12">
               <StyledTitle className="mb-2">{formatMessage(commonMessages.label.referrer)}</StyledTitle>
@@ -569,16 +622,13 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
               isChecked={isApproved}
               onChange={() => setIsApproved(prev => !prev)}
             />
-            <StyledLabel>
-              {formatMessage(defineMessage({ id: 'checkoutMessages.ui.approved', defaultMessage: '我同意' }))}
-            </StyledLabel>
+            <StyledLabel>{formatMessage(checkoutMessages.label.approved)}</StyledLabel>
             <StyledApprovementBox
               className="mt-2"
               dangerouslySetInnerHTML={{ __html: settings['checkout.approvement_content'] }}
             />
           </div>
         )}
-
         <Divider className="mb-3" />
         {renderTerms && (
           <StyledCheckoutBlock className="mb-5">
@@ -595,16 +645,31 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                 <CheckoutProductItem
                   key={orderProduct.name}
                   name={orderProduct.name}
-                  price={orderProduct.price}
+                  price={
+                    orderProduct.productId.includes('MerchandiseSpec_') && orderProduct.options?.currencyId === 'LSC'
+                      ? orderProduct.options.currencyPrice || orderProduct.price
+                      : orderProduct.price
+                  }
                   quantity={quantity}
                   saleAmount={Number((orderProduct.options?.amount || 1) / quantity)}
+                  defaultProductId={defaultProductId}
+                  currencyId={orderProduct.options?.currencyId || appCurrencyId}
                 />
               ))}
 
-              {check.orderDiscounts.map(orderDiscount => (
-                <CheckoutProductItem key={orderDiscount.name} name={orderDiscount.name} price={-orderDiscount.price} />
+              {check.orderDiscounts.map((orderDiscount, idx) => (
+                <CheckoutProductItem
+                  key={orderDiscount.name}
+                  name={orderDiscount.name}
+                  price={
+                    check.orderProducts[idx].productId.includes('MerchandiseSpec_') &&
+                    check.orderProducts[idx].options?.currencyId === 'LSC'
+                      ? -orderDiscount.options?.coins
+                      : -orderDiscount.price
+                  }
+                  currencyId={productTarget.currencyId}
+                />
               ))}
-
               {check.shippingOption && (
                 <CheckoutProductItem
                   name={formatMessage(
@@ -615,7 +680,13 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
               )}
             </StyledCheckoutBlock>
             <StyledCheckoutPrice className="mb-3">
-              <PriceLabel listPrice={totalPrice} />
+              {!isCoinMerchandise || isCoinsEnough ? (
+                <PriceLabel listPrice={totalPrice} />
+              ) : (
+                `${settings['coin.unit'] || check.orderProducts[0].options?.currencyId} ${formatMessage(
+                  checkoutMessages.message.notEnough,
+                )}`
+              )}
             </StyledCheckoutPrice>
           </>
         )}
@@ -636,7 +707,11 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             colorScheme="primary"
             isLoading={orderPlacing}
             onClick={handleSubmit}
-            disabled={(totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady) || isApproved === false}
+            disabled={
+              (totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady) ||
+              isApproved === false ||
+              !isCoinsEnough
+            }
           >
             {productTarget.isSubscription
               ? formatMessage(commonMessages.button.subscribeNow)
