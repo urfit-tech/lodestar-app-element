@@ -337,10 +337,14 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       check.orderProducts[0].productId.includes('MerchandiseSpec_')
     ) {
       setIsCoinMerchandise(true)
+
+      let orderDiscountCoins = 0
+      check.orderDiscounts.map(orderDiscount => {
+        orderDiscountCoins += orderDiscount.options?.coins
+      })
       if (
         check.orderProducts[0].options?.currencyPrice !== undefined &&
-        (check.orderDiscounts.length === 0 ||
-          check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins)
+        (check.orderDiscounts.length === 0 || check.orderProducts[0].options.currencyPrice > orderDiscountCoins)
       ) {
         setIsCoinsEnough(false)
         setIsPaymentButtonDisable?.(true)
@@ -667,7 +671,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                   key={orderDiscount.name}
                   name={orderDiscount.name}
                   price={
-                    check.orderProducts[idx].productId.includes('MerchandiseSpec_') &&
+                    check.orderProducts[idx]?.productId.includes('MerchandiseSpec_') &&
                     check.orderProducts[idx].options?.currencyId === 'LSC'
                       ? -orderDiscount.options?.coins
                       : -orderDiscount.price
