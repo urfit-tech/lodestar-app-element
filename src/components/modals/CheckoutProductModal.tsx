@@ -147,6 +147,7 @@ export type CheckoutProductModalProps = {
     onProductChange: (productId: string) => void
   }) => React.ReactElement
   renderTerms?: () => React.ReactElement
+  setIsPaymentButtonDisable?: (disable: boolean) => void
 }
 
 const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
@@ -160,6 +161,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   renderTrigger,
   renderProductSelector,
   renderTerms,
+  setIsPaymentButtonDisable,
 }) => {
   const { formatMessage } = useIntl()
   const history = useHistory()
@@ -283,7 +285,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const groupBuyingRef = useRef<HTMLDivElement | null>(null)
   const paymentMethodRef = useRef<HTMLDivElement | null>(null)
   const contactInfoRef = useRef<HTMLDivElement | null>(null)
-
   const [discountId, setDiscountId] = useState('')
   useEffect(() => {
     if (
@@ -342,9 +343,13 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins)
       ) {
         setIsCoinsEnough(false)
+        setIsPaymentButtonDisable?.(true)
+      } else {
+        setIsCoinsEnough(true)
+        setIsPaymentButtonDisable?.(false)
       }
     }
-  }, [check])
+  }, [check, setIsPaymentButtonDisable])
 
   if (isAuthenticating) {
     return renderTrigger?.({ isLoading: true })
