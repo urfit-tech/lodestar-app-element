@@ -339,7 +339,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       setIsCoinMerchandise(true)
 
       let orderDiscountCoins = 0
-      check.orderDiscounts.map(orderDiscount => {
+      check.orderDiscounts.forEach(orderDiscount => {
         orderDiscountCoins += orderDiscount.options?.coins
       })
       if (
