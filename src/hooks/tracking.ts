@@ -536,5 +536,11 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         }
       }
     },
+    login: () => {
+      ;(window as any).dataLayer = (window as any).dataLayer || []
+      ;(window as any).dataLayer.push({
+        event: 'login',
+      })
+    },
   }
 }
