@@ -147,6 +147,7 @@ export type CheckoutProductModalProps = {
     onProductChange: (productId: string) => void
   }) => React.ReactElement
   renderTerms?: () => React.ReactElement
+  setIsPaymentButtonDisable?: (disable: boolean) => void
 }
 
 const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
@@ -160,6 +161,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   renderTrigger,
   renderProductSelector,
   renderTerms,
+  setIsPaymentButtonDisable,
 }) => {
   const { formatMessage } = useIntl()
   const history = useHistory()
@@ -283,7 +285,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const groupBuyingRef = useRef<HTMLDivElement | null>(null)
   const paymentMethodRef = useRef<HTMLDivElement | null>(null)
   const contactInfoRef = useRef<HTMLDivElement | null>(null)
-
   const [discountId, setDiscountId] = useState('')
   useEffect(() => {
     if (
@@ -336,15 +337,23 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       check.orderProducts[0].productId.includes('MerchandiseSpec_')
     ) {
       setIsCoinMerchandise(true)
+
+      let orderDiscountCoins = 0
+      check.orderDiscounts.forEach(orderDiscount => {
+        orderDiscountCoins += orderDiscount.options?.coins
+      })
       if (
         check.orderProducts[0].options?.currencyPrice !== undefined &&
-        (check.orderDiscounts.length === 0 ||
-          check.orderProducts[0].options.currencyPrice > check.orderDiscounts[0].options?.coins)
+        (check.orderDiscounts.length === 0 || check.orderProducts[0].options.currencyPrice > orderDiscountCoins)
       ) {
         setIsCoinsEnough(false)
+        setIsPaymentButtonDisable?.(true)
+      } else {
+        setIsCoinsEnough(true)
+        setIsPaymentButtonDisable?.(false)
       }
     }
-  }, [check])
+  }, [check, setIsPaymentButtonDisable])
 
   if (isAuthenticating) {
     return renderTrigger?.({ isLoading: true })
@@ -582,16 +591,14 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           <>
             <div ref={invoiceRef} className="mb-5">
               {renderInvoice?.({ invoice, setInvoice, isValidating }) ||
-                (settings['feature.invoice.disable'] !== '1' &&
-                  productTarget.currencyId !== undefined &&
-                  productTarget.currencyId !== 'LSC' && (
-                    <InvoiceInput
-                      value={invoice}
-                      onChange={value => setInvoice(value)}
-                      isValidating={isValidating}
-                      shouldSameToShippingCheckboxDisplay={productTarget.isPhysical}
-                    />
-                  ))}
+                (settings['feature.invoice.disable'] !== '1' && (
+                  <InvoiceInput
+                    value={invoice}
+                    onChange={value => setInvoice(value)}
+                    isValidating={isValidating}
+                    shouldSameToShippingCheckboxDisplay={productTarget.isPhysical}
+                  />
+                ))}
             </div>
             <div className="mb-3">
               <DiscountSelectionCard check={check} value={discountId} onChange={setDiscountId} />
@@ -662,7 +669,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                   key={orderDiscount.name}
                   name={orderDiscount.name}
                   price={
-                    check.orderProducts[idx].productId.includes('MerchandiseSpec_') &&
+                    check.orderProducts[idx]?.productId.includes('MerchandiseSpec_') &&
                     check.orderProducts[idx].options?.currencyId === 'LSC'
                       ? -orderDiscount.options?.coins
                       : -orderDiscount.price
