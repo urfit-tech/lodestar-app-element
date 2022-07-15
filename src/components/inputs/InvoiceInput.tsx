@@ -147,6 +147,7 @@ const InvoiceInput: React.VFC<{
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'invoiceType',
     defaultValue: selectedType || 'donation',
+    value: selectedType || 'donation',
     onChange: e => {
       if (typeof e.valueOf() === 'string') {
         handleChange({
