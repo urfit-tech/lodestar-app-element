@@ -1,4 +1,4 @@
-import { Select, SkeletonText } from '@chakra-ui/react'
+import { HStack, Select, SkeletonText, useRadioGroup } from '@chakra-ui/react'
 import { Checkbox, Form, Input } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
@@ -10,6 +10,7 @@ import { checkoutMessages } from '../../helpers/translation'
 import { useMember } from '../../hooks/member'
 import { InvoiceProps, ShippingProps } from '../../types/checkout'
 import { CommonTitleMixin } from '../common'
+import RadioCard from '../common/RadioCard'
 
 const StyledWrapper = styled.div`
   .ant-select {
@@ -143,6 +144,19 @@ const InvoiceInput: React.VFC<{
     } catch (error) {}
   }, [loading, enabledModules.invoice])
 
+  const { getRootProps, getRadioProps } = useRadioGroup({
+    name: 'invoiceType',
+    defaultValue: selectedType || 'donation',
+    onChange: e => {
+      if (typeof e.valueOf() === 'string') {
+        handleChange({
+          invoiceType: e.valueOf() ? (e.valueOf() as InvoiceType) : null,
+          invoiceOption: e.valueOf() === 'electronic' ? 'send-to-email' : null,
+        })
+      }
+    },
+  })
+
   if (loading || loadingMember) {
     return <SkeletonText mt="1" noOfLines={4} spacing="4" />
   }
@@ -233,6 +247,9 @@ const InvoiceInput: React.VFC<{
 
   const isMemberInfoDisable = Boolean(Number(settings['feature.invoice_member_info_input.disable']))
 
+  const invoiceTypeOptions = ['donation', 'electronic', 'uniform-number']
+  const group = getRootProps()
+
   return (
     <StyledWrapper>
       <StyledTitle>{formatMessage(checkoutMessages.label.invoice)}</StyledTitle>
@@ -322,19 +339,20 @@ const InvoiceInput: React.VFC<{
       <div className="row mb-4">
         <div className="col-12 col-lg-6">
           {enabledModules.invoice ? (
-            <Select
-              value={selectedType || ''}
-              onChange={e =>
-                handleChange({
-                  invoiceType: e.target.value.length ? (e.target.value as InvoiceType) : null,
-                  invoiceOption: e.target.value === 'electronic' ? 'send-to-email' : null,
-                })
-              }
-            >
-              <option value="electronic">{formatMessage(checkoutMessages.label.electronicInvoice)}</option>
-              <option value="donation">{formatMessage(checkoutMessages.label.donateInvoice)}</option>
-              <option value="uniform-number">{formatMessage(checkoutMessages.label.uniformNumber)}</option>
-            </Select>
+            <HStack className="mb-4" {...group}>
+              {invoiceTypeOptions.map(value => {
+                const radio = getRadioProps({ value })
+                return (
+                  <RadioCard key={value} size="md" {...radio}>
+                    {value === 'electronic'
+                      ? formatMessage(checkoutMessages.label.electronicInvoice)
+                      : value === 'uniform-number'
+                      ? formatMessage(checkoutMessages.label.uniformNumber)
+                      : formatMessage(checkoutMessages.label.donateInvoice)}
+                  </RadioCard>
+                )
+              })}
+            </HStack>
           ) : (
             <Select
               value={selectedType || ''}
