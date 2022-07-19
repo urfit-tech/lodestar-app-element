@@ -340,7 +340,7 @@ const InvoiceInput: React.VFC<{
       <div className="row mb-4">
         <div className="col-12 col-lg-6">
           {enabledModules.invoice ? (
-            <HStack className="mb-4" {...group}>
+            <HStack {...group}>
               {invoiceTypeOptions.map(value => {
                 const radio = getRadioProps({ value })
                 return (
@@ -368,8 +368,11 @@ const InvoiceInput: React.VFC<{
             </Select>
           )}
         </div>
-        <div className="col-12 col-lg-6">
-          {selectedType === 'donation' && (
+      </div>
+
+      {selectedType === 'donation' && (
+        <div className="row">
+          <div className="col-6">
             <Select value={selectedCharity} onChange={e => handleChange({ invoiceCharity: e.target.value })}>
               {customCharities.map(v => (
                 <option key={v.code} value={v.code}>
@@ -380,9 +383,13 @@ const InvoiceInput: React.VFC<{
               <option value="5380">5380 社團法人台灣失智症協會</option>
               <option value="8957282">8957282 財團法人流浪動物之家基金會</option>
             </Select>
-          )}
+          </div>
+        </div>
+      )}
 
-          {selectedType === 'electronic' && (
+      {selectedType === 'electronic' && (
+        <div className="row mb-4">
+          <div className="col-6">
             <Select
               value={selectedOption || ''}
               onChange={e =>
@@ -393,9 +400,9 @@ const InvoiceInput: React.VFC<{
               <option value="use-phone-bar-code">{formatMessage(checkoutMessages.label.usePhoneBarCode)}</option>
               <option value="citizen-digital-certificate">{formatMessage(checkoutMessages.label.citizenCode)}</option>
             </Select>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {selectedOption === 'use-phone-bar-code' && (
         <div className="row">
