@@ -128,7 +128,12 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               email: data.email,
               password: data.password,
             },
-            { withCredentials: true },
+            {
+              withCredentials: true,
+              validateStatus: function (status) {
+                return status <= 500
+              },
+            },
           ).then(({ data: { code, message, result } }) => {
             if (code === 'SUCCESS') {
               if (!data.withoutLogin) {
