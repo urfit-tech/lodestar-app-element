@@ -1,4 +1,5 @@
 import { useApolloClient } from '@apollo/react-hooks'
+import Axios from 'axios'
 import { sum, uniq } from 'ramda'
 import { useApp } from '../contexts/AppContext'
 import { convertPathName, notEmpty } from '../helpers'
@@ -513,6 +514,33 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             },
           },
         })
+        // For CW Tracking Temporary
+        try {
+          if (
+            (orderId.startsWith('CW') || orderId.startsWith('PAR') || orderId.startsWith('COM')) &&
+            process.env.NODE_ENV === 'production'
+          ) {
+            Axios.post(`https://55abbca99f39d3fa90c34399fa610dd4.m.pipedream.net/${orderId}`, {
+              body: {
+                event: 'purchase',
+                label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
+                value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
+                ecommerce: {
+                  currencyCode: appCurrencyId,
+                  purchase: {
+                    actionField: {
+                      id: orderId,
+                      affiliation: settings['name'] || document.title,
+                      revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
+                      coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
+                    },
+                    products: ecProducts,
+                  },
+                },
+              },
+            }).catch(() => {})
+          }
+        } catch (err) {}
       }
       if (enabledCW && options?.ignore !== 'CUSTOM') {
         const cwProducts =
