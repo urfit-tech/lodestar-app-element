@@ -136,6 +136,7 @@ export type CheckoutProductModalProps = {
   startedAt?: Date
   shippingMethods?: ShippingMethodProps[]
   productQuantity?: number
+  isModalDisable?: boolean
   isFieldsValidate?: (fieldsValue: { invoice: InvoiceProps; shipping: ShippingProps }) => {
     isValidInvoice: boolean
     isValidShipping: boolean
@@ -150,7 +151,8 @@ export type CheckoutProductModalProps = {
     onProductChange: (productId: string) => void
   }) => React.ReactElement
   renderTerms?: () => React.ReactElement
-  setIsPaymentButtonDisable?: (disable: boolean) => void
+  setIsModalDisable?: (disable: boolean) => void
+  setIsOrderCheckLoading?: (isOrderCheckLoading: boolean) => void
 }
 
 const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
@@ -164,7 +166,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   renderTrigger,
   renderProductSelector,
   renderTerms,
-  setIsPaymentButtonDisable,
+  setIsModalDisable,
+  setIsOrderCheckLoading,
 }) => {
   const { formatMessage } = useIntl()
   const history = useHistory()
@@ -335,19 +338,35 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const [isCoinsEnough, setIsCoinsEnough] = useState(true)
   const { remainingCoins } = useMemberCoinsRemaining(currentMemberId || '')
   useEffect(() => {
-    if (
-      !isCoinMerchandise &&
+    if (check.orderProducts.length === 0) {
+      setIsOrderCheckLoading?.(true)
+      setIsModalDisable?.(true)
+    } else if (
       check.orderProducts.length === 1 &&
       check.orderProducts[0].options?.currencyId === 'LSC' &&
       check.orderProducts[0].productId.includes('MerchandiseSpec_')
     ) {
+      setIsOrderCheckLoading?.(false)
       setIsCoinMerchandise(true)
+      if (
+        check.orderProducts[0].options?.currencyPrice !== undefined &&
+        remainingCoins !== undefined &&
+        productQuantity !== undefined &&
+        check.orderProducts[0].options.currencyPrice * productQuantity > remainingCoins
+      ) {
+        setIsCoinsEnough(false)
+        setIsModalDisable?.(true)
+      } else {
+        setIsCoinsEnough(true)
+        setIsModalDisable?.(false)
+      }
     }
-  }, [check, setIsPaymentButtonDisable])
+  }, [check, productQuantity, remainingCoins, setIsModalDisable, setIsOrderCheckLoading])
 
   if (isAuthenticating) {
     return renderTrigger?.({ isLoading: true })
   }
+
   if (currentMember === null) {
     return renderTrigger?.({ isLoginAlert: true })
   }
