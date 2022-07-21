@@ -1,5 +1,7 @@
+import { useQuery } from '@apollo/react-hooks'
 import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
+import gql from 'graphql-tag'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
@@ -18,6 +20,7 @@ import GroupBuyingRuleModal from '../../components/modals/GroupBuyingRuleModal'
 import PaymentSelector from '../../components/selectors/PaymentSelector'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
+import hasura from '../../hasura'
 import { notEmpty, validateContactInfo } from '../../helpers'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
@@ -330,28 +333,15 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
   const [isCoinMerchandise, setIsCoinMerchandise] = useState(false)
   const [isCoinsEnough, setIsCoinsEnough] = useState(true)
+  const { remainingCoins } = useMemberCoinsRemaining(currentMemberId || '')
   useEffect(() => {
     if (
+      !isCoinMerchandise &&
       check.orderProducts.length === 1 &&
       check.orderProducts[0].options?.currencyId === 'LSC' &&
       check.orderProducts[0].productId.includes('MerchandiseSpec_')
     ) {
       setIsCoinMerchandise(true)
-
-      let orderDiscountCoins = 0
-      check.orderDiscounts.forEach(orderDiscount => {
-        orderDiscountCoins += orderDiscount.options?.coins
-      })
-      if (
-        check.orderProducts[0].options?.currencyPrice !== undefined &&
-        (check.orderDiscounts.length === 0 || check.orderProducts[0].options.currencyPrice > orderDiscountCoins)
-      ) {
-        setIsCoinsEnough(false)
-        setIsPaymentButtonDisable?.(true)
-      } else {
-        setIsCoinsEnough(true)
-        setIsPaymentButtonDisable?.(false)
-      }
     }
   }, [check, setIsPaymentButtonDisable])
 
@@ -669,8 +659,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                   key={orderDiscount.name}
                   name={orderDiscount.name}
                   price={
-                    check.orderProducts[idx]?.productId.includes('MerchandiseSpec_') &&
-                    check.orderProducts[idx].options?.currencyId === 'LSC'
+                    check.orderProducts[0]?.productId.includes('MerchandiseSpec_') &&
+                    check.orderProducts[0].options?.currencyId === 'LSC'
                       ? -orderDiscount.options?.coins
                       : -orderDiscount.price
                   }
@@ -728,6 +718,28 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       </CommonModal>
     </>
   )
+}
+
+const useMemberCoinsRemaining = (memberId: string) => {
+  const { loading, error, data } = useQuery<
+    hasura.GET_MEMBER_COIN_REMAINING,
+    hasura.GET_MEMBER_COIN_REMAININGVariables
+  >(
+    gql`
+      query GET_MEMBER_COIN_REMAINING($memberId: String!) {
+        coin_status(where: { member_id: { _eq: $memberId } }) {
+          remaining
+        }
+      }
+    `,
+    {
+      variables: { memberId },
+    },
+  )
+  const remainingCoins = data?.coin_status.reduce((total, coin) => {
+    return (total += coin.remaining)
+  }, 0)
+  return { remainingCoins }
 }
 
 export default CheckoutProductModal

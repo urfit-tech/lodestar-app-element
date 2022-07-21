@@ -134,6 +134,31 @@ export interface GET_RECENT_PROGRAM_PROGRESSVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_MEMBER_COIN_REMAINING
+// ====================================================
+
+export interface GET_MEMBER_COIN_REMAINING_coin_status {
+  __typename: 'coin_status'
+  remaining: any | null
+}
+
+export interface GET_MEMBER_COIN_REMAINING {
+  /**
+   * fetch data from the table: "coin_status"
+   */
+  coin_status: GET_MEMBER_COIN_REMAINING_coin_status[]
+}
+
+export interface GET_MEMBER_COIN_REMAININGVariables {
+  memberId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_MEMBER_CREDIT_CARDS
 // ====================================================
 
@@ -5180,6 +5205,7 @@ export enum program_content_update_column {
   content_section_id = 'content_section_id',
   content_type = 'content_type',
   created_at = 'created_at',
+  display_mode = 'display_mode',
   duration = 'duration',
   id = 'id',
   is_notify_update = 'is_notify_update',
@@ -9491,6 +9517,7 @@ export interface coupon_plan_bool_exp {
   coupon_plan_products?: coupon_plan_product_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
+  editor?: member_bool_exp | null
   editor_id?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -9511,6 +9538,7 @@ export interface coupon_plan_insert_input {
   coupon_plan_products?: coupon_plan_product_arr_rel_insert_input | null
   created_at?: any | null
   description?: string | null
+  editor?: member_obj_rel_insert_input | null
   editor_id?: string | null
   ended_at?: any | null
   id?: any | null
@@ -15574,6 +15602,7 @@ export interface program_content_bool_exp {
   content_section_id?: uuid_comparison_exp | null
   content_type?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
+  display_mode?: String_comparison_exp | null
   duration?: numeric_comparison_exp | null
   enrollments?: program_content_enrollment_bool_exp | null
   exercises?: exercise_bool_exp | null
@@ -15669,6 +15698,7 @@ export interface program_content_insert_input {
   content_section_id?: any | null
   content_type?: string | null
   created_at?: any | null
+  display_mode?: string | null
   duration?: any | null
   enrollments?: program_content_enrollment_arr_rel_insert_input | null
   exercises?: exercise_arr_rel_insert_input | null
@@ -15776,6 +15806,7 @@ export interface program_content_max_order_by {
   content_section_id?: order_by | null
   content_type?: order_by | null
   created_at?: order_by | null
+  display_mode?: order_by | null
   duration?: order_by | null
   id?: order_by | null
   list_price?: order_by | null
@@ -15796,6 +15827,7 @@ export interface program_content_min_order_by {
   content_section_id?: order_by | null
   content_type?: order_by | null
   created_at?: order_by | null
+  display_mode?: order_by | null
   duration?: order_by | null
   id?: order_by | null
   list_price?: order_by | null
@@ -15833,6 +15865,7 @@ export interface program_content_order_by {
   content_section_id?: order_by | null
   content_type?: order_by | null
   created_at?: order_by | null
+  display_mode?: order_by | null
   duration?: order_by | null
   enrollments_aggregate?: program_content_enrollment_aggregate_order_by | null
   exercises_aggregate?: exercise_aggregate_order_by | null
