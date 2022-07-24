@@ -75,7 +75,8 @@ export type PaymentMethodType =
   | 'taiwanpay'
   | 'linepay'
 
-export type PaymentGatewayType = 'spgateway' | 'tappay' | 'parenting' | 'paypal' | 'commonhealth'
+export type PaymentGatewayType = 'spgateway' | 'tappay' | 'parenting' | 'paypal' | 'commonhealth' | 'atome'
+
 export type ShippingProps = {
   name?: string
   phone?: string
