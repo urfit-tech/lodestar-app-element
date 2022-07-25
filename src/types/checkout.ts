@@ -74,6 +74,7 @@ export type PaymentMethodType =
   | 'esumwallet'
   | 'taiwanpay'
   | 'linepay'
+  | 'atome'
 
 export type PaymentGatewayType = 'spgateway' | 'tappay' | 'parenting' | 'paypal' | 'commonhealth' | 'atome'
 
@@ -106,8 +107,9 @@ export type PaymentProps =
       method: PaymentMethodType
     }
   | {
-      gateway: Exclude<PaymentGatewayType, 'spgateway'>
+      gateway: Exclude<PaymentGatewayType, 'spgateway' | 'atome'>
       method: Extract<PaymentMethodType, 'credit'>
     }
+  | { gateway: 'atome'; method: 'atome' }
 
 export type ContactInfo = { name: string; phone: string; email: string }
