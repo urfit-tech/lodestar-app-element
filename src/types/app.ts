@@ -76,6 +76,7 @@ export type Module =
   | 'project_auto_delivery'
   | 'analysis'
   | 'certificate'
+  | 'sms'
 
 export type Currency = {
   id: string
