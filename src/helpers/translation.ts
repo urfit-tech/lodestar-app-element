@@ -247,6 +247,21 @@ export const craftPageMessages = {
   }),
 }
 
+export const certificateMessages = {
+  CertificateContent: defineMessages({
+    number: { id: 'certificate.CertificateContent.number', defaultMessage: '證書編號：{number}' },
+    expiredTime: { id: 'certificate.CertificateContent.expiredTime', defaultMessage: '證書效期：{expiredTime} 止' },
+    deliveredAt: {
+      id: 'certificate.CertificateContent.deliveredAt',
+      defaultMessage: '發放日期：{deliveredAt}',
+    },
+    qualification: {
+      id: 'certificate.CertificateContent.qualification',
+      defaultMessage: '學習時數',
+    },
+  }),
+}
+
 export const checkoutMessages = {
   form: {
     label: defineMessages({
