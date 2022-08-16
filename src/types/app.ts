@@ -77,6 +77,7 @@ export type Module =
   | 'analysis'
   | 'certificate'
   | 'sms'
+  | 'venue'
 
 export type Currency = {
   id: string
