@@ -79,6 +79,7 @@ export type Module =
   | 'sms'
   | 'venue'
   | 'question_library'
+  | 'exam'
 
 export type Currency = {
   id: string
