@@ -80,6 +80,7 @@ export type Module =
   | 'venue'
   | 'question_library'
   | 'exam'
+  | 'customScript'
 
 export type Currency = {
   id: string
