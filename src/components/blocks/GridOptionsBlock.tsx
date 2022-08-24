@@ -1,7 +1,7 @@
 import { Grid, GridItem } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { QuestionOption } from '../../types/question_library'
+import { QuestionOption } from '../../types/questionLibrary'
 
 const GridOption = styled.div<{ font: string; selected: boolean }>`
   position: relative;
