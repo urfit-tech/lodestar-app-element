@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import checkIconSrc from '../../images/icons/check.svg'
-import { QuestionOption } from '../../types/question_library'
+import { QuestionOption } from '../../types/questionLibrary'
 
 const ListsOption = styled.div<{ font: string; selected: boolean }>`
   position: relative;
