@@ -11,7 +11,7 @@ const ListsOption = styled.div<{ font: string; selected: boolean }>`
   line-height: 1.5;
   letter-spacing: 0.2px;
   color: #585858;
-  border: 1px solid ${props => (props.selected ? 'var(--gray-darker)' : 'var(--gray)')};
+  border: 1px solid ${props => (props.selected ? props.theme['@primary-color'] : 'var(--gray)')};
   border-radius: 4px;
   font-family: ${props => (props.font === 'zhuyin' ? 'BpmfGenSenRounded' : 'inherit')};
   font-size: ${props => (props.font === 'zhuyin' ? '32px' : '16px')};
@@ -28,9 +28,9 @@ const ListsOption = styled.div<{ font: string; selected: boolean }>`
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
-    background-image: url(${checkIconSrc});
-    background-repeat: no-repeat;
-    background-size: contain;
+    mask: url(${checkIconSrc}) no-repeat center;
+    mask-size: contain;
+    background-color: ${props => props.theme['@primary-color']};
   }
 `
 

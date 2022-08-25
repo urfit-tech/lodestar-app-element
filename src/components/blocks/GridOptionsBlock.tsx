@@ -4,10 +4,13 @@ import styled from 'styled-components'
 import { QuestionOption } from '../../types/questionLibrary'
 
 const GridOption = styled.div<{ font: string; selected: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
   width: 100%;
   aspect-ratio: 1/1;
-  outline: ${props => (props.selected ? '2px solid var(--gray-darker)' : '1px solid var(--gray)')};
+  outline: ${props => (props.selected ? `2px solid ${props.theme['@primary-color']}` : '1px solid var(--gray)')};
   border-radius: 4px;
   padding: 20px;
   font-family: ${props => (props.font === 'zhuyin' ? 'BpmfGenSenRounded' : 'inherit')};
