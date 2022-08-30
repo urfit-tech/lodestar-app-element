@@ -4,9 +4,22 @@ import styled from 'styled-components'
 import { QuestionOption } from '../../types/questionLibrary'
 
 const GridOption = styled.div<{ font: string; selected: boolean }>`
+  @font-face {
+    font-family: 'BpmfGenSenRounded';
+    src: url('../../fonts/BpmfGenSenRounded/BpmfGenSenRounded-R.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'BpmfGenSenRounded';
+    src: url('../../fonts/BpmfGenSenRounded/BpmfGenSenRounded-B.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   position: relative;
   width: 100%;
   aspect-ratio: 1/1;

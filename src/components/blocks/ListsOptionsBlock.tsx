@@ -4,6 +4,18 @@ import checkIconSrc from '../../images/icons/check.svg'
 import { QuestionOption } from '../../types/questionLibrary'
 
 const ListsOption = styled.div<{ font: string; selected: boolean }>`
+  @font-face {
+    font-family: 'BpmfGenSenRounded';
+    src: url('../../fonts/BpmfGenSenRounded/BpmfGenSenRounded-R.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'BpmfGenSenRounded';
+    src: url('../../fonts/BpmfGenSenRounded/BpmfGenSenRounded-B.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
   position: relative;
   padding: 20px;
   margin-bottom: 16px;
