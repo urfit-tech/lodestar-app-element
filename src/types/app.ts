@@ -81,6 +81,7 @@ export type Module =
   | 'question_library'
   | 'exam'
   | 'customScript'
+  | 'gift'
 
 export type Currency = {
   id: string
@@ -272,3 +273,7 @@ export type Permission =
   | 'VOUCHER_PLAN_WRITE'
   | 'VOUCHER_CODE_EXPORT'
   | 'CUSTOM_SCRIPT_ADMIN'
+  | 'GIFT_PLAN_ADMIN'
+  | 'GIFT_PLAN_NORMAL'
+  | 'GIFT_PLAN_READ'
+  | 'GIFT_PLAN_WRITE'
