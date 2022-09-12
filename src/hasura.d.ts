@@ -1967,6 +1967,155 @@ export interface GET_COUPON_COLLECTIONVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UPSERT_PRODUCT_GIFT_PLAN
+// ====================================================
+
+export interface UPSERT_PRODUCT_GIFT_PLAN_insert_product_gift_plan {
+  __typename: 'product_gift_plan_mutation_response'
+  /**
+   * number of rows affected by the mutation
+   */
+  affected_rows: number
+}
+
+export interface UPSERT_PRODUCT_GIFT_PLAN {
+  /**
+   * insert data into the table: "product_gift_plan"
+   */
+  insert_product_gift_plan: UPSERT_PRODUCT_GIFT_PLAN_insert_product_gift_plan | null
+}
+
+export interface UPSERT_PRODUCT_GIFT_PLANVariables {
+  productGiftPlanId: any
+  productId: string
+  giftPlanId: any
+  giftPlanStartedAt?: any | null
+  giftPlanEndedAt?: any | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: DELETE_PRODUCT_GIFT_PLAN
+// ====================================================
+
+export interface DELETE_PRODUCT_GIFT_PLAN_delete_product_gift_plan {
+  __typename: 'product_gift_plan_mutation_response'
+  /**
+   * number of rows affected by the mutation
+   */
+  affected_rows: number
+}
+
+export interface DELETE_PRODUCT_GIFT_PLAN {
+  /**
+   * delete data from the table: "product_gift_plan"
+   */
+  delete_product_gift_plan: DELETE_PRODUCT_GIFT_PLAN_delete_product_gift_plan | null
+}
+
+export interface DELETE_PRODUCT_GIFT_PLANVariables {
+  productGiftPlanId: any
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: DELETE_GIFT_PLAN
+// ====================================================
+
+export interface DELETE_GIFT_PLAN_delete_gift_plan_product {
+  __typename: 'gift_plan_product_mutation_response'
+  /**
+   * number of rows affected by the mutation
+   */
+  affected_rows: number
+}
+
+export interface DELETE_GIFT_PLAN_delete_product_gift_plan {
+  __typename: 'product_gift_plan_mutation_response'
+  /**
+   * number of rows affected by the mutation
+   */
+  affected_rows: number
+}
+
+export interface DELETE_GIFT_PLAN_delete_gift_plan {
+  __typename: 'gift_plan_mutation_response'
+  /**
+   * number of rows affected by the mutation
+   */
+  affected_rows: number
+}
+
+export interface DELETE_GIFT_PLAN {
+  /**
+   * delete data from the table: "gift_plan_product"
+   */
+  delete_gift_plan_product: DELETE_GIFT_PLAN_delete_gift_plan_product | null
+  /**
+   * delete data from the table: "product_gift_plan"
+   */
+  delete_product_gift_plan: DELETE_GIFT_PLAN_delete_product_gift_plan | null
+  /**
+   * delete data from the table: "gift_plan"
+   */
+  delete_gift_plan: DELETE_GIFT_PLAN_delete_gift_plan | null
+}
+
+export interface DELETE_GIFT_PLANVariables {
+  giftPlanId: any
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_PRODUCT_GIFT_PLAN
+// ====================================================
+
+export interface GET_PRODUCT_GIFT_PLAN_product_gift_plan_gift_plan {
+  __typename: 'gift_plan'
+  id: any
+  title: string
+}
+
+export interface GET_PRODUCT_GIFT_PLAN_product_gift_plan {
+  __typename: 'product_gift_plan'
+  id: any
+  started_at: any | null
+  ended_at: any | null
+  /**
+   * An object relationship
+   */
+  gift_plan: GET_PRODUCT_GIFT_PLAN_product_gift_plan_gift_plan | null
+}
+
+export interface GET_PRODUCT_GIFT_PLAN {
+  /**
+   * fetch data from the table: "product_gift_plan"
+   */
+  product_gift_plan: GET_PRODUCT_GIFT_PLAN_product_gift_plan[]
+}
+
+export interface GET_PRODUCT_GIFT_PLANVariables {
+  productId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_MEMBER
 // ====================================================
 
@@ -3164,6 +3313,7 @@ export enum app_update_column {
   ended_at = 'ended_at',
   id = 'id',
   name = 'name',
+  org_id = 'org_id',
   point_discount_ratio = 'point_discount_ratio',
   point_exchange_rate = 'point_exchange_rate',
   point_validity_period = 'point_validity_period',
@@ -3625,6 +3775,54 @@ export enum currency_update_column {
 }
 
 /**
+ * unique or primary key constraints on table "exam"
+ */
+export enum exam_constraint {
+  exam_pkey = 'exam_pkey',
+}
+
+/**
+ * unique or primary key constraints on table "exam_question_group"
+ */
+export enum exam_question_group_constraint {
+  exam_question_group_pkey = 'exam_question_group_pkey',
+}
+
+/**
+ * update columns of table "exam_question_group"
+ */
+export enum exam_question_group_update_column {
+  created_at = 'created_at',
+  exam_id = 'exam_id',
+  id = 'id',
+  question_group_id = 'question_group_id',
+  updated_at = 'updated_at',
+}
+
+/**
+ * update columns of table "exam"
+ */
+export enum exam_update_column {
+  abstract = 'abstract',
+  app_id = 'app_id',
+  applicable_plan_id = 'applicable_plan_id',
+  created_at = 'created_at',
+  examinable_amount = 'examinable_amount',
+  examinable_ended_at = 'examinable_ended_at',
+  examinable_started_at = 'examinable_started_at',
+  examinable_unit = 'examinable_unit',
+  id = 'id',
+  is_available_announce_score = 'is_available_announce_score',
+  is_available_to_go_back = 'is_available_to_go_back',
+  is_available_to_retry = 'is_available_to_retry',
+  passing_score = 'passing_score',
+  point = 'point',
+  time_limit_amount = 'time_limit_amount',
+  time_limit_unit = 'time_limit_unit',
+  updated_at = 'updated_at',
+}
+
+/**
  * unique or primary key constraints on table "exercise"
  */
 export enum exercise_constraint {
@@ -3637,9 +3835,12 @@ export enum exercise_constraint {
 export enum exercise_update_column {
   answer = 'answer',
   created_at = 'created_at',
+  ended_at = 'ended_at',
+  exam_id = 'exam_id',
   id = 'id',
   member_id = 'member_id',
   program_content_id = 'program_content_id',
+  started_at = 'started_at',
   updated_at = 'updated_at',
 }
 
@@ -3673,6 +3874,27 @@ export enum file_update_column {
   uri = 'uri',
   viewed_at = 'viewed_at',
   viewed_count = 'viewed_count',
+}
+
+/**
+ * unique or primary key constraints on table "invoice"
+ */
+export enum invoice_constraint {
+  invoice_order_id_key = 'invoice_order_id_key',
+  invoice_pkey = 'invoice_pkey',
+}
+
+/**
+ * update columns of table "invoice"
+ */
+export enum invoice_update_column {
+  created_at = 'created_at',
+  executor_id = 'executor_id',
+  no = 'no',
+  options = 'options',
+  order_id = 'order_id',
+  price = 'price',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -4393,8 +4615,8 @@ export enum order_log_update_column {
   discount_type = 'discount_type',
   expired_at = 'expired_at',
   id = 'id',
-  invoice = 'invoice',
   invoice_issued_at = 'invoice_issued_at',
+  invoice_options = 'invoice_options',
   is_deleted = 'is_deleted',
   last_paid_at = 'last_paid_at',
   member_id = 'member_id',
@@ -4547,8 +4769,8 @@ export enum payment_log_update_column {
   created_at = 'created_at',
   custom_no = 'custom_no',
   gateway = 'gateway',
-  invoice = 'invoice',
   invoice_issued_at = 'invoice_issued_at',
+  invoice_options = 'invoice_options',
   method = 'method',
   no = 'no',
   options = 'options',
@@ -5113,6 +5335,7 @@ export enum program_content_body_update_column {
   data = 'data',
   description = 'description',
   id = 'id',
+  target = 'target',
   type = 'type',
 }
 
@@ -5646,6 +5869,92 @@ export enum property_update_column {
   name = 'name',
   placeholder = 'placeholder',
   position = 'position',
+  type = 'type',
+  updated_at = 'updated_at',
+}
+
+/**
+ * unique or primary key constraints on table "question"
+ */
+export enum question_constraint {
+  question_pkey = 'question_pkey',
+}
+
+/**
+ * unique or primary key constraints on table "question_group"
+ */
+export enum question_group_constraint {
+  question_group_pkey = 'question_group_pkey',
+}
+
+/**
+ * update columns of table "question_group"
+ */
+export enum question_group_update_column {
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  id = 'id',
+  modifier_id = 'modifier_id',
+  question_library_id = 'question_library_id',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * unique or primary key constraints on table "question_library"
+ */
+export enum question_library_constraint {
+  question_library_pkey = 'question_library_pkey',
+}
+
+/**
+ * update columns of table "question_library"
+ */
+export enum question_library_update_column {
+  abstract = 'abstract',
+  app_id = 'app_id',
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  id = 'id',
+  modifier_id = 'modifier_id',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * unique or primary key constraints on table "question_option"
+ */
+export enum question_option_constraint {
+  question_option_pkey = 'question_option_pkey',
+}
+
+/**
+ * update columns of table "question_option"
+ */
+export enum question_option_update_column {
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  id = 'id',
+  is_answer = 'is_answer',
+  position = 'position',
+  question_id = 'question_id',
+  updated_at = 'updated_at',
+  value = 'value',
+}
+
+/**
+ * update columns of table "question"
+ */
+export enum question_update_column {
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  explanation = 'explanation',
+  font = 'font',
+  id = 'id',
+  layout = 'layout',
+  position = 'position',
+  question_group_id = 'question_group_id',
+  subject = 'subject',
   type = 'type',
   updated_at = 'updated_at',
 }
@@ -7413,6 +7722,7 @@ export interface app_bool_exp {
   members?: member_bool_exp | null
   merchandises?: merchandise_bool_exp | null
   name?: String_comparison_exp | null
+  org_id?: String_comparison_exp | null
   packages?: package_bool_exp | null
   podcasts?: podcast_bool_exp | null
   point_discount_ratio?: numeric_comparison_exp | null
@@ -7585,6 +7895,7 @@ export interface app_insert_input {
   members?: member_arr_rel_insert_input | null
   merchandises?: merchandise_arr_rel_insert_input | null
   name?: string | null
+  org_id?: string | null
   packages?: package_arr_rel_insert_input | null
   podcasts?: podcast_arr_rel_insert_input | null
   point_discount_ratio?: any | null
@@ -7863,6 +8174,7 @@ export interface app_order_by {
   members_aggregate?: member_aggregate_order_by | null
   merchandises_aggregate?: merchandise_aggregate_order_by | null
   name?: order_by | null
+  org_id?: order_by | null
   packages_aggregate?: package_aggregate_order_by | null
   podcasts_aggregate?: podcast_aggregate_order_by | null
   point_discount_ratio?: order_by | null
@@ -9833,6 +10145,120 @@ export interface currency_order_by {
 }
 
 /**
+ * Boolean expression to filter rows from the table "exam". All fields are combined with a logical 'AND'.
+ */
+export interface exam_bool_exp {
+  _and?: exam_bool_exp[] | null
+  _not?: exam_bool_exp | null
+  _or?: exam_bool_exp[] | null
+  abstract?: String_comparison_exp | null
+  app_id?: String_comparison_exp | null
+  applicable_plan_id?: uuid_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
+  exam_question_group?: exam_question_group_bool_exp | null
+  examinable_amount?: numeric_comparison_exp | null
+  examinable_ended_at?: timestamptz_comparison_exp | null
+  examinable_started_at?: timestamptz_comparison_exp | null
+  examinable_unit?: String_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  is_available_announce_score?: Boolean_comparison_exp | null
+  is_available_to_go_back?: Boolean_comparison_exp | null
+  is_available_to_retry?: Boolean_comparison_exp | null
+  passing_score?: numeric_comparison_exp | null
+  point?: numeric_comparison_exp | null
+  time_limit_amount?: numeric_comparison_exp | null
+  time_limit_unit?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "exam"
+ */
+export interface exam_insert_input {
+  abstract?: string | null
+  app_id?: string | null
+  applicable_plan_id?: any | null
+  created_at?: any | null
+  exam_question_group?: exam_question_group_arr_rel_insert_input | null
+  examinable_amount?: any | null
+  examinable_ended_at?: any | null
+  examinable_started_at?: any | null
+  examinable_unit?: string | null
+  id?: any | null
+  is_available_announce_score?: boolean | null
+  is_available_to_go_back?: boolean | null
+  is_available_to_retry?: boolean | null
+  passing_score?: any | null
+  point?: any | null
+  time_limit_amount?: any | null
+  time_limit_unit?: string | null
+  updated_at?: any | null
+}
+
+/**
+ * input type for inserting object relation for remote table "exam"
+ */
+export interface exam_obj_rel_insert_input {
+  data: exam_insert_input
+  on_conflict?: exam_on_conflict | null
+}
+
+/**
+ * on_conflict condition type for table "exam"
+ */
+export interface exam_on_conflict {
+  constraint: exam_constraint
+  update_columns: exam_update_column[]
+  where?: exam_bool_exp | null
+}
+
+/**
+ * input type for inserting array relation for remote table "exam_question_group"
+ */
+export interface exam_question_group_arr_rel_insert_input {
+  data: exam_question_group_insert_input[]
+  on_conflict?: exam_question_group_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "exam_question_group". All fields are combined with a logical 'AND'.
+ */
+export interface exam_question_group_bool_exp {
+  _and?: exam_question_group_bool_exp[] | null
+  _not?: exam_question_group_bool_exp | null
+  _or?: exam_question_group_bool_exp[] | null
+  created_at?: timestamptz_comparison_exp | null
+  exam?: exam_bool_exp | null
+  exam_id?: uuid_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  question_group?: question_group_bool_exp | null
+  question_group_id?: uuid_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "exam_question_group"
+ */
+export interface exam_question_group_insert_input {
+  created_at?: any | null
+  exam?: exam_obj_rel_insert_input | null
+  exam_id?: any | null
+  id?: any | null
+  question_group?: question_group_obj_rel_insert_input | null
+  question_group_id?: any | null
+  updated_at?: any | null
+}
+
+/**
+ * on_conflict condition type for table "exam_question_group"
+ */
+export interface exam_question_group_on_conflict {
+  constraint: exam_question_group_constraint
+  update_columns: exam_question_group_update_column[]
+  where?: exam_question_group_bool_exp | null
+}
+
+/**
  * order by aggregate values of table "exercise"
  */
 export interface exercise_aggregate_order_by {
@@ -9858,11 +10284,15 @@ export interface exercise_bool_exp {
   _or?: exercise_bool_exp[] | null
   answer?: jsonb_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
+  ended_at?: timestamptz_comparison_exp | null
+  exam?: exam_bool_exp | null
+  exam_id?: uuid_comparison_exp | null
   id?: uuid_comparison_exp | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   program_content?: program_content_bool_exp | null
   program_content_id?: uuid_comparison_exp | null
+  started_at?: timestamptz_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
 
@@ -9872,11 +10302,15 @@ export interface exercise_bool_exp {
 export interface exercise_insert_input {
   answer?: any | null
   created_at?: any | null
+  ended_at?: any | null
+  exam?: exam_obj_rel_insert_input | null
+  exam_id?: any | null
   id?: any | null
   member?: member_obj_rel_insert_input | null
   member_id?: string | null
   program_content?: program_content_obj_rel_insert_input | null
   program_content_id?: any | null
+  started_at?: any | null
   updated_at?: any | null
 }
 
@@ -9885,9 +10319,12 @@ export interface exercise_insert_input {
  */
 export interface exercise_max_order_by {
   created_at?: order_by | null
+  ended_at?: order_by | null
+  exam_id?: order_by | null
   id?: order_by | null
   member_id?: order_by | null
   program_content_id?: order_by | null
+  started_at?: order_by | null
   updated_at?: order_by | null
 }
 
@@ -9896,9 +10333,12 @@ export interface exercise_max_order_by {
  */
 export interface exercise_min_order_by {
   created_at?: order_by | null
+  ended_at?: order_by | null
+  exam_id?: order_by | null
   id?: order_by | null
   member_id?: order_by | null
   program_content_id?: order_by | null
+  started_at?: order_by | null
   updated_at?: order_by | null
 }
 
@@ -9979,6 +10419,54 @@ export interface file_on_conflict {
   constraint: file_constraint
   update_columns: file_update_column[]
   where?: file_bool_exp | null
+}
+
+/**
+ * input type for inserting array relation for remote table "invoice"
+ */
+export interface invoice_arr_rel_insert_input {
+  data: invoice_insert_input[]
+  on_conflict?: invoice_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "invoice". All fields are combined with a logical 'AND'.
+ */
+export interface invoice_bool_exp {
+  _and?: invoice_bool_exp[] | null
+  _not?: invoice_bool_exp | null
+  _or?: invoice_bool_exp[] | null
+  created_at?: timestamptz_comparison_exp | null
+  executor_id?: uuid_comparison_exp | null
+  no?: String_comparison_exp | null
+  options?: jsonb_comparison_exp | null
+  order_id?: String_comparison_exp | null
+  order_log?: order_log_bool_exp | null
+  price?: numeric_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "invoice"
+ */
+export interface invoice_insert_input {
+  created_at?: any | null
+  executor_id?: any | null
+  no?: string | null
+  options?: any | null
+  order_id?: string | null
+  order_log?: order_log_obj_rel_insert_input | null
+  price?: any | null
+  updated_at?: any | null
+}
+
+/**
+ * on_conflict condition type for table "invoice"
+ */
+export interface invoice_on_conflict {
+  constraint: invoice_constraint
+  update_columns: invoice_update_column[]
+  where?: invoice_bool_exp | null
 }
 
 /**
@@ -12556,8 +13044,9 @@ export interface order_log_bool_exp {
   discount_type?: Int_comparison_exp | null
   expired_at?: timestamptz_comparison_exp | null
   id?: String_comparison_exp | null
-  invoice?: jsonb_comparison_exp | null
+  invoice?: invoice_bool_exp | null
   invoice_issued_at?: timestamptz_comparison_exp | null
+  invoice_options?: jsonb_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
   last_paid_at?: timestamptz_comparison_exp | null
   member?: member_bool_exp | null
@@ -12596,8 +13085,9 @@ export interface order_log_insert_input {
   discount_type?: number | null
   expired_at?: any | null
   id?: string | null
-  invoice?: any | null
+  invoice?: invoice_arr_rel_insert_input | null
   invoice_issued_at?: any | null
+  invoice_options?: any | null
   is_deleted?: boolean | null
   last_paid_at?: any | null
   member?: member_obj_rel_insert_input | null
@@ -13204,8 +13694,8 @@ export interface payment_log_bool_exp {
   created_at?: timestamptz_comparison_exp | null
   custom_no?: String_comparison_exp | null
   gateway?: String_comparison_exp | null
-  invoice?: jsonb_comparison_exp | null
   invoice_issued_at?: timestamptz_comparison_exp | null
+  invoice_options?: jsonb_comparison_exp | null
   method?: String_comparison_exp | null
   no?: String_comparison_exp | null
   options?: jsonb_comparison_exp | null
@@ -13226,8 +13716,8 @@ export interface payment_log_insert_input {
   created_at?: any | null
   custom_no?: string | null
   gateway?: string | null
-  invoice?: any | null
   invoice_issued_at?: any | null
+  invoice_options?: any | null
   method?: string | null
   no?: string | null
   options?: any | null
@@ -15548,6 +16038,7 @@ export interface program_content_body_bool_exp {
   description?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   program_contents?: program_content_bool_exp | null
+  target?: uuid_comparison_exp | null
   type?: String_comparison_exp | null
 }
 
@@ -15559,6 +16050,7 @@ export interface program_content_body_insert_input {
   description?: string | null
   id?: any | null
   program_contents?: program_content_arr_rel_insert_input | null
+  target?: any | null
   type?: string | null
 }
 
@@ -15587,6 +16079,7 @@ export interface program_content_body_order_by {
   description?: order_by | null
   id?: order_by | null
   program_contents_aggregate?: program_content_aggregate_order_by | null
+  target?: order_by | null
   type?: order_by | null
 }
 
@@ -15653,6 +16146,7 @@ export interface program_content_enrollment_bool_exp {
   _or?: program_content_enrollment_bool_exp[] | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
+  product_delivered_at?: timestamptz_comparison_exp | null
   program?: program_bool_exp | null
   program_content?: program_content_bool_exp | null
   program_content_id?: uuid_comparison_exp | null
@@ -15665,6 +16159,7 @@ export interface program_content_enrollment_bool_exp {
 export interface program_content_enrollment_insert_input {
   member?: member_obj_rel_insert_input | null
   member_id?: string | null
+  product_delivered_at?: any | null
   program?: program_obj_rel_insert_input | null
   program_content?: program_content_obj_rel_insert_input | null
   program_content_id?: any | null
@@ -15676,6 +16171,7 @@ export interface program_content_enrollment_insert_input {
  */
 export interface program_content_enrollment_max_order_by {
   member_id?: order_by | null
+  product_delivered_at?: order_by | null
   program_content_id?: order_by | null
   program_id?: order_by | null
 }
@@ -15685,6 +16181,7 @@ export interface program_content_enrollment_max_order_by {
  */
 export interface program_content_enrollment_min_order_by {
   member_id?: order_by | null
+  product_delivered_at?: order_by | null
   program_content_id?: order_by | null
   program_id?: order_by | null
 }
@@ -16793,6 +17290,7 @@ export interface program_enrollment_bool_exp {
   member_id?: String_comparison_exp | null
   member_name?: String_comparison_exp | null
   member_picture_url?: String_comparison_exp | null
+  product_delivered_at?: timestamptz_comparison_exp | null
   program?: program_bool_exp | null
   program_id?: uuid_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
@@ -16807,6 +17305,7 @@ export interface program_enrollment_insert_input {
   member_id?: string | null
   member_name?: string | null
   member_picture_url?: string | null
+  product_delivered_at?: any | null
   program?: program_obj_rel_insert_input | null
   program_id?: any | null
   updated_at?: any | null
@@ -16820,6 +17319,7 @@ export interface program_enrollment_max_order_by {
   member_id?: order_by | null
   member_name?: order_by | null
   member_picture_url?: order_by | null
+  product_delivered_at?: order_by | null
   program_id?: order_by | null
   updated_at?: order_by | null
 }
@@ -16832,6 +17332,7 @@ export interface program_enrollment_min_order_by {
   member_id?: order_by | null
   member_name?: order_by | null
   member_picture_url?: order_by | null
+  product_delivered_at?: order_by | null
   program_id?: order_by | null
   updated_at?: order_by | null
 }
@@ -17345,6 +17846,7 @@ export interface program_package_plan_enrollment_bool_exp {
   _or?: program_package_plan_enrollment_bool_exp[] | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
+  product_delivered_at?: timestamp_comparison_exp | null
   program_package_plan?: program_package_plan_bool_exp | null
   program_package_plan_id?: uuid_comparison_exp | null
 }
@@ -17355,6 +17857,7 @@ export interface program_package_plan_enrollment_bool_exp {
 export interface program_package_plan_enrollment_insert_input {
   member?: member_obj_rel_insert_input | null
   member_id?: string | null
+  product_delivered_at?: any | null
   program_package_plan?: program_package_plan_obj_rel_insert_input | null
   program_package_plan_id?: any | null
 }
@@ -17902,6 +18405,7 @@ export interface program_plan_enrollment_bool_exp {
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   options?: jsonb_comparison_exp | null
+  product_delivered_at?: timestamp_comparison_exp | null
   program_plan?: program_plan_bool_exp | null
   program_plan_id?: uuid_comparison_exp | null
   started_at?: timestamptz_comparison_exp | null
@@ -17916,6 +18420,7 @@ export interface program_plan_enrollment_insert_input {
   member?: member_obj_rel_insert_input | null
   member_id?: string | null
   options?: any | null
+  product_delivered_at?: any | null
   program_plan?: program_plan_obj_rel_insert_input | null
   program_plan_id?: any | null
   started_at?: any | null
@@ -17928,6 +18433,7 @@ export interface program_plan_enrollment_insert_input {
 export interface program_plan_enrollment_max_order_by {
   ended_at?: order_by | null
   member_id?: order_by | null
+  product_delivered_at?: order_by | null
   program_plan_id?: order_by | null
   started_at?: order_by | null
   updated_at?: order_by | null
@@ -17939,6 +18445,7 @@ export interface program_plan_enrollment_max_order_by {
 export interface program_plan_enrollment_min_order_by {
   ended_at?: order_by | null
   member_id?: order_by | null
+  product_delivered_at?: order_by | null
   program_plan_id?: order_by | null
   started_at?: order_by | null
   updated_at?: order_by | null
@@ -19755,6 +20262,234 @@ export interface property_var_samp_order_by {
  */
 export interface property_variance_order_by {
   position?: order_by | null
+}
+
+/**
+ * input type for inserting array relation for remote table "question"
+ */
+export interface question_arr_rel_insert_input {
+  data: question_insert_input[]
+  on_conflict?: question_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "question". All fields are combined with a logical 'AND'.
+ */
+export interface question_bool_exp {
+  _and?: question_bool_exp[] | null
+  _not?: question_bool_exp | null
+  _or?: question_bool_exp[] | null
+  created_at?: timestamptz_comparison_exp | null
+  deleted_at?: timestamptz_comparison_exp | null
+  explanation?: String_comparison_exp | null
+  font?: String_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  layout?: String_comparison_exp | null
+  position?: Int_comparison_exp | null
+  question_group?: question_group_bool_exp | null
+  question_group_id?: uuid_comparison_exp | null
+  question_options?: question_option_bool_exp | null
+  subject?: String_comparison_exp | null
+  type?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * input type for inserting array relation for remote table "question_group"
+ */
+export interface question_group_arr_rel_insert_input {
+  data: question_group_insert_input[]
+  on_conflict?: question_group_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "question_group". All fields are combined with a logical 'AND'.
+ */
+export interface question_group_bool_exp {
+  _and?: question_group_bool_exp[] | null
+  _not?: question_group_bool_exp | null
+  _or?: question_group_bool_exp[] | null
+  created_at?: timestamptz_comparison_exp | null
+  deleted_at?: timestamptz_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  modifier?: member_bool_exp | null
+  modifier_id?: String_comparison_exp | null
+  question_library?: question_library_bool_exp | null
+  question_library_id?: uuid_comparison_exp | null
+  questions?: question_bool_exp | null
+  title?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "question_group"
+ */
+export interface question_group_insert_input {
+  created_at?: any | null
+  deleted_at?: any | null
+  id?: any | null
+  modifier?: member_obj_rel_insert_input | null
+  modifier_id?: string | null
+  question_library?: question_library_obj_rel_insert_input | null
+  question_library_id?: any | null
+  questions?: question_arr_rel_insert_input | null
+  title?: string | null
+  updated_at?: any | null
+}
+
+/**
+ * input type for inserting object relation for remote table "question_group"
+ */
+export interface question_group_obj_rel_insert_input {
+  data: question_group_insert_input
+  on_conflict?: question_group_on_conflict | null
+}
+
+/**
+ * on_conflict condition type for table "question_group"
+ */
+export interface question_group_on_conflict {
+  constraint: question_group_constraint
+  update_columns: question_group_update_column[]
+  where?: question_group_bool_exp | null
+}
+
+/**
+ * input type for inserting data into table "question"
+ */
+export interface question_insert_input {
+  created_at?: any | null
+  deleted_at?: any | null
+  explanation?: string | null
+  font?: string | null
+  id?: any | null
+  layout?: string | null
+  position?: number | null
+  question_group?: question_group_obj_rel_insert_input | null
+  question_group_id?: any | null
+  question_options?: question_option_arr_rel_insert_input | null
+  subject?: string | null
+  type?: string | null
+  updated_at?: any | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "question_library". All fields are combined with a logical 'AND'.
+ */
+export interface question_library_bool_exp {
+  _and?: question_library_bool_exp[] | null
+  _not?: question_library_bool_exp | null
+  _or?: question_library_bool_exp[] | null
+  abstract?: String_comparison_exp | null
+  app_id?: String_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
+  deleted_at?: timestamptz_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  modifier?: member_bool_exp | null
+  modifier_id?: String_comparison_exp | null
+  question_groups?: question_group_bool_exp | null
+  title?: String_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "question_library"
+ */
+export interface question_library_insert_input {
+  abstract?: string | null
+  app_id?: string | null
+  created_at?: any | null
+  deleted_at?: any | null
+  id?: any | null
+  modifier?: member_obj_rel_insert_input | null
+  modifier_id?: string | null
+  question_groups?: question_group_arr_rel_insert_input | null
+  title?: string | null
+  updated_at?: any | null
+}
+
+/**
+ * input type for inserting object relation for remote table "question_library"
+ */
+export interface question_library_obj_rel_insert_input {
+  data: question_library_insert_input
+  on_conflict?: question_library_on_conflict | null
+}
+
+/**
+ * on_conflict condition type for table "question_library"
+ */
+export interface question_library_on_conflict {
+  constraint: question_library_constraint
+  update_columns: question_library_update_column[]
+  where?: question_library_bool_exp | null
+}
+
+/**
+ * input type for inserting object relation for remote table "question"
+ */
+export interface question_obj_rel_insert_input {
+  data: question_insert_input
+  on_conflict?: question_on_conflict | null
+}
+
+/**
+ * on_conflict condition type for table "question"
+ */
+export interface question_on_conflict {
+  constraint: question_constraint
+  update_columns: question_update_column[]
+  where?: question_bool_exp | null
+}
+
+/**
+ * input type for inserting array relation for remote table "question_option"
+ */
+export interface question_option_arr_rel_insert_input {
+  data: question_option_insert_input[]
+  on_conflict?: question_option_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "question_option". All fields are combined with a logical 'AND'.
+ */
+export interface question_option_bool_exp {
+  _and?: question_option_bool_exp[] | null
+  _not?: question_option_bool_exp | null
+  _or?: question_option_bool_exp[] | null
+  created_at?: timestamptz_comparison_exp | null
+  deleted_at?: timestamptz_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  is_answer?: Boolean_comparison_exp | null
+  position?: Int_comparison_exp | null
+  question?: question_bool_exp | null
+  question_id?: uuid_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+  value?: String_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "question_option"
+ */
+export interface question_option_insert_input {
+  created_at?: any | null
+  deleted_at?: any | null
+  id?: any | null
+  is_answer?: boolean | null
+  position?: number | null
+  question?: question_obj_rel_insert_input | null
+  question_id?: any | null
+  updated_at?: any | null
+  value?: string | null
+}
+
+/**
+ * on_conflict condition type for table "question_option"
+ */
+export interface question_option_on_conflict {
+  constraint: question_option_constraint
+  update_columns: question_option_update_column[]
+  where?: question_option_bool_exp | null
 }
 
 /**
