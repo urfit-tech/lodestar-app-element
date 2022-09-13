@@ -2082,10 +2082,27 @@ export interface DELETE_GIFT_PLANVariables {
 // GraphQL query operation: GET_PRODUCT_GIFT_PLAN
 // ====================================================
 
+export interface GET_PRODUCT_GIFT_PLAN_product_gift_plan_gift_plan_gift_plan_products_product {
+  __typename: 'product'
+  target: string
+}
+
+export interface GET_PRODUCT_GIFT_PLAN_product_gift_plan_gift_plan_gift_plan_products {
+  __typename: 'gift_plan_product'
+  /**
+   * An object relationship
+   */
+  product: GET_PRODUCT_GIFT_PLAN_product_gift_plan_gift_plan_gift_plan_products_product
+}
+
 export interface GET_PRODUCT_GIFT_PLAN_product_gift_plan_gift_plan {
   __typename: 'gift_plan'
   id: any
   title: string
+  /**
+   * An array relationship
+   */
+  gift_plan_products: GET_PRODUCT_GIFT_PLAN_product_gift_plan_gift_plan_gift_plan_products[]
 }
 
 export interface GET_PRODUCT_GIFT_PLAN_product_gift_plan {
@@ -2108,6 +2125,34 @@ export interface GET_PRODUCT_GIFT_PLAN {
 
 export interface GET_PRODUCT_GIFT_PLANVariables {
   productId: string
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GET_GIFT
+// ====================================================
+
+export interface GET_GIFT_token_by_pk {
+  __typename: 'token'
+  id: any
+  title: string
+  cover_url: string | null
+  is_deliverable: boolean
+}
+
+export interface GET_GIFT {
+  /**
+   * fetch data from the table: "token" using primary key columns
+   */
+  token_by_pk: GET_GIFT_token_by_pk | null
+}
+
+export interface GET_GIFTVariables {
+  giftId: any
 }
 
 /* tslint:disable */
@@ -7937,6 +7982,7 @@ export interface app_module_bool_exp {
   _and?: app_module_bool_exp[] | null
   _not?: app_module_bool_exp | null
   _or?: app_module_bool_exp[] | null
+  app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   module_id?: String_comparison_exp | null
@@ -7946,6 +7992,7 @@ export interface app_module_bool_exp {
  * input type for inserting data into table "app_module"
  */
 export interface app_module_insert_input {
+  app?: app_obj_rel_insert_input | null
   app_id?: string | null
   id?: any | null
   module_id?: string | null

@@ -75,12 +75,16 @@ export const useProductGiftPlan = (productId: string) => {
     },
   })
 
+  const giftId = data?.product_gift_plan[0].gift_plan?.gift_plan_products[0].product.target || ''
+  const { gift } = useGift(giftId)
+
   const productGiftPlan = {
     productGiftPlanId: data?.product_gift_plan[0]?.id,
     giftPlanId: data?.product_gift_plan[0]?.gift_plan?.id,
     giftPlanName: data?.product_gift_plan[0]?.gift_plan?.title,
     startedAt: data?.product_gift_plan[0]?.started_at,
     endedAt: data?.product_gift_plan[0]?.ended_at,
+    gift: gift,
   }
 
   return { productGiftPlan: productGiftPlan, productGiftPlanLoading: loading, refetchProductGiftPlan: refetch }
@@ -95,7 +99,40 @@ const GET_PRODUCT_GIFT_PLAN = gql`
       gift_plan {
         id
         title
+        gift_plan_products {
+          product {
+            target
+          }
+        }
       }
+    }
+  }
+`
+
+export const useGift = (giftId: string) => {
+  const { loading, data, error, refetch } = useQuery<hasura.GET_GIFT, hasura.GET_GIFTVariables>(GET_GIFT, {
+    variables: {
+      giftId,
+    },
+  })
+
+  const gift = {
+    id: data?.token_by_pk?.id,
+    title: data?.token_by_pk?.title,
+    coverUrl: data?.token_by_pk?.cover_url,
+    isDeliverable: data?.token_by_pk?.is_deliverable,
+  }
+
+  return { gift: gift }
+}
+
+const GET_GIFT = gql`
+  query GET_GIFT($giftId: uuid!) {
+    token_by_pk(id: $giftId) {
+      id
+      title
+      cover_url
+      is_deliverable
     }
   }
 `
