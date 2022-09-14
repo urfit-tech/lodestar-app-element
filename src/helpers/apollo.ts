@@ -38,6 +38,7 @@ const withAuthTokenLink = ({ appId, authToken }: ApolloClientOptions) =>
         }
       : {
           headers: {
+            'x-hasura-org-id': null,
             'x-hasura-app-id': appId,
             'x-hasura-user-id': uuidv4(),
             'x-hasura-role': 'anonymous',
