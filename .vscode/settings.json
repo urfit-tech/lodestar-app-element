@@ -24,7 +24,8 @@
     "typegen",
     "unionpay",
     "vacc",
-    "webatm"
+    "webatm",
+    "hasura"
   ],
   "typescript.tsdk": "node_modules/typescript/lib"
 }
