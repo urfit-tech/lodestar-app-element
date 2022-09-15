@@ -75,6 +75,7 @@ const OutputMixin = css`
     width: 100%;
     height: auto !important;
     margin-bottom: 1.5rem;
+    display: inline-block;
   }
   iframe {
     width: 100%;
