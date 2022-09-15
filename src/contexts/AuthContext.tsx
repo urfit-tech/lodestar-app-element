@@ -1,9 +1,8 @@
-import Axios from 'axios'
+import Axios, { AxiosError } from 'axios'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useContext, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
-import { handleError } from '../helpers'
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 
@@ -240,8 +239,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 throw new Error(code)
               }
             })
-            .catch(error => {
-              handleError(error)
+            .catch((error: AxiosError) => {
+              throw error
             }),
         socialLogin: async ({ provider, providerToken, accountLinkToken }) =>
           Axios.post(
