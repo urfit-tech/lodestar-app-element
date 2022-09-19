@@ -82,6 +82,7 @@ export type Module =
   | 'exam'
   | 'customScript'
   | 'gift'
+  | 'class_order'
 
 export type Currency = {
   id: string
