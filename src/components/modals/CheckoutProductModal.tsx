@@ -172,11 +172,21 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { formatMessage } = useIntl()
   const history = useHistory()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const checkoutOpened = useRef(false)
+  const [checkoutProductId] = useQueryParam('checkoutProductId', StringParam)
   const { enabledModules, settings, id: appId, currencyId: appCurrencyId } = useApp()
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
   const [quantity, setQuantity] = useState(1)
+
+  useEffect(() => {
+    if (!checkoutOpened.current && checkoutProductId === defaultProductId) {
+      checkoutOpened.current = true
+      onOpen()
+    }
+  }, [checkoutProductId])
+
   useEffect(() => {
     if (productQuantity !== undefined) {
       setQuantity(productQuantity)
@@ -457,6 +467,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     // free subscription should bind card first
     if (productTarget.isSubscription && totalPrice <= 0 && memberCreditCards.length === 0) {
       await new Promise((resolve, reject) => {
+        const clientBackUrl = new URL(window.location.href)
+        clientBackUrl.searchParams.append('checkoutProductId', productId)
+
         TPDirect.card.getPrime(({ status, card: { prime } }: { status: number; card: { prime: string } }) => {
           axios({
             method: 'POST',
@@ -469,14 +482,16 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                 email: currentMember.email,
                 phoneNumber: currentMember.phone || '0987654321',
               },
+              clientBackUrl,
             },
             headers: { authorization: `Bearer ${authToken}` },
           })
             .then(({ data: { code, result } }) => {
               if (code === 'SUCCESS') {
                 resolve(result.memberCreditCardId)
+              } else if (code === 'REDIRECT') {
+                window.location.assign(result)
               }
-
               reject(code)
             })
             .catch(reject)
