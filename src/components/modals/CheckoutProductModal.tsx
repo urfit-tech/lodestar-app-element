@@ -617,7 +617,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
         {totalPrice <= 0 && productTarget.isSubscription && (
           <>
-            {memberCreditCards[0].cardInfo['last_four'] ? (
+            {memberCreditCards[0]?.cardInfo?.['last_four'] ? (
               <Box borderWidth="1px" borderRadius="lg" w="100%" p={4}>
                 <span>
                   {formatMessage(checkoutMessages.label.creditLastFour)}：{memberCreditCards[0].cardInfo['last_four']}
