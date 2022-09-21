@@ -348,6 +348,7 @@ export const checkoutMessages = {
     uniformTitle: { id: 'checkout.label.uniformTitle', defaultMessage: '發票抬頭' },
     postCode: { id: 'checkout.label.postCode', defaultMessage: '郵遞區號' },
     approved: { id: 'checkout.label.approved', defaultMessage: '我同意' },
+    creditLastFour: { id: 'checkout.label.creditLastFour', defaultMessage: '末四碼' },
   }),
   message: defineMessages({
     phone: { id: 'checkout.message.phone', defaultMessage: '手機' },

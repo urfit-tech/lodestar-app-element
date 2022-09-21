@@ -207,7 +207,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       shipping: null,
       invoice: {
         name: currentMember?.name || '',
-        phone: '',
+        phone: currentMember?.phone || '',
         email: currentMember?.email || '',
       },
       payment: null,
@@ -272,6 +272,12 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   useEffect(() => {
     setIsApproved(settings['checkout.approvement'] !== 'true')
   }, [settings])
+
+  useEffect(() => {
+    if (currentMember) {
+      setInvoice(prev => ({ ...prev, ...cachedCartInfo.invoice }))
+    }
+  }, [cachedCartInfo.invoice])
 
   const initialPayment = useMemo(
     () =>
@@ -609,7 +615,19 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
           </div>
         )}
 
-        {totalPrice <= 0 && productTarget.isSubscription && <TapPayForm onUpdate={setTpCreditCard} />}
+        {totalPrice <= 0 && productTarget.isSubscription && (
+          <>
+            {memberCreditCards[0].cardInfo['last_four'] ? (
+              <Box borderWidth="1px" borderRadius="lg" w="100%" p={4}>
+                <span>
+                  {formatMessage(checkoutMessages.label.creditLastFour)}：{memberCreditCards[0].cardInfo['last_four']}
+                </span>
+              </Box>
+            ) : (
+              <TapPayForm onUpdate={setTpCreditCard} />
+            )}
+          </>
+        )}
         {((totalPrice > 0 && productTarget?.currencyId !== 'LSC' && productTarget.productType !== 'MerchandiseSpec') ||
           productTarget.discountDownPrice) && (
           <>
