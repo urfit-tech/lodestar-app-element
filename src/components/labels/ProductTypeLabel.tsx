@@ -15,6 +15,7 @@ const messages = defineMessages({
   podcastPlan: { id: 'common.podcast.subscription', defaultMessage: '廣播頻道' },
   appointmentPlan: { id: 'common.appointment', defaultMessage: '預約' },
   voucherPlan: { id: 'common.voucherPlan', defaultMessage: '兌換票券' },
+  gift: { id: 'common.gift', defaultMessage: '贈品' },
   unknownType: { id: 'common.unknownType', defaultMessage: '未知' },
 })
 
@@ -46,6 +47,8 @@ const ProductTypeLabel: React.VFC<{
       return <>{formatMessage(messages.appointmentPlan)}</>
     case 'VoucherPlan':
       return <>{formatMessage(messages.voucherPlan)}</>
+    case 'GiftPlan':
+      return <>{formatMessage(messages.gift)}</>
     default:
       return <>{formatMessage(messages.unknownType)}</>
   }
