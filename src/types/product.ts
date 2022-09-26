@@ -40,4 +40,3 @@ export type ProductType =
   | 'AppointmentPlan'
   | 'PodcastAlbum'
   | 'VoucherPlan'
-  | 'GiftPlan'
