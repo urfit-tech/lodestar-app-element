@@ -79,12 +79,14 @@ export const useProductGiftPlan = (productId: string) => {
   const { gift } = useGift(giftId)
 
   const productGiftPlan = {
-    productGiftPlanId: data?.product_gift_plan[0]?.id,
-    giftPlanId: data?.product_gift_plan[0]?.gift_plan?.id,
-    giftPlanName: data?.product_gift_plan[0]?.gift_plan?.title,
+    id: data?.product_gift_plan[0]?.id,
     startedAt: data?.product_gift_plan[0]?.started_at,
     endedAt: data?.product_gift_plan[0]?.ended_at,
-    gift: gift,
+    giftPlan: {
+      id: data?.product_gift_plan[0]?.gift_plan?.id,
+      title: data?.product_gift_plan[0]?.gift_plan?.title,
+      gift: gift,
+    },
   }
 
   return { productGiftPlan: productGiftPlan, productGiftPlanLoading: loading, refetchProductGiftPlan: refetch }
@@ -120,6 +122,8 @@ export const useGift = (giftId: string) => {
     id: data?.token_by_pk?.id,
     title: data?.token_by_pk?.title,
     coverUrl: data?.token_by_pk?.cover_url,
+    price: data?.token_by_pk?.price,
+    currencyId: data?.token_by_pk?.currency_id,
     isDeliverable: data?.token_by_pk?.is_deliverable,
   }
 
@@ -132,6 +136,8 @@ const GET_GIFT = gql`
       id
       title
       cover_url
+      price
+      currency_id
       is_deliverable
     }
   }

@@ -2141,6 +2141,8 @@ export interface GET_GIFT_token_by_pk {
   id: any
   title: string
   cover_url: string | null
+  price: any
+  currency_id: string
   is_deliverable: boolean
 }
 
@@ -3304,6 +3306,7 @@ export enum app_page_update_column {
   editor_id = 'editor_id',
   id = 'id',
   is_deleted = 'is_deleted',
+  meta_tag = 'meta_tag',
   options = 'options',
   path = 'path',
   published_at = 'published_at',
@@ -8255,6 +8258,7 @@ export interface app_page_bool_exp {
   _and?: app_page_bool_exp[] | null
   _not?: app_page_bool_exp | null
   _or?: app_page_bool_exp[] | null
+  app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
   app_page_sections?: app_page_section_bool_exp | null
   craft_data?: jsonb_comparison_exp | null
@@ -8263,6 +8267,7 @@ export interface app_page_bool_exp {
   editor_id?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
+  meta_tag?: jsonb_comparison_exp | null
   options?: jsonb_comparison_exp | null
   path?: String_comparison_exp | null
   published_at?: timestamptz_comparison_exp | null
@@ -8274,6 +8279,7 @@ export interface app_page_bool_exp {
  * input type for inserting data into table "app_page"
  */
 export interface app_page_insert_input {
+  app?: app_obj_rel_insert_input | null
   app_id?: string | null
   app_page_sections?: app_page_section_arr_rel_insert_input | null
   craft_data?: any | null
@@ -8282,6 +8288,7 @@ export interface app_page_insert_input {
   editor_id?: string | null
   id?: any | null
   is_deleted?: boolean | null
+  meta_tag?: any | null
   options?: any | null
   path?: string | null
   published_at?: any | null
