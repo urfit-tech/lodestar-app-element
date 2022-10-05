@@ -44,7 +44,7 @@ const CouponSelectionModal: React.VFC<{
       .post(
         `${process.env.REACT_APP_API_BASE_ROOT}/payment/exchange`,
         {
-          code,
+          code: code.trim(),
           type: 'Coupon',
         },
         {
