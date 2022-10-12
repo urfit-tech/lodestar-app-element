@@ -179,33 +179,33 @@ const InvoiceInput: React.VFC<{
     typeof invoiceCharity !== 'undefined' && setSelectedCharity(invoiceCharity)
 
     const currentValue: InvoiceProps = {
-      name: shippingName || nameRef.current?.input.value || '',
-      phone: shippingPhone || phoneRef.current?.input.value || '',
-      email: emailRef.current?.input.value || '',
+      name: shippingName?.trim() || nameRef.current?.input.value.trim() || '',
+      phone: shippingPhone?.trim() || phoneRef.current?.input.value.trim() || '',
+      email: emailRef.current?.input.value.trim() || '',
       phoneBarCode:
         currentInvoiceOption === 'use-phone-bar-code'
-          ? phoneBarCodeRef.current?.input.value.toLocaleUpperCase() || ''
+          ? phoneBarCodeRef.current?.input.value.toLocaleUpperCase().trim() || ''
           : undefined,
       citizenCode:
         currentInvoiceOption === 'citizen-digital-certificate'
-          ? citizenCodeRef.current?.input.value.toLocaleUpperCase() || ''
+          ? citizenCodeRef.current?.input.value.toLocaleUpperCase().trim() || ''
           : undefined,
       uniformNumber:
         currentInvoiceType === 'uniform-number' || currentInvoiceType === 'hardcopy-uniform-number'
-          ? uniformNumberRef.current?.input.value || ''
+          ? uniformNumberRef.current?.input.value.trim() || ''
           : undefined,
       uniformTitle:
         currentInvoiceType === 'uniform-number' || currentInvoiceType === 'hardcopy-uniform-number'
-          ? uniformTitleRef.current?.input.value || ''
+          ? uniformTitleRef.current?.input.value.trim() || ''
           : undefined,
       donationCode: currentInvoiceType === 'donation' ? currentSelectedCharity : undefined,
       postCode:
         currentInvoiceType === 'hardcopy-uniform-number' || currentInvoiceType === 'hardcopy'
-          ? postCodeRef.current?.input.value || ''
+          ? postCodeRef.current?.input.value.trim() || ''
           : undefined,
       address:
         currentInvoiceType === 'hardcopy-uniform-number' || currentInvoiceType === 'hardcopy'
-          ? shippingAddress || addressRef.current?.input.value || ''
+          ? shippingAddress || addressRef.current?.input.value.trim() || ''
           : undefined,
     }
 
