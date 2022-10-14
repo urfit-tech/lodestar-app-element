@@ -85,6 +85,7 @@ export type Module =
   | 'customScript'
   | 'gift'
   | 'class_order'
+  | 'project_role'
 
 export type Currency = {
   id: string
