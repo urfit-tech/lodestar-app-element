@@ -149,6 +149,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           whereClause: {
             id: { _in: options.idList || [] },
             published_at: { _lt: 'now()' },
+            is_private: { _eq: false },
           },
         },
       },
@@ -192,6 +193,7 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
                   },
                 }
               : undefined,
+            is_private: { _eq: false },
           },
           orderByClause: [{ published_at: (options.asc ? 'asc' : 'desc') as hasura.order_by }],
           limit: options.limit,

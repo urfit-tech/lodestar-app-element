@@ -280,7 +280,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
     gql`
       query GET_PUBLISHED_ACTIVITY_COLLECTION($ids: [uuid!]) {
         activity(
-          where: { published_at: { _lt: "now()" }, id: { _in: $ids } }
+          where: { published_at: { _lt: "now()" }, is_private: { _eq: false }, id: { _in: $ids } }
           order_by: [{ position: asc }, { published_at: desc }]
         ) {
           id
