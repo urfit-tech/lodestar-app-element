@@ -55,6 +55,8 @@ export type Module =
   | 'program_content_external_file'
   | 'exercise'
   | 'private_appointment_plan'
+  | 'private_activity'
+  | 'private_program_package'
   | 'activity_online'
   | 'zoom'
   | 'fb_pixel'
