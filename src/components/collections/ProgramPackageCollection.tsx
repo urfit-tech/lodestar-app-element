@@ -193,6 +193,7 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
                 },
               }
             : undefined,
+          published_at: { _lt: 'now()' },
           is_private: { _eq: false },
         },
         orderByClause: [{ published_at: (options.asc ? 'asc' : 'desc') as hasura.order_by }],
