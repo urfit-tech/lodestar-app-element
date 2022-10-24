@@ -17,7 +17,7 @@ export const useTappay = () => {
         settings['tappay.app_key'],
         settings['tappay.dry_run'] === 'true' ? 'sandbox' : 'production',
       )
-  }, [])
+  }, [TPDirect, settings])
 
   return { TPDirect }
 }
