@@ -1,3 +1,4 @@
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import Axios, { AxiosError } from 'axios'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
@@ -41,6 +42,18 @@ const defaultAuthContext: AuthProps = {
   permissions: {},
 }
 
+const fpPromise = FingerprintJS.load()
+const getVisitorId = async () => {
+  // Get the visitor identifier when you need it.
+  const fp = await fpPromise
+  const result = await fp.get()
+
+  // This is the visitor identifier:
+  const visitorId = result.visitorId
+  console.log(visitorId)
+  return visitorId
+}
+
 const AuthContext = createContext<AuthProps>(defaultAuthContext)
 export const useAuth = () => useContext(AuthContext)
 
@@ -48,6 +61,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
   const [isAuthenticating, setIsAuthenticating] = useState(defaultAuthContext.isAuthenticating)
   const [authToken, setAuthToken] = useState<string | null>(null)
   const [payload, setPayload] = useState<any>(null)
+  const [fingerPrintId, setFingerPrintId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!authToken) {
@@ -78,6 +92,19 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
     }
   }, [authToken])
 
+  useEffect(() => {
+    if (fingerPrintId) {
+      return
+    }
+    ;(async () => {
+      try {
+        const visitorId = await getVisitorId()
+        setFingerPrintId(visitorId)
+      } catch (error) {
+        console.error(error)
+      }
+    })()
+  }, [])
   return (
     <AuthContext.Provider
       value={{
@@ -104,7 +131,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         refreshToken: async () =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/refresh-token`,
-            { appId },
+            { appId, fingerPrintId },
             {
               method: 'POST',
               withCredentials: true,
@@ -223,7 +250,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         login: async ({ account, password, accountLinkToken }) =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
-            { appId, account, password },
+            { appId, account, password, fingerPrintId },
             { withCredentials: true },
           )
             .then(({ data: { code, result } }) => {
