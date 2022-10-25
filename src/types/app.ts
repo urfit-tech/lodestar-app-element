@@ -85,6 +85,7 @@ export type Module =
   | 'customScript'
   | 'gift'
   | 'class_order'
+  | 'project_role'
 
 export type Currency = {
   id: string
@@ -256,9 +257,12 @@ export type Permission =
   | 'PROJECT_PRE_ORDER_ADMIN'
   | 'PROJECT_ON_SALE_ADMIN'
   | 'PROJECT_CATEGORY_ADMIN'
+  | 'PROJECT_PORTFOLIO_ADMIN'
   | 'PROJECT_NORMAL'
   | 'PROJECT_FUNDING_NORMAL'
   | 'PROJECT_PRE_ORDER_NORMAL'
+  | 'PROJECT_PORTFOLIO_NORMAL'
+  | 'PROJECT_ROLE_ADMIN'
   | 'GROSS_SALES_ADMIN'
   | 'GROSS_SALES_NORMAL'
   | 'SALES_RECORDS_ADMIN'
