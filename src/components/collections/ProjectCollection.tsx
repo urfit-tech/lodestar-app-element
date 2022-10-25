@@ -22,6 +22,7 @@ type ProjectData = DeepPick<
   | 'title'
   | 'abstract'
   | 'coverUrl'
+  | 'coverType'
   | 'previewUrl'
   | 'type'
   | 'target'
@@ -31,14 +32,16 @@ type ProjectData = DeepPick<
   | 'totalSales'
   | 'enrollmentCount'
   | 'categories'
+  | 'creatorId'
 >
 
 type ProjectContextCollection = ContextCollection<ProjectData>
 
 export type ProjectCollectionProps = {
   name?: string
-  source?: ProductCustomSource | ProductPublishedAtSource
+  source?: ProductCustomSource | ProductPublishedAtSource | ProductPublishedAtSource<'popular'>
   variant?: 'card' | 'tile'
+  type?: Project['type']
   layout?: CollectionLayout
   withSelector?: boolean
   collectionVariant?: 'grid' | 'carousel'
@@ -62,13 +65,16 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
   let ContextCollection: ProjectContextCollection
   switch (source.from) {
     case 'publishedAt':
-      ContextCollection = collectPublishedAtCollection(source)
+      ContextCollection = collectPublishedAtCollection({ ...source, type: props.type })
+      break
+    case 'popular':
+      ContextCollection = collectPopularCollection({ ...source, type: props.type })
       break
     case 'custom':
-      ContextCollection = collectCustomCollection(source)
+      ContextCollection = collectCustomCollection({ ...source, type: props.type })
       break
     default:
-      ContextCollection = collectPublishedAtCollection(source)
+      ContextCollection = collectPublishedAtCollection(Object.assign({ type: props.type }, source))
   }
 
   return (
@@ -113,6 +119,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
                     title={project.title}
                     abstract={project.abstract}
                     coverUrl={project.coverUrl}
+                    coverType={project.coverType}
                     previewUrl={project.previewUrl}
                     type={project.type}
                     targetAmount={project.target.amount}
@@ -122,6 +129,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
                     isCountdownTimerVisible={project.isCountdownTimerVisible}
                     totalSales={project.totalSales}
                     enrollmentCount={project.enrollmentCount}
+                    creatorId={project.creatorId}
                   />
                 )}
               />
@@ -133,7 +141,9 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
   )
 }
 
-const collectCustomCollection = (options: ProductCustomSource) => {
+type CollectCollectionProps<T> = T & { type: ProjectCollectionProps['type'] }
+
+const collectCustomCollection = (options: CollectCollectionProps<ProductCustomSource>) => {
   const ProjectElementCollection: ProjectContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(
       getProjectCollectionQuery(projectFields),
@@ -143,6 +153,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           orderByClause: [],
           whereClause: {
             id: { _in: options.idList || [] },
+            type: { _eq: options.type },
             published_at: { _lt: 'now()' },
           },
         },
@@ -164,7 +175,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
   return ProjectElementCollection
 }
 
-const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
+const collectPublishedAtCollection = (options: CollectCollectionProps<ProductPublishedAtSource>) => {
   const ProjectElementCollection: ProjectContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(
       getProjectCollectionQuery(projectFields),
@@ -173,6 +184,38 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
           limit: options.limit,
           orderByClause: [{ published_at: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
           whereClause: {
+            type: { _eq: options.type },
+            published_at: { _lt: 'now()' },
+            project_categories: options.defaultCategoryIds?.length
+              ? {
+                  category_id: {
+                    _in: options.defaultCategoryIds,
+                  },
+                }
+              : undefined,
+          },
+        },
+      },
+    )
+    return children({
+      loading,
+      errors: error && [new Error(error.message)],
+      data: data && composeCollectionData(data),
+    })
+  }
+  return ProjectElementCollection
+}
+
+const collectPopularCollection = (options: CollectCollectionProps<ProductPublishedAtSource<'popular'>>) => {
+  const ProjectElementCollection: ProjectContextCollection = ({ children }) => {
+    const { data, loading, error } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(
+      getProjectCollectionQuery(projectFields),
+      {
+        variables: {
+          limit: options.limit,
+          orderByClause: [{ views: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
+          whereClause: {
+            type: { _eq: options.type },
             published_at: { _lt: 'now()' },
             project_categories: options.defaultCategoryIds?.length
               ? {
@@ -200,6 +243,7 @@ const composeCollectionData = (data: hasura.GET_PROJECT_COLLECTION): ProjectData
     title: p.title,
     abstract: p.abstract || '',
     coverUrl: p.cover_url,
+    coverType: (p.cover_type as ProjectData['coverType']) ?? 'image',
     previewUrl: p.preview_url,
     type: p.type as ProjectData['type'],
     target: {
@@ -212,6 +256,7 @@ const composeCollectionData = (data: hasura.GET_PROJECT_COLLECTION): ProjectData
     totalSales: p.project_sales?.total_sales || 0,
     enrollmentCount: sum(p.project_plans.map(pp => pp.project_plan_enrollments_aggregate.aggregate?.count || 0)),
     categories: p.project_categories.map(pc => pc.category),
+    creatorId: p.creator_id,
   }))
 
 const projectFields = gql`
@@ -220,6 +265,7 @@ const projectFields = gql`
     title
     abstract
     cover_url
+    cover_type
     preview_url
     type
     target_amount
@@ -227,6 +273,7 @@ const projectFields = gql`
     expired_at
     is_participants_visible
     is_countdown_timer_visible
+    creator_id
     project_sales {
       total_sales
     }

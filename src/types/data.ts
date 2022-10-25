@@ -57,8 +57,9 @@ export type Project = {
   title: string
   abstract: string
   coverUrl: string | null
+  coverType: 'image' | 'video'
   previewUrl: string | null
-  type: 'on-sale' | 'pre-order' | 'funding'
+  type: 'on-sale' | 'pre-order' | 'funding' | 'portfolio'
   target: {
     amount: number
     unit: 'funds' | 'participants'
@@ -69,6 +70,7 @@ export type Project = {
   totalSales: number
   enrollmentCount: number
   categories: Category[]
+  creatorId: string | null
 }
 
 export type Program = {
