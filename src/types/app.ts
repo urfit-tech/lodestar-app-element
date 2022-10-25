@@ -11,6 +11,7 @@ export type Module =
   | 'xuemi_pt'
   | 'sms_verification'
   | 'line'
+  | 'line-notify'
   | 'craft_page'
   | 'xuemi'
   | 'coin'
