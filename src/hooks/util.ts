@@ -1,21 +1,24 @@
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { useApp } from '../contexts/AppContext'
 import LanguageContext from '../contexts/LanguageContext'
 import { ResourceType } from './resource'
 
 // TODO: should be context
 export const useTappay = () => {
-  const TPDirect = (window as any)['TPDirect']
+  const _TPDirect = (window as any)['TPDirect']
   const { settings } = useApp()
 
-  settings['tappay.app_id'] &&
-    settings['tappay.app_key'] &&
-    TPDirect &&
-    TPDirect.setupSDK(
-      settings['tappay.app_id'],
-      settings['tappay.app_key'],
-      settings['tappay.dry_run'] === 'true' ? 'sandbox' : 'production',
-    )
+  const TPDirect = useMemo(() => {
+    settings['tappay.app_id'] &&
+      settings['tappay.app_key'] &&
+      _TPDirect &&
+      _TPDirect.setupSDK(
+        settings['tappay.app_id'],
+        settings['tappay.app_key'],
+        settings['tappay.dry_run'] === 'true' ? 'sandbox' : 'production',
+      )
+    return _TPDirect
+  }, [_TPDirect, settings])
 
   return { TPDirect }
 }
