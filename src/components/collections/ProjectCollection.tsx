@@ -213,7 +213,10 @@ const collectPopularCollection = (options: CollectCollectionProps<ProductPublish
       {
         variables: {
           limit: options.limit,
-          orderByClause: [{ views: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
+          orderByClause: [
+            { views: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
+            { published_at: 'desc_nulls_last' as hasura.order_by },
+          ],
           whereClause: {
             type: { _eq: options.type },
             published_at: { _lt: 'now()' },
