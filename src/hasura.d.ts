@@ -379,9 +379,13 @@ export interface GET_PROJECT_COLLECTION_project {
   title: string
   abstract: string | null
   cover_url: string | null
+  /**
+   * image / video
+   */
+  cover_type: string
   preview_url: string | null
   /**
-   * funding / pre-order / on-sale / modular
+   * funding / pre-order / on-sale / modular / portfolio
    */
   type: string
   target_amount: any | null
@@ -392,6 +396,7 @@ export interface GET_PROJECT_COLLECTION_project {
   expired_at: any | null
   is_participants_visible: boolean
   is_countdown_timer_visible: boolean
+  creator_id: string | null
   /**
    * An object relationship
    */
@@ -2801,9 +2806,13 @@ export interface projectFields {
   title: string
   abstract: string | null
   cover_url: string | null
+  /**
+   * image / video
+   */
+  cover_type: string
   preview_url: string | null
   /**
-   * funding / pre-order / on-sale / modular
+   * funding / pre-order / on-sale / modular / portfolio
    */
   type: string
   target_amount: any | null
@@ -2814,6 +2823,7 @@ export interface projectFields {
   expired_at: any | null
   is_participants_visible: boolean
   is_countdown_timer_visible: boolean
+  creator_id: string | null
   /**
    * An object relationship
    */
@@ -5900,6 +5910,7 @@ export enum project_update_column {
   title = 'title',
   type = 'type',
   updates = 'updates',
+  views = 'views',
 }
 
 /**
@@ -19273,6 +19284,7 @@ export interface project_bool_exp {
   title?: String_comparison_exp | null
   type?: String_comparison_exp | null
   updates?: jsonb_comparison_exp | null
+  views?: numeric_comparison_exp | null
 }
 
 /**
@@ -19446,6 +19458,7 @@ export interface project_insert_input {
   title?: string | null
   type?: string | null
   updates?: any | null
+  views?: any | null
 }
 
 /**
@@ -19499,6 +19512,7 @@ export interface project_order_by {
   title?: order_by | null
   type?: order_by | null
   updates?: order_by | null
+  views?: order_by | null
 }
 
 /**

@@ -1,7 +1,7 @@
 export type ProductSource<T, P> = { from: T } & P
 export type ProductCustomSource = ProductSource<'custom', { idList?: string[] }>
-export type ProductPublishedAtSource = ProductSource<
-  'publishedAt',
+export type ProductPublishedAtSource<T = 'publishedAt'> = ProductSource<
+  T,
   {
     limit?: number
     asc?: boolean

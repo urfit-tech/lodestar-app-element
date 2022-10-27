@@ -69,6 +69,7 @@ export type ProjectElementProps = ElementProps<{
   title: string
   abstract: string
   coverUrl: string | null
+  coverType: 'image' | 'video'
   previewUrl: string | null
   type: Project['type']
   targetAmount: number
@@ -78,6 +79,7 @@ export type ProjectElementProps = ElementProps<{
   isCountdownTimerVisible: boolean
   totalSales: number
   enrollmentCount: number
+  creatorId: string | null
 }>
 
 export type ActivityElementProps = ElementProps<{
