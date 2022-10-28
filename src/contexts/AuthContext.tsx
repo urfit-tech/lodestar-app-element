@@ -8,6 +8,7 @@ import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 
 type ProviderType = 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth' | 'cw'
+type LoginDeviceStatus = 'existed' | 'available' | 'limited' | 'unsupported'
 
 type AuthProps = {
   isAuthenticating: boolean
@@ -30,6 +31,8 @@ type AuthProps = {
   logout?: () => Promise<void>
   sendSmsCode?: (data: { phoneNumber: string }) => Promise<void>
   verifySmsCode?: (data: { phoneNumber: string; code: string }) => Promise<void>
+  checkDevice?: (data: { appId: string; account: string }) => Promise<LoginDeviceStatus>
+  switchDevice?: (fingerPrintId: string) => Promise<void>
 }
 
 const defaultAuthContext: AuthProps = {
@@ -62,6 +65,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
   const [authToken, setAuthToken] = useState<string | null>(null)
   const [payload, setPayload] = useState<any>(null)
   const [fingerPrintId, setFingerPrintId] = useState<string | null>(null)
+  const [deviceStatus, setDeviceStatus] = useState<LoginDeviceStatus>('unsupported')
 
   useEffect(() => {
     if (!authToken) {
@@ -250,7 +254,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         login: async ({ account, password, accountLinkToken }) =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
-            { appId, account, password, fingerPrintId },
+            { appId, account, password },
             { withCredentials: true },
           )
             .then(({ data: { code, result } }) => {
@@ -320,6 +324,76 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               throw new Error(code)
             }
           }),
+        checkDevice: async ({ appId, account }) => {
+          return Axios.post(
+            `${process.env.REACT_APP_API_BASE_ROOT}/auth/check-device`,
+            {
+              appId,
+              account,
+              fingerPrintId,
+            },
+            { withCredentials: true },
+          ).then(({ data: { code, message, result } }) => {
+            if (code !== 'SUCCESS') {
+              throw new Error(code)
+            }
+            return result.deviceStatus as LoginDeviceStatus
+          })
+        },
+        switchDevice: async () => {
+          if (payload.sub && fingerPrintId && authToken && process.env.REACT_APP_GRAPHQL_ENDPOINT) {
+            // get earlist device by member
+            const { data } = await Axios.post(
+              process.env.REACT_APP_GRAPHQL_ENDPOINT,
+              {
+                query: `
+                query GET_EARLIST_MEMBER_DEVICE($currentMemberId: String!){
+                  member_device(limit: 1, order_by: {logined_at: asc }) {
+                    id
+                  }
+                }
+                `,
+              },
+              { headers: { Authorization: `Bearer ${authToken}` } },
+            )
+            process.env.REACT_APP_GRAPHQL_ENDPOINT &&
+              Axios.post(
+                process.env.REACT_APP_GRAPHQL_ENDPOINT,
+                {
+                  query: `
+                  mutation INSERT_MEMBER_DEVICE_ONE($currentMemberId: String!, $fingerPrintId: String!) {
+                    insert_member_device_one(object: { member_id: $currentMemberId, fingerprint_id: $fingerPrintId }) {
+                      id
+                    }
+                  }`,
+                  variables: {
+                    currentMemberId: payload.sub,
+                    fingerPrintId,
+                  },
+                },
+                { headers: { Authorization: `Bearer ${authToken}` } },
+              )
+
+            // TODO: DELETE device by logined_at
+
+            Axios.post(
+              process.env.REACT_APP_GRAPHQL_ENDPOINT,
+              {
+                query: `
+                    mutation MyMutation($id: uuid!) {
+                      delete_member_device_by_pk(id: $id) {
+                        id
+                      }
+                    }
+                  `,
+                variables: {
+                  id: data.member_device.id,
+                },
+              },
+              { headers: { Authorization: `Bearer ${authToken}` } },
+            )
+          }
+        },
       }}
     >
       {children}
