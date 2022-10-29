@@ -1,3 +1,4 @@
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import Axios, { AxiosError } from 'axios'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
@@ -7,6 +8,7 @@ import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 
 type ProviderType = 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth' | 'cw'
+type LoginDeviceStatus = 'existed' | 'available' | 'limited' | 'unsupported'
 
 type AuthProps = {
   isAuthenticating: boolean
@@ -29,6 +31,8 @@ type AuthProps = {
   logout?: () => Promise<void>
   sendSmsCode?: (data: { phoneNumber: string }) => Promise<void>
   verifySmsCode?: (data: { phoneNumber: string; code: string }) => Promise<void>
+  checkDevice?: (data: { appId: string; account: string }) => Promise<LoginDeviceStatus>
+  forceLogin?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
 }
 
 const defaultAuthContext: AuthProps = {
@@ -41,6 +45,18 @@ const defaultAuthContext: AuthProps = {
   permissions: {},
 }
 
+const fpPromise = FingerprintJS.load()
+const getVisitorId = async () => {
+  // Get the visitor identifier when you need it.
+  const fp = await fpPromise
+  const result = await fp.get()
+
+  // This is the visitor identifier:
+  const visitorId = result.visitorId
+  console.log(visitorId)
+  return visitorId
+}
+
 const AuthContext = createContext<AuthProps>(defaultAuthContext)
 export const useAuth = () => useContext(AuthContext)
 
@@ -48,6 +64,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
   const [isAuthenticating, setIsAuthenticating] = useState(defaultAuthContext.isAuthenticating)
   const [authToken, setAuthToken] = useState<string | null>(null)
   const [payload, setPayload] = useState<any>(null)
+  const [fingerPrintId, setFingerPrintId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!authToken) {
@@ -78,6 +95,16 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
     }
   }, [authToken])
 
+  useEffect(() => {
+    if (fingerPrintId) {
+      return
+    }
+    getVisitorId()
+      .then(visitorId => {
+        setFingerPrintId(visitorId)
+      })
+      .catch(error => console.error(error))
+  }, [])
   return (
     <AuthContext.Provider
       value={{
@@ -104,7 +131,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         refreshToken: async () =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/refresh-token`,
-            { appId },
+            { appId, fingerPrintId },
             {
               method: 'POST',
               withCredentials: true,
@@ -113,6 +140,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             .then(({ data: { code, message, result } }) => {
               if (code === 'SUCCESS') {
                 setAuthToken(result.authToken)
+              } else if (code === 'E_NO_DEVICE') {
+                setAuthToken(null)
+                alert(message)
               } else {
                 setAuthToken(null)
               }
@@ -264,7 +294,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
           }),
         logout: async () => {
           localStorage.clear()
-          window.location.assign(`${process.env.REACT_APP_API_BASE_ROOT}/auth/logout?redirect=${window.location.href}`)
+          window.location.assign(
+            `${process.env.REACT_APP_API_BASE_ROOT}/auth/logout?redirect=${window.location.href}&fingerPrintId=${fingerPrintId}`,
+          )
         },
         sendSmsCode: async ({ phoneNumber }) =>
           Axios.post(
@@ -293,6 +325,46 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               throw new Error(code)
             }
           }),
+        checkDevice: async ({ appId, account }) => {
+          return Axios.post(
+            `${process.env.REACT_APP_API_BASE_ROOT}/auth/check-device`,
+            {
+              appId,
+              account,
+              fingerPrintId,
+            },
+            { withCredentials: true },
+          ).then(({ data: { code, message, result } }) => {
+            console.log(message)
+            if (code !== 'SUCCESS') {
+              console.log('check Device', code, message, result)
+              throw new Error(code)
+            }
+            return result.deviceStatus as LoginDeviceStatus
+          })
+        },
+        forceLogin: async ({ account, password, accountLinkToken }) =>
+          Axios.post(
+            `${process.env.REACT_APP_API_BASE_ROOT}/auth/force-login`,
+            { appId, account, password, fingerPrintId },
+            { withCredentials: true },
+          )
+            .then(({ data: { code, result } }) => {
+              if (code === 'SUCCESS') {
+                setAuthToken(result.authToken)
+                if (accountLinkToken && result.authToken) {
+                  window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
+                }
+              } else if (code === 'I_RESET_PASSWORD') {
+                window.location.assign(`/check-email?email=${account}&type=reset-password`)
+              } else {
+                setAuthToken(null)
+                throw new Error(code)
+              }
+            })
+            .catch((error: AxiosError) => {
+              throw error
+            }),
       }}
     >
       {children}

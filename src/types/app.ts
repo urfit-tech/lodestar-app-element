@@ -87,6 +87,7 @@ export type Module =
   | 'gift'
   | 'class_order'
   | 'project_role'
+  | 'login_restriction'
 
 export type Currency = {
   id: string

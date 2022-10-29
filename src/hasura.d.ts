@@ -3936,6 +3936,24 @@ export enum file_update_column {
 }
 
 /**
+ * unique or primary key constraints on table "identity"
+ */
+export enum identity_constraint {
+  identity_pkey = 'identity_pkey',
+}
+
+/**
+ * update columns of table "identity"
+ */
+export enum identity_update_column {
+  app_id = 'app_id',
+  id = 'id',
+  name = 'name',
+  position = 'position',
+  type = 'type',
+}
+
+/**
  * unique or primary key constraints on table "invoice"
  */
 export enum invoice_constraint {
@@ -4374,6 +4392,7 @@ export enum member_update_column {
   facebook_user_id = 'facebook_user_id',
   google_user_id = 'google_user_id',
   id = 'id',
+  last_member_note_created = 'last_member_note_created',
   line_user_id = 'line_user_id',
   logined_at = 'logined_at',
   manager_id = 'manager_id',
@@ -5847,6 +5866,40 @@ export enum project_plan_update_column {
 }
 
 /**
+ * unique or primary key constraints on table "project_reaction"
+ */
+export enum project_reaction_constraint {
+  project_reaction_pkey = 'project_reaction_pkey',
+}
+
+/**
+ * update columns of table "project_reaction"
+ */
+export enum project_reaction_update_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  project_id = 'project_id',
+}
+
+/**
+ * unique or primary key constraints on table "project_role"
+ */
+export enum project_role_constraint {
+  project_role_pkey = 'project_role_pkey',
+}
+
+/**
+ * update columns of table "project_role"
+ */
+export enum project_role_update_column {
+  id = 'id',
+  identity_id = 'identity_id',
+  member_id = 'member_id',
+  project_id = 'project_id',
+}
+
+/**
  * unique or primary key constraints on table "project_section"
  */
 export enum project_section_constraint {
@@ -6510,6 +6563,7 @@ export interface activity_bool_exp {
   _not?: activity_bool_exp | null
   _or?: activity_bool_exp[] | null
   activity_categories?: activity_category_bool_exp | null
+  activity_during_period?: activity_during_period_bool_exp | null
   activity_enrollments?: activity_enrollment_bool_exp | null
   activity_sessions?: activity_session_bool_exp | null
   activity_tags?: activity_tag_bool_exp | null
@@ -6672,6 +6726,46 @@ export interface activity_category_variance_order_by {
 }
 
 /**
+ * Boolean expression to filter rows from the table "activity_during_period". All fields are combined with a logical 'AND'.
+ */
+export interface activity_during_period_bool_exp {
+  _and?: activity_during_period_bool_exp[] | null
+  _not?: activity_during_period_bool_exp | null
+  _or?: activity_during_period_bool_exp[] | null
+  activity?: activity_bool_exp | null
+  activity_id?: uuid_comparison_exp | null
+  ended_at?: timestamptz_comparison_exp | null
+  started_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "activity_during_period"
+ */
+export interface activity_during_period_insert_input {
+  activity?: activity_obj_rel_insert_input | null
+  activity_id?: any | null
+  ended_at?: any | null
+  started_at?: any | null
+}
+
+/**
+ * input type for inserting object relation for remote table "activity_during_period"
+ */
+export interface activity_during_period_obj_rel_insert_input {
+  data: activity_during_period_insert_input
+}
+
+/**
+ * Ordering options when selecting data from "activity_during_period".
+ */
+export interface activity_during_period_order_by {
+  activity?: activity_order_by | null
+  activity_id?: order_by | null
+  ended_at?: order_by | null
+  started_at?: order_by | null
+}
+
+/**
  * order by aggregate values of table "activity_enrollment"
  */
 export interface activity_enrollment_aggregate_order_by {
@@ -6757,6 +6851,7 @@ export interface activity_enrollment_min_order_by {
  */
 export interface activity_insert_input {
   activity_categories?: activity_category_arr_rel_insert_input | null
+  activity_during_period?: activity_during_period_obj_rel_insert_input | null
   activity_enrollments?: activity_enrollment_arr_rel_insert_input | null
   activity_sessions?: activity_session_arr_rel_insert_input | null
   activity_tags?: activity_tag_arr_rel_insert_input | null
@@ -6837,6 +6932,7 @@ export interface activity_on_conflict {
  */
 export interface activity_order_by {
   activity_categories_aggregate?: activity_category_aggregate_order_by | null
+  activity_during_period?: activity_during_period_order_by | null
   activity_enrollments_aggregate?: activity_enrollment_aggregate_order_by | null
   activity_sessions_aggregate?: activity_session_aggregate_order_by | null
   activity_tags_aggregate?: activity_tag_aggregate_order_by | null
@@ -10492,6 +10588,50 @@ export interface file_on_conflict {
 }
 
 /**
+ * Boolean expression to filter rows from the table "identity". All fields are combined with a logical 'AND'.
+ */
+export interface identity_bool_exp {
+  _and?: identity_bool_exp[] | null
+  _not?: identity_bool_exp | null
+  _or?: identity_bool_exp[] | null
+  app_id?: String_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  name?: String_comparison_exp | null
+  position?: Int_comparison_exp | null
+  project_roles?: project_role_bool_exp | null
+  type?: String_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "identity"
+ */
+export interface identity_insert_input {
+  app_id?: string | null
+  id?: any | null
+  name?: string | null
+  position?: number | null
+  project_roles?: project_role_arr_rel_insert_input | null
+  type?: string | null
+}
+
+/**
+ * input type for inserting object relation for remote table "identity"
+ */
+export interface identity_obj_rel_insert_input {
+  data: identity_insert_input
+  on_conflict?: identity_on_conflict | null
+}
+
+/**
+ * on_conflict condition type for table "identity"
+ */
+export interface identity_on_conflict {
+  constraint: identity_constraint
+  update_columns: identity_update_column[]
+  where?: identity_bool_exp | null
+}
+
+/**
  * input type for inserting array relation for remote table "invoice"
  */
 export interface invoice_arr_rel_insert_input {
@@ -10975,6 +11115,7 @@ export interface member_bool_exp {
   issue_replies?: issue_reply_bool_exp | null
   issue_reply_reactions?: issue_reply_reaction_bool_exp | null
   issues?: issue_bool_exp | null
+  last_member_note_created?: timestamptz_comparison_exp | null
   line_user_id?: String_comparison_exp | null
   logined_at?: timestamptz_comparison_exp | null
   manager?: member_bool_exp | null
@@ -11022,6 +11163,7 @@ export interface member_bool_exp {
   program_content_progresses?: program_content_progress_bool_exp | null
   program_roles?: program_role_bool_exp | null
   program_tempo_deliveries?: program_tempo_delivery_bool_exp | null
+  project_roles?: project_role_bool_exp | null
   refresh_token?: uuid_comparison_exp | null
   reviews?: review_bool_exp | null
   role?: String_comparison_exp | null
@@ -11231,6 +11373,7 @@ export interface member_insert_input {
   issue_replies?: issue_reply_arr_rel_insert_input | null
   issue_reply_reactions?: issue_reply_reaction_arr_rel_insert_input | null
   issues?: issue_arr_rel_insert_input | null
+  last_member_note_created?: any | null
   line_user_id?: string | null
   logined_at?: any | null
   manager?: member_obj_rel_insert_input | null
@@ -11278,6 +11421,7 @@ export interface member_insert_input {
   program_content_progresses?: program_content_progress_arr_rel_insert_input | null
   program_roles?: program_role_arr_rel_insert_input | null
   program_tempo_deliveries?: program_tempo_delivery_arr_rel_insert_input | null
+  project_roles?: project_role_arr_rel_insert_input | null
   refresh_token?: any | null
   reviews?: review_arr_rel_insert_input | null
   role?: string | null
@@ -11304,6 +11448,7 @@ export interface member_max_order_by {
   facebook_user_id?: order_by | null
   google_user_id?: order_by | null
   id?: order_by | null
+  last_member_note_created?: order_by | null
   line_user_id?: order_by | null
   logined_at?: order_by | null
   manager_id?: order_by | null
@@ -11332,6 +11477,7 @@ export interface member_min_order_by {
   facebook_user_id?: order_by | null
   google_user_id?: order_by | null
   id?: order_by | null
+  last_member_note_created?: order_by | null
   line_user_id?: order_by | null
   logined_at?: order_by | null
   manager_id?: order_by | null
@@ -19274,6 +19420,8 @@ export interface project_bool_exp {
   preview_url?: String_comparison_exp | null
   project_categories?: project_category_bool_exp | null
   project_plans?: project_plan_bool_exp | null
+  project_reactions?: project_reaction_bool_exp | null
+  project_roles?: project_role_bool_exp | null
   project_sales?: project_sales_bool_exp | null
   project_sections?: project_section_bool_exp | null
   project_tags?: project_tag_bool_exp | null
@@ -19448,6 +19596,8 @@ export interface project_insert_input {
   preview_url?: string | null
   project_categories?: project_category_arr_rel_insert_input | null
   project_plans?: project_plan_arr_rel_insert_input | null
+  project_reactions?: project_reaction_arr_rel_insert_input | null
+  project_roles?: project_role_arr_rel_insert_input | null
   project_sales?: project_sales_obj_rel_insert_input | null
   project_sections?: project_section_arr_rel_insert_input | null
   project_tags?: project_tag_arr_rel_insert_input | null
@@ -19502,6 +19652,8 @@ export interface project_order_by {
   preview_url?: order_by | null
   project_categories_aggregate?: project_category_aggregate_order_by | null
   project_plans_aggregate?: project_plan_aggregate_order_by | null
+  project_reactions_aggregate?: project_reaction_aggregate_order_by | null
+  project_roles_aggregate?: project_role_aggregate_order_by | null
   project_sales?: project_sales_order_by | null
   project_sections_aggregate?: project_section_aggregate_order_by | null
   project_tags_aggregate?: project_tag_aggregate_order_by | null
@@ -19866,6 +20018,154 @@ export interface project_plan_variance_order_by {
   period_amount?: order_by | null
   position?: order_by | null
   sale_price?: order_by | null
+}
+
+/**
+ * order by aggregate values of table "project_reaction"
+ */
+export interface project_reaction_aggregate_order_by {
+  count?: order_by | null
+  max?: project_reaction_max_order_by | null
+  min?: project_reaction_min_order_by | null
+}
+
+/**
+ * input type for inserting array relation for remote table "project_reaction"
+ */
+export interface project_reaction_arr_rel_insert_input {
+  data: project_reaction_insert_input[]
+  on_conflict?: project_reaction_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "project_reaction". All fields are combined with a logical 'AND'.
+ */
+export interface project_reaction_bool_exp {
+  _and?: project_reaction_bool_exp[] | null
+  _not?: project_reaction_bool_exp | null
+  _or?: project_reaction_bool_exp[] | null
+  created_at?: timestamptz_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  member?: member_public_bool_exp | null
+  member_id?: String_comparison_exp | null
+  project?: project_bool_exp | null
+  project_id?: uuid_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "project_reaction"
+ */
+export interface project_reaction_insert_input {
+  created_at?: any | null
+  id?: any | null
+  member?: member_public_obj_rel_insert_input | null
+  member_id?: string | null
+  project?: project_obj_rel_insert_input | null
+  project_id?: any | null
+}
+
+/**
+ * order by max() on columns of table "project_reaction"
+ */
+export interface project_reaction_max_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  project_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "project_reaction"
+ */
+export interface project_reaction_min_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  project_id?: order_by | null
+}
+
+/**
+ * on_conflict condition type for table "project_reaction"
+ */
+export interface project_reaction_on_conflict {
+  constraint: project_reaction_constraint
+  update_columns: project_reaction_update_column[]
+  where?: project_reaction_bool_exp | null
+}
+
+/**
+ * order by aggregate values of table "project_role"
+ */
+export interface project_role_aggregate_order_by {
+  count?: order_by | null
+  max?: project_role_max_order_by | null
+  min?: project_role_min_order_by | null
+}
+
+/**
+ * input type for inserting array relation for remote table "project_role"
+ */
+export interface project_role_arr_rel_insert_input {
+  data: project_role_insert_input[]
+  on_conflict?: project_role_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "project_role". All fields are combined with a logical 'AND'.
+ */
+export interface project_role_bool_exp {
+  _and?: project_role_bool_exp[] | null
+  _not?: project_role_bool_exp | null
+  _or?: project_role_bool_exp[] | null
+  id?: uuid_comparison_exp | null
+  identity?: identity_bool_exp | null
+  identity_id?: uuid_comparison_exp | null
+  member?: member_public_bool_exp | null
+  member_id?: String_comparison_exp | null
+  project?: project_bool_exp | null
+  project_id?: uuid_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "project_role"
+ */
+export interface project_role_insert_input {
+  id?: any | null
+  identity?: identity_obj_rel_insert_input | null
+  identity_id?: any | null
+  member?: member_public_obj_rel_insert_input | null
+  member_id?: string | null
+  project?: project_obj_rel_insert_input | null
+  project_id?: any | null
+}
+
+/**
+ * order by max() on columns of table "project_role"
+ */
+export interface project_role_max_order_by {
+  id?: order_by | null
+  identity_id?: order_by | null
+  member_id?: order_by | null
+  project_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "project_role"
+ */
+export interface project_role_min_order_by {
+  id?: order_by | null
+  identity_id?: order_by | null
+  member_id?: order_by | null
+  project_id?: order_by | null
+}
+
+/**
+ * on_conflict condition type for table "project_role"
+ */
+export interface project_role_on_conflict {
+  constraint: project_role_constraint
+  update_columns: project_role_update_column[]
+  where?: project_role_bool_exp | null
 }
 
 /**
@@ -21126,6 +21426,7 @@ export interface tag_bool_exp {
   podcast_program_tags?: podcast_program_tag_bool_exp | null
   post_tags?: post_tag_bool_exp | null
   program_tags?: program_tag_bool_exp | null
+  project_tags?: project_tag_bool_exp | null
   search_tags?: search_tag_bool_exp | null
   type?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
@@ -21145,6 +21446,7 @@ export interface tag_insert_input {
   podcast_program_tags?: podcast_program_tag_arr_rel_insert_input | null
   post_tags?: post_tag_arr_rel_insert_input | null
   program_tags?: program_tag_arr_rel_insert_input | null
+  project_tags?: project_tag_arr_rel_insert_input | null
   search_tags?: search_tag_arr_rel_insert_input | null
   type?: string | null
   updated_at?: any | null
