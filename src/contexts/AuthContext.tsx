@@ -32,7 +32,7 @@ type AuthProps = {
   sendSmsCode?: (data: { phoneNumber: string }) => Promise<void>
   verifySmsCode?: (data: { phoneNumber: string; code: string }) => Promise<void>
   checkDevice?: (data: { appId: string; account: string }) => Promise<LoginDeviceStatus>
-  switchDevice?: (fingerPrintId: string) => Promise<void>
+  forceLogin?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
 }
 
 const defaultAuthContext: AuthProps = {
@@ -65,7 +65,6 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
   const [authToken, setAuthToken] = useState<string | null>(null)
   const [payload, setPayload] = useState<any>(null)
   const [fingerPrintId, setFingerPrintId] = useState<string | null>(null)
-  const [deviceStatus, setDeviceStatus] = useState<LoginDeviceStatus>('unsupported')
 
   useEffect(() => {
     if (!authToken) {
@@ -100,14 +99,11 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
     if (fingerPrintId) {
       return
     }
-    ;(async () => {
-      try {
-        const visitorId = await getVisitorId()
+    getVisitorId()
+      .then(visitorId => {
         setFingerPrintId(visitorId)
-      } catch (error) {
-        console.error(error)
-      }
-    })()
+      })
+      .catch(error => console.error(error))
   }, [])
   return (
     <AuthContext.Provider
@@ -144,6 +140,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             .then(({ data: { code, message, result } }) => {
               if (code === 'SUCCESS') {
                 setAuthToken(result.authToken)
+              } else if (code === 'E_NO_DEVICE') {
+                setAuthToken(null)
+                alert(message)
               } else {
                 setAuthToken(null)
               }
@@ -295,7 +294,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
           }),
         logout: async () => {
           localStorage.clear()
-          window.location.assign(`${process.env.REACT_APP_API_BASE_ROOT}/auth/logout?redirect=${window.location.href}`)
+          window.location.assign(
+            `${process.env.REACT_APP_API_BASE_ROOT}/auth/logout?redirect=${window.location.href}&fingerPrintId=${fingerPrintId}`,
+          )
         },
         sendSmsCode: async ({ phoneNumber }) =>
           Axios.post(
@@ -334,66 +335,36 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             },
             { withCredentials: true },
           ).then(({ data: { code, message, result } }) => {
+            console.log(message)
             if (code !== 'SUCCESS') {
+              console.log('check Device', code, message, result)
               throw new Error(code)
             }
             return result.deviceStatus as LoginDeviceStatus
           })
         },
-        switchDevice: async () => {
-          if (payload.sub && fingerPrintId && authToken && process.env.REACT_APP_GRAPHQL_ENDPOINT) {
-            // get earlist device by member
-            const { data } = await Axios.post(
-              process.env.REACT_APP_GRAPHQL_ENDPOINT,
-              {
-                query: `
-                query GET_EARLIST_MEMBER_DEVICE($currentMemberId: String!){
-                  member_device(limit: 1, order_by: {logined_at: asc }) {
-                    id
-                  }
+        forceLogin: async ({ account, password, accountLinkToken }) =>
+          Axios.post(
+            `${process.env.REACT_APP_API_BASE_ROOT}/auth/force-login`,
+            { appId, account, password, fingerPrintId },
+            { withCredentials: true },
+          )
+            .then(({ data: { code, result } }) => {
+              if (code === 'SUCCESS') {
+                setAuthToken(result.authToken)
+                if (accountLinkToken && result.authToken) {
+                  window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
                 }
-                `,
-              },
-              { headers: { Authorization: `Bearer ${authToken}` } },
-            )
-            process.env.REACT_APP_GRAPHQL_ENDPOINT &&
-              Axios.post(
-                process.env.REACT_APP_GRAPHQL_ENDPOINT,
-                {
-                  query: `
-                  mutation INSERT_MEMBER_DEVICE_ONE($currentMemberId: String!, $fingerPrintId: String!) {
-                    insert_member_device_one(object: { member_id: $currentMemberId, fingerprint_id: $fingerPrintId }) {
-                      id
-                    }
-                  }`,
-                  variables: {
-                    currentMemberId: payload.sub,
-                    fingerPrintId,
-                  },
-                },
-                { headers: { Authorization: `Bearer ${authToken}` } },
-              )
-
-            // TODO: DELETE device by logined_at
-
-            Axios.post(
-              process.env.REACT_APP_GRAPHQL_ENDPOINT,
-              {
-                query: `
-                    mutation MyMutation($id: uuid!) {
-                      delete_member_device_by_pk(id: $id) {
-                        id
-                      }
-                    }
-                  `,
-                variables: {
-                  id: data.member_device.id,
-                },
-              },
-              { headers: { Authorization: `Bearer ${authToken}` } },
-            )
-          }
-        },
+              } else if (code === 'I_RESET_PASSWORD') {
+                window.location.assign(`/check-email?email=${account}&type=reset-password`)
+              } else {
+                setAuthToken(null)
+                throw new Error(code)
+              }
+            })
+            .catch((error: AxiosError) => {
+              throw error
+            }),
       }}
     >
       {children}
