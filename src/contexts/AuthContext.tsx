@@ -53,7 +53,6 @@ const getVisitorId = async () => {
 
   // This is the visitor identifier:
   const visitorId = result.visitorId
-  console.log(visitorId)
   return visitorId
 }
 
@@ -105,6 +104,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
       })
       .catch(error => console.error(error))
   }, [])
+
   return (
     <AuthContext.Provider
       value={{
@@ -128,15 +128,30 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               return accumulator
             }, {})
           : {},
-        refreshToken: async () =>
-          Axios.post(
-            `${process.env.REACT_APP_API_BASE_ROOT}/auth/refresh-token`,
-            { appId, fingerPrintId },
-            {
-              method: 'POST',
-              withCredentials: true,
-            },
+        refreshToken: async () => {
+          return new Promise<string | null>(resolve =>
+            fingerPrintId
+              ? resolve(fingerPrintId)
+              : getVisitorId()
+                  .then(visitorId => {
+                    setFingerPrintId(visitorId)
+                    resolve(visitorId)
+                  })
+                  .catch(error => {
+                    console.error(error)
+                    resolve(null)
+                  }),
           )
+            .then(visitorId =>
+              Axios.post(
+                `${process.env.REACT_APP_API_BASE_ROOT}/auth/refresh-token`,
+                { appId, fingerPrintId: visitorId },
+                {
+                  method: 'POST',
+                  withCredentials: true,
+                },
+              ),
+            )
             .then(({ data: { code, message, result } }) => {
               if (code === 'SUCCESS') {
                 setAuthToken(result.authToken)
@@ -147,7 +162,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 setAuthToken(null)
               }
             })
-            .finally(() => setIsAuthenticating(false)),
+            .finally(() => setIsAuthenticating(false))
+        },
         register: async data =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/register`,
