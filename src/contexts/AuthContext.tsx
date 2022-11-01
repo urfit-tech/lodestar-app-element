@@ -128,8 +128,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               return accumulator
             }, {})
           : {},
-        refreshToken: async () => {
-          return new Promise<string | null>(resolve =>
+        refreshToken: async () =>
+          new Promise<string | null>(resolve =>
             fingerPrintId
               ? resolve(fingerPrintId)
               : getVisitorId()
@@ -162,8 +162,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 setAuthToken(null)
               }
             })
-            .finally(() => setIsAuthenticating(false))
-        },
+            .finally(() => setIsAuthenticating(false)),
         register: async data =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/register`,
