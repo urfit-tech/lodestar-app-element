@@ -161,7 +161,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     if (!authToken) {
       refreshToken?.()
     }
-  }, [appId, authToken, refreshToken])
+  }, [appId, authToken])
 
   return <AppContext.Provider value={app}>{children}</AppContext.Provider>
 }
