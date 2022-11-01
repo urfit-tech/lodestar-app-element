@@ -116,6 +116,7 @@ export type AppNavProps = NavProps & {
 
 export type AppProps = {
   id: string
+  orgId: string | null
   host: string
   hosts: string[]
   name: string | null
