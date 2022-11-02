@@ -109,7 +109,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
       setAuthToken(result.authToken)
     } else if (code === 'E_NO_DEVICE') {
       setAuthToken(null)
-      alert(message)
+      alert('您已被登出，目前有其他裝置登入這組帳號')
     } else {
       setAuthToken(null)
     }
