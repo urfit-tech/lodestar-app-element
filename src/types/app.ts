@@ -89,6 +89,7 @@ export type Module =
   | 'project_role'
   | 'login_restriction'
   | 'portfolio_project'
+  | 'school'
 
 export type Currency = {
   id: string
