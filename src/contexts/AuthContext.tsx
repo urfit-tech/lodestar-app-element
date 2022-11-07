@@ -334,11 +334,10 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             return result.deviceStatus as LoginDeviceStatus
           })
         },
-        forceLogin: async ({ account, password, accountLinkToken }) => {
-          const fingerPrintId = await getVisitorId()
-          await Axios.post(
+        forceLogin: async ({ account, password, accountLinkToken }) =>
+          Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/force-login`,
-            { appId, account, password, fingerPrintId },
+            { appId, account, password },
             { withCredentials: true },
           )
             .then(({ data: { code, result } }) => {
@@ -356,8 +355,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             })
             .catch((error: AxiosError) => {
               throw error
-            })
-        },
+            }),
       }}
     >
       {children}
