@@ -62,12 +62,16 @@ const CouponSelectionModal: React.VFC<{
             position: 'top',
           })
         } else {
-          toast({
-            title: `${formatMessage(codeMessages[data.code as keyof typeof codeMessages])}`,
-            status: 'error',
-            duration: 1500,
-            position: 'top',
-          })
+          try {
+            toast({
+              title: `${formatMessage(codeMessages[data.code as keyof typeof codeMessages])}`,
+              status: 'error',
+              duration: 1500,
+              position: 'top',
+            })
+          } catch (err) {
+            alert(data.code)
+          }
         }
       })
       .catch(handleError)
