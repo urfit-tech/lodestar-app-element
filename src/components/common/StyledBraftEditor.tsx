@@ -94,7 +94,6 @@ const OutputMixin = css`
     color: #585858;
     font-weight: bold;
     font-style: initial;
-    text-align: center !important;
     transform: translateX(-50%);
 
     @media (min-width: 768px) {
