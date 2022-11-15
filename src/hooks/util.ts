@@ -1,6 +1,9 @@
+import { useToast } from '@chakra-ui/react'
 import { useContext, useMemo } from 'react'
+import { useIntl } from 'react-intl'
 import { useApp } from '../contexts/AppContext'
 import LanguageContext from '../contexts/LanguageContext'
+import { codeMessages } from '../helpers/translation'
 import { ResourceType } from './resource'
 
 // TODO: should be context
@@ -66,4 +69,30 @@ export const getResourceByProductId = (productId: string): { type: ResourceType;
     .join('_')
     .toLowerCase() as ResourceType
   return { type: resourceType, target: productTarget }
+}
+
+export const useToastMessage = () => {
+  const { formatMessage } = useIntl()
+  const toast = useToast()
+  const toastMessage = (options: {
+    title?: string
+    status?: 'info' | 'warning' | 'success' | 'error'
+    duration?: number | null
+    position?: 'top' | 'top-right' | 'top-left' | 'bottom' | 'bottom-right' | 'bottom-left'
+    responseCode?: string
+  }) => {
+    try {
+      toast({
+        title: options.responseCode
+          ? `${formatMessage(codeMessages[options.responseCode as keyof typeof codeMessages])}`
+          : options.title,
+        status: options.status || 'success',
+        duration: options.duration || 1500,
+        position: options.position || 'top',
+      })
+    } catch (err) {
+      alert(options.responseCode)
+    }
+  }
+  return toastMessage
 }

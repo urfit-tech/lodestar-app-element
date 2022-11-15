@@ -664,4 +664,8 @@ export const codeMessages = defineMessages({
     id: 'code.E_CW_SERVICE',
     defaultMessage: 'CW 導入付款頁失敗',
   },
+  E_DUPLICATED_EXCHANGE: {
+    id: 'code.E_DUPLICATED_EXCHANGE',
+    defaultMessage: 'Discount already exchange',
+  },
 })

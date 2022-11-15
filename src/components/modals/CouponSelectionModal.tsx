@@ -1,4 +1,4 @@
-import { Button, Input, Spinner, useToast } from '@chakra-ui/react'
+import { Button, Input, Spinner } from '@chakra-ui/react'
 import axios from 'axios'
 import { sum } from 'ramda'
 import React, { useState } from 'react'
@@ -6,8 +6,9 @@ import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { useAuth } from '../../contexts/AuthContext'
 import { handleError } from '../../helpers'
-import { checkoutMessages, codeMessages, commonMessages } from '../../helpers/translation'
+import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCouponCollection } from '../../hooks/data'
+import { useToastMessage } from '../../hooks/util'
 import { CouponProps, OrderDiscountProps, OrderProductProps } from '../../types/checkout'
 import CouponCard from '../cards/CouponCard'
 import Divider from '../common/Divider'
@@ -36,7 +37,7 @@ const CouponSelectionModal: React.VFC<{
   const [visible, setVisible] = useState(false)
   const [inserting, setInserting] = useState(false)
   const [selectedCoupon, setSelectedCoupon] = useState<CouponProps>()
-  const toast = useToast()
+  const toastMessage = useToastMessage()
 
   const handleCouponInsert = () => {
     setInserting(true)
@@ -55,19 +56,9 @@ const CouponSelectionModal: React.VFC<{
         if (data.code === 'SUCCESS') {
           refetchCoupons()
           setCode('')
-          toast({
-            title: `${formatMessage(codeMessages[data.code as keyof typeof codeMessages])}`,
-            status: 'success',
-            duration: 1500,
-            position: 'top',
-          })
+          toastMessage({ responseCode: data.code })
         } else {
-          toast({
-            title: `${formatMessage(codeMessages[data.code as keyof typeof codeMessages])}`,
-            status: 'error',
-            duration: 1500,
-            position: 'top',
-          })
+          toastMessage({ responseCode: data.code, status: 'error' })
         }
       })
       .catch(handleError)
