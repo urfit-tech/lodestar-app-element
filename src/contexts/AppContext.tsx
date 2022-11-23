@@ -13,6 +13,7 @@ type AppContextProps = AppProps & {
 
 const defaultAppContextProps: AppContextProps = {
   id: '',
+  orgId: null,
   name: '',
   title: null,
   description: null,
@@ -45,6 +46,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
 
         app_by_pk(id: $appId) {
           id
+          org_id
           name
           title
           description
@@ -110,6 +112,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             error,
             refetch,
             id: data.app_by_pk.id,
+            orgId: data.app_by_pk.org_id,
             name: data.app_by_pk.name || '',
             title: data.app_by_pk.title,
             description: data.app_by_pk.description,

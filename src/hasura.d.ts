@@ -255,6 +255,7 @@ export interface GET_APP_app_by_pk_app_hosts {
 export interface GET_APP_app_by_pk {
   __typename: 'app'
   id: string
+  org_id: string | null
   name: string | null
   title: string | null
   description: string | null
