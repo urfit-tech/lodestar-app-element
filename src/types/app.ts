@@ -90,6 +90,7 @@ export type Module =
   | 'login_restriction'
   | 'portfolio_project'
   | 'school'
+  | 'device_management'
 
 export type Currency = {
   id: string
