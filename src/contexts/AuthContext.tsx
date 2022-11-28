@@ -1,10 +1,9 @@
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import Axios, { AxiosError } from 'axios'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
-import { getVisitorId } from '../hooks/util'
+import { getFingerPrintId } from '../hooks/util'
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 
@@ -85,7 +84,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
   }, [authToken])
 
   const refreshToken = useCallback(async () => {
-    const fingerPrintId = await getVisitorId()
+    const fingerPrintId = await getFingerPrintId()
     const {
       data: { code, message, result },
     } = await Axios.post(
