@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react'
 import { useContext, useMemo } from 'react'
 import { useIntl } from 'react-intl'
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import { useApp } from '../contexts/AppContext'
 import LanguageContext from '../contexts/LanguageContext'
 import { codeMessages } from '../helpers/translation'
@@ -95,4 +96,16 @@ export const useToastMessage = () => {
     }
   }
   return toastMessage
+}
+
+const fpPromise = FingerprintJS.load()
+export const getFingerPrintId = async () => {
+
+  const fp = await fpPromise
+  const result = await fp.get()
+
+  const fingerPrintId = getCookie('fingerPrintId')
+
+  const visitorId = fingerPrintId.length > 0 ? fingerPrintId: result.visitorId
+  return visitorId
 }
