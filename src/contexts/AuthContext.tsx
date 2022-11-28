@@ -1,9 +1,9 @@
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import Axios, { AxiosError } from 'axios'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
+import { getFingerPrintId } from '../hooks/util'
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 
@@ -31,7 +31,6 @@ type AuthProps = {
   logout?: () => Promise<void>
   sendSmsCode?: (data: { phoneNumber: string }) => Promise<void>
   verifySmsCode?: (data: { phoneNumber: string; code: string }) => Promise<void>
-  checkDevice?: (data: { appId: string; account: string }) => Promise<LoginDeviceStatus>
   forceLogin?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
 }
 
@@ -45,16 +44,7 @@ const defaultAuthContext: AuthProps = {
   permissions: {},
 }
 
-const fpPromise = FingerprintJS.load()
-const getVisitorId = async () => {
-  // Get the visitor identifier when you need it.
-  const fp = await fpPromise
-  const result = await fp.get()
 
-  // This is the visitor identifier:
-  const visitorId = result.visitorId
-  return visitorId
-}
 
 const AuthContext = createContext<AuthProps>(defaultAuthContext)
 export const useAuth = () => useContext(AuthContext)
@@ -94,7 +84,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
   }, [authToken])
 
   const refreshToken = useCallback(async () => {
-    const fingerPrintId = await getVisitorId()
+    const fingerPrintId = await getFingerPrintId()
     const {
       data: { code, message, result },
     } = await Axios.post(
@@ -315,25 +305,6 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               throw new Error(code)
             }
           }),
-        checkDevice: async ({ appId, account }) => {
-          const fingerPrintId = await getVisitorId()
-          return Axios.post(
-            `${process.env.REACT_APP_API_BASE_ROOT}/auth/check-device`,
-            {
-              appId,
-              account,
-              fingerPrintId,
-            },
-            { withCredentials: true },
-          ).then(({ data: { code, message, result } }) => {
-            console.log(message)
-            if (code !== 'SUCCESS') {
-              console.log('check Device', code, message, result)
-              throw new Error(code)
-            }
-            return result.deviceStatus as LoginDeviceStatus
-          })
-        },
         forceLogin: async ({ account, password, accountLinkToken }) =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/force-login`,
