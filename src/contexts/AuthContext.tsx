@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
-import { getFingerPrintId } from '../hooks/util'
+import { fetchCurrentGeolocation, getFingerPrintId } from '../hooks/util'
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 
@@ -43,8 +43,6 @@ const defaultAuthContext: AuthProps = {
   currentMember: null,
   permissions: {},
 }
-
-
 
 const AuthContext = createContext<AuthProps>(defaultAuthContext)
 export const useAuth = () => useContext(AuthContext)
@@ -232,10 +230,11 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               throw new Error(code)
             }
           }),
-        login: async ({ account, password, accountLinkToken }) =>
-          Axios.post(
+        login: async ({ account, password, accountLinkToken }) => {
+          const { ip, country, countryCode } = await fetchCurrentGeolocation()
+          return Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
-            { appId, account, password },
+            { appId, account, password, geoLocation: { ip, country, countryCode } },
             { withCredentials: true },
           )
             .then(({ data: { code, result } }) => {
@@ -253,7 +252,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             })
             .catch((error: AxiosError) => {
               throw error
-            }),
+            })
+        },
         socialLogin: async ({ provider, providerToken, accountLinkToken }) =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/social-login`,

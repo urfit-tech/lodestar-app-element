@@ -1,10 +1,12 @@
 import { useToast } from '@chakra-ui/react'
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
+import axios from 'axios'
 import { useContext, useMemo } from 'react'
 import { useIntl } from 'react-intl'
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import { useApp } from '../contexts/AppContext'
 import LanguageContext from '../contexts/LanguageContext'
 import { codeMessages } from '../helpers/translation'
+import { IpApiResponseFail, IpApiResponseSuccess } from '../types/general'
 import { ResourceType } from './resource'
 
 // TODO: should be context
@@ -100,12 +102,27 @@ export const useToastMessage = () => {
 
 const fpPromise = FingerprintJS.load()
 export const getFingerPrintId = async () => {
-
   const fp = await fpPromise
   const result = await fp.get()
 
   const fingerPrintId = getCookie('fingerPrintId')
 
-  const visitorId = fingerPrintId.length > 0 ? fingerPrintId: result.visitorId
+  const visitorId = fingerPrintId.length > 0 ? fingerPrintId : result.visitorId
   return visitorId
+}
+export const fetchCurrentGeolocation = async () => {
+  try {
+    const getGeolocationRequest = await axios.get<IpApiResponseSuccess | IpApiResponseFail>(`https://ipapi.co/json/`)
+    if (getGeolocationRequest.data?.error) {
+      throw new Error(getGeolocationRequest.data.reason)
+    }
+    return {
+      ip: getGeolocationRequest.data.ip,
+      country: getGeolocationRequest.data.country_name,
+      countryCode: getGeolocationRequest.data.country_code,
+      error: null,
+    }
+  } catch (error) {
+    return { ip: null, country: null, countryCode: null, error }
+  }
 }
