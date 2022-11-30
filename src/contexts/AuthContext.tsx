@@ -305,10 +305,11 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               throw new Error(code)
             }
           }),
-        forceLogin: async ({ account, password, accountLinkToken }) =>
-          Axios.post(
+        forceLogin: async ({ account, password, accountLinkToken }) => {
+          const geoLocation = await fetchCurrentGeolocation()
+          return Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/force-login`,
-            { appId, account, password },
+            { appId, account, password, geoLocation },
             { withCredentials: true },
           )
             .then(({ data: { code, result } }) => {
@@ -326,7 +327,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             })
             .catch((error: AxiosError) => {
               throw error
-            }),
+            })
+        },
       }}
     >
       {children}
