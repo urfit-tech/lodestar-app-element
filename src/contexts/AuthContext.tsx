@@ -16,6 +16,7 @@ type AuthProps = {
   currentUserRole: UserRole
   currentMemberId: string | null
   authToken: string | null
+  updateAuthToken?: (authToken: string | null) => void
   currentMember: Pick<Member, 'id' | 'name' | 'username' | 'email' | 'pictureUrl' | 'role' | 'options'> | null
   permissions: { [key in Permission]?: boolean }
   refreshToken?: () => Promise<void>
@@ -112,6 +113,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         currentUserRole: (payload && payload.role) || 'anonymous',
         currentMemberId: payload && payload.sub,
         authToken,
+        updateAuthToken: authToken => setAuthToken(authToken),
         currentMember: payload && {
           id: payload.sub,
           name: payload.name,
