@@ -84,11 +84,12 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
 
   const refreshToken = useCallback(async () => {
     const fingerPrintId = await getFingerPrintId()
+    const { ip, country, countryCode } = await fetchCurrentGeolocation()
     const {
       data: { code, message, result },
     } = await Axios.post(
       `${process.env.REACT_APP_API_BASE_ROOT}/auth/refresh-token`,
-      { appId, fingerPrintId },
+      { appId, fingerPrintId, geoLocation: { ip, country, countryCode } },
       {
         method: 'POST',
         withCredentials: true,
@@ -233,10 +234,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             }
           }),
         login: async ({ account, password, accountLinkToken }) => {
-          const { ip, country, countryCode } = await fetchCurrentGeolocation()
           return Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
-            { appId, account, password, geoLocation: { ip, country, countryCode } },
+            { appId, account, password },
             { withCredentials: true },
           )
             .then(({ data: { code, result } }) => {
@@ -308,10 +308,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             }
           }),
         forceLogin: async ({ account, password, accountLinkToken }) => {
-          const geoLocation = await fetchCurrentGeolocation()
           return Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/force-login`,
-            { appId, account, password, geoLocation },
+            { appId, account, password },
             { withCredentials: true },
           )
             .then(({ data: { code, result } }) => {
