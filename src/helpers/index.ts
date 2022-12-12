@@ -97,7 +97,6 @@ export const validationRegExp: { [fieldId: string]: RegExp } = {
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   phoneBarCode: /^\/{1}[0-9A-Z+-.]{7}$/,
   citizenCode: /^[A-Z]{2}[0-9]{14}$/,
-  uniformNumber: /^[0-9]{8}$/,
 }
 
 export const validateContactInfo: (contactInfo: ContactInfo) => string[] = contactInfo => {
