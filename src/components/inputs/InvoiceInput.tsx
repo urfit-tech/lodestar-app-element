@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
-import { validationRegExp } from '../../helpers'
+import { checkUniformNumber, validationRegExp } from '../../helpers'
 import { checkoutMessages } from '../../helpers/translation'
 import { useMember } from '../../hooks/member'
 import { InvoiceProps, ShippingProps } from '../../types/checkout'
@@ -46,7 +46,9 @@ export const validateInvoice: (invoice: InvoiceProps) => string[] = invoice => {
       fieldId === 'phone'
         ? invoice[fieldId as keyof InvoiceProps]?.replace(/-/g, '')
         : invoice[fieldId as keyof InvoiceProps]
-    if (
+    if (typeof fieldValue === 'string' && fieldId === 'uniformNumber' && !checkUniformNumber(fieldValue)) {
+      errorFields.push(fieldId)
+    } else if (
       typeof fieldValue === 'string' &&
       (!fieldValue || (validationRegExp[fieldId] && !validationRegExp[fieldId].test(fieldValue)))
     ) {
@@ -462,6 +464,7 @@ const InvoiceInput: React.VFC<{
               >
                 <Input
                   ref={uniformNumberRef}
+                  type="number"
                   placeholder={formatMessage(checkoutMessages.message.uniformNumberText)}
                   defaultValue={value ? value.uniformNumber : undefined}
                   onBlur={() => handleChange({})}

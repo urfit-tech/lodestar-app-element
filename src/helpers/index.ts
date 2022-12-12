@@ -97,7 +97,6 @@ export const validationRegExp: { [fieldId: string]: RegExp } = {
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   phoneBarCode: /^\/{1}[0-9A-Z+-.]{7}$/,
   citizenCode: /^[A-Z]{2}[0-9]{14}$/,
-  uniformNumber: /^[0-9]{8}$/,
 }
 
 export const validateContactInfo: (contactInfo: ContactInfo) => string[] = contactInfo => {
@@ -121,3 +120,35 @@ export const isHTMLString = (str: string) =>
     .replace(/(<([^>]+)>)/gi, '')
     // remove extra space at start and end
     .trim()
+
+export const checkUniformNumber = (uniformNumber: string | number) => {
+  let cx: number[] = []
+  cx[0] = 1
+  cx[1] = 2
+  cx[2] = 1
+  cx[3] = 2
+  cx[4] = 1
+  cx[5] = 2
+  cx[6] = 4
+  cx[7] = 1
+
+  const cc = (n: number) => {
+    if (n > 9) {
+      var s: string = n + ''
+      let n1: number = Number(s.substring(0, 1)) * 1
+      let n2: number = Number(s.substring(1, 2)) * 1
+      n = n1 + n2
+    }
+    return n
+  }
+
+  let totalSum = 0
+  if (uniformNumber.toString().length !== 8) return false
+  let splitNum: string[] = uniformNumber.toString().split('')
+  for (let i = 0; i <= 7; i++) {
+    totalSum += cc(Number(splitNum[i]) * cx[i])
+  }
+  if (totalSum % 10 === 0) return true
+  else if (splitNum[6] === '7' && (totalSum + 1) % 10 === 0) return true
+  else return false
+}
