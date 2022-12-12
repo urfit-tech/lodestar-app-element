@@ -464,6 +464,7 @@ const InvoiceInput: React.VFC<{
               >
                 <Input
                   ref={uniformNumberRef}
+                  type="number"
                   placeholder={formatMessage(checkoutMessages.message.uniformNumberText)}
                   defaultValue={value ? value.uniformNumber : undefined}
                   onBlur={() => handleChange({})}
