@@ -1,14 +1,16 @@
-import { Button, Textarea } from '@chakra-ui/react'
-import { Form, Input, Radio } from 'antd'
+import { Button, Checkbox, Form, Input, Radio, Select } from 'antd'
+import TextArea from 'antd/lib/input/TextArea'
 import { camelCase } from 'lodash'
 import React, { useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
+import { cities, districts, useTwZipCode, zipCodes } from 'use-tw-zipcode'
 import { useApp } from '../../contexts/AppContext'
 import { checkoutMessages } from '../../helpers/translation'
 import { ShippingOptionProps, ShippingProps } from '../../types/checkout'
 import { CommonTitleMixin } from '../common'
 import PriceLabel from '../labels/PriceLabel'
+import inputMessages from './translation'
 
 export const csvShippingMethods = ['seven-eleven', 'family-mart', 'ok-mart', 'hi-life']
 
@@ -16,11 +18,26 @@ const StyledTitle = styled.div`
   ${CommonTitleMixin}
 `
 
+const GiftPlanDeliverNoticeBlock = styled.div`
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+  color: var(--gray-darker);
+`
+
 const StyledPriceTag = styled.span`
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.4px;
   color: ${props => props.theme['@primary-color']};
+`
+
+const StyledCheckBox = styled(Checkbox)`
+  margin-top: 24px;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+  color: var(--gray-darker);
 `
 
 type cvsOptionsProps = {
@@ -39,13 +56,17 @@ const ShippingInput: React.VFC<{
   onChange?: (value: ShippingProps) => void
   isValidating?: boolean
   shippingMethods?: ShippingOptionProps[]
-}> = ({ value, onChange, isValidating, shippingMethods }) => {
+  isGiftPlanDeliverable?: boolean
+}> = ({ value, onChange, isValidating, shippingMethods, isGiftPlanDeliverable }) => {
   const { formatMessage } = useIntl()
-  const { currencyId: appCurrencyId } = useApp()
+  const { currencyId: appCurrencyId, settings } = useApp()
+  const { handleCityChange, handleDistrictChange } = useTwZipCode()
+  const [isOutsideTaiwanIsland, setIsOutsideTaiwanIsland] = useState(value?.isOutsideTaiwanIsland === 'true')
 
   const nameRef = useRef<Input | null>(null)
   const phoneRef = useRef<Input | null>(null)
   const addressRef = useRef<Input | null>(null)
+  const specificationRef = useRef<TextArea | null>(null)
 
   const cachedCvsOptions = localStorage.getItem('kolable.cart.shippingOptions')
   const [currentCvsOptions, setCurrentCvsOptions] = useState<{ [key: string]: cvsOptionsProps }>(
@@ -65,17 +86,38 @@ const ShippingInput: React.VFC<{
       localStorage.setItem('kolable.cart.shippingOptions', JSON.stringify(newShippingOption))
     }
 
-    const newValue: ShippingProps = {
-      name: value?.name || '',
-      phone: value?.phone || '',
-      address: value?.address || '',
+    let newValue: ShippingProps = {
+      name: value?.name?.trim() || '',
+      phone: value?.phone?.trim() || '',
+      zipCode: value?.zipCode || '100',
+      city: value?.city || '台北市',
+      district: value?.district || '中正區',
+      address: value?.address?.trim() || '',
+      isOutsideTaiwanIsland: value?.isOutsideTaiwanIsland || 'false',
       shippingMethod: value?.shippingMethod || 'home-delivery',
-      specification: value?.specification || '',
+      specification: value?.specification?.trim() || '',
       storeId: value?.storeId || '',
       storeName: value?.storeName || '',
       ...newShippingOption,
     }
-    newValue[key] = inputValue
+
+    let newZipCode = value?.zipCode
+
+    if (key === 'city') {
+      newZipCode = zipCodes[inputValue][districts[inputValue][0]]
+    } else if (key === 'district' && value?.city) {
+      newZipCode = zipCodes[value.city][inputValue]
+    }
+
+    newValue = { ...value, zipCode: newZipCode, [key]: inputValue }
+
+    if (key === 'city') {
+      newValue['district'] = districts[inputValue][0]
+      handleDistrictChange(districts[inputValue][0])
+    } else if (key === 'isOutsideTaiwanIsland' && inputValue === 'true') {
+      newValue['shippingMethod'] = ''
+    }
+
     localStorage.setItem('kolable.cart.shipping', JSON.stringify(newValue))
     onChange && onChange(newValue)
   }
@@ -140,10 +182,18 @@ const ShippingInput: React.VFC<{
 
   return (
     <div>
-      <StyledTitle className="mb-4">{formatMessage(checkoutMessages.label.shippingInput)}</StyledTitle>
+      <StyledTitle className="mb-4">{formatMessage(inputMessages.ShippingInput.shippingInput)}</StyledTitle>
 
-      {shippingMethods && (
-        <Form.Item required label={formatMessage(checkoutMessages.label.shippingMethod)}>
+      {isGiftPlanDeliverable && (
+        <GiftPlanDeliverNoticeBlock className="mb-4">
+          <p>{formatMessage(inputMessages.ShippingInput.giftPlanDeliverNotice1)}</p>
+          <p>{formatMessage(inputMessages.ShippingInput.giftPlanDeliverNotice2)}</p>
+          <p>{formatMessage(inputMessages.ShippingInput.giftPlanDeliverNotice3)}</p>
+        </GiftPlanDeliverNoticeBlock>
+      )}
+
+      {shippingMethods && !isOutsideTaiwanIsland && (
+        <Form.Item required label={formatMessage(inputMessages.ShippingInput.shippingMethod)}>
           <Radio.Group
             value={value?.shippingMethod || 'home-delivery'}
             onChange={event => handleChange('shippingMethod', event.target.value)}
@@ -162,13 +212,8 @@ const ShippingInput: React.VFC<{
                     {csvShippingMethods.includes(shippingMethod.id) && value?.shippingMethod === shippingMethod.id && (
                       <>
                         <span className="mr-2">
-                          <Button
-                            variant="outline"
-                            borderColor="#d9d9d9"
-                            borderRadius="4px"
-                            onClick={() => handleStoreSelect()}
-                          >
-                            {formatMessage(checkoutMessages.label.selectStore)}
+                          <Button onClick={() => handleStoreSelect()}>
+                            {formatMessage(inputMessages.ShippingInput.selectStore)}
                           </Button>
                         </span>
 
@@ -187,23 +232,29 @@ const ShippingInput: React.VFC<{
       <div className="row">
         <div className="col-12 col-lg-6">
           <Form.Item
-            required
-            label={formatMessage(checkoutMessages.label.receiverName)}
-            validateStatus={isValidating && nameRef.current?.input.value === '' ? 'error' : undefined}
+            required={!isOutsideTaiwanIsland}
+            label={formatMessage(inputMessages['*'].receiverName)}
+            validateStatus={
+              !isOutsideTaiwanIsland && isValidating && nameRef.current?.input.value === '' ? 'error' : undefined
+            }
           >
             <Input
               ref={nameRef}
-              placeholder={formatMessage(checkoutMessages.placeholder.nameText)}
+              placeholder={formatMessage(inputMessages.ShippingInput.nameText)}
               defaultValue={value?.name || ''}
+              value={isOutsideTaiwanIsland ? undefined : value?.name}
+              disabled={isOutsideTaiwanIsland}
+              onChange={event => handleChange('name', event.target.value)}
               onBlur={event => handleChange('name', event.target.value)}
             />
           </Form.Item>
         </div>
         <div className="col-12 col-lg-6">
           <Form.Item
-            required
-            label={formatMessage(checkoutMessages.label.receiverPhone)}
+            required={!isOutsideTaiwanIsland}
+            label={formatMessage(inputMessages.ShippingInput.receiverPhone)}
             validateStatus={
+              !isOutsideTaiwanIsland &&
               isValidating &&
               (phoneRef.current?.input.value === '' || /^[^0-9^+^\-^(^)]$/.test(phoneRef.current?.input.value || ''))
                 ? 'error'
@@ -212,36 +263,121 @@ const ShippingInput: React.VFC<{
           >
             <Input
               ref={phoneRef}
-              placeholder={formatMessage(checkoutMessages.label.phone)}
+              placeholder={formatMessage(inputMessages.ShippingInput.mobilePhone)}
               defaultValue={value?.phone || ''}
+              value={isOutsideTaiwanIsland ? undefined : value?.phone}
+              disabled={isOutsideTaiwanIsland}
+              onChange={event => handleChange('phone', event.target.value)}
               onBlur={event => handleChange('phone', event.target.value)}
             />
           </Form.Item>
         </div>
       </div>
 
-      <Form.Item
-        required
-        label={formatMessage(checkoutMessages.label.receiverAddress)}
-        validateStatus={isValidating && addressRef.current?.input.value === '' ? 'error' : undefined}
-      >
-        <Input
-          ref={addressRef}
-          placeholder={formatMessage(checkoutMessages.message.addressText)}
-          defaultValue={value?.address || ''}
-          value={value?.address}
-          onBlur={event => handleChange('address', event.target.value)}
-          onChange={event => handleChange('address', event.target.value)}
-        />
-      </Form.Item>
+      {!!Number(settings['checkout.taiwan_shipping_selector']) ? (
+        <Form.Item
+          required={!isOutsideTaiwanIsland}
+          label={formatMessage(inputMessages.ShippingInput.receiverAddress)}
+          validateStatus={
+            !isOutsideTaiwanIsland && isValidating && addressRef.current?.input.value === '' ? 'error' : undefined
+          }
+        >
+          <div className="row">
+            <div className="col-12 col-lg-2">
+              <Select className="col-12" disabled value={isOutsideTaiwanIsland ? undefined : value?.zipCode}></Select>
+            </div>
+            <div className="col-12 col-lg-2">
+              <Select
+                className="col-12"
+                value={isOutsideTaiwanIsland ? undefined : value?.city}
+                onChange={(v: string) => {
+                  handleChange('city', v)
+                  handleCityChange(v)
+                }}
+                disabled={isOutsideTaiwanIsland}
+              >
+                {cities.map(city => {
+                  return (
+                    <Select.Option key={city} disabled={['澎湖縣', '金門縣', '連江縣'].includes(city)}>
+                      {city}
+                    </Select.Option>
+                  )
+                })}
+              </Select>
+            </div>
+            <div className="col-12 col-lg-2">
+              <Select
+                className="col-12"
+                value={isOutsideTaiwanIsland ? undefined : value?.district}
+                onChange={(w: string) => {
+                  handleChange('district', w)
+                  handleDistrictChange(w)
+                }}
+                disabled={isOutsideTaiwanIsland}
+              >
+                {districts[value?.city || ''].map(district => {
+                  return (
+                    <Select.Option
+                      key={district}
+                      disabled={['釣魚台列嶼', '綠島鄉', '蘭嶼鄉', '東沙群島', '南沙群島'].includes(district)}
+                    >
+                      {district}
+                    </Select.Option>
+                  )
+                })}
+              </Select>
+            </div>
+            <div className="col-12 col-lg-6">
+              <Input
+                ref={addressRef}
+                placeholder={formatMessage(inputMessages.ShippingInput.addressText)}
+                defaultValue={value?.address || ''}
+                value={isOutsideTaiwanIsland ? undefined : value?.address}
+                onBlur={event => handleChange('address', event.target.value)}
+                onChange={event => handleChange('address', event.target.value)}
+                disabled={isOutsideTaiwanIsland}
+              />
+            </div>
+          </div>
+          <StyledCheckBox
+            defaultChecked={value?.isOutsideTaiwanIsland === 'true'}
+            onChange={() => {
+              setIsOutsideTaiwanIsland(!isOutsideTaiwanIsland)
+              handleChange('isOutsideTaiwanIsland', (!isOutsideTaiwanIsland).toString())
+            }}
+          >
+            {formatMessage(inputMessages.ShippingInput.outsideTaiwanIslandNoShipping)}
+          </StyledCheckBox>
+        </Form.Item>
+      ) : (
+        <Form.Item
+          required
+          label={formatMessage(inputMessages.ShippingInput.receiverAddress)}
+          validateStatus={
+            !isOutsideTaiwanIsland && isValidating && addressRef.current?.input.value === '' ? 'error' : undefined
+          }
+        >
+          <Input
+            ref={addressRef}
+            placeholder={formatMessage(inputMessages.ShippingInput.addressText)}
+            defaultValue={value?.address || ''}
+            value={value?.address}
+            onBlur={event => handleChange('address', event.target.value)}
+            onChange={event => handleChange('address', event.target.value)}
+          />
+        </Form.Item>
+      )}
 
-      <Form.Item label={formatMessage(checkoutMessages.label.specification)}>
-        <Textarea
-          rows={5}
-          defaultValue={value?.specification || ''}
-          onBlur={event => handleChange('specification', event.target.value)}
-        />
-      </Form.Item>
+      {!isGiftPlanDeliverable && (
+        <Form.Item label={formatMessage(inputMessages.ShippingInput.specification)}>
+          <Input.TextArea
+            ref={specificationRef}
+            rows={5}
+            defaultValue={value?.specification || ''}
+            onBlur={event => handleChange('specification', event.target.value)}
+          />
+        </Form.Item>
+      )}
     </div>
   )
 }

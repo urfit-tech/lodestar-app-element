@@ -13,6 +13,7 @@
     "ecommerce",
     "esumwallet",
     "ezpay",
+    "hasura",
     "instflag",
     "kolable",
     "linepay",
@@ -25,7 +26,7 @@
     "unionpay",
     "vacc",
     "webatm",
-    "hasura"
+    "zipcode"
   ],
   "typescript.tsdk": "node_modules/typescript/lib"
 }
