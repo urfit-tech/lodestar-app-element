@@ -203,7 +203,12 @@ const ShippingInput: React.VFC<{
           <Form.Item
             required
             label={formatMessage(checkoutMessages.label.receiverPhone)}
-            validateStatus={isValidating && phoneRef.current?.input.value === '' ? 'error' : undefined}
+            validateStatus={
+              isValidating &&
+              (phoneRef.current?.input.value === '' || /^[^0-9^+^\-^(^)]$/.test(phoneRef.current?.input.value || ''))
+                ? 'error'
+                : undefined
+            }
           >
             <Input
               ref={phoneRef}
