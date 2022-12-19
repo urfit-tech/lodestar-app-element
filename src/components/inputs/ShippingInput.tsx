@@ -256,7 +256,8 @@ const ShippingInput: React.VFC<{
             validateStatus={
               !isOutsideTaiwanIsland &&
               isValidating &&
-              (phoneRef.current?.input.value === '' || /^[^0-9^+^\-^(^)]$/.test(phoneRef.current?.input.value || ''))
+              (phoneRef.current?.input.value === '' ||
+                !/^\+?\(?[0-9]+\)?-?[0-9]+$/.test(phoneRef.current?.input.value || ''))
                 ? 'error'
                 : undefined
             }
