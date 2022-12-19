@@ -48,6 +48,7 @@ type cvsOptionsProps = {
 }
 
 export const validateShipping: (shipping: ShippingProps) => boolean = shipping => {
+  if (shipping.phone && !/^\+?\(?[0-9]+\)?-?[0-9]+$/.test(shipping.phone)) return false
   return [shipping.name, shipping.phone, shipping.address].every(value => !!value)
 }
 
