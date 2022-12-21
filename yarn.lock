@@ -15646,6 +15646,11 @@ use-sidecar@^1.0.1:
     detect-node-es "^1.1.0"
     tslib "^1.9.3"
 
+use-tw-zipcode@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/use-tw-zipcode/-/use-tw-zipcode-2.0.4.tgz#772c7d0e65bc272968d8ce2222c7c66f0a1e237f"
+  integrity sha512-DQw4jjsOJtgucU2Z4V/tjyeu9tX2f0kQz/EYTcGcKyOcmRyu6dxaCTxFM77JT6CXJN1QcE7Md7LLLS7jnsYcQQ==
+
 use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"

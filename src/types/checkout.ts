@@ -81,7 +81,11 @@ export type PaymentGatewayType = 'spgateway' | 'tappay' | 'parenting' | 'paypal'
 export type ShippingProps = {
   name?: string
   phone?: string
+  zipCode?: string
+  city?: string
+  district?: string
   address?: string
+  isOutsideTaiwanIsland?: string
   shippingMethod?: string
   specification?: string
   storeId?: string
