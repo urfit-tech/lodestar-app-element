@@ -1,6 +1,8 @@
 import { useToast } from '@chakra-ui/react'
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
+import Ajv, { JSONSchemaType } from 'ajv'
 import axios from 'axios'
+import jwt from 'jsonwebtoken'
 import { useContext, useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import { useApp } from '../contexts/AppContext'
@@ -8,6 +10,7 @@ import LanguageContext from '../contexts/LanguageContext'
 import { codeMessages } from '../helpers/translation'
 import { IpApiResponseFail, IpApiResponseSuccess } from '../types/general'
 import { ResourceType } from './resource'
+const ajv = new Ajv()
 
 // TODO: should be context
 export const useTappay = () => {
@@ -124,5 +127,50 @@ export const fetchCurrentGeolocation = async () => {
     }
   } catch (error) {
     return { ip: null, country: null, countryCode: null, error }
+  }
+}
+
+export type AuthTokenPayload = {
+  sub: string
+  orgId?: string
+  appId: string
+  name: string
+  username: string
+  email: string
+  phoneNumber?: string
+  pictureUrl?: string
+  role: string
+  permissions: string[]
+  options?: { [key: string]: any }
+}
+
+export const parsePayload = (authToken: string) => {
+  const payload = jwt.decode(authToken)
+
+  const schema: JSONSchemaType<AuthTokenPayload> = {
+    type: 'object',
+    properties: {
+      sub: { type: 'string' },
+      orgId: { type: 'string', nullable: true },
+      appId: { type: 'string' },
+      name: { type: 'string' },
+      username: { type: 'string' },
+      email: { type: 'string' },
+      phoneNumber: { type: 'string', nullable: true },
+      role: { type: 'string' },
+      pictureUrl: { type: 'string', nullable: true },
+      permissions: { type: 'array', items: { type: 'string' }, default: [] },
+      options: { type: 'object', nullable: true },
+    },
+    required: [],
+  }
+
+  // validate is a type guard for MyData - type is inferred from schema type
+  const validate = ajv.compile(schema)
+  if (validate(payload)) {
+    return payload
+  } else {
+    console.error(`validate error: ${validate.errors?.join('\n')}`)
+    return null
   }
 }

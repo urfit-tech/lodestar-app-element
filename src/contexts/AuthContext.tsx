@@ -1,9 +1,9 @@
 import Axios, { AxiosError } from 'axios'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
-import { fetchCurrentGeolocation, getFingerPrintId } from '../hooks/util'
+import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hooks/util'
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 
@@ -51,36 +51,28 @@ export const useAuth = () => useContext(AuthContext)
 export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
   const [isAuthenticating, setIsAuthenticating] = useState(defaultAuthContext.isAuthenticating)
   const [authToken, setAuthToken] = useState<string | null>((window as any).AUTH_TOKEN || null)
-  const [payload, setPayload] = useState<any>(null)
+  const payload = useMemo(() => (authToken ? parsePayload(authToken) : null), [authToken])
 
   useEffect(() => {
-    if (!authToken) {
-      setPayload(null)
-      return
-    }
-    // TODO: add auth payload type
-    try {
-      const tmpPayload: any = jwt.decode(authToken)
-      if (!tmpPayload) {
-        return
+    if (payload) {
+      try {
+        const phoneNumber = payload.phoneNumber ? parsePhoneNumber(payload.phoneNumber, 'TW') : null
+        const _window = window as any
+        _window.insider_object = {
+          user: {
+            gdpr_optin: true,
+            sms_optin: true,
+            email: payload.email,
+            phone_number: phoneNumber?.isValid() ? phoneNumber.number : payload.phoneNumber,
+            email_optin: true,
+          },
+        }
+        ReactGA.set({ userId: payload.sub })
+      } catch (error) {
+        process.env.NODE_ENV === 'development' && console.error(error)
       }
-      const phoneNumber = parsePhoneNumber(tmpPayload.phoneNumber, 'TW')
-      const _window = window as any
-      _window.insider_object = {
-        user: {
-          gdpr_optin: true,
-          sms_optin: true,
-          email: tmpPayload.email,
-          phone_number: phoneNumber?.isValid() ? phoneNumber.number : tmpPayload.phoneNumber,
-          email_optin: true,
-        },
-      }
-      ReactGA.set({ userId: tmpPayload.sub })
-      setPayload(tmpPayload)
-    } catch (error) {
-      process.env.NODE_ENV === 'development' && console.error(error)
     }
-  }, [authToken])
+  }, [payload])
 
   const refreshToken = useCallback(async () => {
     const fingerPrintId = await getFingerPrintId()
@@ -111,8 +103,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
       value={{
         isAuthenticating,
         isAuthenticated: Boolean(authToken),
-        currentUserRole: (payload && payload.role) || 'anonymous',
-        currentMemberId: payload && payload.sub,
+        currentUserRole: (payload?.role as UserRole) || 'anonymous',
+        currentMemberId: payload?.sub || null,
         authToken,
         updateAuthToken: authToken => setAuthToken(authToken),
         currentMember: payload && {
@@ -120,16 +112,15 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
           name: payload.name,
           username: payload.username,
           email: payload.email,
-          pictureUrl: payload.pictureUrl,
-          role: payload.role,
+          pictureUrl: payload.pictureUrl || null,
+          role: payload.role as UserRole,
           options: payload.options || {},
         },
-        permissions: payload?.permissions
-          ? payload.permissions.reduce((accumulator: { [key: string]: boolean }, currentValue: string) => {
-              accumulator[currentValue] = true
-              return accumulator
-            }, {})
-          : {},
+        permissions:
+          payload?.permissions?.reduce((accumulator: { [key: string]: boolean }, currentValue: string) => {
+            accumulator[currentValue] = true
+            return accumulator
+          }, {}) || {},
         refreshToken,
         register: async data =>
           Axios.post(
