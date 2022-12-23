@@ -50,7 +50,7 @@ export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
   const [isAuthenticating, setIsAuthenticating] = useState(defaultAuthContext.isAuthenticating)
-  const [authToken, setAuthToken] = useState<string | null>(null)
+  const [authToken, setAuthToken] = useState<string | null>((window as any).AUTH_TOKEN || null)
   const [payload, setPayload] = useState<any>(null)
 
   useEffect(() => {
