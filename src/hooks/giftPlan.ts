@@ -36,7 +36,7 @@ const UPSERT_PRODUCT_GIFT_PLAN = gql`
         started_at: $giftPlanStartedAt
         ended_at: $giftPlanEndedAt
       }
-      on_conflict: { constraint: product_gift_plan_pkey, update_columns: [started_at, ended_at] }
+      on_conflict: { constraint: product_gift_plan_pkey, update_columns: [gift_plan_id, started_at, ended_at] }
     ) {
       affected_rows
     }
