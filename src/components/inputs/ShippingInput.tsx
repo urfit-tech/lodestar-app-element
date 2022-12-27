@@ -1,5 +1,6 @@
 import { Button, Checkbox, Form, Input, Radio, Select } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
+import RadioGroup from 'antd/lib/radio/group'
 import { camelCase } from 'lodash'
 import React, { useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
@@ -58,12 +59,14 @@ const ShippingInput: React.VFC<{
   isValidating?: boolean
   shippingMethods?: ShippingOptionProps[]
   isGiftPlanDeliverable?: boolean
-}> = ({ value, onChange, isValidating, shippingMethods, isGiftPlanDeliverable }) => {
+  isShippingMethodValidate?: boolean
+}> = ({ value, onChange, isValidating, shippingMethods, isGiftPlanDeliverable, isShippingMethodValidate }) => {
   const { formatMessage } = useIntl()
   const { currencyId: appCurrencyId, settings } = useApp()
   const { handleCityChange, handleDistrictChange } = useTwZipCode()
   const [isOutsideTaiwanIsland, setIsOutsideTaiwanIsland] = useState(value?.isOutsideTaiwanIsland === 'true')
 
+  const shippingMethodRef = useRef<RadioGroup | null>(null)
   const nameRef = useRef<Input | null>(null)
   const phoneRef = useRef<Input | null>(null)
   const addressRef = useRef<Input | null>(null)
@@ -194,8 +197,13 @@ const ShippingInput: React.VFC<{
       )}
 
       {shippingMethods && !isOutsideTaiwanIsland && (
-        <Form.Item required label={formatMessage(inputMessages.ShippingInput.shippingMethod)}>
+        <Form.Item
+          required
+          label={formatMessage(inputMessages.ShippingInput.shippingMethod)}
+          validateStatus={isShippingMethodValidate ? undefined : 'error'}
+        >
           <Radio.Group
+            ref={shippingMethodRef}
             value={value?.shippingMethod || 'home-delivery'}
             onChange={event => handleChange('shippingMethod', event.target.value)}
           >
