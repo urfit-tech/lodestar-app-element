@@ -196,7 +196,13 @@ const ShippingInput: React.VFC<{
       {shippingMethods && !isOutsideTaiwanIsland && (
         <Form.Item required label={formatMessage(inputMessages.ShippingInput.shippingMethod)}>
           <Radio.Group
-            value={value?.shippingMethod || 'home-delivery'}
+            value={
+              shippingMethods.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === value?.shippingMethod)
+                ? value?.shippingMethod
+                : shippingMethods.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === 'home-delivery')
+                ? 'home-delivery'
+                : shippingMethods.filter(shippingMethod => shippingMethod.enabled)?.[0].id
+            }
             onChange={event => handleChange('shippingMethod', event.target.value)}
           >
             {shippingMethods
