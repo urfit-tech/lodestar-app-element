@@ -197,10 +197,11 @@ const ShippingInput: React.VFC<{
         <Form.Item required label={formatMessage(inputMessages.ShippingInput.shippingMethod)}>
           <Radio.Group
             value={
-              value?.shippingMethod ||
-              shippingMethods.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === 'home-delivery')
+              shippingMethods.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === value?.shippingMethod)
+                ? value?.shippingMethod
+                : shippingMethods.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === 'home-delivery')
                 ? 'home-delivery'
-                : shippingMethods.filter(shippingMethod => shippingMethod.enabled)?.[0]
+                : shippingMethods.filter(shippingMethod => shippingMethod.enabled)?.[0].id
             }
             onChange={event => handleChange('shippingMethod', event.target.value)}
           >
