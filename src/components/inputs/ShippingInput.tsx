@@ -1,6 +1,4 @@
 import { Button, Checkbox, Form, Input, Radio, Select } from 'antd'
-import TextArea from 'antd/lib/input/TextArea'
-import RadioGroup from 'antd/lib/radio/group'
 import { camelCase } from 'lodash'
 import React, { useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
@@ -66,11 +64,10 @@ const ShippingInput: React.VFC<{
   const { handleCityChange, handleDistrictChange } = useTwZipCode()
   const [isOutsideTaiwanIsland, setIsOutsideTaiwanIsland] = useState(value?.isOutsideTaiwanIsland === 'true')
 
-  const shippingMethodRef = useRef<RadioGroup | null>(null)
   const nameRef = useRef<Input | null>(null)
   const phoneRef = useRef<Input | null>(null)
   const addressRef = useRef<Input | null>(null)
-  const specificationRef = useRef<TextArea | null>(null)
+  const specificationRef = useRef(null)
 
   const cachedCvsOptions = localStorage.getItem('kolable.cart.shippingOptions')
   const [currentCvsOptions, setCurrentCvsOptions] = useState<{ [key: string]: cvsOptionsProps }>(
@@ -200,11 +197,9 @@ const ShippingInput: React.VFC<{
         <Form.Item
           required
           label={formatMessage(inputMessages.ShippingInput.shippingMethod)}
-          // validateStatus={isShippingMethodValidate ? undefined : 'error'}
-          validateStatus="error"
+          rules={[{ required: true, message: '請選擇運送方式' }]}
         >
           <Radio.Group
-            ref={shippingMethodRef}
             value={value?.shippingMethod || 'home-delivery'}
             onChange={event => handleChange('shippingMethod', event.target.value)}
           >
@@ -309,7 +304,7 @@ const ShippingInput: React.VFC<{
               >
                 {cities.map(city => {
                   return (
-                    <Select.Option key={city} disabled={['澎湖縣', '金門縣', '連江縣'].includes(city)}>
+                    <Select.Option key={city} value={city} disabled={['澎湖縣', '金門縣', '連江縣'].includes(city)}>
                       {city}
                     </Select.Option>
                   )
@@ -330,6 +325,7 @@ const ShippingInput: React.VFC<{
                   return (
                     <Select.Option
                       key={district}
+                      value={district}
                       disabled={['釣魚台列嶼', '綠島鄉', '蘭嶼鄉', '東沙群島', '南沙群島'].includes(district)}
                     >
                       {district}
