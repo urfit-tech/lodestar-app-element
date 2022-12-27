@@ -105,6 +105,7 @@ const InvoiceInput: React.VFC<{
   const [selectedType, setSelectedType] = useState<InvoiceType | null>(null)
   const [selectedOption, setSelectedOption] = useState<InvoiceOption | null>(null)
   const [selectedCharity, setSelectedCharity] = useState('5380')
+  const [isSameToShipping, setIsSameToShipping] = useState(false)
 
   const errorFields = isValidating && value ? validateInvoice(value) : []
 
@@ -283,7 +284,16 @@ const InvoiceInput: React.VFC<{
 
       {shouldSameToShippingCheckboxDisplay && (
         <div className="mb-4">
-          <Checkbox onChange={event => event.target.checked && syncWithShipping()}>
+          <Checkbox
+            onChange={event => {
+              if (event.target.checked) {
+                setIsSameToShipping(true)
+                syncWithShipping()
+              } else {
+                setIsSameToShipping(false)
+              }
+            }}
+          >
             {formatMessage(checkoutMessages.message.sameToShipping)}
           </Checkbox>
         </div>
@@ -299,6 +309,7 @@ const InvoiceInput: React.VFC<{
               help={errorFields.includes('name') && formatMessage(checkoutMessages.message.errorName)}
             >
               <Input
+                disabled={isSameToShipping}
                 ref={nameRef}
                 placeholder={formatMessage(checkoutMessages.placeholder.nameText)}
                 defaultValue={isMemberInfoDisable ? member?.name || member?.username : value ? value.name : ''}
@@ -314,6 +325,7 @@ const InvoiceInput: React.VFC<{
               help={errorFields.includes('phone') && formatMessage(checkoutMessages.message.errorPhone)}
             >
               <Input
+                disabled={isSameToShipping}
                 ref={phoneRef}
                 placeholder={formatMessage(checkoutMessages.message.phone)}
                 defaultValue={isMemberInfoDisable ? member?.phone || '' : value ? value.phone : ''}
@@ -329,6 +341,7 @@ const InvoiceInput: React.VFC<{
               help={errorFields.includes('email') && formatMessage(checkoutMessages.message.errorEmail)}
             >
               <Input
+                disabled={isSameToShipping}
                 ref={emailRef}
                 placeholder={formatMessage(checkoutMessages.message.emailText)}
                 defaultValue={isMemberInfoDisable ? member?.email : value ? value.email : ''}
