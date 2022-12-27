@@ -222,8 +222,8 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
           {loading ? (
             <MultiAvatar loading memberIdList={[]} />
           ) : (
-            <Link to={!props.editing ? `/creators/${props.creatorId}?tabkey=introduction` : '#!'}>
-              <MultiAvatar memberIdList={props.creatorId ? [props.creatorId] : []} withName />
+            <Link to={!props.editing ? `/creators/${props.authorId}?tabkey=introduction` : '#!'}>
+              <MultiAvatar memberIdList={props.authorId ? [props.authorId] : []} withName />
             </Link>
           )}
         </InstructorPlaceHolder>

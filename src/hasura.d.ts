@@ -337,6 +337,20 @@ export interface GET_MEMBER_COLLECTIONVariables {
 // GraphQL query operation: GET_PROJECT_COLLECTION
 // ====================================================
 
+export interface GET_PROJECT_COLLECTION_project_author_member {
+  __typename: 'member_public'
+  id: string | null
+}
+
+export interface GET_PROJECT_COLLECTION_project_author {
+  __typename: 'project_role'
+  id: any
+  /**
+   * An object relationship
+   */
+  member: GET_PROJECT_COLLECTION_project_author_member | null
+}
+
 export interface GET_PROJECT_COLLECTION_project_project_sales {
   __typename: 'project_sales'
   total_sales: any | null
@@ -398,6 +412,10 @@ export interface GET_PROJECT_COLLECTION_project {
   is_participants_visible: boolean
   is_countdown_timer_visible: boolean
   creator_id: string | null
+  /**
+   * An array relationship
+   */
+  author: GET_PROJECT_COLLECTION_project_author[]
   /**
    * An object relationship
    */
@@ -2147,6 +2165,9 @@ export interface GET_GIFT_token_by_pk {
   id: any
   title: string
   cover_url: string | null
+  /**
+   * list price
+   */
   price: any
   currency_id: string
   is_deliverable: boolean
@@ -2764,6 +2785,20 @@ export interface programPackageFields {
 // GraphQL fragment: projectFields
 // ====================================================
 
+export interface projectFields_author_member {
+  __typename: 'member_public'
+  id: string | null
+}
+
+export interface projectFields_author {
+  __typename: 'project_role'
+  id: any
+  /**
+   * An object relationship
+   */
+  member: projectFields_author_member | null
+}
+
 export interface projectFields_project_sales {
   __typename: 'project_sales'
   total_sales: any | null
@@ -2825,6 +2860,10 @@ export interface projectFields {
   is_participants_visible: boolean
   is_countdown_timer_visible: boolean
   creator_id: string | null
+  /**
+   * An array relationship
+   */
+  author: projectFields_author[]
   /**
    * An object relationship
    */
@@ -3081,6 +3120,16 @@ export enum activity_attendance_constraint {
 }
 
 /**
+ * select columns of table "activity_attendance"
+ */
+export enum activity_attendance_select_column {
+  activity_session_id = 'activity_session_id',
+  created_at = 'created_at',
+  id = 'id',
+  order_product_id = 'order_product_id',
+}
+
+/**
  * update columns of table "activity_attendance"
  */
 export enum activity_attendance_update_column {
@@ -3095,6 +3144,16 @@ export enum activity_attendance_update_column {
  */
 export enum activity_category_constraint {
   activity_category_pkey = 'activity_category_pkey',
+}
+
+/**
+ * select columns of table "activity_category"
+ */
+export enum activity_category_select_column {
+  activity_id = 'activity_id',
+  category_id = 'category_id',
+  id = 'id',
+  position = 'position',
 }
 
 /**
@@ -3115,10 +3174,91 @@ export enum activity_constraint {
 }
 
 /**
+ * select columns of table "activity_enrollment"
+ */
+export enum activity_enrollment_select_column {
+  activity_id = 'activity_id',
+  activity_session_id = 'activity_session_id',
+  activity_ticket_id = 'activity_ticket_id',
+  attended = 'attended',
+  member_email = 'member_email',
+  member_id = 'member_id',
+  member_name = 'member_name',
+  member_phone = 'member_phone',
+  order_log_id = 'order_log_id',
+}
+
+/**
+ * select "activity_enrollment_aggregate_bool_exp_bool_and_arguments_columns" columns of table "activity_enrollment"
+ */
+export enum activity_enrollment_select_column_activity_enrollment_aggregate_bool_exp_bool_and_arguments_columns {
+  attended = 'attended',
+}
+
+/**
+ * select "activity_enrollment_aggregate_bool_exp_bool_or_arguments_columns" columns of table "activity_enrollment"
+ */
+export enum activity_enrollment_select_column_activity_enrollment_aggregate_bool_exp_bool_or_arguments_columns {
+  attended = 'attended',
+}
+
+/**
+ * select columns of table "activity"
+ */
+export enum activity_select_column {
+  app_id = 'app_id',
+  cover_url = 'cover_url',
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  description = 'description',
+  id = 'id',
+  is_participants_visible = 'is_participants_visible',
+  is_private = 'is_private',
+  organizer_id = 'organizer_id',
+  position = 'position',
+  published_at = 'published_at',
+  support_locales = 'support_locales',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "activity_aggregate_bool_exp_bool_and_arguments_columns" columns of table "activity"
+ */
+export enum activity_select_column_activity_aggregate_bool_exp_bool_and_arguments_columns {
+  is_participants_visible = 'is_participants_visible',
+  is_private = 'is_private',
+}
+
+/**
+ * select "activity_aggregate_bool_exp_bool_or_arguments_columns" columns of table "activity"
+ */
+export enum activity_select_column_activity_aggregate_bool_exp_bool_or_arguments_columns {
+  is_participants_visible = 'is_participants_visible',
+  is_private = 'is_private',
+}
+
+/**
  * unique or primary key constraints on table "activity_session"
  */
 export enum activity_session_constraint {
   activity_session_pkey = 'activity_session_pkey',
+}
+
+/**
+ * select columns of table "activity_session"
+ */
+export enum activity_session_select_column {
+  activity_id = 'activity_id',
+  deleted_at = 'deleted_at',
+  description = 'description',
+  ended_at = 'ended_at',
+  id = 'id',
+  location = 'location',
+  online_link = 'online_link',
+  started_at = 'started_at',
+  threshold = 'threshold',
+  title = 'title',
 }
 
 /**
@@ -3127,6 +3267,26 @@ export enum activity_session_constraint {
 export enum activity_session_ticket_constraint {
   activity_session_ticket_activity_session_id_activity_ticket_id_ = 'activity_session_ticket_activity_session_id_activity_ticket_id_',
   activity_session_ticket_pkey = 'activity_session_ticket_pkey',
+}
+
+/**
+ * select columns of table "activity_session_ticket_enrollment_count"
+ */
+export enum activity_session_ticket_enrollment_count_select_column {
+  activity_id = 'activity_id',
+  activity_offline_session_ticket_count = 'activity_offline_session_ticket_count',
+  activity_online_session_ticket_count = 'activity_online_session_ticket_count',
+  activity_session_id = 'activity_session_id',
+}
+
+/**
+ * select columns of table "activity_session_ticket"
+ */
+export enum activity_session_ticket_select_column {
+  activity_session_id = 'activity_session_id',
+  activity_session_type = 'activity_session_type',
+  activity_ticket_id = 'activity_ticket_id',
+  id = 'id',
 }
 
 /**
@@ -3163,6 +3323,16 @@ export enum activity_tag_constraint {
 }
 
 /**
+ * select columns of table "activity_tag"
+ */
+export enum activity_tag_select_column {
+  activity_id = 'activity_id',
+  id = 'id',
+  position = 'position',
+  tag_name = 'tag_name',
+}
+
+/**
  * update columns of table "activity_tag"
  */
 export enum activity_tag_update_column {
@@ -3177,6 +3347,47 @@ export enum activity_tag_update_column {
  */
 export enum activity_ticket_constraint {
   activity_ticket_pkey = 'activity_ticket_pkey',
+}
+
+/**
+ * select columns of table "activity_ticket_enrollment"
+ */
+export enum activity_ticket_enrollment_select_column {
+  activity_ticket_id = 'activity_ticket_id',
+  member_id = 'member_id',
+  order_log_id = 'order_log_id',
+  order_product_id = 'order_product_id',
+}
+
+/**
+ * select columns of table "activity_ticket"
+ */
+export enum activity_ticket_select_column {
+  activity_id = 'activity_id',
+  count = 'count',
+  currency_id = 'currency_id',
+  deleted_at = 'deleted_at',
+  description = 'description',
+  ended_at = 'ended_at',
+  id = 'id',
+  is_published = 'is_published',
+  price = 'price',
+  started_at = 'started_at',
+  title = 'title',
+}
+
+/**
+ * select "activity_ticket_aggregate_bool_exp_bool_and_arguments_columns" columns of table "activity_ticket"
+ */
+export enum activity_ticket_select_column_activity_ticket_aggregate_bool_exp_bool_and_arguments_columns {
+  is_published = 'is_published',
+}
+
+/**
+ * select "activity_ticket_aggregate_bool_exp_bool_or_arguments_columns" columns of table "activity_ticket"
+ */
+export enum activity_ticket_select_column_activity_ticket_aggregate_bool_exp_bool_or_arguments_columns {
+  is_published = 'is_published',
 }
 
 /**
@@ -3224,6 +3435,16 @@ export enum app_admin_constraint {
 }
 
 /**
+ * select columns of table "app_admin"
+ */
+export enum app_admin_select_column {
+  api_host = 'api_host',
+  app_id = 'app_id',
+  host = 'host',
+  position = 'position',
+}
+
+/**
  * update columns of table "app_admin"
  */
 export enum app_admin_update_column {
@@ -3249,6 +3470,15 @@ export enum app_host_constraint {
 }
 
 /**
+ * select columns of table "app_host"
+ */
+export enum app_host_select_column {
+  app_id = 'app_id',
+  host = 'host',
+  priority = 'priority',
+}
+
+/**
  * update columns of table "app_host"
  */
 export enum app_host_update_column {
@@ -3258,10 +3488,51 @@ export enum app_host_update_column {
 }
 
 /**
+ * select columns of table "app_module"
+ */
+export enum app_module_select_column {
+  app_id = 'app_id',
+  id = 'id',
+  module_id = 'module_id',
+}
+
+/**
  * unique or primary key constraints on table "app_nav"
  */
 export enum app_nav_constraint {
   app_nav_pkey = 'app_nav_pkey',
+}
+
+/**
+ * select columns of table "app_nav"
+ */
+export enum app_nav_select_column {
+  app_id = 'app_id',
+  block = 'block',
+  external = 'external',
+  href = 'href',
+  icon = 'icon',
+  id = 'id',
+  label = 'label',
+  locale = 'locale',
+  options = 'options',
+  parent_id = 'parent_id',
+  position = 'position',
+  tag = 'tag',
+}
+
+/**
+ * select "app_nav_aggregate_bool_exp_bool_and_arguments_columns" columns of table "app_nav"
+ */
+export enum app_nav_select_column_app_nav_aggregate_bool_exp_bool_and_arguments_columns {
+  external = 'external',
+}
+
+/**
+ * select "app_nav_aggregate_bool_exp_bool_or_arguments_columns" columns of table "app_nav"
+ */
+export enum app_nav_select_column_app_nav_aggregate_bool_exp_bool_or_arguments_columns {
+  external = 'external',
 }
 
 /**
@@ -3298,6 +3569,17 @@ export enum app_page_section_constraint {
 }
 
 /**
+ * select columns of table "app_page_section"
+ */
+export enum app_page_section_select_column {
+  app_page_id = 'app_page_id',
+  id = 'id',
+  options = 'options',
+  position = 'position',
+  type = 'type',
+}
+
+/**
  * update columns of table "app_page_section"
  */
 export enum app_page_section_update_column {
@@ -3306,6 +3588,38 @@ export enum app_page_section_update_column {
   options = 'options',
   position = 'position',
   type = 'type',
+}
+
+/**
+ * select columns of table "app_page"
+ */
+export enum app_page_select_column {
+  app_id = 'app_id',
+  craft_data = 'craft_data',
+  created_at = 'created_at',
+  editor_id = 'editor_id',
+  id = 'id',
+  is_deleted = 'is_deleted',
+  meta_tag = 'meta_tag',
+  options = 'options',
+  path = 'path',
+  published_at = 'published_at',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "app_page_aggregate_bool_exp_bool_and_arguments_columns" columns of table "app_page"
+ */
+export enum app_page_select_column_app_page_aggregate_bool_exp_bool_and_arguments_columns {
+  is_deleted = 'is_deleted',
+}
+
+/**
+ * select "app_page_aggregate_bool_exp_bool_or_arguments_columns" columns of table "app_page"
+ */
+export enum app_page_select_column_app_page_aggregate_bool_exp_bool_or_arguments_columns {
+  is_deleted = 'is_deleted',
 }
 
 /**
@@ -3335,6 +3649,16 @@ export enum app_secret_constraint {
 }
 
 /**
+ * select columns of table "app_secret"
+ */
+export enum app_secret_select_column {
+  app_id = 'app_id',
+  id = 'id',
+  key = 'key',
+  value = 'value',
+}
+
+/**
  * update columns of table "app_secret"
  */
 export enum app_secret_update_column {
@@ -3350,6 +3674,17 @@ export enum app_secret_update_column {
 export enum app_setting_constraint {
   app_setting_app_id_key_key = 'app_setting_app_id_key_key',
   app_setting_pkey = 'app_setting_pkey',
+}
+
+/**
+ * select columns of table "app_setting"
+ */
+export enum app_setting_select_column {
+  app_id = 'app_id',
+  created_at = 'created_at',
+  id = 'id',
+  key = 'key',
+  value = 'value',
 }
 
 /**
@@ -3385,10 +3720,94 @@ export enum app_update_column {
 }
 
 /**
+ * select columns of table "appointment_enrollment"
+ */
+export enum appointment_enrollment_select_column {
+  appointment_plan_id = 'appointment_plan_id',
+  canceled_at = 'canceled_at',
+  created_at = 'created_at',
+  ended_at = 'ended_at',
+  id = 'id',
+  issue = 'issue',
+  join_url = 'join_url',
+  member_email = 'member_email',
+  member_id = 'member_id',
+  member_name = 'member_name',
+  member_phone = 'member_phone',
+  order_product_id = 'order_product_id',
+  result = 'result',
+  start_url = 'start_url',
+  started_at = 'started_at',
+}
+
+/**
+ * select columns of table "appointment_period"
+ */
+export enum appointment_period_select_column {
+  appointment_plan_id = 'appointment_plan_id',
+  appointment_schedule_id = 'appointment_schedule_id',
+  available = 'available',
+  booked = 'booked',
+  ended_at = 'ended_at',
+  started_at = 'started_at',
+}
+
+/**
+ * select "appointment_period_aggregate_bool_exp_bool_and_arguments_columns" columns of table "appointment_period"
+ */
+export enum appointment_period_select_column_appointment_period_aggregate_bool_exp_bool_and_arguments_columns {
+  available = 'available',
+  booked = 'booked',
+}
+
+/**
+ * select "appointment_period_aggregate_bool_exp_bool_or_arguments_columns" columns of table "appointment_period"
+ */
+export enum appointment_period_select_column_appointment_period_aggregate_bool_exp_bool_or_arguments_columns {
+  available = 'available',
+  booked = 'booked',
+}
+
+/**
  * unique or primary key constraints on table "appointment_plan"
  */
 export enum appointment_plan_constraint {
   appointment_plan_pkey = 'appointment_plan_pkey',
+}
+
+/**
+ * select columns of table "appointment_plan"
+ */
+export enum appointment_plan_select_column {
+  created_at = 'created_at',
+  creator_id = 'creator_id',
+  currency_id = 'currency_id',
+  description = 'description',
+  duration = 'duration',
+  id = 'id',
+  is_private = 'is_private',
+  phone = 'phone',
+  price = 'price',
+  published_at = 'published_at',
+  reservation_amount = 'reservation_amount',
+  reservation_type = 'reservation_type',
+  support_locales = 'support_locales',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "appointment_plan_aggregate_bool_exp_bool_and_arguments_columns" columns of table "appointment_plan"
+ */
+export enum appointment_plan_select_column_appointment_plan_aggregate_bool_exp_bool_and_arguments_columns {
+  is_private = 'is_private',
+}
+
+/**
+ * select "appointment_plan_aggregate_bool_exp_bool_or_arguments_columns" columns of table "appointment_plan"
+ */
+export enum appointment_plan_select_column_appointment_plan_aggregate_bool_exp_bool_or_arguments_columns {
+  is_private = 'is_private',
 }
 
 /**
@@ -3420,6 +3839,20 @@ export enum appointment_schedule_constraint {
 }
 
 /**
+ * select columns of table "appointment_schedule"
+ */
+export enum appointment_schedule_select_column {
+  appointment_plan_id = 'appointment_plan_id',
+  created_at = 'created_at',
+  excludes = 'excludes',
+  id = 'id',
+  interval_amount = 'interval_amount',
+  interval_type = 'interval_type',
+  started_at = 'started_at',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "appointment_schedule"
  */
 export enum appointment_schedule_update_column {
@@ -3438,6 +3871,45 @@ export enum appointment_schedule_update_column {
  */
 export enum attachment_constraint {
   attachment_pkey = 'attachment_pkey',
+}
+
+/**
+ * select columns of table "attachment"
+ */
+export enum attachment_select_column {
+  app_id = 'app_id',
+  author_id = 'author_id',
+  content_type = 'content_type',
+  created_at = 'created_at',
+  data = 'data',
+  duration = 'duration',
+  family = 'family',
+  file_id = 'file_id',
+  filename = 'filename',
+  id = 'id',
+  is_deleted = 'is_deleted',
+  name = 'name',
+  options = 'options',
+  size = 'size',
+  status = 'status',
+  target = 'target',
+  thumbnail_url = 'thumbnail_url',
+  type = 'type',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "attachment_aggregate_bool_exp_bool_and_arguments_columns" columns of table "attachment"
+ */
+export enum attachment_select_column_attachment_aggregate_bool_exp_bool_and_arguments_columns {
+  is_deleted = 'is_deleted',
+}
+
+/**
+ * select "attachment_aggregate_bool_exp_bool_or_arguments_columns" columns of table "attachment"
+ */
+export enum attachment_select_column_attachment_aggregate_bool_exp_bool_or_arguments_columns {
+  is_deleted = 'is_deleted',
 }
 
 /**
@@ -3473,6 +3945,18 @@ export enum attend_constraint {
 }
 
 /**
+ * select columns of table "attend"
+ */
+export enum attend_select_column {
+  created_at = 'created_at',
+  ended_at = 'ended_at',
+  id = 'id',
+  member_id = 'member_id',
+  started_at = 'started_at',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "attend"
  */
 export enum attend_update_column {
@@ -3500,6 +3984,17 @@ export enum card_discount_constraint {
 }
 
 /**
+ * select columns of table "card_discount"
+ */
+export enum card_discount_select_column {
+  amount = 'amount',
+  card_id = 'card_id',
+  id = 'id',
+  product_id = 'product_id',
+  type = 'type',
+}
+
+/**
  * update columns of table "card_discount"
  */
 export enum card_discount_update_column {
@@ -3508,6 +4003,27 @@ export enum card_discount_update_column {
   id = 'id',
   product_id = 'product_id',
   type = 'type',
+}
+
+/**
+ * select columns of table "card_enrollment"
+ */
+export enum card_enrollment_select_column {
+  card_id = 'card_id',
+  member_id = 'member_id',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select columns of table "card"
+ */
+export enum card_select_column {
+  app_id = 'app_id',
+  creator_id = 'creator_id',
+  description = 'description',
+  id = 'id',
+  template = 'template',
+  title = 'title',
 }
 
 /**
@@ -3530,6 +4046,17 @@ export enum cart_item_constraint {
 }
 
 /**
+ * select columns of table "cart_item"
+ */
+export enum cart_item_select_column {
+  app_id = 'app_id',
+  class = 'class',
+  fingerprint = 'fingerprint',
+  id = 'id',
+  target = 'target',
+}
+
+/**
  * update columns of table "cart_item"
  */
 export enum cart_item_update_column {
@@ -3545,6 +4072,17 @@ export enum cart_item_update_column {
  */
 export enum cart_product_constraint {
   cart_product_pkey = 'cart_product_pkey',
+}
+
+/**
+ * select columns of table "cart_product"
+ */
+export enum cart_product_select_column {
+  app_id = 'app_id',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  product_id = 'product_id',
 }
 
 /**
@@ -3589,6 +4127,21 @@ export enum coin_log_constraint {
 }
 
 /**
+ * select columns of table "coin_log"
+ */
+export enum coin_log_select_column {
+  amount = 'amount',
+  created_at = 'created_at',
+  description = 'description',
+  ended_at = 'ended_at',
+  id = 'id',
+  member_id = 'member_id',
+  note = 'note',
+  started_at = 'started_at',
+  title = 'title',
+}
+
+/**
  * update columns of table "coin_log"
  */
 export enum coin_log_update_column {
@@ -3604,6 +4157,17 @@ export enum coin_log_update_column {
 }
 
 /**
+ * select columns of table "coin_status"
+ */
+export enum coin_status_select_column {
+  amount = 'amount',
+  coin_id = 'coin_id',
+  member_id = 'member_id',
+  remaining = 'remaining',
+  used_coins = 'used_coins',
+}
+
+/**
  * unique or primary key constraints on table "comment"
  */
 export enum comment_constraint {
@@ -3615,6 +4179,16 @@ export enum comment_constraint {
  */
 export enum comment_reaction_constraint {
   comment_reaction_pkey = 'comment_reaction_pkey',
+}
+
+/**
+ * select columns of table "comment_reaction"
+ */
+export enum comment_reaction_select_column {
+  comment_id = 'comment_id',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
 }
 
 /**
@@ -3642,10 +4216,31 @@ export enum comment_reply_reaction_constraint {
 }
 
 /**
+ * select columns of table "comment_reply_reaction"
+ */
+export enum comment_reply_reaction_select_column {
+  comment_reply_id = 'comment_reply_id',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+}
+
+/**
  * update columns of table "comment_reply_reaction"
  */
 export enum comment_reply_reaction_update_column {
   comment_reply_id = 'comment_reply_id',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+}
+
+/**
+ * select columns of table "comment_reply"
+ */
+export enum comment_reply_select_column {
+  comment_id = 'comment_id',
+  content = 'content',
   created_at = 'created_at',
   id = 'id',
   member_id = 'member_id',
@@ -3660,6 +4255,18 @@ export enum comment_reply_update_column {
   created_at = 'created_at',
   id = 'id',
   member_id = 'member_id',
+}
+
+/**
+ * select columns of table "comment"
+ */
+export enum comment_select_column {
+  app_id = 'app_id',
+  content = 'content',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  thread_id = 'thread_id',
 }
 
 /**
@@ -3707,6 +4314,20 @@ export enum coupon_code_constraint {
 }
 
 /**
+ * select columns of table "coupon_code"
+ */
+export enum coupon_code_select_column {
+  app_id = 'app_id',
+  code = 'code',
+  count = 'count',
+  coupon_plan_id = 'coupon_plan_id',
+  created_at = 'created_at',
+  id = 'id',
+  remaining = 'remaining',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "coupon_code"
  */
 export enum coupon_code_update_column {
@@ -3743,6 +4364,15 @@ export enum coupon_plan_product_constraint {
 }
 
 /**
+ * select columns of table "coupon_plan_product"
+ */
+export enum coupon_plan_product_select_column {
+  coupon_plan_id = 'coupon_plan_id',
+  id = 'id',
+  product_id = 'product_id',
+}
+
+/**
  * update columns of table "coupon_plan_product"
  */
 export enum coupon_plan_product_update_column {
@@ -3770,6 +4400,16 @@ export enum coupon_plan_update_column {
 }
 
 /**
+ * select columns of table "coupon"
+ */
+export enum coupon_select_column {
+  coupon_code_id = 'coupon_code_id',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+}
+
+/**
  * update columns of table "coupon"
  */
 export enum coupon_update_column {
@@ -3784,6 +4424,16 @@ export enum coupon_update_column {
  */
 export enum creator_category_constraint {
   creator_category_pkey = 'creator_category_pkey',
+}
+
+/**
+ * select columns of table "creator_category"
+ */
+export enum creator_category_select_column {
+  category_id = 'category_id',
+  creator_id = 'creator_id',
+  id = 'id',
+  position = 'position',
 }
 
 /**
@@ -3802,6 +4452,18 @@ export enum creator_category_update_column {
 export enum creator_display_constraint {
   creator_display_member_id_block_id_key = 'creator_display_member_id_block_id_key',
   creator_display_pkey = 'creator_display_pkey',
+}
+
+/**
+ * select columns of table "creator_display"
+ */
+export enum creator_display_select_column {
+  block_id = 'block_id',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  position = 'position',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -3849,6 +4511,17 @@ export enum exam_question_group_constraint {
 }
 
 /**
+ * select columns of table "exam_question_group"
+ */
+export enum exam_question_group_select_column {
+  created_at = 'created_at',
+  exam_id = 'exam_id',
+  id = 'id',
+  question_group_id = 'question_group_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "exam_question_group"
  */
 export enum exam_question_group_update_column {
@@ -3887,6 +4560,21 @@ export enum exam_update_column {
  */
 export enum exercise_constraint {
   exercise_pkey = 'exercise_pkey',
+}
+
+/**
+ * select columns of table "exercise"
+ */
+export enum exercise_select_column {
+  answer = 'answer',
+  created_at = 'created_at',
+  ended_at = 'ended_at',
+  exam_id = 'exam_id',
+  id = 'id',
+  member_id = 'member_id',
+  program_content_id = 'program_content_id',
+  started_at = 'started_at',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -3963,6 +4651,19 @@ export enum invoice_constraint {
 }
 
 /**
+ * select columns of table "invoice"
+ */
+export enum invoice_select_column {
+  created_at = 'created_at',
+  executor_id = 'executor_id',
+  no = 'no',
+  options = 'options',
+  order_id = 'order_id',
+  price = 'price',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "invoice"
  */
 export enum invoice_update_column {
@@ -3990,6 +4691,16 @@ export enum issue_reaction_constraint {
 }
 
 /**
+ * select columns of table "issue_reaction"
+ */
+export enum issue_reaction_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  issue_id = 'issue_id',
+  member_id = 'member_id',
+}
+
+/**
  * update columns of table "issue_reaction"
  */
 export enum issue_reaction_update_column {
@@ -4014,12 +4725,33 @@ export enum issue_reply_reaction_constraint {
 }
 
 /**
+ * select columns of table "issue_reply_reaction"
+ */
+export enum issue_reply_reaction_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  issue_reply_id = 'issue_reply_id',
+  member_id = 'member_id',
+}
+
+/**
  * update columns of table "issue_reply_reaction"
  */
 export enum issue_reply_reaction_update_column {
   created_at = 'created_at',
   id = 'id',
   issue_reply_id = 'issue_reply_id',
+  member_id = 'member_id',
+}
+
+/**
+ * select columns of table "issue_reply"
+ */
+export enum issue_reply_select_column {
+  content = 'content',
+  created_at = 'created_at',
+  id = 'id',
+  issue_id = 'issue_id',
   member_id = 'member_id',
 }
 
@@ -4032,6 +4764,35 @@ export enum issue_reply_update_column {
   id = 'id',
   issue_id = 'issue_id',
   member_id = 'member_id',
+}
+
+/**
+ * select columns of table "issue"
+ */
+export enum issue_select_column {
+  app_id = 'app_id',
+  created_at = 'created_at',
+  description = 'description',
+  id = 'id',
+  is_public = 'is_public',
+  member_id = 'member_id',
+  solved_at = 'solved_at',
+  thread_id = 'thread_id',
+  title = 'title',
+}
+
+/**
+ * select "issue_aggregate_bool_exp_bool_and_arguments_columns" columns of table "issue"
+ */
+export enum issue_select_column_issue_aggregate_bool_exp_bool_and_arguments_columns {
+  is_public = 'is_public',
+}
+
+/**
+ * select "issue_aggregate_bool_exp_bool_or_arguments_columns" columns of table "issue"
+ */
+export enum issue_select_column_issue_aggregate_bool_exp_bool_or_arguments_columns {
+  is_public = 'is_public',
 }
 
 /**
@@ -4054,6 +4815,20 @@ export enum issue_update_column {
  */
 export enum media_constraint {
   media_pkey = 'media_pkey',
+}
+
+/**
+ * select columns of table "media"
+ */
+export enum media_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  metadata = 'metadata',
+  name = 'name',
+  resource_url = 'resource_url',
+  size = 'size',
+  type = 'type',
 }
 
 /**
@@ -4080,6 +4855,19 @@ export enum member_card_constraint {
 }
 
 /**
+ * select columns of table "member_card"
+ */
+export enum member_card_select_column {
+  card_holder = 'card_holder',
+  card_identifier = 'card_identifier',
+  card_info = 'card_info',
+  card_secret = 'card_secret',
+  id = 'id',
+  member_id = 'member_id',
+  priority = 'priority',
+}
+
+/**
  * update columns of table "member_card"
  */
 export enum member_card_update_column {
@@ -4098,6 +4886,16 @@ export enum member_card_update_column {
 export enum member_category_constraint {
   member_category_member_id_category_id_key = 'member_category_member_id_category_id_key',
   member_category_pkey = 'member_category_pkey',
+}
+
+/**
+ * select columns of table "member_category"
+ */
+export enum member_category_select_column {
+  category_id = 'category_id',
+  id = 'id',
+  member_id = 'member_id',
+  position = 'position',
 }
 
 /**
@@ -4130,6 +4928,27 @@ export enum member_contract_constraint {
 }
 
 /**
+ * select columns of table "member_contract"
+ */
+export enum member_contract_select_column {
+  agreed_at = 'agreed_at',
+  agreed_ip = 'agreed_ip',
+  agreed_options = 'agreed_options',
+  author_id = 'author_id',
+  contract_id = 'contract_id',
+  created_at = 'created_at',
+  ended_at = 'ended_at',
+  id = 'id',
+  member_id = 'member_id',
+  options = 'options',
+  revocation_values = 'revocation_values',
+  revoked_at = 'revoked_at',
+  started_at = 'started_at',
+  updated_at = 'updated_at',
+  values = 'values',
+}
+
+/**
  * update columns of table "member_contract"
  */
 export enum member_contract_update_column {
@@ -4151,10 +4970,43 @@ export enum member_contract_update_column {
 }
 
 /**
+ * select columns of table "member_note_attachment"
+ */
+export enum member_note_attachment_select_column {
+  app_id = 'app_id',
+  attachment_id = 'attachment_id',
+  created_at = 'created_at',
+  data = 'data',
+  member_note_id = 'member_note_id',
+  options = 'options',
+  updated_at = 'updated_at',
+}
+
+/**
  * unique or primary key constraints on table "member_note"
  */
 export enum member_note_constraint {
   member_note_pkey = 'member_note_pkey',
+}
+
+/**
+ * select columns of table "member_note"
+ */
+export enum member_note_select_column {
+  author_id = 'author_id',
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  deleted_from = 'deleted_from',
+  description = 'description',
+  duration = 'duration',
+  id = 'id',
+  member_id = 'member_id',
+  metadata = 'metadata',
+  note = 'note',
+  rejected_at = 'rejected_at',
+  status = 'status',
+  type = 'type',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -4186,6 +5038,17 @@ export enum member_oauth_constraint {
 }
 
 /**
+ * select columns of table "member_oauth"
+ */
+export enum member_oauth_select_column {
+  id = 'id',
+  member_id = 'member_id',
+  options = 'options',
+  provider = 'provider',
+  provider_user_id = 'provider_user_id',
+}
+
+/**
  * update columns of table "member_oauth"
  */
 export enum member_oauth_update_column {
@@ -4201,6 +5064,17 @@ export enum member_oauth_update_column {
  */
 export enum member_permission_extra_constraint {
   member_permission_pkey = 'member_permission_pkey',
+}
+
+/**
+ * select columns of table "member_permission_extra"
+ */
+export enum member_permission_extra_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  permission_id = 'permission_id',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -4222,6 +5096,17 @@ export enum member_permission_group_constraint {
 }
 
 /**
+ * select columns of table "member_permission_group"
+ */
+export enum member_permission_group_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  permission_group_id = 'permission_group_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "member_permission_group"
  */
 export enum member_permission_group_update_column {
@@ -4233,11 +5118,48 @@ export enum member_permission_group_update_column {
 }
 
 /**
+ * select columns of table "member_permission"
+ */
+export enum member_permission_select_column {
+  member_id = 'member_id',
+  permission_id = 'permission_id',
+}
+
+/**
  * unique or primary key constraints on table "member_phone"
  */
 export enum member_phone_constraint {
   member_phone_member_id_phone_key = 'member_phone_member_id_phone_key',
   member_phone_pkey = 'member_phone_pkey',
+}
+
+/**
+ * select columns of table "member_phone"
+ */
+export enum member_phone_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  is_primary = 'is_primary',
+  is_valid = 'is_valid',
+  member_id = 'member_id',
+  phone = 'phone',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "member_phone_aggregate_bool_exp_bool_and_arguments_columns" columns of table "member_phone"
+ */
+export enum member_phone_select_column_member_phone_aggregate_bool_exp_bool_and_arguments_columns {
+  is_primary = 'is_primary',
+  is_valid = 'is_valid',
+}
+
+/**
+ * select "member_phone_aggregate_bool_exp_bool_or_arguments_columns" columns of table "member_phone"
+ */
+export enum member_phone_select_column_member_phone_aggregate_bool_exp_bool_or_arguments_columns {
+  is_primary = 'is_primary',
+  is_valid = 'is_valid',
 }
 
 /**
@@ -4262,6 +5184,18 @@ export enum member_property_constraint {
 }
 
 /**
+ * select columns of table "member_property"
+ */
+export enum member_property_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  property_id = 'property_id',
+  updated_at = 'updated_at',
+  value = 'value',
+}
+
+/**
  * update columns of table "member_property"
  */
 export enum member_property_update_column {
@@ -4274,10 +5208,57 @@ export enum member_property_update_column {
 }
 
 /**
+ * select columns of table "member"
+ */
+export enum member_select_column {
+  abstract = 'abstract',
+  app_id = 'app_id',
+  assigned_at = 'assigned_at',
+  commonhealth_user_id = 'commonhealth_user_id',
+  created_at = 'created_at',
+  description = 'description',
+  email = 'email',
+  facebook_user_id = 'facebook_user_id',
+  google_user_id = 'google_user_id',
+  id = 'id',
+  last_member_note_created = 'last_member_note_created',
+  line_user_id = 'line_user_id',
+  logined_at = 'logined_at',
+  manager_id = 'manager_id',
+  metadata = 'metadata',
+  name = 'name',
+  passhash = 'passhash',
+  picture_url = 'picture_url',
+  refresh_token = 'refresh_token',
+  role = 'role',
+  roles_deprecated = 'roles_deprecated',
+  star = 'star',
+  status = 'status',
+  title = 'title',
+  username = 'username',
+  youtube_channel_ids = 'youtube_channel_ids',
+  zoom_user_id_deprecate = 'zoom_user_id_deprecate',
+}
+
+/**
  * unique or primary key constraints on table "member_shop"
  */
 export enum member_shop_constraint {
   member_shop_pkey = 'member_shop_pkey',
+}
+
+/**
+ * select columns of table "member_shop"
+ */
+export enum member_shop_select_column {
+  cover_url = 'cover_url',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  published_at = 'published_at',
+  shipping_methods = 'shipping_methods',
+  title = 'title',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -4303,6 +5284,20 @@ export enum member_social_constraint {
 }
 
 /**
+ * select columns of table "member_social"
+ */
+export enum member_social_select_column {
+  channel_id = 'channel_id',
+  channel_url = 'channel_url',
+  description = 'description',
+  id = 'id',
+  member_id = 'member_id',
+  name = 'name',
+  profile_url = 'profile_url',
+  type = 'type',
+}
+
+/**
  * update columns of table "member_social"
  */
 export enum member_social_update_column {
@@ -4321,6 +5316,17 @@ export enum member_social_update_column {
  */
 export enum member_speciality_constraint {
   member_speciality_pkey = 'member_speciality_pkey',
+}
+
+/**
+ * select columns of table "member_speciality"
+ */
+export enum member_speciality_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  tag_name = 'tag_name',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -4343,6 +5349,18 @@ export enum member_tag_constraint {
 }
 
 /**
+ * select columns of table "member_tag"
+ */
+export enum member_tag_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  position = 'position',
+  tag_name = 'tag_name',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "member_tag"
  */
 export enum member_tag_update_column {
@@ -4362,6 +5380,24 @@ export enum member_task_constraint {
 }
 
 /**
+ * select columns of table "member_task"
+ */
+export enum member_task_select_column {
+  author_id = 'author_id',
+  category_id = 'category_id',
+  created_at = 'created_at',
+  description = 'description',
+  due_at = 'due_at',
+  executor_id = 'executor_id',
+  id = 'id',
+  member_id = 'member_id',
+  priority = 'priority',
+  status = 'status',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "member_task"
  */
 export enum member_task_update_column {
@@ -4377,6 +5413,49 @@ export enum member_task_update_column {
   status = 'status',
   title = 'title',
   updated_at = 'updated_at',
+}
+
+/**
+ * unique or primary key constraints on table "member_tracking_log"
+ */
+export enum member_tracking_log_constraint {
+  member_tracking_log_pkey = 'member_tracking_log_pkey',
+}
+
+/**
+ * select columns of table "member_tracking_log"
+ */
+export enum member_tracking_log_select_column {
+  adgroup = 'adgroup',
+  adname = 'adname',
+  brand = 'brand',
+  campaign = 'campaign',
+  content = 'content',
+  created_at = 'created_at',
+  id = 'id',
+  landing = 'landing',
+  medium = 'medium',
+  member_id = 'member_id',
+  referrer = 'referrer',
+  source = 'source',
+}
+
+/**
+ * update columns of table "member_tracking_log"
+ */
+export enum member_tracking_log_update_column {
+  adgroup = 'adgroup',
+  adname = 'adname',
+  brand = 'brand',
+  campaign = 'campaign',
+  content = 'content',
+  created_at = 'created_at',
+  id = 'id',
+  landing = 'landing',
+  medium = 'medium',
+  member_id = 'member_id',
+  referrer = 'referrer',
+  source = 'source',
 }
 
 /**
@@ -4405,6 +5484,7 @@ export enum member_update_column {
   role = 'role',
   roles_deprecated = 'roles_deprecated',
   star = 'star',
+  status = 'status',
   title = 'title',
   username = 'username',
   youtube_channel_ids = 'youtube_channel_ids',
@@ -4416,6 +5496,16 @@ export enum member_update_column {
  */
 export enum merchandise_category_constraint {
   merchandise_category_pkey = 'merchandise_category_pkey',
+}
+
+/**
+ * select columns of table "merchandise_category"
+ */
+export enum merchandise_category_select_column {
+  category_id = 'category_id',
+  id = 'id',
+  merchandise_id = 'merchandise_id',
+  position = 'position',
 }
 
 /**
@@ -4443,6 +5533,17 @@ export enum merchandise_file_constraint {
 }
 
 /**
+ * select columns of table "merchandise_file"
+ */
+export enum merchandise_file_select_column {
+  created_at = 'created_at',
+  data = 'data',
+  id = 'id',
+  merchandise_id = 'merchandise_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "merchandise_file"
  */
 export enum merchandise_file_update_column {
@@ -4461,6 +5562,17 @@ export enum merchandise_img_constraint {
 }
 
 /**
+ * select columns of table "merchandise_img"
+ */
+export enum merchandise_img_select_column {
+  id = 'id',
+  merchandise_id = 'merchandise_id',
+  position = 'position',
+  type = 'type',
+  url = 'url',
+}
+
+/**
  * update columns of table "merchandise_img"
  */
 export enum merchandise_img_update_column {
@@ -4469,6 +5581,58 @@ export enum merchandise_img_update_column {
   position = 'position',
   type = 'type',
   url = 'url',
+}
+
+/**
+ * select columns of table "merchandise"
+ */
+export enum merchandise_select_column {
+  abstract = 'abstract',
+  app_id = 'app_id',
+  created_at = 'created_at',
+  currency_id = 'currency_id',
+  description = 'description',
+  ended_at = 'ended_at',
+  id = 'id',
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_customized = 'is_customized',
+  is_deleted = 'is_deleted',
+  is_limited = 'is_limited',
+  is_physical = 'is_physical',
+  link = 'link',
+  list_price = 'list_price',
+  member_id = 'member_id',
+  member_shop_id = 'member_shop_id',
+  meta = 'meta',
+  position = 'position',
+  published_at = 'published_at',
+  sale_price = 'sale_price',
+  sold_at = 'sold_at',
+  started_at = 'started_at',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "merchandise_aggregate_bool_exp_bool_and_arguments_columns" columns of table "merchandise"
+ */
+export enum merchandise_select_column_merchandise_aggregate_bool_exp_bool_and_arguments_columns {
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_customized = 'is_customized',
+  is_deleted = 'is_deleted',
+  is_limited = 'is_limited',
+  is_physical = 'is_physical',
+}
+
+/**
+ * select "merchandise_aggregate_bool_exp_bool_or_arguments_columns" columns of table "merchandise"
+ */
+export enum merchandise_select_column_merchandise_aggregate_bool_exp_bool_or_arguments_columns {
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_customized = 'is_customized',
+  is_deleted = 'is_deleted',
+  is_limited = 'is_limited',
+  is_physical = 'is_physical',
 }
 
 /**
@@ -4486,6 +5650,17 @@ export enum merchandise_spec_file_constraint {
 }
 
 /**
+ * select columns of table "merchandise_spec_file"
+ */
+export enum merchandise_spec_file_select_column {
+  created_at = 'created_at',
+  data = 'data',
+  id = 'id',
+  merchandise_spec_id = 'merchandise_spec_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "merchandise_spec_file"
  */
 export enum merchandise_spec_file_update_column {
@@ -4494,6 +5669,35 @@ export enum merchandise_spec_file_update_column {
   id = 'id',
   merchandise_spec_id = 'merchandise_spec_id',
   updated_at = 'updated_at',
+}
+
+/**
+ * select columns of table "merchandise_spec"
+ */
+export enum merchandise_spec_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  is_deleted = 'is_deleted',
+  list_price = 'list_price',
+  merchandise_id = 'merchandise_id',
+  quota = 'quota',
+  sale_price = 'sale_price',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "merchandise_spec_aggregate_bool_exp_bool_and_arguments_columns" columns of table "merchandise_spec"
+ */
+export enum merchandise_spec_select_column_merchandise_spec_aggregate_bool_exp_bool_and_arguments_columns {
+  is_deleted = 'is_deleted',
+}
+
+/**
+ * select "merchandise_spec_aggregate_bool_exp_bool_or_arguments_columns" columns of table "merchandise_spec"
+ */
+export enum merchandise_spec_select_column_merchandise_spec_aggregate_bool_exp_bool_or_arguments_columns {
+  is_deleted = 'is_deleted',
 }
 
 /**
@@ -4516,6 +5720,16 @@ export enum merchandise_spec_update_column {
  */
 export enum merchandise_tag_constraint {
   merchandise_tag_pkey = 'merchandise_tag_pkey',
+}
+
+/**
+ * select columns of table "merchandise_tag"
+ */
+export enum merchandise_tag_select_column {
+  id = 'id',
+  merchandise_id = 'merchandise_id',
+  position = 'position',
+  tag_name = 'tag_name',
 }
 
 /**
@@ -4584,6 +5798,23 @@ export enum notification_constraint {
 }
 
 /**
+ * select columns of table "notification"
+ */
+export enum notification_select_column {
+  avatar = 'avatar',
+  created_at = 'created_at',
+  description = 'description',
+  extra = 'extra',
+  id = 'id',
+  read_at = 'read_at',
+  reference_url = 'reference_url',
+  source_member_id = 'source_member_id',
+  target_member_id = 'target_member_id',
+  type = 'type',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "notification"
  */
 export enum notification_update_column {
@@ -4620,6 +5851,19 @@ export enum order_contact_constraint {
 }
 
 /**
+ * select columns of table "order_contact"
+ */
+export enum order_contact_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  message = 'message',
+  order_id = 'order_id',
+  read_at = 'read_at',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "order_contact"
  */
 export enum order_contact_update_column {
@@ -4637,6 +5881,20 @@ export enum order_contact_update_column {
  */
 export enum order_discount_constraint {
   order_discount_pkey = 'order_discount_pkey',
+}
+
+/**
+ * select columns of table "order_discount"
+ */
+export enum order_discount_select_column {
+  description = 'description',
+  id = 'id',
+  name = 'name',
+  options = 'options',
+  order_id = 'order_id',
+  price = 'price',
+  target = 'target',
+  type = 'type',
 }
 
 /**
@@ -4661,6 +5919,16 @@ export enum order_executor_constraint {
 }
 
 /**
+ * select columns of table "order_executor"
+ */
+export enum order_executor_select_column {
+  id = 'id',
+  member_id = 'member_id',
+  order_id = 'order_id',
+  ratio = 'ratio',
+}
+
+/**
  * update columns of table "order_executor"
  */
 export enum order_executor_update_column {
@@ -4677,6 +5945,51 @@ export enum order_log_constraint {
   order_log_custom_id_key = 'order_log_custom_id_key',
   order_log_id_key = 'order_log_id_key',
   order_log_pkey = 'order_log_pkey',
+}
+
+/**
+ * select columns of table "order_log"
+ */
+export enum order_log_select_column {
+  auto_renewed_at = 'auto_renewed_at',
+  created_at = 'created_at',
+  custom_id = 'custom_id',
+  deliver_message = 'deliver_message',
+  delivered_at = 'delivered_at',
+  discount_coupon_id = 'discount_coupon_id',
+  discount_point = 'discount_point',
+  discount_price = 'discount_price',
+  discount_type = 'discount_type',
+  expired_at = 'expired_at',
+  id = 'id',
+  invoice_issued_at = 'invoice_issued_at',
+  invoice_options = 'invoice_options',
+  is_deleted = 'is_deleted',
+  last_paid_at = 'last_paid_at',
+  member_id = 'member_id',
+  message = 'message',
+  options = 'options',
+  parent_order_id = 'parent_order_id',
+  payment_model = 'payment_model',
+  retried_at = 'retried_at',
+  shipping = 'shipping',
+  status = 'status',
+  transferred_at = 'transferred_at',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "order_log_aggregate_bool_exp_bool_and_arguments_columns" columns of table "order_log"
+ */
+export enum order_log_select_column_order_log_aggregate_bool_exp_bool_and_arguments_columns {
+  is_deleted = 'is_deleted',
+}
+
+/**
+ * select "order_log_aggregate_bool_exp_bool_or_arguments_columns" columns of table "order_log"
+ */
+export enum order_log_select_column_order_log_aggregate_bool_exp_bool_or_arguments_columns {
+  is_deleted = 'is_deleted',
 }
 
 /**
@@ -4726,6 +6039,17 @@ export enum order_product_file_constraint {
 }
 
 /**
+ * select columns of table "order_product_file"
+ */
+export enum order_product_file_select_column {
+  created_at = 'created_at',
+  data = 'data',
+  id = 'id',
+  order_product_id = 'order_product_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "order_product_file"
  */
 export enum order_product_file_update_column {
@@ -4734,6 +6058,42 @@ export enum order_product_file_update_column {
   id = 'id',
   order_product_id = 'order_product_id',
   updated_at = 'updated_at',
+}
+
+/**
+ * select columns of table "order_product"
+ */
+export enum order_product_select_column {
+  accumulated_errors = 'accumulated_errors',
+  auto_renewed = 'auto_renewed',
+  created_at = 'created_at',
+  currency_id = 'currency_id',
+  deliverables = 'deliverables',
+  delivered_at = 'delivered_at',
+  description = 'description',
+  ended_at = 'ended_at',
+  id = 'id',
+  name = 'name',
+  options = 'options',
+  order_id = 'order_id',
+  price = 'price',
+  product_id = 'product_id',
+  started_at = 'started_at',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "order_product_aggregate_bool_exp_bool_and_arguments_columns" columns of table "order_product"
+ */
+export enum order_product_select_column_order_product_aggregate_bool_exp_bool_and_arguments_columns {
+  auto_renewed = 'auto_renewed',
+}
+
+/**
+ * select "order_product_aggregate_bool_exp_bool_or_arguments_columns" columns of table "order_product"
+ */
+export enum order_product_select_column_order_product_aggregate_bool_exp_bool_or_arguments_columns {
+  auto_renewed = 'auto_renewed',
 }
 
 /**
@@ -4780,6 +6140,32 @@ export enum package_item_group_constraint {
 }
 
 /**
+ * select columns of table "package_item_group"
+ */
+export enum package_item_group_select_column {
+  id = 'id',
+  package_section_id = 'package_section_id',
+  subtitle = 'subtitle',
+  title = 'title',
+  type = 'type',
+  with_filter = 'with_filter',
+}
+
+/**
+ * select "package_item_group_aggregate_bool_exp_bool_and_arguments_columns" columns of table "package_item_group"
+ */
+export enum package_item_group_select_column_package_item_group_aggregate_bool_exp_bool_and_arguments_columns {
+  with_filter = 'with_filter',
+}
+
+/**
+ * select "package_item_group_aggregate_bool_exp_bool_or_arguments_columns" columns of table "package_item_group"
+ */
+export enum package_item_group_select_column_package_item_group_aggregate_bool_exp_bool_or_arguments_columns {
+  with_filter = 'with_filter',
+}
+
+/**
  * update columns of table "package_item_group"
  */
 export enum package_item_group_update_column {
@@ -4789,6 +6175,17 @@ export enum package_item_group_update_column {
   title = 'title',
   type = 'type',
   with_filter = 'with_filter',
+}
+
+/**
+ * select columns of table "package_item"
+ */
+export enum package_item_select_column {
+  activity_id = 'activity_id',
+  id = 'id',
+  merchandise_id = 'merchandise_id',
+  package_item_group_id = 'package_item_group_id',
+  program_id = 'program_id',
 }
 
 /**
@@ -4810,6 +6207,33 @@ export enum package_section_constraint {
 }
 
 /**
+ * select columns of table "package_section"
+ */
+export enum package_section_select_column {
+  block = 'block',
+  description = 'description',
+  id = 'id',
+  package_id = 'package_id',
+  position = 'position',
+  subtitle = 'subtitle',
+  title = 'title',
+}
+
+/**
+ * select "package_section_aggregate_bool_exp_bool_and_arguments_columns" columns of table "package_section"
+ */
+export enum package_section_select_column_package_section_aggregate_bool_exp_bool_and_arguments_columns {
+  block = 'block',
+}
+
+/**
+ * select "package_section_aggregate_bool_exp_bool_or_arguments_columns" columns of table "package_section"
+ */
+export enum package_section_select_column_package_section_aggregate_bool_exp_bool_or_arguments_columns {
+  block = 'block',
+}
+
+/**
  * update columns of table "package_section"
  */
 export enum package_section_update_column {
@@ -4819,6 +6243,16 @@ export enum package_section_update_column {
   package_id = 'package_id',
   position = 'position',
   subtitle = 'subtitle',
+  title = 'title',
+}
+
+/**
+ * select columns of table "package"
+ */
+export enum package_select_column {
+  app_id = 'app_id',
+  elements = 'elements',
+  id = 'id',
   title = 'title',
 }
 
@@ -4839,6 +6273,26 @@ export enum payment_log_constraint {
   payment_log_custom_no_key = 'payment_log_custom_no_key',
   payment_log_no_key = 'payment_log_no_key',
   payment_log_pkey = 'payment_log_pkey',
+}
+
+/**
+ * select columns of table "payment_log"
+ */
+export enum payment_log_select_column {
+  created_at = 'created_at',
+  custom_no = 'custom_no',
+  gateway = 'gateway',
+  invoice_issued_at = 'invoice_issued_at',
+  invoice_options = 'invoice_options',
+  method = 'method',
+  no = 'no',
+  options = 'options',
+  order_id = 'order_id',
+  paid_at = 'paid_at',
+  payment_due_at = 'payment_due_at',
+  price = 'price',
+  status = 'status',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -4882,6 +6336,17 @@ export enum permission_group_constraint {
 export enum permission_group_permission_constraint {
   permission_group_permission_permission_group_id_permission_id_k = 'permission_group_permission_permission_group_id_permission_id_k',
   permission_group_permission_pkey = 'permission_group_permission_pkey',
+}
+
+/**
+ * select columns of table "permission_group_permission"
+ */
+export enum permission_group_permission_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  permission_group_id = 'permission_group_id',
+  permission_id = 'permission_id',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -4932,6 +6397,18 @@ export enum playlist_podcast_program_constraint {
 }
 
 /**
+ * select columns of table "playlist_podcast_program"
+ */
+export enum playlist_podcast_program_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  playlist_id = 'playlist_id',
+  podcast_program_id = 'podcast_program_id',
+  position = 'position',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "playlist_podcast_program"
  */
 export enum playlist_podcast_program_update_column {
@@ -4940,6 +6417,18 @@ export enum playlist_podcast_program_update_column {
   playlist_id = 'playlist_id',
   podcast_program_id = 'podcast_program_id',
   position = 'position',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select columns of table "playlist"
+ */
+export enum playlist_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  position = 'position',
+  title = 'title',
   updated_at = 'updated_at',
 }
 
@@ -4970,6 +6459,48 @@ export enum podcast_plan_constraint {
 }
 
 /**
+ * select columns of table "podcast_plan_enrollment"
+ */
+export enum podcast_plan_enrollment_select_column {
+  member_id = 'member_id',
+  podcast_plan_id = 'podcast_plan_id',
+}
+
+/**
+ * select columns of table "podcast_plan"
+ */
+export enum podcast_plan_select_column {
+  created_at = 'created_at',
+  creator_id = 'creator_id',
+  id = 'id',
+  is_subscription = 'is_subscription',
+  list_price = 'list_price',
+  period_amount = 'period_amount',
+  period_type = 'period_type',
+  podcast_id = 'podcast_id',
+  position = 'position',
+  published_at = 'published_at',
+  sale_price = 'sale_price',
+  sold_at = 'sold_at',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "podcast_plan_aggregate_bool_exp_bool_and_arguments_columns" columns of table "podcast_plan"
+ */
+export enum podcast_plan_select_column_podcast_plan_aggregate_bool_exp_bool_and_arguments_columns {
+  is_subscription = 'is_subscription',
+}
+
+/**
+ * select "podcast_plan_aggregate_bool_exp_bool_or_arguments_columns" columns of table "podcast_plan"
+ */
+export enum podcast_plan_select_column_podcast_plan_aggregate_bool_exp_bool_or_arguments_columns {
+  is_subscription = 'is_subscription',
+}
+
+/**
  * update columns of table "podcast_plan"
  */
 export enum podcast_plan_update_column {
@@ -4997,6 +6528,19 @@ export enum podcast_program_audio_constraint {
 }
 
 /**
+ * select columns of table "podcast_program_audio"
+ */
+export enum podcast_program_audio_select_column {
+  created_at = 'created_at',
+  data = 'data',
+  deleted_at = 'deleted_at',
+  id = 'id',
+  podcast_program_id = 'podcast_program_id',
+  position = 'position',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "podcast_program_audio"
  */
 export enum podcast_program_audio_update_column {
@@ -5014,6 +6558,18 @@ export enum podcast_program_audio_update_column {
  */
 export enum podcast_program_body_constraint {
   podcast_program_body_pkey = 'podcast_program_body_pkey',
+}
+
+/**
+ * select columns of table "podcast_program_body"
+ */
+export enum podcast_program_body_select_column {
+  data = 'data',
+  deleted_at = 'deleted_at',
+  description = 'description',
+  id = 'id',
+  podcast_program_id = 'podcast_program_id',
+  position = 'position',
 }
 
 /**
@@ -5036,6 +6592,16 @@ export enum podcast_program_category_constraint {
 }
 
 /**
+ * select columns of table "podcast_program_category"
+ */
+export enum podcast_program_category_select_column {
+  category_id = 'category_id',
+  id = 'id',
+  podcast_program_id = 'podcast_program_id',
+  position = 'position',
+}
+
+/**
  * update columns of table "podcast_program_category"
  */
 export enum podcast_program_category_update_column {
@@ -5053,10 +6619,28 @@ export enum podcast_program_constraint {
 }
 
 /**
+ * select columns of table "podcast_program_enrollment"
+ */
+export enum podcast_program_enrollment_select_column {
+  member_id = 'member_id',
+  podcast_program_id = 'podcast_program_id',
+}
+
+/**
  * unique or primary key constraints on table "podcast_program_role"
  */
 export enum podcast_program_role_constraint {
   podcast_program_role_pkey = 'podcast_program_role_pkey',
+}
+
+/**
+ * select columns of table "podcast_program_role"
+ */
+export enum podcast_program_role_select_column {
+  id = 'id',
+  member_id = 'member_id',
+  name = 'name',
+  podcast_program_id = 'podcast_program_id',
 }
 
 /**
@@ -5070,11 +6654,44 @@ export enum podcast_program_role_update_column {
 }
 
 /**
+ * select columns of table "podcast_program"
+ */
+export enum podcast_program_select_column {
+  abstract = 'abstract',
+  content_type = 'content_type',
+  cover_url = 'cover_url',
+  created_at = 'created_at',
+  creator_id = 'creator_id',
+  duration = 'duration',
+  duration_second = 'duration_second',
+  filename = 'filename',
+  id = 'id',
+  list_price = 'list_price',
+  podcast_id = 'podcast_id',
+  published_at = 'published_at',
+  sale_price = 'sale_price',
+  sold_at = 'sold_at',
+  support_locales = 'support_locales',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
  * unique or primary key constraints on table "podcast_program_tag"
  */
 export enum podcast_program_tag_constraint {
   podcast_program_tag_pkey = 'podcast_program_tag_pkey',
   podcast_program_tag_podcast_program_id_tag_name_key = 'podcast_program_tag_podcast_program_id_tag_name_key',
+}
+
+/**
+ * select columns of table "podcast_program_tag"
+ */
+export enum podcast_program_tag_select_column {
+  id = 'id',
+  podcast_program_id = 'podcast_program_id',
+  position = 'position',
+  tag_name = 'tag_name',
 }
 
 /**
@@ -5094,6 +6711,7 @@ export enum podcast_program_update_column {
   abstract = 'abstract',
   content_type = 'content_type',
   cover_url = 'cover_url',
+  created_at = 'created_at',
   creator_id = 'creator_id',
   duration = 'duration',
   duration_second = 'duration_second',
@@ -5110,6 +6728,15 @@ export enum podcast_program_update_column {
 }
 
 /**
+ * select columns of table "podcast"
+ */
+export enum podcast_select_column {
+  app_id = 'app_id',
+  id = 'id',
+  instructor_id = 'instructor_id',
+}
+
+/**
  * update columns of table "podcast"
  */
 export enum podcast_update_column {
@@ -5123,6 +6750,20 @@ export enum podcast_update_column {
  */
 export enum point_log_constraint {
   point_log_pkey = 'point_log_pkey',
+}
+
+/**
+ * select columns of table "point_log"
+ */
+export enum point_log_select_column {
+  created_at = 'created_at',
+  description = 'description',
+  ended_at = 'ended_at',
+  id = 'id',
+  member_id = 'member_id',
+  note = 'note',
+  point = 'point',
+  started_at = 'started_at',
 }
 
 /**
@@ -5147,6 +6788,16 @@ export enum post_category_constraint {
 }
 
 /**
+ * select columns of table "post_category"
+ */
+export enum post_category_select_column {
+  category_id = 'category_id',
+  id = 'id',
+  position = 'position',
+  post_id = 'post_id',
+}
+
+/**
  * update columns of table "post_category"
  */
 export enum post_category_update_column {
@@ -5164,10 +6815,28 @@ export enum post_constraint {
 }
 
 /**
+ * select columns of table "post_issue"
+ */
+export enum post_issue_select_column {
+  issue_id = 'issue_id',
+  post_id = 'post_id',
+}
+
+/**
  * unique or primary key constraints on table "post_merchandise"
  */
 export enum post_merchandise_constraint {
   post_merchandise_pkey = 'post_merchandise_pkey',
+}
+
+/**
+ * select columns of table "post_merchandise"
+ */
+export enum post_merchandise_select_column {
+  id = 'id',
+  merchandise_id = 'merchandise_id',
+  position = 'position',
+  post_id = 'post_id',
 }
 
 /**
@@ -5188,6 +6857,16 @@ export enum post_reaction_constraint {
 }
 
 /**
+ * select columns of table "post_reaction"
+ */
+export enum post_reaction_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  post_id = 'post_id',
+}
+
+/**
  * update columns of table "post_reaction"
  */
 export enum post_reaction_update_column {
@@ -5205,6 +6884,17 @@ export enum post_role_constraint {
 }
 
 /**
+ * select columns of table "post_role"
+ */
+export enum post_role_select_column {
+  id = 'id',
+  member_id = 'member_id',
+  name = 'name',
+  position = 'position',
+  post_id = 'post_id',
+}
+
+/**
  * update columns of table "post_role"
  */
 export enum post_role_update_column {
@@ -5216,10 +6906,57 @@ export enum post_role_update_column {
 }
 
 /**
+ * select columns of table "post"
+ */
+export enum post_select_column {
+  abstract = 'abstract',
+  app_id = 'app_id',
+  code_name = 'code_name',
+  cover_url = 'cover_url',
+  created_at = 'created_at',
+  description = 'description',
+  id = 'id',
+  is_deleted = 'is_deleted',
+  meta_tag = 'meta_tag',
+  pinned_at = 'pinned_at',
+  position = 'position',
+  published_at = 'published_at',
+  source = 'source',
+  title = 'title',
+  updated_at = 'updated_at',
+  video_url = 'video_url',
+  views = 'views',
+}
+
+/**
+ * select "post_aggregate_bool_exp_bool_and_arguments_columns" columns of table "post"
+ */
+export enum post_select_column_post_aggregate_bool_exp_bool_and_arguments_columns {
+  is_deleted = 'is_deleted',
+}
+
+/**
+ * select "post_aggregate_bool_exp_bool_or_arguments_columns" columns of table "post"
+ */
+export enum post_select_column_post_aggregate_bool_exp_bool_or_arguments_columns {
+  is_deleted = 'is_deleted',
+}
+
+/**
  * unique or primary key constraints on table "post_tag"
  */
 export enum post_tag_constraint {
   post_tag_pkey = 'post_tag_pkey',
+}
+
+/**
+ * select columns of table "post_tag"
+ */
+export enum post_tag_select_column {
+  id = 'id',
+  position = 'position',
+  post_id = 'post_id',
+  tag_name = 'tag_name',
 }
 
 /**
@@ -5245,6 +6982,7 @@ export enum post_update_column {
   id = 'id',
   is_deleted = 'is_deleted',
   meta_tag = 'meta_tag',
+  pinned_at = 'pinned_at',
   position = 'position',
   published_at = 'published_at',
   source = 'source',
@@ -5255,10 +6993,31 @@ export enum post_update_column {
 }
 
 /**
+ * select columns of table "practice_attachment"
+ */
+export enum practice_attachment_select_column {
+  app_id = 'app_id',
+  attachment_id = 'attachment_id',
+  created_at = 'created_at',
+  data = 'data',
+  options = 'options',
+  practice_id = 'practice_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * unique or primary key constraints on table "practice"
  */
 export enum practice_constraint {
   practice_pkey = 'practice_pkey',
+}
+
+/**
+ * select columns of table "practice_issue"
+ */
+export enum practice_issue_select_column {
+  issue_id = 'issue_id',
+  practice_id = 'practice_id',
 }
 
 /**
@@ -5269,6 +7028,16 @@ export enum practice_reaction_constraint {
 }
 
 /**
+ * select columns of table "practice_reaction"
+ */
+export enum practice_reaction_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  practice_id = 'practice_id',
+}
+
+/**
  * update columns of table "practice_reaction"
  */
 export enum practice_reaction_update_column {
@@ -5276,6 +7045,36 @@ export enum practice_reaction_update_column {
   id = 'id',
   member_id = 'member_id',
   practice_id = 'practice_id',
+}
+
+/**
+ * select columns of table "practice"
+ */
+export enum practice_select_column {
+  cover_url = 'cover_url',
+  created_at = 'created_at',
+  description = 'description',
+  id = 'id',
+  is_deleted = 'is_deleted',
+  member_id = 'member_id',
+  program_content_id = 'program_content_id',
+  reviewed_at = 'reviewed_at',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "practice_aggregate_bool_exp_bool_and_arguments_columns" columns of table "practice"
+ */
+export enum practice_select_column_practice_aggregate_bool_exp_bool_and_arguments_columns {
+  is_deleted = 'is_deleted',
+}
+
+/**
+ * select "practice_aggregate_bool_exp_bool_or_arguments_columns" columns of table "practice"
+ */
+export enum practice_select_column_practice_aggregate_bool_exp_bool_or_arguments_columns {
+  is_deleted = 'is_deleted',
 }
 
 /**
@@ -5303,10 +7102,46 @@ export enum product_constraint {
 }
 
 /**
+ * select columns of table "product_enrollment"
+ */
+export enum product_enrollment_select_column {
+  is_physical = 'is_physical',
+  member_id = 'member_id',
+  product_id = 'product_id',
+}
+
+/**
+ * select "product_enrollment_aggregate_bool_exp_bool_and_arguments_columns" columns of table "product_enrollment"
+ */
+export enum product_enrollment_select_column_product_enrollment_aggregate_bool_exp_bool_and_arguments_columns {
+  is_physical = 'is_physical',
+}
+
+/**
+ * select "product_enrollment_aggregate_bool_exp_bool_or_arguments_columns" columns of table "product_enrollment"
+ */
+export enum product_enrollment_select_column_product_enrollment_aggregate_bool_exp_bool_or_arguments_columns {
+  is_physical = 'is_physical',
+}
+
+/**
  * unique or primary key constraints on table "product_inventory"
  */
 export enum product_inventory_constraint {
   product_inventory_pkey = 'product_inventory_pkey',
+}
+
+/**
+ * select columns of table "product_inventory"
+ */
+export enum product_inventory_select_column {
+  comment = 'comment',
+  created_at = 'created_at',
+  id = 'id',
+  product_id = 'product_id',
+  quantity = 'quantity',
+  specification = 'specification',
+  status = 'status',
 }
 
 /**
@@ -5345,6 +7180,18 @@ export enum program_announcement_constraint {
 }
 
 /**
+ * select columns of table "program_announcement"
+ */
+export enum program_announcement_select_column {
+  created_at = 'created_at',
+  description = 'description',
+  id = 'id',
+  program_id = 'program_id',
+  published_at = 'published_at',
+  title = 'title',
+}
+
+/**
  * update columns of table "program_announcement"
  */
 export enum program_announcement_update_column {
@@ -5361,6 +7208,19 @@ export enum program_announcement_update_column {
  */
 export enum program_approval_constraint {
   program_approval_pkey = 'program_approval_pkey',
+}
+
+/**
+ * select columns of table "program_approval"
+ */
+export enum program_approval_select_column {
+  created_at = 'created_at',
+  description = 'description',
+  feedback = 'feedback',
+  id = 'id',
+  program_id = 'program_id',
+  status = 'status',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -5384,6 +7244,16 @@ export enum program_category_constraint {
 }
 
 /**
+ * select columns of table "program_category"
+ */
+export enum program_category_select_column {
+  category_id = 'category_id',
+  id = 'id',
+  position = 'position',
+  program_id = 'program_id',
+}
+
+/**
  * update columns of table "program_category"
  */
 export enum program_category_update_column {
@@ -5398,6 +7268,19 @@ export enum program_category_update_column {
  */
 export enum program_constraint {
   program_pkey = 'program_pkey',
+}
+
+/**
+ * select columns of table "program_content_attachment"
+ */
+export enum program_content_attachment_select_column {
+  app_id = 'app_id',
+  attachment_id = 'attachment_id',
+  created_at = 'created_at',
+  data = 'data',
+  options = 'options',
+  program_content_id = 'program_content_id',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -5426,10 +7309,31 @@ export enum program_content_constraint {
 }
 
 /**
+ * select columns of table "program_content_enrollment"
+ */
+export enum program_content_enrollment_select_column {
+  member_id = 'member_id',
+  product_delivered_at = 'product_delivered_at',
+  program_content_id = 'program_content_id',
+  program_id = 'program_id',
+}
+
+/**
  * unique or primary key constraints on table "program_content_material"
  */
 export enum program_content_material_constraint {
   program_content_material_pkey = 'program_content_material_pkey',
+}
+
+/**
+ * select columns of table "program_content_material"
+ */
+export enum program_content_material_select_column {
+  created_at = 'created_at',
+  data = 'data',
+  id = 'id',
+  program_content_id = 'program_content_id',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -5451,6 +7355,15 @@ export enum program_content_plan_constraint {
 }
 
 /**
+ * select columns of table "program_content_plan"
+ */
+export enum program_content_plan_select_column {
+  id = 'id',
+  program_content_id = 'program_content_id',
+  program_plan_id = 'program_plan_id',
+}
+
+/**
  * update columns of table "program_content_plan"
  */
 export enum program_content_plan_update_column {
@@ -5465,6 +7378,34 @@ export enum program_content_plan_update_column {
 export enum program_content_progress_constraint {
   program_content_progress_member_id_program_content_id_key = 'program_content_progress_member_id_program_content_id_key',
   program_content_progress_pkey = 'program_content_progress_pkey',
+}
+
+/**
+ * select columns of table "program_content_progress_enrollment"
+ */
+export enum program_content_progress_enrollment_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  last_progress = 'last_progress',
+  member_id = 'member_id',
+  program_content_id = 'program_content_id',
+  program_content_section_id = 'program_content_section_id',
+  program_id = 'program_id',
+  progress = 'progress',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select columns of table "program_content_progress"
+ */
+export enum program_content_progress_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  last_progress = 'last_progress',
+  member_id = 'member_id',
+  program_content_id = 'program_content_id',
+  progress = 'progress',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -5488,6 +7429,17 @@ export enum program_content_section_constraint {
 }
 
 /**
+ * select columns of table "program_content_section"
+ */
+export enum program_content_section_select_column {
+  description = 'description',
+  id = 'id',
+  position = 'position',
+  program_id = 'program_id',
+  title = 'title',
+}
+
+/**
  * update columns of table "program_content_section"
  */
 export enum program_content_section_update_column {
@@ -5496,6 +7448,43 @@ export enum program_content_section_update_column {
   position = 'position',
   program_id = 'program_id',
   title = 'title',
+}
+
+/**
+ * select columns of table "program_content"
+ */
+export enum program_content_select_column {
+  abstract = 'abstract',
+  content_body_id = 'content_body_id',
+  content_section_id = 'content_section_id',
+  content_type = 'content_type',
+  created_at = 'created_at',
+  display_mode = 'display_mode',
+  duration = 'duration',
+  id = 'id',
+  is_notify_update = 'is_notify_update',
+  list_price = 'list_price',
+  metadata = 'metadata',
+  notified_at = 'notified_at',
+  position = 'position',
+  published_at = 'published_at',
+  sale_price = 'sale_price',
+  sold_at = 'sold_at',
+  title = 'title',
+}
+
+/**
+ * select "program_content_aggregate_bool_exp_bool_and_arguments_columns" columns of table "program_content"
+ */
+export enum program_content_select_column_program_content_aggregate_bool_exp_bool_and_arguments_columns {
+  is_notify_update = 'is_notify_update',
+}
+
+/**
+ * select "program_content_aggregate_bool_exp_bool_or_arguments_columns" columns of table "program_content"
+ */
+export enum program_content_select_column_program_content_aggregate_bool_exp_bool_or_arguments_columns {
+  is_notify_update = 'is_notify_update',
 }
 
 /**
@@ -5529,6 +7518,17 @@ export enum program_content_video_constraint {
 }
 
 /**
+ * select columns of table "program_content_video"
+ */
+export enum program_content_video_select_column {
+  attachment_id = 'attachment_id',
+  created_at = 'created_at',
+  id = 'id',
+  program_content_id = 'program_content_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "program_content_video"
  */
 export enum program_content_video_update_column {
@@ -5540,10 +7540,41 @@ export enum program_content_video_update_column {
 }
 
 /**
+ * select columns of table "program_editor"
+ */
+export enum program_editor_select_column {
+  member_id = 'member_id',
+  program_id = 'program_id',
+}
+
+/**
+ * select columns of table "program_enrollment"
+ */
+export enum program_enrollment_select_column {
+  member_email = 'member_email',
+  member_id = 'member_id',
+  member_name = 'member_name',
+  member_picture_url = 'member_picture_url',
+  product_delivered_at = 'product_delivered_at',
+  program_id = 'program_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * unique or primary key constraints on table "program_package_category"
  */
 export enum program_package_category_constraint {
   program_package_category_pkey = 'program_package_category_pkey',
+}
+
+/**
+ * select columns of table "program_package_category"
+ */
+export enum program_package_category_select_column {
+  category_id = 'category_id',
+  id = 'id',
+  position = 'position',
+  program_package_id = 'program_package_id',
 }
 
 /**
@@ -5568,6 +7599,55 @@ export enum program_package_constraint {
  */
 export enum program_package_plan_constraint {
   program_package_plan_pkey = 'program_package_plan_pkey',
+}
+
+/**
+ * select columns of table "program_package_plan_enrollment"
+ */
+export enum program_package_plan_enrollment_select_column {
+  member_id = 'member_id',
+  product_delivered_at = 'product_delivered_at',
+  program_package_plan_id = 'program_package_plan_id',
+}
+
+/**
+ * select columns of table "program_package_plan"
+ */
+export enum program_package_plan_select_column {
+  created_at = 'created_at',
+  description = 'description',
+  discount_down_price = 'discount_down_price',
+  id = 'id',
+  is_participants_visible = 'is_participants_visible',
+  is_subscription = 'is_subscription',
+  is_tempo_delivery = 'is_tempo_delivery',
+  list_price = 'list_price',
+  period_amount = 'period_amount',
+  period_type = 'period_type',
+  position = 'position',
+  program_package_id = 'program_package_id',
+  published_at = 'published_at',
+  sale_price = 'sale_price',
+  sold_at = 'sold_at',
+  title = 'title',
+}
+
+/**
+ * select "program_package_plan_aggregate_bool_exp_bool_and_arguments_columns" columns of table "program_package_plan"
+ */
+export enum program_package_plan_select_column_program_package_plan_aggregate_bool_exp_bool_and_arguments_columns {
+  is_participants_visible = 'is_participants_visible',
+  is_subscription = 'is_subscription',
+  is_tempo_delivery = 'is_tempo_delivery',
+}
+
+/**
+ * select "program_package_plan_aggregate_bool_exp_bool_or_arguments_columns" columns of table "program_package_plan"
+ */
+export enum program_package_plan_select_column_program_package_plan_aggregate_bool_exp_bool_or_arguments_columns {
+  is_participants_visible = 'is_participants_visible',
+  is_subscription = 'is_subscription',
+  is_tempo_delivery = 'is_tempo_delivery',
 }
 
 /**
@@ -5601,6 +7681,16 @@ export enum program_package_program_constraint {
 }
 
 /**
+ * select columns of table "program_package_program"
+ */
+export enum program_package_program_select_column {
+  id = 'id',
+  position = 'position',
+  program_id = 'program_id',
+  program_package_id = 'program_package_id',
+}
+
+/**
  * update columns of table "program_package_program"
  */
 export enum program_package_program_update_column {
@@ -5611,11 +7701,51 @@ export enum program_package_program_update_column {
 }
 
 /**
+ * select columns of table "program_package"
+ */
+export enum program_package_select_column {
+  app_id = 'app_id',
+  cover_url = 'cover_url',
+  created_at = 'created_at',
+  creator_id = 'creator_id',
+  description = 'description',
+  id = 'id',
+  is_private = 'is_private',
+  meta_tag = 'meta_tag',
+  published_at = 'published_at',
+  title = 'title',
+}
+
+/**
+ * select "program_package_aggregate_bool_exp_bool_and_arguments_columns" columns of table "program_package"
+ */
+export enum program_package_select_column_program_package_aggregate_bool_exp_bool_and_arguments_columns {
+  is_private = 'is_private',
+}
+
+/**
+ * select "program_package_aggregate_bool_exp_bool_or_arguments_columns" columns of table "program_package"
+ */
+export enum program_package_select_column_program_package_aggregate_bool_exp_bool_or_arguments_columns {
+  is_private = 'is_private',
+}
+
+/**
  * unique or primary key constraints on table "program_package_tag"
  */
 export enum program_package_tag_constraint {
   program_package_tag_pkey = 'program_package_tag_pkey',
   program_package_tag_program_package_id_tag_name_key = 'program_package_tag_program_package_id_tag_name_key',
+}
+
+/**
+ * select columns of table "program_package_tag"
+ */
+export enum program_package_tag_select_column {
+  id = 'id',
+  position = 'position',
+  program_package_id = 'program_package_id',
+  tag_name = 'tag_name',
 }
 
 /**
@@ -5649,6 +7779,72 @@ export enum program_package_update_column {
  */
 export enum program_plan_constraint {
   program_plan_pkey = 'program_plan_pkey',
+}
+
+/**
+ * select columns of table "program_plan_enrollment"
+ */
+export enum program_plan_enrollment_select_column {
+  ended_at = 'ended_at',
+  member_id = 'member_id',
+  options = 'options',
+  product_delivered_at = 'product_delivered_at',
+  program_plan_id = 'program_plan_id',
+  started_at = 'started_at',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select columns of table "program_plan"
+ */
+export enum program_plan_select_column {
+  auto_renewed = 'auto_renewed',
+  created_at = 'created_at',
+  currency_id = 'currency_id',
+  description = 'description',
+  discount_down_price = 'discount_down_price',
+  ended_at = 'ended_at',
+  gains = 'gains',
+  group_buying_people = 'group_buying_people',
+  id = 'id',
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_deleted = 'is_deleted',
+  is_participants_visible = 'is_participants_visible',
+  is_primary = 'is_primary',
+  list_price = 'list_price',
+  period_amount = 'period_amount',
+  period_type = 'period_type',
+  program_id = 'program_id',
+  published_at = 'published_at',
+  remind_period_amount = 'remind_period_amount',
+  remind_period_type = 'remind_period_type',
+  sale_price = 'sale_price',
+  sold_at = 'sold_at',
+  started_at = 'started_at',
+  title = 'title',
+  type = 'type',
+}
+
+/**
+ * select "program_plan_aggregate_bool_exp_bool_and_arguments_columns" columns of table "program_plan"
+ */
+export enum program_plan_select_column_program_plan_aggregate_bool_exp_bool_and_arguments_columns {
+  auto_renewed = 'auto_renewed',
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_deleted = 'is_deleted',
+  is_participants_visible = 'is_participants_visible',
+  is_primary = 'is_primary',
+}
+
+/**
+ * select "program_plan_aggregate_bool_exp_bool_or_arguments_columns" columns of table "program_plan"
+ */
+export enum program_plan_select_column_program_plan_aggregate_bool_exp_bool_or_arguments_columns {
+  auto_renewed = 'auto_renewed',
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_deleted = 'is_deleted',
+  is_participants_visible = 'is_participants_visible',
+  is_primary = 'is_primary',
 }
 
 /**
@@ -5690,6 +7886,17 @@ export enum program_related_item_constraint {
 }
 
 /**
+ * select columns of table "program_related_item"
+ */
+export enum program_related_item_select_column {
+  class = 'class',
+  id = 'id',
+  program_id = 'program_id',
+  target = 'target',
+  weight = 'weight',
+}
+
+/**
  * update columns of table "program_related_item"
  */
 export enum program_related_item_update_column {
@@ -5709,6 +7916,17 @@ export enum program_role_constraint {
 }
 
 /**
+ * select columns of table "program_role"
+ */
+export enum program_role_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  name = 'name',
+  program_id = 'program_id',
+}
+
+/**
  * update columns of table "program_role"
  */
 export enum program_role_update_column {
@@ -5720,11 +7938,85 @@ export enum program_role_update_column {
 }
 
 /**
+ * select columns of table "program"
+ */
+export enum program_select_column {
+  abstract = 'abstract',
+  app_id = 'app_id',
+  cover_mobile_url = 'cover_mobile_url',
+  cover_thumbnail_url = 'cover_thumbnail_url',
+  cover_url = 'cover_url',
+  cover_video_url = 'cover_video_url',
+  created_at = 'created_at',
+  description = 'description',
+  id = 'id',
+  in_advance = 'in_advance',
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_deleted = 'is_deleted',
+  is_enrolled_count_visible = 'is_enrolled_count_visible',
+  is_introduction_section_visible = 'is_introduction_section_visible',
+  is_issues_open = 'is_issues_open',
+  is_private = 'is_private',
+  is_sold_out = 'is_sold_out',
+  is_subscription = 'is_subscription',
+  list_price = 'list_price',
+  meta_tag = 'meta_tag',
+  metadata = 'metadata',
+  position = 'position',
+  published_at = 'published_at',
+  sale_price = 'sale_price',
+  sold_at = 'sold_at',
+  support_locales = 'support_locales',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "program_aggregate_bool_exp_bool_and_arguments_columns" columns of table "program"
+ */
+export enum program_select_column_program_aggregate_bool_exp_bool_and_arguments_columns {
+  in_advance = 'in_advance',
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_deleted = 'is_deleted',
+  is_enrolled_count_visible = 'is_enrolled_count_visible',
+  is_introduction_section_visible = 'is_introduction_section_visible',
+  is_issues_open = 'is_issues_open',
+  is_private = 'is_private',
+  is_sold_out = 'is_sold_out',
+  is_subscription = 'is_subscription',
+}
+
+/**
+ * select "program_aggregate_bool_exp_bool_or_arguments_columns" columns of table "program"
+ */
+export enum program_select_column_program_aggregate_bool_exp_bool_or_arguments_columns {
+  in_advance = 'in_advance',
+  is_countdown_timer_visible = 'is_countdown_timer_visible',
+  is_deleted = 'is_deleted',
+  is_enrolled_count_visible = 'is_enrolled_count_visible',
+  is_introduction_section_visible = 'is_introduction_section_visible',
+  is_issues_open = 'is_issues_open',
+  is_private = 'is_private',
+  is_sold_out = 'is_sold_out',
+  is_subscription = 'is_subscription',
+}
+
+/**
  * unique or primary key constraints on table "program_tag"
  */
 export enum program_tag_constraint {
   program_tag_pkey = 'program_tag_pkey',
   program_tag_program_id_tag_name_key = 'program_tag_program_id_tag_name_key',
+}
+
+/**
+ * select columns of table "program_tag"
+ */
+export enum program_tag_select_column {
+  id = 'id',
+  position = 'position',
+  program_id = 'program_id',
+  tag_name = 'tag_name',
 }
 
 /**
@@ -5743,6 +8035,16 @@ export enum program_tag_update_column {
 export enum program_tempo_delivery_constraint {
   program_tempo_delivery_member_id_program_package_program_id_key = 'program_tempo_delivery_member_id_program_package_program_id_key',
   program_tempo_delivery_pkey = 'program_tempo_delivery_pkey',
+}
+
+/**
+ * select columns of table "program_tempo_delivery"
+ */
+export enum program_tempo_delivery_select_column {
+  delivered_at = 'delivered_at',
+  id = 'id',
+  member_id = 'member_id',
+  program_package_program_id = 'program_package_program_id',
 }
 
 /**
@@ -5797,6 +8099,16 @@ export enum project_category_constraint {
 }
 
 /**
+ * select columns of table "project_category"
+ */
+export enum project_category_select_column {
+  category_id = 'category_id',
+  id = 'id',
+  position = 'position',
+  project_id = 'project_id',
+}
+
+/**
  * update columns of table "project_category"
  */
 export enum project_category_update_column {
@@ -5821,11 +8133,31 @@ export enum project_plan_constraint {
 }
 
 /**
+ * select columns of table "project_plan_enrollment"
+ */
+export enum project_plan_enrollment_select_column {
+  ended_at = 'ended_at',
+  member_id = 'member_id',
+  project_plan_id = 'project_plan_id',
+  started_at = 'started_at',
+}
+
+/**
  * unique or primary key constraints on table "project_plan_product"
  */
 export enum project_plan_product_constraint {
   project_plan_product_pkey = 'project_plan_product_pkey',
   project_plan_product_project_plan_id_product_id_key = 'project_plan_product_project_plan_id_product_id_key',
+}
+
+/**
+ * select columns of table "project_plan_product"
+ */
+export enum project_plan_product_select_column {
+  id = 'id',
+  options = 'options',
+  product_id = 'product_id',
+  project_plan_id = 'project_plan_id',
 }
 
 /**
@@ -5836,6 +8168,56 @@ export enum project_plan_product_update_column {
   options = 'options',
   product_id = 'product_id',
   project_plan_id = 'project_plan_id',
+}
+
+/**
+ * select columns of table "project_plan"
+ */
+export enum project_plan_select_column {
+  auto_renewed = 'auto_renewed',
+  cover_url = 'cover_url',
+  created_at = 'created_at',
+  currency_id = 'currency_id',
+  deliverables = 'deliverables',
+  description = 'description',
+  discount_down_price = 'discount_down_price',
+  id = 'id',
+  is_limited = 'is_limited',
+  is_participants_visible = 'is_participants_visible',
+  is_physical = 'is_physical',
+  is_subscription = 'is_subscription',
+  list_price = 'list_price',
+  options = 'options',
+  period_amount = 'period_amount',
+  period_type = 'period_type',
+  position = 'position',
+  project_id = 'project_id',
+  published_at = 'published_at',
+  sale_price = 'sale_price',
+  sold_at = 'sold_at',
+  title = 'title',
+}
+
+/**
+ * select "project_plan_aggregate_bool_exp_bool_and_arguments_columns" columns of table "project_plan"
+ */
+export enum project_plan_select_column_project_plan_aggregate_bool_exp_bool_and_arguments_columns {
+  auto_renewed = 'auto_renewed',
+  is_limited = 'is_limited',
+  is_participants_visible = 'is_participants_visible',
+  is_physical = 'is_physical',
+  is_subscription = 'is_subscription',
+}
+
+/**
+ * select "project_plan_aggregate_bool_exp_bool_or_arguments_columns" columns of table "project_plan"
+ */
+export enum project_plan_select_column_project_plan_aggregate_bool_exp_bool_or_arguments_columns {
+  auto_renewed = 'auto_renewed',
+  is_limited = 'is_limited',
+  is_participants_visible = 'is_participants_visible',
+  is_physical = 'is_physical',
+  is_subscription = 'is_subscription',
 }
 
 /**
@@ -5874,6 +8256,16 @@ export enum project_reaction_constraint {
 }
 
 /**
+ * select columns of table "project_reaction"
+ */
+export enum project_reaction_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  project_id = 'project_id',
+}
+
+/**
  * update columns of table "project_reaction"
  */
 export enum project_reaction_update_column {
@@ -5891,13 +8283,45 @@ export enum project_role_constraint {
 }
 
 /**
- * update columns of table "project_role"
+ * select columns of table "project_role"
  */
-export enum project_role_update_column {
+export enum project_role_select_column {
+  agreed_at = 'agreed_at',
+  has_sended_marked_notification = 'has_sended_marked_notification',
   id = 'id',
   identity_id = 'identity_id',
   member_id = 'member_id',
   project_id = 'project_id',
+  rejected_at = 'rejected_at',
+  rejected_reason = 'rejected_reason',
+}
+
+/**
+ * select "project_role_aggregate_bool_exp_bool_and_arguments_columns" columns of table "project_role"
+ */
+export enum project_role_select_column_project_role_aggregate_bool_exp_bool_and_arguments_columns {
+  has_sended_marked_notification = 'has_sended_marked_notification',
+}
+
+/**
+ * select "project_role_aggregate_bool_exp_bool_or_arguments_columns" columns of table "project_role"
+ */
+export enum project_role_select_column_project_role_aggregate_bool_exp_bool_or_arguments_columns {
+  has_sended_marked_notification = 'has_sended_marked_notification',
+}
+
+/**
+ * update columns of table "project_role"
+ */
+export enum project_role_update_column {
+  agreed_at = 'agreed_at',
+  has_sended_marked_notification = 'has_sended_marked_notification',
+  id = 'id',
+  identity_id = 'identity_id',
+  member_id = 'member_id',
+  project_id = 'project_id',
+  rejected_at = 'rejected_at',
+  rejected_reason = 'rejected_reason',
 }
 
 /**
@@ -5905,6 +8329,17 @@ export enum project_role_update_column {
  */
 export enum project_section_constraint {
   project_section_pkey = 'project_section_pkey',
+}
+
+/**
+ * select columns of table "project_section"
+ */
+export enum project_section_select_column {
+  id = 'id',
+  options = 'options',
+  position = 'position',
+  project_id = 'project_id',
+  type = 'type',
 }
 
 /**
@@ -5924,6 +8359,16 @@ export enum project_section_update_column {
 export enum project_tag_constraint {
   project_tag_pkey = 'project_tag_pkey',
   project_tag_project_id_tag_name_key = 'project_tag_project_id_tag_name_key',
+}
+
+/**
+ * select columns of table "project_tag"
+ */
+export enum project_tag_select_column {
+  id = 'id',
+  position = 'position',
+  project_id = 'project_id',
+  tag_name = 'tag_name',
 }
 
 /**
@@ -5975,6 +8420,20 @@ export enum property_constraint {
 }
 
 /**
+ * select columns of table "property"
+ */
+export enum property_select_column {
+  app_id = 'app_id',
+  created_at = 'created_at',
+  id = 'id',
+  name = 'name',
+  placeholder = 'placeholder',
+  position = 'position',
+  type = 'type',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "property"
  */
 export enum property_update_column {
@@ -6000,6 +8459,19 @@ export enum question_constraint {
  */
 export enum question_group_constraint {
   question_group_pkey = 'question_group_pkey',
+}
+
+/**
+ * select columns of table "question_group"
+ */
+export enum question_group_select_column {
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  id = 'id',
+  modifier_id = 'modifier_id',
+  question_library_id = 'question_library_id',
+  title = 'title',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -6044,6 +8516,34 @@ export enum question_option_constraint {
 }
 
 /**
+ * select columns of table "question_option"
+ */
+export enum question_option_select_column {
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  id = 'id',
+  is_answer = 'is_answer',
+  position = 'position',
+  question_id = 'question_id',
+  updated_at = 'updated_at',
+  value = 'value',
+}
+
+/**
+ * select "question_option_aggregate_bool_exp_bool_and_arguments_columns" columns of table "question_option"
+ */
+export enum question_option_select_column_question_option_aggregate_bool_exp_bool_and_arguments_columns {
+  is_answer = 'is_answer',
+}
+
+/**
+ * select "question_option_aggregate_bool_exp_bool_or_arguments_columns" columns of table "question_option"
+ */
+export enum question_option_select_column_question_option_aggregate_bool_exp_bool_or_arguments_columns {
+  is_answer = 'is_answer',
+}
+
+/**
  * update columns of table "question_option"
  */
 export enum question_option_update_column {
@@ -6055,6 +8555,23 @@ export enum question_option_update_column {
   question_id = 'question_id',
   updated_at = 'updated_at',
   value = 'value',
+}
+
+/**
+ * select columns of table "question"
+ */
+export enum question_select_column {
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  explanation = 'explanation',
+  font = 'font',
+  id = 'id',
+  layout = 'layout',
+  position = 'position',
+  question_group_id = 'question_group_id',
+  subject = 'subject',
+  type = 'type',
+  updated_at = 'updated_at',
 }
 
 /**
@@ -6090,6 +8607,16 @@ export enum review_reaction_constraint {
 }
 
 /**
+ * select columns of table "review_reaction"
+ */
+export enum review_reaction_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  review_id = 'review_id',
+}
+
+/**
  * update columns of table "review_reaction"
  */
 export enum review_reaction_update_column {
@@ -6107,6 +8634,18 @@ export enum review_reply_constraint {
 }
 
 /**
+ * select columns of table "review_reply"
+ */
+export enum review_reply_select_column {
+  content = 'content',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  review_id = 'review_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "review_reply"
  */
 export enum review_reply_update_column {
@@ -6115,6 +8654,22 @@ export enum review_reply_update_column {
   id = 'id',
   member_id = 'member_id',
   review_id = 'review_id',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select columns of table "review"
+ */
+export enum review_select_column {
+  app_id = 'app_id',
+  content = 'content',
+  created_at = 'created_at',
+  id = 'id',
+  member_id = 'member_id',
+  path = 'path',
+  private_content = 'private_content',
+  score = 'score',
+  title = 'title',
   updated_at = 'updated_at',
 }
 
@@ -6150,6 +8705,17 @@ export enum role_permission_constraint {
 }
 
 /**
+ * select columns of table "role_permission"
+ */
+export enum role_permission_select_column {
+  created_at = 'created_at',
+  id = 'id',
+  permission_id = 'permission_id',
+  role_id = 'role_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "role_permission"
  */
 export enum role_permission_update_column {
@@ -6179,6 +8745,18 @@ export enum search_tag_constraint {
 }
 
 /**
+ * select columns of table "search_tag"
+ */
+export enum search_tag_select_column {
+  app_id = 'app_id',
+  created_at = 'created_at',
+  id = 'id',
+  position = 'position',
+  tag_name = 'tag_name',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "search_tag"
  */
 export enum search_tag_update_column {
@@ -6195,6 +8773,37 @@ export enum search_tag_update_column {
  */
 export enum setting_constraint {
   setting_pkey = 'setting_pkey',
+}
+
+/**
+ * select columns of table "setting"
+ */
+export enum setting_select_column {
+  is_protected = 'is_protected',
+  is_required = 'is_required',
+  is_secret = 'is_secret',
+  key = 'key',
+  module_id = 'module_id',
+  options = 'options',
+  type = 'type',
+}
+
+/**
+ * select "setting_aggregate_bool_exp_bool_and_arguments_columns" columns of table "setting"
+ */
+export enum setting_select_column_setting_aggregate_bool_exp_bool_and_arguments_columns {
+  is_protected = 'is_protected',
+  is_required = 'is_required',
+  is_secret = 'is_secret',
+}
+
+/**
+ * select "setting_aggregate_bool_exp_bool_or_arguments_columns" columns of table "setting"
+ */
+export enum setting_select_column_setting_aggregate_bool_exp_bool_or_arguments_columns {
+  is_protected = 'is_protected',
+  is_required = 'is_required',
+  is_secret = 'is_secret',
 }
 
 /**
@@ -6218,6 +8827,19 @@ export enum sharing_code_constraint {
 }
 
 /**
+ * select columns of table "sharing_code"
+ */
+export enum sharing_code_select_column {
+  app_id = 'app_id',
+  code = 'code',
+  created_at = 'created_at',
+  id = 'id',
+  note = 'note',
+  path = 'path',
+  updated_at = 'updated_at',
+}
+
+/**
  * update columns of table "sharing_code"
  */
 export enum sharing_code_update_column {
@@ -6238,10 +8860,35 @@ export enum social_card_constraint {
 }
 
 /**
+ * select columns of table "social_card"
+ */
+export enum social_card_select_column {
+  badge_url = 'badge_url',
+  description = 'description',
+  id = 'id',
+  member_social_id = 'member_social_id',
+  membership_id = 'membership_id',
+  name = 'name',
+}
+
+/**
  * unique or primary key constraints on table "social_card_subscriber"
  */
 export enum social_card_subscriber_constraint {
   social_card_subscriber_pkey = 'social_card_subscriber_pkey',
+}
+
+/**
+ * select columns of table "social_card_subscriber"
+ */
+export enum social_card_subscriber_select_column {
+  created_at = 'created_at',
+  ended_at = 'ended_at',
+  id = 'id',
+  member_channel_id = 'member_channel_id',
+  member_id = 'member_id',
+  social_card_id = 'social_card_id',
+  started_at = 'started_at',
 }
 
 /**
@@ -6297,6 +8944,17 @@ export enum voucher_code_constraint {
 }
 
 /**
+ * select columns of table "voucher_code"
+ */
+export enum voucher_code_select_column {
+  code = 'code',
+  count = 'count',
+  id = 'id',
+  remaining = 'remaining',
+  voucher_plan_id = 'voucher_plan_id',
+}
+
+/**
  * update columns of table "voucher_code"
  */
 export enum voucher_code_update_column {
@@ -6330,12 +8988,54 @@ export enum voucher_plan_product_constraint {
 }
 
 /**
+ * select columns of table "voucher_plan_product"
+ */
+export enum voucher_plan_product_select_column {
+  id = 'id',
+  product_id = 'product_id',
+  voucher_plan_id = 'voucher_plan_id',
+}
+
+/**
  * update columns of table "voucher_plan_product"
  */
 export enum voucher_plan_product_update_column {
   id = 'id',
   product_id = 'product_id',
   voucher_plan_id = 'voucher_plan_id',
+}
+
+/**
+ * select columns of table "voucher_plan"
+ */
+export enum voucher_plan_select_column {
+  app_id = 'app_id',
+  created_at = 'created_at',
+  description = 'description',
+  editor_id = 'editor_id',
+  ended_at = 'ended_at',
+  id = 'id',
+  is_transferable = 'is_transferable',
+  product_quantity_limit = 'product_quantity_limit',
+  sale_amount = 'sale_amount',
+  sale_price = 'sale_price',
+  started_at = 'started_at',
+  title = 'title',
+  updated_at = 'updated_at',
+}
+
+/**
+ * select "voucher_plan_aggregate_bool_exp_bool_and_arguments_columns" columns of table "voucher_plan"
+ */
+export enum voucher_plan_select_column_voucher_plan_aggregate_bool_exp_bool_and_arguments_columns {
+  is_transferable = 'is_transferable',
+}
+
+/**
+ * select "voucher_plan_aggregate_bool_exp_bool_or_arguments_columns" columns of table "voucher_plan"
+ */
+export enum voucher_plan_select_column_voucher_plan_aggregate_bool_exp_bool_or_arguments_columns {
+  is_transferable = 'is_transferable',
 }
 
 /**
@@ -6358,6 +9058,17 @@ export enum voucher_plan_update_column {
 }
 
 /**
+ * select columns of table "voucher"
+ */
+export enum voucher_select_column {
+  created_at = 'created_at',
+  deleted_at = 'deleted_at',
+  id = 'id',
+  member_id = 'member_id',
+  voucher_code_id = 'voucher_code_id',
+}
+
+/**
  * update columns of table "voucher"
  */
 export enum voucher_update_column {
@@ -6376,6 +9087,21 @@ export enum xuemi_assign_rule_constraint {
 }
 
 /**
+ * select columns of table "xuemi.assign_rule"
+ */
+export enum xuemi_assign_rule_select_column {
+  id = 'id',
+  limit = 'limit',
+  member_id = 'member_id',
+  member_selector_id = 'member_selector_id',
+  position = 'position',
+  source_member_id = 'source_member_id',
+  target_member_id = 'target_member_id',
+  total_limit = 'total_limit',
+  trigger_id = 'trigger_id',
+}
+
+/**
  * update columns of table "xuemi.assign_rule"
  */
 export enum xuemi_assign_rule_update_column {
@@ -6388,6 +9114,17 @@ export enum xuemi_assign_rule_update_column {
   target_member_id = 'target_member_id',
   total_limit = 'total_limit',
   trigger_id = 'trigger_id',
+}
+
+/**
+ * select columns of table "xuemi.manager_status"
+ */
+export enum xuemi_manager_status_select_column {
+  assigned = 'assigned',
+  category_name = 'category_name',
+  limit = 'limit',
+  manager_id = 'manager_id',
+  remaining = 'remaining',
 }
 
 /**
@@ -6480,6 +9217,33 @@ export interface String_comparison_exp {
   _similar?: string | null
 }
 
+export interface activity_aggregate_bool_exp {
+  bool_and?: activity_aggregate_bool_exp_bool_and | null
+  bool_or?: activity_aggregate_bool_exp_bool_or | null
+  count?: activity_aggregate_bool_exp_count | null
+}
+
+export interface activity_aggregate_bool_exp_bool_and {
+  arguments: activity_select_column_activity_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: activity_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface activity_aggregate_bool_exp_bool_or {
+  arguments: activity_select_column_activity_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: activity_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface activity_aggregate_bool_exp_count {
+  arguments?: activity_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "activity"
  */
@@ -6503,6 +9267,17 @@ export interface activity_aggregate_order_by {
 export interface activity_arr_rel_insert_input {
   data: activity_insert_input[]
   on_conflict?: activity_on_conflict | null
+}
+
+export interface activity_attendance_aggregate_bool_exp {
+  count?: activity_attendance_aggregate_bool_exp_count | null
+}
+
+export interface activity_attendance_aggregate_bool_exp_count {
+  arguments?: activity_attendance_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_attendance_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -6564,11 +9339,16 @@ export interface activity_bool_exp {
   _not?: activity_bool_exp | null
   _or?: activity_bool_exp[] | null
   activity_categories?: activity_category_bool_exp | null
+  activity_categories_aggregate?: activity_category_aggregate_bool_exp | null
   activity_during_period?: activity_during_period_bool_exp | null
   activity_enrollments?: activity_enrollment_bool_exp | null
+  activity_enrollments_aggregate?: activity_enrollment_aggregate_bool_exp | null
   activity_sessions?: activity_session_bool_exp | null
+  activity_sessions_aggregate?: activity_session_aggregate_bool_exp | null
   activity_tags?: activity_tag_bool_exp | null
+  activity_tags_aggregate?: activity_tag_aggregate_bool_exp | null
   activity_tickets?: activity_ticket_bool_exp | null
+  activity_tickets_aggregate?: activity_ticket_aggregate_bool_exp | null
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
   cover_url?: String_comparison_exp | null
@@ -6581,12 +9361,25 @@ export interface activity_bool_exp {
   organizer?: member_public_bool_exp | null
   organizer_id?: String_comparison_exp | null
   package_items?: package_item_bool_exp | null
+  package_items_aggregate?: package_item_aggregate_bool_exp | null
   position?: Int_comparison_exp | null
   published_at?: timestamptz_comparison_exp | null
   session_ticket_enrollment_count?: activity_session_ticket_enrollment_count_bool_exp | null
+  session_ticket_enrollment_count_aggregate?: activity_session_ticket_enrollment_count_aggregate_bool_exp | null
   support_locales?: jsonb_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface activity_category_aggregate_bool_exp {
+  count?: activity_category_aggregate_bool_exp_count | null
+}
+
+export interface activity_category_aggregate_bool_exp_count {
+  arguments?: activity_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_category_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -6764,6 +9557,33 @@ export interface activity_during_period_order_by {
   activity_id?: order_by | null
   ended_at?: order_by | null
   started_at?: order_by | null
+}
+
+export interface activity_enrollment_aggregate_bool_exp {
+  bool_and?: activity_enrollment_aggregate_bool_exp_bool_and | null
+  bool_or?: activity_enrollment_aggregate_bool_exp_bool_or | null
+  count?: activity_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface activity_enrollment_aggregate_bool_exp_bool_and {
+  arguments: activity_enrollment_select_column_activity_enrollment_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: activity_enrollment_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface activity_enrollment_aggregate_bool_exp_bool_or {
+  arguments: activity_enrollment_select_column_activity_enrollment_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: activity_enrollment_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface activity_enrollment_aggregate_bool_exp_count {
+  arguments?: activity_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -6958,6 +9778,17 @@ export interface activity_order_by {
   updated_at?: order_by | null
 }
 
+export interface activity_session_aggregate_bool_exp {
+  count?: activity_session_aggregate_bool_exp_count | null
+}
+
+export interface activity_session_aggregate_bool_exp_count {
+  arguments?: activity_session_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_session_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "activity_session"
  */
@@ -6999,9 +9830,12 @@ export interface activity_session_bool_exp {
   _or?: activity_session_bool_exp[] | null
   activity?: activity_bool_exp | null
   activity_attendances?: activity_attendance_bool_exp | null
+  activity_attendances_aggregate?: activity_attendance_aggregate_bool_exp | null
   activity_enrollments?: activity_enrollment_bool_exp | null
+  activity_enrollments_aggregate?: activity_enrollment_aggregate_bool_exp | null
   activity_id?: uuid_comparison_exp | null
   activity_session_tickets?: activity_session_ticket_bool_exp | null
+  activity_session_tickets_aggregate?: activity_session_ticket_aggregate_bool_exp | null
   deleted_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
@@ -7112,6 +9946,17 @@ export interface activity_session_sum_order_by {
   threshold?: order_by | null
 }
 
+export interface activity_session_ticket_aggregate_bool_exp {
+  count?: activity_session_ticket_aggregate_bool_exp_count | null
+}
+
+export interface activity_session_ticket_aggregate_bool_exp_count {
+  arguments?: activity_session_ticket_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_session_ticket_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "activity_session_ticket"
  */
@@ -7133,6 +9978,17 @@ export interface activity_session_ticket_bool_exp {
   activity_ticket?: activity_ticket_bool_exp | null
   activity_ticket_id?: uuid_comparison_exp | null
   id?: uuid_comparison_exp | null
+}
+
+export interface activity_session_ticket_enrollment_count_aggregate_bool_exp {
+  count?: activity_session_ticket_enrollment_count_aggregate_bool_exp_count | null
+}
+
+export interface activity_session_ticket_enrollment_count_aggregate_bool_exp_count {
+  arguments?: activity_session_ticket_enrollment_count_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_session_ticket_enrollment_count_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -7345,6 +10201,17 @@ export interface activity_sum_order_by {
   position?: order_by | null
 }
 
+export interface activity_tag_aggregate_bool_exp {
+  count?: activity_tag_aggregate_bool_exp_count | null
+}
+
+export interface activity_tag_aggregate_bool_exp_count {
+  arguments?: activity_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_tag_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "activity_tag"
  */
@@ -7482,6 +10349,33 @@ export interface activity_tag_variance_order_by {
   position?: order_by | null
 }
 
+export interface activity_ticket_aggregate_bool_exp {
+  bool_and?: activity_ticket_aggregate_bool_exp_bool_and | null
+  bool_or?: activity_ticket_aggregate_bool_exp_bool_or | null
+  count?: activity_ticket_aggregate_bool_exp_count | null
+}
+
+export interface activity_ticket_aggregate_bool_exp_bool_and {
+  arguments: activity_ticket_select_column_activity_ticket_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: activity_ticket_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface activity_ticket_aggregate_bool_exp_bool_or {
+  arguments: activity_ticket_select_column_activity_ticket_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: activity_ticket_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface activity_ticket_aggregate_bool_exp_count {
+  arguments?: activity_ticket_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_ticket_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "activity_ticket"
  */
@@ -7524,9 +10418,12 @@ export interface activity_ticket_bool_exp {
   _or?: activity_ticket_bool_exp[] | null
   activity?: activity_bool_exp | null
   activity_enrollments?: activity_enrollment_bool_exp | null
+  activity_enrollments_aggregate?: activity_enrollment_aggregate_bool_exp | null
   activity_id?: uuid_comparison_exp | null
   activity_session_tickets?: activity_session_ticket_bool_exp | null
+  activity_session_tickets_aggregate?: activity_session_ticket_aggregate_bool_exp | null
   activity_ticket_enrollments?: activity_ticket_enrollment_bool_exp | null
+  activity_ticket_enrollments_aggregate?: activity_ticket_enrollment_aggregate_bool_exp | null
   count?: Int_comparison_exp | null
   currency?: currency_bool_exp | null
   currency_id?: String_comparison_exp | null
@@ -7538,6 +10435,17 @@ export interface activity_ticket_bool_exp {
   price?: numeric_comparison_exp | null
   started_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
+}
+
+export interface activity_ticket_enrollment_aggregate_bool_exp {
+  count?: activity_ticket_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface activity_ticket_enrollment_aggregate_bool_exp_count {
+  arguments?: activity_ticket_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: activity_ticket_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -7722,6 +10630,17 @@ export interface activity_variance_order_by {
   position?: order_by | null
 }
 
+export interface app_admin_aggregate_bool_exp {
+  count?: app_admin_aggregate_bool_exp_count | null
+}
+
+export interface app_admin_aggregate_bool_exp_count {
+  arguments?: app_admin_select_column[] | null
+  distinct?: boolean | null
+  filter?: app_admin_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "app_admin"
  */
@@ -7865,41 +10784,73 @@ export interface app_bool_exp {
   _not?: app_bool_exp | null
   _or?: app_bool_exp[] | null
   activities?: activity_bool_exp | null
+  activities_aggregate?: activity_aggregate_bool_exp | null
   app_admins?: app_admin_bool_exp | null
+  app_admins_aggregate?: app_admin_aggregate_bool_exp | null
   app_hosts?: app_host_bool_exp | null
+  app_hosts_aggregate?: app_host_aggregate_bool_exp | null
   app_modules?: app_module_bool_exp | null
+  app_modules_aggregate?: app_module_aggregate_bool_exp | null
   app_navs?: app_nav_bool_exp | null
+  app_navs_aggregate?: app_nav_aggregate_bool_exp | null
   app_plan_id?: String_comparison_exp | null
   app_secrets?: app_secret_bool_exp | null
+  app_secrets_aggregate?: app_secret_aggregate_bool_exp | null
   app_settings?: app_setting_bool_exp | null
+  app_settings_aggregate?: app_setting_aggregate_bool_exp | null
   cards?: card_bool_exp | null
+  cards_aggregate?: card_aggregate_bool_exp | null
   cart_items?: cart_item_bool_exp | null
+  cart_items_aggregate?: cart_item_aggregate_bool_exp | null
   comments?: comment_bool_exp | null
+  comments_aggregate?: comment_aggregate_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   ended_at?: timestamptz_comparison_exp | null
   id?: String_comparison_exp | null
   issues?: issue_bool_exp | null
+  issues_aggregate?: issue_aggregate_bool_exp | null
   members?: member_bool_exp | null
+  members_aggregate?: member_aggregate_bool_exp | null
   merchandises?: merchandise_bool_exp | null
+  merchandises_aggregate?: merchandise_aggregate_bool_exp | null
   name?: String_comparison_exp | null
   org_id?: String_comparison_exp | null
   packages?: package_bool_exp | null
+  packages_aggregate?: package_aggregate_bool_exp | null
   podcasts?: podcast_bool_exp | null
+  podcasts_aggregate?: podcast_aggregate_bool_exp | null
   point_discount_ratio?: numeric_comparison_exp | null
   point_exchange_rate?: numeric_comparison_exp | null
   point_validity_period?: numeric_comparison_exp | null
   posts?: post_bool_exp | null
+  posts_aggregate?: post_aggregate_bool_exp | null
   program_packages?: program_package_bool_exp | null
+  program_packages_aggregate?: program_package_aggregate_bool_exp | null
   programs?: program_bool_exp | null
+  programs_aggregate?: program_aggregate_bool_exp | null
   properties?: property_bool_exp | null
+  properties_aggregate?: property_aggregate_bool_exp | null
   sharing_codes?: sharing_code_bool_exp | null
+  sharing_codes_aggregate?: sharing_code_aggregate_bool_exp | null
   started_at?: timestamptz_comparison_exp | null
   symbol?: String_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
   vimeo_project_id?: String_comparison_exp | null
   voucher_plans?: voucher_plan_bool_exp | null
+  voucher_plans_aggregate?: voucher_plan_aggregate_bool_exp | null
+}
+
+export interface app_host_aggregate_bool_exp {
+  count?: app_host_aggregate_bool_exp_count | null
+}
+
+export interface app_host_aggregate_bool_exp_count {
+  arguments?: app_host_select_column[] | null
+  distinct?: boolean | null
+  filter?: app_host_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -8075,6 +11026,17 @@ export interface app_insert_input {
   voucher_plans?: voucher_plan_arr_rel_insert_input | null
 }
 
+export interface app_module_aggregate_bool_exp {
+  count?: app_module_aggregate_bool_exp_count | null
+}
+
+export interface app_module_aggregate_bool_exp_count {
+  arguments?: app_module_select_column[] | null
+  distinct?: boolean | null
+  filter?: app_module_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "app_module"
  */
@@ -8132,6 +11094,33 @@ export interface app_module_min_order_by {
   module_id?: order_by | null
 }
 
+export interface app_nav_aggregate_bool_exp {
+  bool_and?: app_nav_aggregate_bool_exp_bool_and | null
+  bool_or?: app_nav_aggregate_bool_exp_bool_or | null
+  count?: app_nav_aggregate_bool_exp_count | null
+}
+
+export interface app_nav_aggregate_bool_exp_bool_and {
+  arguments: app_nav_select_column_app_nav_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: app_nav_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface app_nav_aggregate_bool_exp_bool_or {
+  arguments: app_nav_select_column_app_nav_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: app_nav_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface app_nav_aggregate_bool_exp_count {
+  arguments?: app_nav_select_column[] | null
+  distinct?: boolean | null
+  filter?: app_nav_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "app_nav"
  */
@@ -8184,6 +11173,7 @@ export interface app_nav_bool_exp {
   parent_id?: uuid_comparison_exp | null
   position?: Int_comparison_exp | null
   sub_app_navs?: app_nav_bool_exp | null
+  sub_app_navs_aggregate?: app_nav_aggregate_bool_exp | null
   tag?: String_comparison_exp | null
 }
 
@@ -8356,6 +11346,33 @@ export interface app_order_by {
   voucher_plans_aggregate?: voucher_plan_aggregate_order_by | null
 }
 
+export interface app_page_aggregate_bool_exp {
+  bool_and?: app_page_aggregate_bool_exp_bool_and | null
+  bool_or?: app_page_aggregate_bool_exp_bool_or | null
+  count?: app_page_aggregate_bool_exp_count | null
+}
+
+export interface app_page_aggregate_bool_exp_bool_and {
+  arguments: app_page_select_column_app_page_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: app_page_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface app_page_aggregate_bool_exp_bool_or {
+  arguments: app_page_select_column_app_page_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: app_page_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface app_page_aggregate_bool_exp_count {
+  arguments?: app_page_select_column[] | null
+  distinct?: boolean | null
+  filter?: app_page_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "app_page"
  */
@@ -8374,6 +11391,7 @@ export interface app_page_bool_exp {
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
   app_page_sections?: app_page_section_bool_exp | null
+  app_page_sections_aggregate?: app_page_section_aggregate_bool_exp | null
   craft_data?: jsonb_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
   editor?: member_public_bool_exp | null
@@ -8426,6 +11444,17 @@ export interface app_page_on_conflict {
   where?: app_page_bool_exp | null
 }
 
+export interface app_page_section_aggregate_bool_exp {
+  count?: app_page_section_aggregate_bool_exp_count | null
+}
+
+export interface app_page_section_aggregate_bool_exp_count {
+  arguments?: app_page_section_select_column[] | null
+  distinct?: boolean | null
+  filter?: app_page_section_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "app_page_section"
  */
@@ -8468,6 +11497,17 @@ export interface app_page_section_on_conflict {
   constraint: app_page_section_constraint
   update_columns: app_page_section_update_column[]
   where?: app_page_section_bool_exp | null
+}
+
+export interface app_secret_aggregate_bool_exp {
+  count?: app_secret_aggregate_bool_exp_count | null
+}
+
+export interface app_secret_aggregate_bool_exp_count {
+  arguments?: app_secret_select_column[] | null
+  distinct?: boolean | null
+  filter?: app_secret_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -8541,6 +11581,17 @@ export interface app_secret_on_conflict {
   constraint: app_secret_constraint
   update_columns: app_secret_update_column[]
   where?: app_secret_bool_exp | null
+}
+
+export interface app_setting_aggregate_bool_exp {
+  count?: app_setting_aggregate_bool_exp_count | null
+}
+
+export interface app_setting_aggregate_bool_exp_count {
+  arguments?: app_setting_select_column[] | null
+  distinct?: boolean | null
+  filter?: app_setting_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -8620,6 +11671,17 @@ export interface app_setting_on_conflict {
   where?: app_setting_bool_exp | null
 }
 
+export interface appointment_enrollment_aggregate_bool_exp {
+  count?: appointment_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface appointment_enrollment_aggregate_bool_exp_count {
+  arguments?: appointment_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: appointment_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "appointment_enrollment"
  */
@@ -8678,6 +11740,33 @@ export interface appointment_enrollment_insert_input {
   started_at?: any | null
 }
 
+export interface appointment_period_aggregate_bool_exp {
+  bool_and?: appointment_period_aggregate_bool_exp_bool_and | null
+  bool_or?: appointment_period_aggregate_bool_exp_bool_or | null
+  count?: appointment_period_aggregate_bool_exp_count | null
+}
+
+export interface appointment_period_aggregate_bool_exp_bool_and {
+  arguments: appointment_period_select_column_appointment_period_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: appointment_period_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface appointment_period_aggregate_bool_exp_bool_or {
+  arguments: appointment_period_select_column_appointment_period_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: appointment_period_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface appointment_period_aggregate_bool_exp_count {
+  arguments?: appointment_period_select_column[] | null
+  distinct?: boolean | null
+  filter?: appointment_period_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "appointment_period"
  */
@@ -8714,6 +11803,33 @@ export interface appointment_period_insert_input {
   booked?: boolean | null
   ended_at?: any | null
   started_at?: any | null
+}
+
+export interface appointment_plan_aggregate_bool_exp {
+  bool_and?: appointment_plan_aggregate_bool_exp_bool_and | null
+  bool_or?: appointment_plan_aggregate_bool_exp_bool_or | null
+  count?: appointment_plan_aggregate_bool_exp_count | null
+}
+
+export interface appointment_plan_aggregate_bool_exp_bool_and {
+  arguments: appointment_plan_select_column_appointment_plan_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: appointment_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface appointment_plan_aggregate_bool_exp_bool_or {
+  arguments: appointment_plan_select_column_appointment_plan_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: appointment_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface appointment_plan_aggregate_bool_exp_count {
+  arguments?: appointment_plan_select_column[] | null
+  distinct?: boolean | null
+  filter?: appointment_plan_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -8758,8 +11874,11 @@ export interface appointment_plan_bool_exp {
   _not?: appointment_plan_bool_exp | null
   _or?: appointment_plan_bool_exp[] | null
   appointment_enrollments?: appointment_enrollment_bool_exp | null
+  appointment_enrollments_aggregate?: appointment_enrollment_aggregate_bool_exp | null
   appointment_periods?: appointment_period_bool_exp | null
+  appointment_periods_aggregate?: appointment_period_aggregate_bool_exp | null
   appointment_schedules?: appointment_schedule_bool_exp | null
+  appointment_schedules_aggregate?: appointment_schedule_aggregate_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
   creator?: member_public_bool_exp | null
   creator_id?: String_comparison_exp | null
@@ -8923,6 +12042,17 @@ export interface appointment_plan_variance_order_by {
   reservation_amount?: order_by | null
 }
 
+export interface appointment_schedule_aggregate_bool_exp {
+  count?: appointment_schedule_aggregate_bool_exp_count | null
+}
+
+export interface appointment_schedule_aggregate_bool_exp_count {
+  arguments?: appointment_schedule_select_column[] | null
+  distinct?: boolean | null
+  filter?: appointment_schedule_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "appointment_schedule"
  */
@@ -8979,6 +12109,33 @@ export interface appointment_schedule_on_conflict {
   constraint: appointment_schedule_constraint
   update_columns: appointment_schedule_update_column[]
   where?: appointment_schedule_bool_exp | null
+}
+
+export interface attachment_aggregate_bool_exp {
+  bool_and?: attachment_aggregate_bool_exp_bool_and | null
+  bool_or?: attachment_aggregate_bool_exp_bool_or | null
+  count?: attachment_aggregate_bool_exp_count | null
+}
+
+export interface attachment_aggregate_bool_exp_bool_and {
+  arguments: attachment_select_column_attachment_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: attachment_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface attachment_aggregate_bool_exp_bool_or {
+  arguments: attachment_select_column_attachment_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: attachment_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface attachment_aggregate_bool_exp_count {
+  arguments?: attachment_select_column[] | null
+  distinct?: boolean | null
+  filter?: attachment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -9063,6 +12220,17 @@ export interface attachment_on_conflict {
   where?: attachment_bool_exp | null
 }
 
+export interface attend_aggregate_bool_exp {
+  count?: attend_aggregate_bool_exp_count | null
+}
+
+export interface attend_aggregate_bool_exp_count {
+  arguments?: attend_select_column[] | null
+  distinct?: boolean | null
+  filter?: attend_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "attend"
  */
@@ -9124,6 +12292,17 @@ export interface bigint_comparison_exp {
   _nin?: any[] | null
 }
 
+export interface card_aggregate_bool_exp {
+  count?: card_aggregate_bool_exp_count | null
+}
+
+export interface card_aggregate_bool_exp_count {
+  arguments?: card_select_column[] | null
+  distinct?: boolean | null
+  filter?: card_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "card"
  */
@@ -9151,13 +12330,26 @@ export interface card_bool_exp {
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
   card_discounts?: card_discount_bool_exp | null
+  card_discounts_aggregate?: card_discount_aggregate_bool_exp | null
   card_enrollments?: card_enrollment_bool_exp | null
+  card_enrollments_aggregate?: card_enrollment_aggregate_bool_exp | null
   creator?: member_public_bool_exp | null
   creator_id?: String_comparison_exp | null
   description?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   template?: String_comparison_exp | null
   title?: String_comparison_exp | null
+}
+
+export interface card_discount_aggregate_bool_exp {
+  count?: card_discount_aggregate_bool_exp_count | null
+}
+
+export interface card_discount_aggregate_bool_exp_count {
+  arguments?: card_discount_select_column[] | null
+  distinct?: boolean | null
+  filter?: card_discount_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -9204,6 +12396,17 @@ export interface card_discount_on_conflict {
   constraint: card_discount_constraint
   update_columns: card_discount_update_column[]
   where?: card_discount_bool_exp | null
+}
+
+export interface card_enrollment_aggregate_bool_exp {
+  count?: card_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface card_enrollment_aggregate_bool_exp_count {
+  arguments?: card_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: card_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -9295,6 +12498,17 @@ export interface card_on_conflict {
   where?: card_bool_exp | null
 }
 
+export interface cart_item_aggregate_bool_exp {
+  count?: cart_item_aggregate_bool_exp_count | null
+}
+
+export interface cart_item_aggregate_bool_exp_count {
+  arguments?: cart_item_select_column[] | null
+  distinct?: boolean | null
+  filter?: cart_item_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "cart_item"
  */
@@ -9368,6 +12582,17 @@ export interface cart_item_on_conflict {
   where?: cart_item_bool_exp | null
 }
 
+export interface cart_product_aggregate_bool_exp {
+  count?: cart_product_aggregate_bool_exp_count | null
+}
+
+export interface cart_product_aggregate_bool_exp_count {
+  arguments?: cart_product_select_column[] | null
+  distinct?: boolean | null
+  filter?: cart_product_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "cart_product"
  */
@@ -9420,22 +12645,32 @@ export interface category_bool_exp {
   _not?: category_bool_exp | null
   _or?: category_bool_exp[] | null
   activity_categories?: activity_category_bool_exp | null
+  activity_categories_aggregate?: activity_category_aggregate_bool_exp | null
   app_id?: String_comparison_exp | null
   class?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
   creator_categories?: creator_category_bool_exp | null
+  creator_categories_aggregate?: creator_category_aggregate_bool_exp | null
   filterable?: Boolean_comparison_exp | null
   id?: String_comparison_exp | null
   member_categories?: member_category_bool_exp | null
+  member_categories_aggregate?: member_category_aggregate_bool_exp | null
   member_tasks?: member_task_bool_exp | null
+  member_tasks_aggregate?: member_task_aggregate_bool_exp | null
   merchandise_categories?: merchandise_category_bool_exp | null
+  merchandise_categories_aggregate?: merchandise_category_aggregate_bool_exp | null
   name?: String_comparison_exp | null
   podcast_program_categories?: podcast_program_category_bool_exp | null
+  podcast_program_categories_aggregate?: podcast_program_category_aggregate_bool_exp | null
   position?: Int_comparison_exp | null
   post_categories?: post_category_bool_exp | null
+  post_categories_aggregate?: post_category_aggregate_bool_exp | null
   program_categories?: program_category_bool_exp | null
+  program_categories_aggregate?: program_category_aggregate_bool_exp | null
   program_package_categories?: program_package_category_bool_exp | null
+  program_package_categories_aggregate?: program_package_category_aggregate_bool_exp | null
   project_categories?: project_category_bool_exp | null
+  project_categories_aggregate?: project_category_aggregate_bool_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
 
@@ -9478,6 +12713,17 @@ export interface category_on_conflict {
   constraint: category_constraint
   update_columns: category_update_column[]
   where?: category_bool_exp | null
+}
+
+export interface coin_log_aggregate_bool_exp {
+  count?: coin_log_aggregate_bool_exp_count | null
+}
+
+export interface coin_log_aggregate_bool_exp_count {
+  arguments?: coin_log_select_column[] | null
+  distinct?: boolean | null
+  filter?: coin_log_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -9540,6 +12786,17 @@ export interface coin_log_on_conflict {
   where?: coin_log_bool_exp | null
 }
 
+export interface coin_status_aggregate_bool_exp {
+  count?: coin_status_aggregate_bool_exp_count | null
+}
+
+export interface coin_status_aggregate_bool_exp_count {
+  arguments?: coin_status_select_column[] | null
+  distinct?: boolean | null
+  filter?: coin_status_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "coin_status"
  */
@@ -9574,6 +12831,17 @@ export interface coin_status_insert_input {
   used_coins?: any | null
 }
 
+export interface comment_aggregate_bool_exp {
+  count?: comment_aggregate_bool_exp_count | null
+}
+
+export interface comment_aggregate_bool_exp_count {
+  arguments?: comment_select_column[] | null
+  distinct?: boolean | null
+  filter?: comment_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "comment"
  */
@@ -9601,7 +12869,9 @@ export interface comment_bool_exp {
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
   comment_reactions?: comment_reaction_bool_exp | null
+  comment_reactions_aggregate?: comment_reaction_aggregate_bool_exp | null
   comment_replies?: comment_reply_bool_exp | null
+  comment_replies_aggregate?: comment_reply_aggregate_bool_exp | null
   content?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -9667,6 +12937,17 @@ export interface comment_on_conflict {
   where?: comment_bool_exp | null
 }
 
+export interface comment_reaction_aggregate_bool_exp {
+  count?: comment_reaction_aggregate_bool_exp_count | null
+}
+
+export interface comment_reaction_aggregate_bool_exp_count {
+  arguments?: comment_reaction_select_column[] | null
+  distinct?: boolean | null
+  filter?: comment_reaction_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "comment_reaction"
  */
@@ -9711,6 +12992,17 @@ export interface comment_reaction_on_conflict {
   where?: comment_reaction_bool_exp | null
 }
 
+export interface comment_reply_aggregate_bool_exp {
+  count?: comment_reply_aggregate_bool_exp_count | null
+}
+
+export interface comment_reply_aggregate_bool_exp_count {
+  arguments?: comment_reply_select_column[] | null
+  distinct?: boolean | null
+  filter?: comment_reply_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "comment_reply"
  */
@@ -9729,6 +13021,7 @@ export interface comment_reply_bool_exp {
   comment?: comment_bool_exp | null
   comment_id?: uuid_comparison_exp | null
   comment_reply_reactions?: comment_reply_reaction_bool_exp | null
+  comment_reply_reactions_aggregate?: comment_reply_reaction_aggregate_bool_exp | null
   content?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -9765,6 +13058,17 @@ export interface comment_reply_on_conflict {
   constraint: comment_reply_constraint
   update_columns: comment_reply_update_column[]
   where?: comment_reply_bool_exp | null
+}
+
+export interface comment_reply_reaction_aggregate_bool_exp {
+  count?: comment_reply_reaction_aggregate_bool_exp_count | null
+}
+
+export interface comment_reply_reaction_aggregate_bool_exp_count {
+  arguments?: comment_reply_reaction_select_column[] | null
+  distinct?: boolean | null
+  filter?: comment_reply_reaction_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -9824,6 +13128,7 @@ export interface contract_bool_exp {
   description?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   member_contracts?: member_contract_bool_exp | null
+  member_contracts_aggregate?: member_contract_aggregate_bool_exp | null
   name?: String_comparison_exp | null
   options?: jsonb_comparison_exp | null
   published_at?: timestamptz_comparison_exp | null
@@ -9867,6 +13172,17 @@ export interface contract_on_conflict {
   where?: contract_bool_exp | null
 }
 
+export interface coupon_aggregate_bool_exp {
+  count?: coupon_aggregate_bool_exp_count | null
+}
+
+export interface coupon_aggregate_bool_exp_count {
+  arguments?: coupon_select_column[] | null
+  distinct?: boolean | null
+  filter?: coupon_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "coupon"
  */
@@ -9889,7 +13205,19 @@ export interface coupon_bool_exp {
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   order_logs?: order_log_bool_exp | null
+  order_logs_aggregate?: order_log_aggregate_bool_exp | null
   status?: coupon_status_bool_exp | null
+}
+
+export interface coupon_code_aggregate_bool_exp {
+  count?: coupon_code_aggregate_bool_exp_count | null
+}
+
+export interface coupon_code_aggregate_bool_exp_count {
+  arguments?: coupon_code_select_column[] | null
+  distinct?: boolean | null
+  filter?: coupon_code_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -9913,6 +13241,7 @@ export interface coupon_code_bool_exp {
   coupon_plan?: coupon_plan_bool_exp | null
   coupon_plan_id?: uuid_comparison_exp | null
   coupons?: coupon_bool_exp | null
+  coupons_aggregate?: coupon_aggregate_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
   remaining?: Int_comparison_exp | null
@@ -9993,7 +13322,9 @@ export interface coupon_plan_bool_exp {
   amount?: numeric_comparison_exp | null
   constraint?: numeric_comparison_exp | null
   coupon_codes?: coupon_code_bool_exp | null
+  coupon_codes_aggregate?: coupon_code_aggregate_bool_exp | null
   coupon_plan_products?: coupon_plan_product_bool_exp | null
+  coupon_plan_products_aggregate?: coupon_plan_product_aggregate_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   editor?: member_bool_exp | null
@@ -10043,6 +13374,17 @@ export interface coupon_plan_on_conflict {
   constraint: coupon_plan_constraint
   update_columns: coupon_plan_update_column[]
   where?: coupon_plan_bool_exp | null
+}
+
+export interface coupon_plan_product_aggregate_bool_exp {
+  count?: coupon_plan_product_aggregate_bool_exp_count | null
+}
+
+export interface coupon_plan_product_aggregate_bool_exp_count {
+  arguments?: coupon_plan_product_select_column[] | null
+  distinct?: boolean | null
+  filter?: coupon_plan_product_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -10126,13 +13468,26 @@ export interface creator_bool_exp {
   _or?: creator_bool_exp[] | null
   block_id?: String_comparison_exp | null
   creator_categories?: creator_category_bool_exp | null
+  creator_categories_aggregate?: creator_category_aggregate_bool_exp | null
   id?: String_comparison_exp | null
   member?: member_public_bool_exp | null
   member_specialities?: member_speciality_bool_exp | null
+  member_specialities_aggregate?: member_speciality_aggregate_bool_exp | null
   name?: String_comparison_exp | null
   picture_url?: String_comparison_exp | null
   position?: Int_comparison_exp | null
   published_at?: timestamptz_comparison_exp | null
+}
+
+export interface creator_category_aggregate_bool_exp {
+  count?: creator_category_aggregate_bool_exp_count | null
+}
+
+export interface creator_category_aggregate_bool_exp_count {
+  arguments?: creator_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: creator_category_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -10179,6 +13534,17 @@ export interface creator_category_on_conflict {
   constraint: creator_category_constraint
   update_columns: creator_category_update_column[]
   where?: creator_category_bool_exp | null
+}
+
+export interface creator_display_aggregate_bool_exp {
+  count?: creator_display_aggregate_bool_exp_count | null
+}
+
+export interface creator_display_aggregate_bool_exp_count {
+  arguments?: creator_display_select_column[] | null
+  distinct?: boolean | null
+  filter?: creator_display_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -10257,12 +13623,15 @@ export interface currency_bool_exp {
   _not?: currency_bool_exp | null
   _or?: currency_bool_exp[] | null
   appointment_plans?: appointment_plan_bool_exp | null
+  appointment_plans_aggregate?: appointment_plan_aggregate_bool_exp | null
   id?: String_comparison_exp | null
   label?: String_comparison_exp | null
   minor_units?: Int_comparison_exp | null
   name?: String_comparison_exp | null
   order_products?: order_product_bool_exp | null
+  order_products_aggregate?: order_product_aggregate_bool_exp | null
   program_plans?: program_plan_bool_exp | null
+  program_plans_aggregate?: program_plan_aggregate_bool_exp | null
   unit?: String_comparison_exp | null
 }
 
@@ -10323,6 +13692,7 @@ export interface exam_bool_exp {
   applicable_plan_id?: uuid_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
   exam_question_group?: exam_question_group_bool_exp | null
+  exam_question_group_aggregate?: exam_question_group_aggregate_bool_exp | null
   examinable_amount?: numeric_comparison_exp | null
   examinable_ended_at?: timestamptz_comparison_exp | null
   examinable_started_at?: timestamptz_comparison_exp | null
@@ -10379,6 +13749,17 @@ export interface exam_on_conflict {
   where?: exam_bool_exp | null
 }
 
+export interface exam_question_group_aggregate_bool_exp {
+  count?: exam_question_group_aggregate_bool_exp_count | null
+}
+
+export interface exam_question_group_aggregate_bool_exp_count {
+  arguments?: exam_question_group_select_column[] | null
+  distinct?: boolean | null
+  filter?: exam_question_group_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "exam_question_group"
  */
@@ -10423,6 +13804,17 @@ export interface exam_question_group_on_conflict {
   constraint: exam_question_group_constraint
   update_columns: exam_question_group_update_column[]
   where?: exam_question_group_bool_exp | null
+}
+
+export interface exercise_aggregate_bool_exp {
+  count?: exercise_aggregate_bool_exp_count | null
+}
+
+export interface exercise_aggregate_bool_exp_count {
+  arguments?: exercise_select_column[] | null
+  distinct?: boolean | null
+  filter?: exercise_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -10600,6 +13992,7 @@ export interface identity_bool_exp {
   name?: String_comparison_exp | null
   position?: Int_comparison_exp | null
   project_roles?: project_role_bool_exp | null
+  project_roles_aggregate?: project_role_aggregate_bool_exp | null
   type?: String_comparison_exp | null
 }
 
@@ -10630,6 +14023,17 @@ export interface identity_on_conflict {
   constraint: identity_constraint
   update_columns: identity_update_column[]
   where?: identity_bool_exp | null
+}
+
+export interface invoice_aggregate_bool_exp {
+  count?: invoice_aggregate_bool_exp_count | null
+}
+
+export interface invoice_aggregate_bool_exp_count {
+  arguments?: invoice_select_column[] | null
+  distinct?: boolean | null
+  filter?: invoice_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -10680,6 +14084,33 @@ export interface invoice_on_conflict {
   where?: invoice_bool_exp | null
 }
 
+export interface issue_aggregate_bool_exp {
+  bool_and?: issue_aggregate_bool_exp_bool_and | null
+  bool_or?: issue_aggregate_bool_exp_bool_or | null
+  count?: issue_aggregate_bool_exp_count | null
+}
+
+export interface issue_aggregate_bool_exp_bool_and {
+  arguments: issue_select_column_issue_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: issue_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface issue_aggregate_bool_exp_bool_or {
+  arguments: issue_select_column_issue_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: issue_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface issue_aggregate_bool_exp_count {
+  arguments?: issue_select_column[] | null
+  distinct?: boolean | null
+  filter?: issue_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "issue"
  */
@@ -10712,7 +14143,9 @@ export interface issue_bool_exp {
   is_public?: Boolean_comparison_exp | null
   issue_enrollment?: issue_enrollment_bool_exp | null
   issue_reactions?: issue_reaction_bool_exp | null
+  issue_reactions_aggregate?: issue_reaction_aggregate_bool_exp | null
   issue_replies?: issue_reply_bool_exp | null
+  issue_replies_aggregate?: issue_reply_aggregate_bool_exp | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   solved_at?: timestamptz_comparison_exp | null
@@ -10734,6 +14167,7 @@ export interface issue_enrollment_bool_exp {
   program_content_section_id?: uuid_comparison_exp | null
   program_id?: uuid_comparison_exp | null
   program_roles?: program_role_bool_exp | null
+  program_roles_aggregate?: program_role_aggregate_bool_exp | null
 }
 
 /**
@@ -10821,6 +14255,17 @@ export interface issue_on_conflict {
   where?: issue_bool_exp | null
 }
 
+export interface issue_reaction_aggregate_bool_exp {
+  count?: issue_reaction_aggregate_bool_exp_count | null
+}
+
+export interface issue_reaction_aggregate_bool_exp_count {
+  arguments?: issue_reaction_select_column[] | null
+  distinct?: boolean | null
+  filter?: issue_reaction_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "issue_reaction"
  */
@@ -10867,6 +14312,17 @@ export interface issue_reaction_on_conflict {
   where?: issue_reaction_bool_exp | null
 }
 
+export interface issue_reply_aggregate_bool_exp {
+  count?: issue_reply_aggregate_bool_exp_count | null
+}
+
+export interface issue_reply_aggregate_bool_exp_count {
+  arguments?: issue_reply_select_column[] | null
+  distinct?: boolean | null
+  filter?: issue_reply_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "issue_reply"
  */
@@ -10888,6 +14344,7 @@ export interface issue_reply_bool_exp {
   issue?: issue_bool_exp | null
   issue_id?: uuid_comparison_exp | null
   issue_reply_reactions?: issue_reply_reaction_bool_exp | null
+  issue_reply_reactions_aggregate?: issue_reply_reaction_aggregate_bool_exp | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
 }
@@ -10921,6 +14378,17 @@ export interface issue_reply_on_conflict {
   constraint: issue_reply_constraint
   update_columns: issue_reply_update_column[]
   where?: issue_reply_bool_exp | null
+}
+
+export interface issue_reply_reaction_aggregate_bool_exp {
+  count?: issue_reply_reaction_aggregate_bool_exp_count | null
+}
+
+export interface issue_reply_reaction_aggregate_bool_exp_count {
+  arguments?: issue_reply_reaction_select_column[] | null
+  distinct?: boolean | null
+  filter?: issue_reply_reaction_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -10994,6 +14462,17 @@ export interface jsonb_comparison_exp {
   _nin?: any[] | null
 }
 
+export interface media_aggregate_bool_exp {
+  count?: media_aggregate_bool_exp_count | null
+}
+
+export interface media_aggregate_bool_exp_count {
+  arguments?: media_select_column[] | null
+  distinct?: boolean | null
+  filter?: media_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "media"
  */
@@ -11044,6 +14523,17 @@ export interface media_on_conflict {
   where?: media_bool_exp | null
 }
 
+export interface member_aggregate_bool_exp {
+  count?: member_aggregate_bool_exp_count | null
+}
+
+export interface member_aggregate_bool_exp_count {
+  arguments?: member_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "member"
  */
@@ -11085,96 +14575,173 @@ export interface member_bool_exp {
   _or?: member_bool_exp[] | null
   abstract?: String_comparison_exp | null
   activities?: activity_bool_exp | null
+  activities_aggregate?: activity_aggregate_bool_exp | null
   app?: app_bool_exp | null
   app_id?: String_comparison_exp | null
   app_pages?: app_page_bool_exp | null
+  app_pages_aggregate?: app_page_aggregate_bool_exp | null
   appointment_plans?: appointment_plan_bool_exp | null
+  appointment_plans_aggregate?: appointment_plan_aggregate_bool_exp | null
   assignRulesBySourceMemberId?: xuemi_assign_rule_bool_exp | null
+  assignRulesBySourceMemberId_aggregate?: xuemi_assign_rule_aggregate_bool_exp | null
   assignRulesByTargetMemberId?: xuemi_assign_rule_bool_exp | null
+  assignRulesByTargetMemberId_aggregate?: xuemi_assign_rule_aggregate_bool_exp | null
   assign_rules?: xuemi_assign_rule_bool_exp | null
+  assign_rules_aggregate?: xuemi_assign_rule_aggregate_bool_exp | null
   assigned_at?: timestamptz_comparison_exp | null
   attachments?: attachment_bool_exp | null
+  attachments_aggregate?: attachment_aggregate_bool_exp | null
   attends?: attend_bool_exp | null
+  attends_aggregate?: attend_aggregate_bool_exp | null
   coin_logs?: coin_log_bool_exp | null
+  coin_logs_aggregate?: coin_log_aggregate_bool_exp | null
   coin_statuses?: coin_status_bool_exp | null
+  coin_statuses_aggregate?: coin_status_aggregate_bool_exp | null
   comment_reactions?: comment_reaction_bool_exp | null
+  comment_reactions_aggregate?: comment_reaction_aggregate_bool_exp | null
   comment_replies?: comment_reply_bool_exp | null
+  comment_replies_aggregate?: comment_reply_aggregate_bool_exp | null
   comment_reply_reactions?: comment_reply_reaction_bool_exp | null
+  comment_reply_reactions_aggregate?: comment_reply_reaction_aggregate_bool_exp | null
   comments?: comment_bool_exp | null
+  comments_aggregate?: comment_aggregate_bool_exp | null
   commonhealth_user_id?: String_comparison_exp | null
   coupons?: coupon_bool_exp | null
+  coupons_aggregate?: coupon_aggregate_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
   creator_categories?: creator_category_bool_exp | null
+  creator_categories_aggregate?: creator_category_aggregate_bool_exp | null
   creator_displays?: creator_display_bool_exp | null
+  creator_displays_aggregate?: creator_display_aggregate_bool_exp | null
   description?: String_comparison_exp | null
   email?: String_comparison_exp | null
   exercises?: exercise_bool_exp | null
+  exercises_aggregate?: exercise_aggregate_bool_exp | null
   facebook_user_id?: String_comparison_exp | null
   google_user_id?: String_comparison_exp | null
   id?: String_comparison_exp | null
   issue_reactions?: issue_reaction_bool_exp | null
+  issue_reactions_aggregate?: issue_reaction_aggregate_bool_exp | null
   issue_replies?: issue_reply_bool_exp | null
+  issue_replies_aggregate?: issue_reply_aggregate_bool_exp | null
   issue_reply_reactions?: issue_reply_reaction_bool_exp | null
+  issue_reply_reactions_aggregate?: issue_reply_reaction_aggregate_bool_exp | null
   issues?: issue_bool_exp | null
+  issues_aggregate?: issue_aggregate_bool_exp | null
   last_member_note_created?: timestamptz_comparison_exp | null
   line_user_id?: String_comparison_exp | null
   logined_at?: timestamptz_comparison_exp | null
   manager?: member_bool_exp | null
   manager_id?: String_comparison_exp | null
   media?: media_bool_exp | null
+  media_aggregate?: media_aggregate_bool_exp | null
   memberContractsByAuthorId?: member_contract_bool_exp | null
+  memberContractsByAuthorId_aggregate?: member_contract_aggregate_bool_exp | null
   memberNotesByAuthorId?: member_note_bool_exp | null
+  memberNotesByAuthorId_aggregate?: member_note_aggregate_bool_exp | null
   memberTasksByExecutorId?: member_task_bool_exp | null
+  memberTasksByExecutorId_aggregate?: member_task_aggregate_bool_exp | null
   member_cards?: member_card_bool_exp | null
+  member_cards_aggregate?: member_card_aggregate_bool_exp | null
   member_categories?: member_category_bool_exp | null
+  member_categories_aggregate?: member_category_aggregate_bool_exp | null
   member_contracts?: member_contract_bool_exp | null
+  member_contracts_aggregate?: member_contract_aggregate_bool_exp | null
   member_notes?: member_note_bool_exp | null
+  member_notes_aggregate?: member_note_aggregate_bool_exp | null
   member_oauths?: member_oauth_bool_exp | null
+  member_oauths_aggregate?: member_oauth_aggregate_bool_exp | null
   member_permission_extras?: member_permission_extra_bool_exp | null
+  member_permission_extras_aggregate?: member_permission_extra_aggregate_bool_exp | null
   member_permission_groups?: member_permission_group_bool_exp | null
+  member_permission_groups_aggregate?: member_permission_group_aggregate_bool_exp | null
   member_permissions?: member_permission_bool_exp | null
+  member_permissions_aggregate?: member_permission_aggregate_bool_exp | null
   member_phones?: member_phone_bool_exp | null
+  member_phones_aggregate?: member_phone_aggregate_bool_exp | null
   member_properties?: member_property_bool_exp | null
+  member_properties_aggregate?: member_property_aggregate_bool_exp | null
   member_shops?: member_shop_bool_exp | null
+  member_shops_aggregate?: member_shop_aggregate_bool_exp | null
   member_socials?: member_social_bool_exp | null
+  member_socials_aggregate?: member_social_aggregate_bool_exp | null
   member_specialities?: member_speciality_bool_exp | null
+  member_specialities_aggregate?: member_speciality_aggregate_bool_exp | null
   member_tags?: member_tag_bool_exp | null
+  member_tags_aggregate?: member_tag_aggregate_bool_exp | null
   member_tasks?: member_task_bool_exp | null
+  member_tasks_aggregate?: member_task_aggregate_bool_exp | null
+  member_tracking_logs?: member_tracking_log_bool_exp | null
+  member_tracking_logs_aggregate?: member_tracking_log_aggregate_bool_exp | null
   members?: member_bool_exp | null
+  members_aggregate?: member_aggregate_bool_exp | null
   merchandises?: merchandise_bool_exp | null
+  merchandises_aggregate?: merchandise_aggregate_bool_exp | null
   metadata?: jsonb_comparison_exp | null
   name?: String_comparison_exp | null
   notifications?: notification_bool_exp | null
   notificationsByTargetMembereId?: notification_bool_exp | null
+  notificationsByTargetMembereId_aggregate?: notification_aggregate_bool_exp | null
+  notifications_aggregate?: notification_aggregate_bool_exp | null
   order_contacts?: order_contact_bool_exp | null
+  order_contacts_aggregate?: order_contact_aggregate_bool_exp | null
   order_executors?: order_executor_bool_exp | null
+  order_executors_aggregate?: order_executor_aggregate_bool_exp | null
   order_logs?: order_log_bool_exp | null
+  order_logs_aggregate?: order_log_aggregate_bool_exp | null
   passhash?: String_comparison_exp | null
   picture_url?: String_comparison_exp | null
   playlists?: playlist_bool_exp | null
+  playlists_aggregate?: playlist_aggregate_bool_exp | null
   podcast_plans?: podcast_plan_bool_exp | null
+  podcast_plans_aggregate?: podcast_plan_aggregate_bool_exp | null
   podcast_program_roles?: podcast_program_role_bool_exp | null
+  podcast_program_roles_aggregate?: podcast_program_role_aggregate_bool_exp | null
   podcast_programs?: podcast_program_bool_exp | null
+  podcast_programs_aggregate?: podcast_program_aggregate_bool_exp | null
   podcasts?: podcast_bool_exp | null
+  podcasts_aggregate?: podcast_aggregate_bool_exp | null
   point_logs?: point_log_bool_exp | null
+  point_logs_aggregate?: point_log_aggregate_bool_exp | null
   point_status?: point_status_bool_exp | null
   post_roles?: post_role_bool_exp | null
+  post_roles_aggregate?: post_role_aggregate_bool_exp | null
   practices?: practice_bool_exp | null
+  practices_aggregate?: practice_aggregate_bool_exp | null
   program_content_enrollments?: program_content_enrollment_bool_exp | null
+  program_content_enrollments_aggregate?: program_content_enrollment_aggregate_bool_exp | null
   program_content_progresses?: program_content_progress_bool_exp | null
+  program_content_progresses_aggregate?: program_content_progress_aggregate_bool_exp | null
   program_roles?: program_role_bool_exp | null
+  program_roles_aggregate?: program_role_aggregate_bool_exp | null
   program_tempo_deliveries?: program_tempo_delivery_bool_exp | null
+  program_tempo_deliveries_aggregate?: program_tempo_delivery_aggregate_bool_exp | null
   project_roles?: project_role_bool_exp | null
+  project_roles_aggregate?: project_role_aggregate_bool_exp | null
   refresh_token?: uuid_comparison_exp | null
   reviews?: review_bool_exp | null
+  reviews_aggregate?: review_aggregate_bool_exp | null
   role?: String_comparison_exp | null
   roles_deprecated?: jsonb_comparison_exp | null
   star?: numeric_comparison_exp | null
+  status?: String_comparison_exp | null
   title?: String_comparison_exp | null
   username?: String_comparison_exp | null
   vouchers?: voucher_bool_exp | null
+  vouchers_aggregate?: voucher_aggregate_bool_exp | null
   youtube_channel_ids?: jsonb_comparison_exp | null
   zoom_user_id_deprecate?: String_comparison_exp | null
+}
+
+export interface member_card_aggregate_bool_exp {
+  count?: member_card_aggregate_bool_exp_count | null
+}
+
+export interface member_card_aggregate_bool_exp_count {
+  arguments?: member_card_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_card_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -11225,6 +14792,17 @@ export interface member_card_on_conflict {
   where?: member_card_bool_exp | null
 }
 
+export interface member_category_aggregate_bool_exp {
+  count?: member_category_aggregate_bool_exp_count | null
+}
+
+export interface member_category_aggregate_bool_exp_count {
+  arguments?: member_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_category_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "member_category"
  */
@@ -11267,6 +14845,17 @@ export interface member_category_on_conflict {
   constraint: member_category_constraint
   update_columns: member_category_update_column[]
   where?: member_category_bool_exp | null
+}
+
+export interface member_contract_aggregate_bool_exp {
+  count?: member_contract_aggregate_bool_exp_count | null
+}
+
+export interface member_contract_aggregate_bool_exp_count {
+  arguments?: member_contract_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_contract_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -11398,6 +14987,7 @@ export interface member_insert_input {
   member_specialities?: member_speciality_arr_rel_insert_input | null
   member_tags?: member_tag_arr_rel_insert_input | null
   member_tasks?: member_task_arr_rel_insert_input | null
+  member_tracking_logs?: member_tracking_log_arr_rel_insert_input | null
   members?: member_arr_rel_insert_input | null
   merchandises?: merchandise_arr_rel_insert_input | null
   metadata?: any | null
@@ -11428,6 +15018,7 @@ export interface member_insert_input {
   role?: string | null
   roles_deprecated?: any | null
   star?: any | null
+  status?: string | null
   title?: string | null
   username?: string | null
   vouchers?: voucher_arr_rel_insert_input | null
@@ -11459,6 +15050,7 @@ export interface member_max_order_by {
   refresh_token?: order_by | null
   role?: order_by | null
   star?: order_by | null
+  status?: order_by | null
   title?: order_by | null
   username?: order_by | null
   zoom_user_id_deprecate?: order_by | null
@@ -11488,9 +15080,21 @@ export interface member_min_order_by {
   refresh_token?: order_by | null
   role?: order_by | null
   star?: order_by | null
+  status?: order_by | null
   title?: order_by | null
   username?: order_by | null
   zoom_user_id_deprecate?: order_by | null
+}
+
+export interface member_note_aggregate_bool_exp {
+  count?: member_note_aggregate_bool_exp_count | null
+}
+
+export interface member_note_aggregate_bool_exp_count {
+  arguments?: member_note_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_note_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -11499,6 +15103,17 @@ export interface member_min_order_by {
 export interface member_note_arr_rel_insert_input {
   data: member_note_insert_input[]
   on_conflict?: member_note_on_conflict | null
+}
+
+export interface member_note_attachment_aggregate_bool_exp {
+  count?: member_note_attachment_aggregate_bool_exp_count | null
+}
+
+export interface member_note_attachment_aggregate_bool_exp_count {
+  arguments?: member_note_attachment_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_note_attachment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -11561,6 +15176,7 @@ export interface member_note_bool_exp {
   memberByDeleteFrom?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   member_note_attachments?: member_note_attachment_bool_exp | null
+  member_note_attachments_aggregate?: member_note_attachment_aggregate_bool_exp | null
   metadata?: jsonb_comparison_exp | null
   note?: String_comparison_exp | null
   rejected_at?: timestamptz_comparison_exp | null
@@ -11609,6 +15225,17 @@ export interface member_note_on_conflict {
   constraint: member_note_constraint
   update_columns: member_note_update_column[]
   where?: member_note_bool_exp | null
+}
+
+export interface member_oauth_aggregate_bool_exp {
+  count?: member_oauth_aggregate_bool_exp_count | null
+}
+
+export interface member_oauth_aggregate_bool_exp_count {
+  arguments?: member_oauth_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_oauth_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -11672,6 +15299,17 @@ export interface member_on_conflict {
   where?: member_bool_exp | null
 }
 
+export interface member_permission_aggregate_bool_exp {
+  count?: member_permission_aggregate_bool_exp_count | null
+}
+
+export interface member_permission_aggregate_bool_exp_count {
+  arguments?: member_permission_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_permission_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "member_permission"
  */
@@ -11689,6 +15327,17 @@ export interface member_permission_bool_exp {
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   permission_id?: String_comparison_exp | null
+}
+
+export interface member_permission_extra_aggregate_bool_exp {
+  count?: member_permission_extra_aggregate_bool_exp_count | null
+}
+
+export interface member_permission_extra_aggregate_bool_exp_count {
+  arguments?: member_permission_extra_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_permission_extra_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -11735,6 +15384,17 @@ export interface member_permission_extra_on_conflict {
   constraint: member_permission_extra_constraint
   update_columns: member_permission_extra_update_column[]
   where?: member_permission_extra_bool_exp | null
+}
+
+export interface member_permission_group_aggregate_bool_exp {
+  count?: member_permission_group_aggregate_bool_exp_count | null
+}
+
+export interface member_permission_group_aggregate_bool_exp_count {
+  arguments?: member_permission_group_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_permission_group_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -11792,6 +15452,33 @@ export interface member_permission_insert_input {
   permission_id?: string | null
 }
 
+export interface member_phone_aggregate_bool_exp {
+  bool_and?: member_phone_aggregate_bool_exp_bool_and | null
+  bool_or?: member_phone_aggregate_bool_exp_bool_or | null
+  count?: member_phone_aggregate_bool_exp_count | null
+}
+
+export interface member_phone_aggregate_bool_exp_bool_and {
+  arguments: member_phone_select_column_member_phone_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: member_phone_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface member_phone_aggregate_bool_exp_bool_or {
+  arguments: member_phone_select_column_member_phone_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: member_phone_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface member_phone_aggregate_bool_exp_count {
+  arguments?: member_phone_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_phone_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "member_phone"
  */
@@ -11838,6 +15525,17 @@ export interface member_phone_on_conflict {
   constraint: member_phone_constraint
   update_columns: member_phone_update_column[]
   where?: member_phone_bool_exp | null
+}
+
+export interface member_property_aggregate_bool_exp {
+  count?: member_property_aggregate_bool_exp_count | null
+}
+
+export interface member_property_aggregate_bool_exp_count {
+  arguments?: member_property_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_property_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -11902,6 +15600,7 @@ export interface member_public_bool_exp {
   email?: String_comparison_exp | null
   id?: String_comparison_exp | null
   member_specialities?: member_speciality_bool_exp | null
+  member_specialities_aggregate?: member_speciality_aggregate_bool_exp | null
   metadata?: jsonb_comparison_exp | null
   name?: String_comparison_exp | null
   picture_url?: String_comparison_exp | null
@@ -11964,6 +15663,17 @@ export interface member_public_order_by {
   zoom_user_id?: order_by | null
 }
 
+export interface member_shop_aggregate_bool_exp {
+  count?: member_shop_aggregate_bool_exp_count | null
+}
+
+export interface member_shop_aggregate_bool_exp_count {
+  arguments?: member_shop_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_shop_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "member_shop"
  */
@@ -11985,6 +15695,7 @@ export interface member_shop_bool_exp {
   member?: member_public_bool_exp | null
   member_id?: String_comparison_exp | null
   merchandises?: merchandise_bool_exp | null
+  merchandises_aggregate?: merchandise_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   shipping_methods?: jsonb_comparison_exp | null
   title?: String_comparison_exp | null
@@ -12024,6 +15735,17 @@ export interface member_shop_on_conflict {
   where?: member_shop_bool_exp | null
 }
 
+export interface member_social_aggregate_bool_exp {
+  count?: member_social_aggregate_bool_exp_count | null
+}
+
+export interface member_social_aggregate_bool_exp_count {
+  arguments?: member_social_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_social_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "member_social"
  */
@@ -12048,6 +15770,7 @@ export interface member_social_bool_exp {
   name?: String_comparison_exp | null
   profile_url?: String_comparison_exp | null
   social_cards?: social_card_bool_exp | null
+  social_cards_aggregate?: social_card_aggregate_bool_exp | null
   type?: String_comparison_exp | null
 }
 
@@ -12082,6 +15805,17 @@ export interface member_social_on_conflict {
   constraint: member_social_constraint
   update_columns: member_social_update_column[]
   where?: member_social_bool_exp | null
+}
+
+export interface member_speciality_aggregate_bool_exp {
+  count?: member_speciality_aggregate_bool_exp_count | null
+}
+
+export interface member_speciality_aggregate_bool_exp_count {
+  arguments?: member_speciality_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_speciality_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -12189,6 +15923,17 @@ export interface member_sum_order_by {
   star?: order_by | null
 }
 
+export interface member_tag_aggregate_bool_exp {
+  count?: member_tag_aggregate_bool_exp_count | null
+}
+
+export interface member_tag_aggregate_bool_exp_count {
+  arguments?: member_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_tag_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "member_tag"
  */
@@ -12235,6 +15980,17 @@ export interface member_tag_on_conflict {
   constraint: member_tag_constraint
   update_columns: member_tag_update_column[]
   where?: member_tag_bool_exp | null
+}
+
+export interface member_task_aggregate_bool_exp {
+  count?: member_task_aggregate_bool_exp_count | null
+}
+
+export interface member_task_aggregate_bool_exp_count {
+  arguments?: member_task_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_task_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -12301,6 +16057,73 @@ export interface member_task_on_conflict {
   where?: member_task_bool_exp | null
 }
 
+export interface member_tracking_log_aggregate_bool_exp {
+  count?: member_tracking_log_aggregate_bool_exp_count | null
+}
+
+export interface member_tracking_log_aggregate_bool_exp_count {
+  arguments?: member_tracking_log_select_column[] | null
+  distinct?: boolean | null
+  filter?: member_tracking_log_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
+/**
+ * input type for inserting array relation for remote table "member_tracking_log"
+ */
+export interface member_tracking_log_arr_rel_insert_input {
+  data: member_tracking_log_insert_input[]
+  on_conflict?: member_tracking_log_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "member_tracking_log". All fields are combined with a logical 'AND'.
+ */
+export interface member_tracking_log_bool_exp {
+  _and?: member_tracking_log_bool_exp[] | null
+  _not?: member_tracking_log_bool_exp | null
+  _or?: member_tracking_log_bool_exp[] | null
+  adgroup?: String_comparison_exp | null
+  adname?: String_comparison_exp | null
+  brand?: String_comparison_exp | null
+  campaign?: String_comparison_exp | null
+  content?: String_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
+  id?: String_comparison_exp | null
+  landing?: String_comparison_exp | null
+  medium?: String_comparison_exp | null
+  member_id?: String_comparison_exp | null
+  referrer?: String_comparison_exp | null
+  source?: String_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "member_tracking_log"
+ */
+export interface member_tracking_log_insert_input {
+  adgroup?: string | null
+  adname?: string | null
+  brand?: string | null
+  campaign?: string | null
+  content?: string | null
+  created_at?: any | null
+  id?: string | null
+  landing?: string | null
+  medium?: string | null
+  member_id?: string | null
+  referrer?: string | null
+  source?: string | null
+}
+
+/**
+ * on_conflict condition type for table "member_tracking_log"
+ */
+export interface member_tracking_log_on_conflict {
+  constraint: member_tracking_log_constraint
+  update_columns: member_tracking_log_update_column[]
+  where?: member_tracking_log_bool_exp | null
+}
+
 /**
  * order by var_pop() on columns of table "member"
  */
@@ -12320,6 +16143,33 @@ export interface member_var_samp_order_by {
  */
 export interface member_variance_order_by {
   star?: order_by | null
+}
+
+export interface merchandise_aggregate_bool_exp {
+  bool_and?: merchandise_aggregate_bool_exp_bool_and | null
+  bool_or?: merchandise_aggregate_bool_exp_bool_or | null
+  count?: merchandise_aggregate_bool_exp_count | null
+}
+
+export interface merchandise_aggregate_bool_exp_bool_and {
+  arguments: merchandise_select_column_merchandise_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: merchandise_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface merchandise_aggregate_bool_exp_bool_or {
+  arguments: merchandise_select_column_merchandise_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: merchandise_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface merchandise_aggregate_bool_exp_count {
+  arguments?: merchandise_select_column[] | null
+  distinct?: boolean | null
+  filter?: merchandise_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -12383,20 +16233,37 @@ export interface merchandise_bool_exp {
   member_shop?: member_shop_bool_exp | null
   member_shop_id?: uuid_comparison_exp | null
   merchandise_categories?: merchandise_category_bool_exp | null
+  merchandise_categories_aggregate?: merchandise_category_aggregate_bool_exp | null
   merchandise_files?: merchandise_file_bool_exp | null
+  merchandise_files_aggregate?: merchandise_file_aggregate_bool_exp | null
   merchandise_imgs?: merchandise_img_bool_exp | null
+  merchandise_imgs_aggregate?: merchandise_img_aggregate_bool_exp | null
   merchandise_inventory_status?: merchandise_inventory_status_bool_exp | null
   merchandise_specs?: merchandise_spec_bool_exp | null
+  merchandise_specs_aggregate?: merchandise_spec_aggregate_bool_exp | null
   merchandise_tags?: merchandise_tag_bool_exp | null
+  merchandise_tags_aggregate?: merchandise_tag_aggregate_bool_exp | null
   meta?: String_comparison_exp | null
   position?: Int_comparison_exp | null
   post_merchandises?: post_merchandise_bool_exp | null
+  post_merchandises_aggregate?: post_merchandise_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   started_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface merchandise_category_aggregate_bool_exp {
+  count?: merchandise_category_aggregate_bool_exp_count | null
+}
+
+export interface merchandise_category_aggregate_bool_exp_count {
+  arguments?: merchandise_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: merchandise_category_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -12443,6 +16310,17 @@ export interface merchandise_category_on_conflict {
   where?: merchandise_category_bool_exp | null
 }
 
+export interface merchandise_file_aggregate_bool_exp {
+  count?: merchandise_file_aggregate_bool_exp_count | null
+}
+
+export interface merchandise_file_aggregate_bool_exp_count {
+  arguments?: merchandise_file_select_column[] | null
+  distinct?: boolean | null
+  filter?: merchandise_file_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "merchandise_file"
  */
@@ -12485,6 +16363,17 @@ export interface merchandise_file_on_conflict {
   constraint: merchandise_file_constraint
   update_columns: merchandise_file_update_column[]
   where?: merchandise_file_bool_exp | null
+}
+
+export interface merchandise_img_aggregate_bool_exp {
+  count?: merchandise_img_aggregate_bool_exp_count | null
+}
+
+export interface merchandise_img_aggregate_bool_exp_count {
+  arguments?: merchandise_img_select_column[] | null
+  distinct?: boolean | null
+  filter?: merchandise_img_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -12672,6 +16561,33 @@ export interface merchandise_on_conflict {
   where?: merchandise_bool_exp | null
 }
 
+export interface merchandise_spec_aggregate_bool_exp {
+  bool_and?: merchandise_spec_aggregate_bool_exp_bool_and | null
+  bool_or?: merchandise_spec_aggregate_bool_exp_bool_or | null
+  count?: merchandise_spec_aggregate_bool_exp_count | null
+}
+
+export interface merchandise_spec_aggregate_bool_exp_bool_and {
+  arguments: merchandise_spec_select_column_merchandise_spec_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: merchandise_spec_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface merchandise_spec_aggregate_bool_exp_bool_or {
+  arguments: merchandise_spec_select_column_merchandise_spec_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: merchandise_spec_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface merchandise_spec_aggregate_bool_exp_count {
+  arguments?: merchandise_spec_select_column[] | null
+  distinct?: boolean | null
+  filter?: merchandise_spec_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "merchandise_spec"
  */
@@ -12694,11 +16610,23 @@ export interface merchandise_spec_bool_exp {
   merchandise?: merchandise_bool_exp | null
   merchandise_id?: uuid_comparison_exp | null
   merchandise_spec_files?: merchandise_spec_file_bool_exp | null
+  merchandise_spec_files_aggregate?: merchandise_spec_file_aggregate_bool_exp | null
   merchandise_spec_inventory_status?: merchandise_spec_inventory_status_bool_exp | null
   quota?: Int_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface merchandise_spec_file_aggregate_bool_exp {
+  count?: merchandise_spec_file_aggregate_bool_exp_count | null
+}
+
+export interface merchandise_spec_file_aggregate_bool_exp_count {
+  arguments?: merchandise_spec_file_select_column[] | null
+  distinct?: boolean | null
+  filter?: merchandise_spec_file_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -12852,6 +16780,17 @@ export interface merchandise_sum_order_by {
   sale_price?: order_by | null
 }
 
+export interface merchandise_tag_aggregate_bool_exp {
+  count?: merchandise_tag_aggregate_bool_exp_count | null
+}
+
+export interface merchandise_tag_aggregate_bool_exp_count {
+  arguments?: merchandise_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: merchandise_tag_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "merchandise_tag"
  */
@@ -12932,10 +16871,12 @@ export interface module_bool_exp {
   _or?: module_bool_exp[] | null
   abstract?: String_comparison_exp | null
   app_modules?: app_module_bool_exp | null
+  app_modules_aggregate?: app_module_aggregate_bool_exp | null
   category_name?: String_comparison_exp | null
   id?: String_comparison_exp | null
   name?: String_comparison_exp | null
   settings?: setting_bool_exp | null
+  settings_aggregate?: setting_aggregate_bool_exp | null
 }
 
 /**
@@ -12965,6 +16906,17 @@ export interface module_on_conflict {
   constraint: module_constraint
   update_columns: module_update_column[]
   where?: module_bool_exp | null
+}
+
+export interface notification_aggregate_bool_exp {
+  count?: notification_aggregate_bool_exp_count | null
+}
+
+export interface notification_aggregate_bool_exp_count {
+  arguments?: notification_select_column[] | null
+  distinct?: boolean | null
+  filter?: notification_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -13040,6 +16992,17 @@ export interface numeric_comparison_exp {
   _nin?: any[] | null
 }
 
+export interface order_contact_aggregate_bool_exp {
+  count?: order_contact_aggregate_bool_exp_count | null
+}
+
+export interface order_contact_aggregate_bool_exp_count {
+  arguments?: order_contact_select_column[] | null
+  distinct?: boolean | null
+  filter?: order_contact_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "order_contact"
  */
@@ -13090,6 +17053,17 @@ export interface order_contact_on_conflict {
   where?: order_contact_bool_exp | null
 }
 
+export interface order_discount_aggregate_bool_exp {
+  count?: order_discount_aggregate_bool_exp_count | null
+}
+
+export interface order_discount_aggregate_bool_exp_count {
+  arguments?: order_discount_select_column[] | null
+  distinct?: boolean | null
+  filter?: order_discount_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "order_discount"
  */
@@ -13138,6 +17112,17 @@ export interface order_discount_on_conflict {
   constraint: order_discount_constraint
   update_columns: order_discount_update_column[]
   where?: order_discount_bool_exp | null
+}
+
+export interface order_executor_aggregate_bool_exp {
+  count?: order_executor_aggregate_bool_exp_count | null
+}
+
+export interface order_executor_aggregate_bool_exp_count {
+  arguments?: order_executor_select_column[] | null
+  distinct?: boolean | null
+  filter?: order_executor_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -13234,6 +17219,33 @@ export interface order_executor_sharing_obj_rel_insert_input {
   data: order_executor_sharing_insert_input
 }
 
+export interface order_log_aggregate_bool_exp {
+  bool_and?: order_log_aggregate_bool_exp_bool_and | null
+  bool_or?: order_log_aggregate_bool_exp_bool_or | null
+  count?: order_log_aggregate_bool_exp_count | null
+}
+
+export interface order_log_aggregate_bool_exp_bool_and {
+  arguments: order_log_select_column_order_log_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: order_log_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface order_log_aggregate_bool_exp_bool_or {
+  arguments: order_log_select_column_order_log_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: order_log_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface order_log_aggregate_bool_exp_count {
+  arguments?: order_log_select_column[] | null
+  distinct?: boolean | null
+  filter?: order_log_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "order_log"
  */
@@ -13262,6 +17274,7 @@ export interface order_log_bool_exp {
   expired_at?: timestamptz_comparison_exp | null
   id?: String_comparison_exp | null
   invoice?: invoice_bool_exp | null
+  invoice_aggregate?: invoice_aggregate_bool_exp | null
   invoice_issued_at?: timestamptz_comparison_exp | null
   invoice_options?: jsonb_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
@@ -13271,17 +17284,23 @@ export interface order_log_bool_exp {
   message?: String_comparison_exp | null
   options?: jsonb_comparison_exp | null
   order_contacts?: order_contact_bool_exp | null
+  order_contacts_aggregate?: order_contact_aggregate_bool_exp | null
   order_discounts?: order_discount_bool_exp | null
+  order_discounts_aggregate?: order_discount_aggregate_bool_exp | null
   order_executors?: order_executor_bool_exp | null
+  order_executors_aggregate?: order_executor_aggregate_bool_exp | null
   order_products?: order_product_bool_exp | null
+  order_products_aggregate?: order_product_aggregate_bool_exp | null
   parent_order_id?: String_comparison_exp | null
   parent_order_log?: order_log_bool_exp | null
   payment_logs?: payment_log_bool_exp | null
+  payment_logs_aggregate?: payment_log_aggregate_bool_exp | null
   payment_model?: jsonb_comparison_exp | null
   retried_at?: timestamptz_comparison_exp | null
   shipping?: jsonb_comparison_exp | null
   status?: String_comparison_exp | null
   sub_order_logs?: order_log_bool_exp | null
+  sub_order_logs_aggregate?: order_log_aggregate_bool_exp | null
   transferred_at?: timestamptz_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
@@ -13376,6 +17395,33 @@ export interface order_payment_status_obj_rel_insert_input {
   data: order_payment_status_insert_input
 }
 
+export interface order_product_aggregate_bool_exp {
+  bool_and?: order_product_aggregate_bool_exp_bool_and | null
+  bool_or?: order_product_aggregate_bool_exp_bool_or | null
+  count?: order_product_aggregate_bool_exp_count | null
+}
+
+export interface order_product_aggregate_bool_exp_bool_and {
+  arguments: order_product_select_column_order_product_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: order_product_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface order_product_aggregate_bool_exp_bool_or {
+  arguments: order_product_select_column_order_product_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: order_product_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface order_product_aggregate_bool_exp_count {
+  arguments?: order_product_select_column[] | null
+  distinct?: boolean | null
+  filter?: order_product_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "order_product"
  */
@@ -13418,6 +17464,7 @@ export interface order_product_bool_exp {
   _or?: order_product_bool_exp[] | null
   accumulated_errors?: Int_comparison_exp | null
   activity_attendances?: activity_attendance_bool_exp | null
+  activity_attendances_aggregate?: activity_attendance_aggregate_bool_exp | null
   auto_renewed?: Boolean_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
   currency?: currency_bool_exp | null
@@ -13432,11 +17479,23 @@ export interface order_product_bool_exp {
   order_id?: String_comparison_exp | null
   order_log?: order_log_bool_exp | null
   order_product_files?: order_product_file_bool_exp | null
+  order_product_files_aggregate?: order_product_file_aggregate_bool_exp | null
   price?: numeric_comparison_exp | null
   product?: product_bool_exp | null
   product_id?: String_comparison_exp | null
   started_at?: timestamptz_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface order_product_file_aggregate_bool_exp {
+  count?: order_product_file_aggregate_bool_exp_count | null
+}
+
+export interface order_product_file_aggregate_bool_exp_count {
+  arguments?: order_product_file_select_column[] | null
+  distinct?: boolean | null
+  filter?: order_product_file_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -13621,6 +17680,17 @@ export interface order_product_variance_order_by {
   price?: order_by | null
 }
 
+export interface package_aggregate_bool_exp {
+  count?: package_aggregate_bool_exp_count | null
+}
+
+export interface package_aggregate_bool_exp_count {
+  arguments?: package_select_column[] | null
+  distinct?: boolean | null
+  filter?: package_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "package"
  */
@@ -13650,6 +17720,7 @@ export interface package_bool_exp {
   elements?: jsonb_comparison_exp | null
   id?: uuid_comparison_exp | null
   package_sections?: package_section_bool_exp | null
+  package_sections_aggregate?: package_section_aggregate_bool_exp | null
   title?: String_comparison_exp | null
 }
 
@@ -13663,6 +17734,17 @@ export interface package_insert_input {
   id?: any | null
   package_sections?: package_section_arr_rel_insert_input | null
   title?: string | null
+}
+
+export interface package_item_aggregate_bool_exp {
+  count?: package_item_aggregate_bool_exp_count | null
+}
+
+export interface package_item_aggregate_bool_exp_count {
+  arguments?: package_item_select_column[] | null
+  distinct?: boolean | null
+  filter?: package_item_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -13699,6 +17781,33 @@ export interface package_item_bool_exp {
   program_id?: uuid_comparison_exp | null
 }
 
+export interface package_item_group_aggregate_bool_exp {
+  bool_and?: package_item_group_aggregate_bool_exp_bool_and | null
+  bool_or?: package_item_group_aggregate_bool_exp_bool_or | null
+  count?: package_item_group_aggregate_bool_exp_count | null
+}
+
+export interface package_item_group_aggregate_bool_exp_bool_and {
+  arguments: package_item_group_select_column_package_item_group_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: package_item_group_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface package_item_group_aggregate_bool_exp_bool_or {
+  arguments: package_item_group_select_column_package_item_group_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: package_item_group_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface package_item_group_aggregate_bool_exp_count {
+  arguments?: package_item_group_select_column[] | null
+  distinct?: boolean | null
+  filter?: package_item_group_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "package_item_group"
  */
@@ -13716,6 +17825,7 @@ export interface package_item_group_bool_exp {
   _or?: package_item_group_bool_exp[] | null
   id?: uuid_comparison_exp | null
   package_items?: package_item_bool_exp | null
+  package_items_aggregate?: package_item_aggregate_bool_exp | null
   package_section?: package_section_bool_exp | null
   package_section_id?: uuid_comparison_exp | null
   subtitle?: String_comparison_exp | null
@@ -13835,6 +17945,33 @@ export interface package_on_conflict {
   where?: package_bool_exp | null
 }
 
+export interface package_section_aggregate_bool_exp {
+  bool_and?: package_section_aggregate_bool_exp_bool_and | null
+  bool_or?: package_section_aggregate_bool_exp_bool_or | null
+  count?: package_section_aggregate_bool_exp_count | null
+}
+
+export interface package_section_aggregate_bool_exp_bool_and {
+  arguments: package_section_select_column_package_section_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: package_section_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface package_section_aggregate_bool_exp_bool_or {
+  arguments: package_section_select_column_package_section_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: package_section_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface package_section_aggregate_bool_exp_count {
+  arguments?: package_section_select_column[] | null
+  distinct?: boolean | null
+  filter?: package_section_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "package_section"
  */
@@ -13856,6 +17993,7 @@ export interface package_section_bool_exp {
   package?: package_bool_exp | null
   package_id?: uuid_comparison_exp | null
   package_item_groups?: package_item_group_bool_exp | null
+  package_item_groups_aggregate?: package_item_group_aggregate_bool_exp | null
   position?: Int_comparison_exp | null
   subtitle?: String_comparison_exp | null
   title?: String_comparison_exp | null
@@ -13891,6 +18029,17 @@ export interface package_section_on_conflict {
   constraint: package_section_constraint
   update_columns: package_section_update_column[]
   where?: package_section_bool_exp | null
+}
+
+export interface payment_log_aggregate_bool_exp {
+  count?: payment_log_aggregate_bool_exp_count | null
+}
+
+export interface payment_log_aggregate_bool_exp_count {
+  arguments?: payment_log_select_column[] | null
+  distinct?: boolean | null
+  filter?: payment_log_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -13969,7 +18118,9 @@ export interface permission_bool_exp {
   group?: String_comparison_exp | null
   id?: String_comparison_exp | null
   member_permission_extras?: member_permission_extra_bool_exp | null
+  member_permission_extras_aggregate?: member_permission_extra_aggregate_bool_exp | null
   role_permissions?: role_permission_bool_exp | null
+  role_permissions_aggregate?: role_permission_aggregate_bool_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
 
@@ -13985,6 +18136,7 @@ export interface permission_group_bool_exp {
   id?: uuid_comparison_exp | null
   name?: String_comparison_exp | null
   permission_group_permissions?: permission_group_permission_bool_exp | null
+  permission_group_permissions_aggregate?: permission_group_permission_aggregate_bool_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
 
@@ -14015,6 +18167,17 @@ export interface permission_group_on_conflict {
   constraint: permission_group_constraint
   update_columns: permission_group_update_column[]
   where?: permission_group_bool_exp | null
+}
+
+export interface permission_group_permission_aggregate_bool_exp {
+  count?: permission_group_permission_aggregate_bool_exp_count | null
+}
+
+export interface permission_group_permission_aggregate_bool_exp_count {
+  arguments?: permission_group_permission_select_column[] | null
+  distinct?: boolean | null
+  filter?: permission_group_permission_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14093,6 +18256,17 @@ export interface permission_on_conflict {
   where?: permission_bool_exp | null
 }
 
+export interface playlist_aggregate_bool_exp {
+  count?: playlist_aggregate_bool_exp_count | null
+}
+
+export interface playlist_aggregate_bool_exp_count {
+  arguments?: playlist_select_column[] | null
+  distinct?: boolean | null
+  filter?: playlist_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "playlist"
  */
@@ -14113,6 +18287,7 @@ export interface playlist_bool_exp {
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   playlist_podcast_programs?: playlist_podcast_program_bool_exp | null
+  playlist_podcast_programs_aggregate?: playlist_podcast_program_aggregate_bool_exp | null
   position?: Int_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
@@ -14147,6 +18322,17 @@ export interface playlist_on_conflict {
   constraint: playlist_constraint
   update_columns: playlist_update_column[]
   where?: playlist_bool_exp | null
+}
+
+export interface playlist_podcast_program_aggregate_bool_exp {
+  count?: playlist_podcast_program_aggregate_bool_exp_count | null
+}
+
+export interface playlist_podcast_program_aggregate_bool_exp_count {
+  arguments?: playlist_podcast_program_select_column[] | null
+  distinct?: boolean | null
+  filter?: playlist_podcast_program_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14197,6 +18383,17 @@ export interface playlist_podcast_program_on_conflict {
   where?: playlist_podcast_program_bool_exp | null
 }
 
+export interface podcast_aggregate_bool_exp {
+  count?: podcast_aggregate_bool_exp_count | null
+}
+
+export interface podcast_aggregate_bool_exp_count {
+  arguments?: podcast_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "podcast"
  */
@@ -14227,7 +18424,9 @@ export interface podcast_bool_exp {
   instructor_id?: String_comparison_exp | null
   member?: member_bool_exp | null
   podcast_plans?: podcast_plan_bool_exp | null
+  podcast_plans_aggregate?: podcast_plan_aggregate_bool_exp | null
   podcast_programs?: podcast_program_bool_exp | null
+  podcast_programs_aggregate?: podcast_program_aggregate_bool_exp | null
 }
 
 /**
@@ -14278,6 +18477,33 @@ export interface podcast_on_conflict {
   where?: podcast_bool_exp | null
 }
 
+export interface podcast_plan_aggregate_bool_exp {
+  bool_and?: podcast_plan_aggregate_bool_exp_bool_and | null
+  bool_or?: podcast_plan_aggregate_bool_exp_bool_or | null
+  count?: podcast_plan_aggregate_bool_exp_count | null
+}
+
+export interface podcast_plan_aggregate_bool_exp_bool_and {
+  arguments: podcast_plan_select_column_podcast_plan_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: podcast_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface podcast_plan_aggregate_bool_exp_bool_or {
+  arguments: podcast_plan_select_column_podcast_plan_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: podcast_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface podcast_plan_aggregate_bool_exp_count {
+  arguments?: podcast_plan_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_plan_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "podcast_plan"
  */
@@ -14304,12 +18530,24 @@ export interface podcast_plan_bool_exp {
   podcast?: podcast_bool_exp | null
   podcast_id?: uuid_comparison_exp | null
   podcast_plan_enrollments?: podcast_plan_enrollment_bool_exp | null
+  podcast_plan_enrollments_aggregate?: podcast_plan_enrollment_aggregate_bool_exp | null
   position?: Int_comparison_exp | null
   published_at?: timestamptz_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface podcast_plan_enrollment_aggregate_bool_exp {
+  count?: podcast_plan_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface podcast_plan_enrollment_aggregate_bool_exp_count {
+  arguments?: podcast_plan_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_plan_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14380,12 +18618,34 @@ export interface podcast_plan_on_conflict {
   where?: podcast_plan_bool_exp | null
 }
 
+export interface podcast_program_aggregate_bool_exp {
+  count?: podcast_program_aggregate_bool_exp_count | null
+}
+
+export interface podcast_program_aggregate_bool_exp_count {
+  arguments?: podcast_program_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_program_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "podcast_program"
  */
 export interface podcast_program_arr_rel_insert_input {
   data: podcast_program_insert_input[]
   on_conflict?: podcast_program_on_conflict | null
+}
+
+export interface podcast_program_audio_aggregate_bool_exp {
+  count?: podcast_program_audio_aggregate_bool_exp_count | null
+}
+
+export interface podcast_program_audio_aggregate_bool_exp_count {
+  arguments?: podcast_program_audio_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_program_audio_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14434,6 +18694,17 @@ export interface podcast_program_audio_on_conflict {
   constraint: podcast_program_audio_constraint
   update_columns: podcast_program_audio_update_column[]
   where?: podcast_program_audio_bool_exp | null
+}
+
+export interface podcast_program_body_aggregate_bool_exp {
+  count?: podcast_program_body_aggregate_bool_exp_count | null
+}
+
+export interface podcast_program_body_aggregate_bool_exp_count {
+  arguments?: podcast_program_body_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_program_body_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14500,6 +18771,7 @@ export interface podcast_program_bool_exp {
   abstract?: String_comparison_exp | null
   content_type?: String_comparison_exp | null
   cover_url?: String_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
   creator?: member_public_bool_exp | null
   creator_id?: String_comparison_exp | null
   duration?: numeric_comparison_exp | null
@@ -14508,21 +18780,39 @@ export interface podcast_program_bool_exp {
   id?: uuid_comparison_exp | null
   list_price?: numeric_comparison_exp | null
   playlist_podcast_programs?: playlist_podcast_program_bool_exp | null
+  playlist_podcast_programs_aggregate?: playlist_podcast_program_aggregate_bool_exp | null
   podcast?: podcast_bool_exp | null
   podcast_id?: uuid_comparison_exp | null
   podcast_program_audios?: podcast_program_audio_bool_exp | null
+  podcast_program_audios_aggregate?: podcast_program_audio_aggregate_bool_exp | null
   podcast_program_bodies?: podcast_program_body_bool_exp | null
+  podcast_program_bodies_aggregate?: podcast_program_body_aggregate_bool_exp | null
   podcast_program_body?: podcast_program_body_bool_exp | null
   podcast_program_categories?: podcast_program_category_bool_exp | null
+  podcast_program_categories_aggregate?: podcast_program_category_aggregate_bool_exp | null
   podcast_program_enrollments?: podcast_program_enrollment_bool_exp | null
+  podcast_program_enrollments_aggregate?: podcast_program_enrollment_aggregate_bool_exp | null
   podcast_program_roles?: podcast_program_role_bool_exp | null
+  podcast_program_roles_aggregate?: podcast_program_role_aggregate_bool_exp | null
   podcast_program_tags?: podcast_program_tag_bool_exp | null
+  podcast_program_tags_aggregate?: podcast_program_tag_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   support_locales?: jsonb_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface podcast_program_category_aggregate_bool_exp {
+  count?: podcast_program_category_aggregate_bool_exp_count | null
+}
+
+export interface podcast_program_category_aggregate_bool_exp_count {
+  arguments?: podcast_program_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_program_category_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14569,6 +18859,17 @@ export interface podcast_program_category_on_conflict {
   where?: podcast_program_category_bool_exp | null
 }
 
+export interface podcast_program_enrollment_aggregate_bool_exp {
+  count?: podcast_program_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface podcast_program_enrollment_aggregate_bool_exp_count {
+  arguments?: podcast_program_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_program_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "podcast_program_enrollment"
  */
@@ -14604,6 +18905,7 @@ export interface podcast_program_insert_input {
   abstract?: string | null
   content_type?: string | null
   cover_url?: string | null
+  created_at?: any | null
   creator?: member_public_obj_rel_insert_input | null
   creator_id?: string | null
   duration?: any | null
@@ -14644,6 +18946,17 @@ export interface podcast_program_on_conflict {
   constraint: podcast_program_constraint
   update_columns: podcast_program_update_column[]
   where?: podcast_program_bool_exp | null
+}
+
+export interface podcast_program_role_aggregate_bool_exp {
+  count?: podcast_program_role_aggregate_bool_exp_count | null
+}
+
+export interface podcast_program_role_aggregate_bool_exp_count {
+  arguments?: podcast_program_role_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_program_role_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14690,6 +19003,17 @@ export interface podcast_program_role_on_conflict {
   where?: podcast_program_role_bool_exp | null
 }
 
+export interface podcast_program_tag_aggregate_bool_exp {
+  count?: podcast_program_tag_aggregate_bool_exp_count | null
+}
+
+export interface podcast_program_tag_aggregate_bool_exp_count {
+  arguments?: podcast_program_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: podcast_program_tag_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "podcast_program_tag"
  */
@@ -14732,6 +19056,17 @@ export interface podcast_program_tag_on_conflict {
   constraint: podcast_program_tag_constraint
   update_columns: podcast_program_tag_update_column[]
   where?: podcast_program_tag_bool_exp | null
+}
+
+export interface point_log_aggregate_bool_exp {
+  count?: point_log_aggregate_bool_exp_count | null
+}
+
+export interface point_log_aggregate_bool_exp_count {
+  arguments?: point_log_select_column[] | null
+  distinct?: boolean | null
+  filter?: point_log_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14812,6 +19147,33 @@ export interface point_status_obj_rel_insert_input {
   data: point_status_insert_input
 }
 
+export interface post_aggregate_bool_exp {
+  bool_and?: post_aggregate_bool_exp_bool_and | null
+  bool_or?: post_aggregate_bool_exp_bool_or | null
+  count?: post_aggregate_bool_exp_count | null
+}
+
+export interface post_aggregate_bool_exp_bool_and {
+  arguments: post_select_column_post_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: post_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface post_aggregate_bool_exp_bool_or {
+  arguments: post_select_column_post_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: post_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface post_aggregate_bool_exp_count {
+  arguments?: post_select_column[] | null
+  distinct?: boolean | null
+  filter?: post_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "post"
  */
@@ -14862,19 +19224,37 @@ export interface post_bool_exp {
   id?: uuid_comparison_exp | null
   is_deleted?: Boolean_comparison_exp | null
   meta_tag?: jsonb_comparison_exp | null
+  pinned_at?: timestamptz_comparison_exp | null
   position?: Int_comparison_exp | null
   post_categories?: post_category_bool_exp | null
+  post_categories_aggregate?: post_category_aggregate_bool_exp | null
   post_issue?: post_issue_bool_exp | null
+  post_issue_aggregate?: post_issue_aggregate_bool_exp | null
   post_merchandises?: post_merchandise_bool_exp | null
+  post_merchandises_aggregate?: post_merchandise_aggregate_bool_exp | null
   post_reaction?: post_reaction_bool_exp | null
+  post_reaction_aggregate?: post_reaction_aggregate_bool_exp | null
   post_roles?: post_role_bool_exp | null
+  post_roles_aggregate?: post_role_aggregate_bool_exp | null
   post_tags?: post_tag_bool_exp | null
+  post_tags_aggregate?: post_tag_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   source?: String_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
   video_url?: String_comparison_exp | null
   views?: Int_comparison_exp | null
+}
+
+export interface post_category_aggregate_bool_exp {
+  count?: post_category_aggregate_bool_exp_count | null
+}
+
+export interface post_category_aggregate_bool_exp_count {
+  arguments?: post_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: post_category_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14935,6 +19315,7 @@ export interface post_insert_input {
   id?: any | null
   is_deleted?: boolean | null
   meta_tag?: any | null
+  pinned_at?: any | null
   position?: number | null
   post_categories?: post_category_arr_rel_insert_input | null
   post_issue?: post_issue_arr_rel_insert_input | null
@@ -14948,6 +19329,17 @@ export interface post_insert_input {
   updated_at?: any | null
   video_url?: string | null
   views?: number | null
+}
+
+export interface post_issue_aggregate_bool_exp {
+  count?: post_issue_aggregate_bool_exp_count | null
+}
+
+export interface post_issue_aggregate_bool_exp_count {
+  arguments?: post_issue_select_column[] | null
+  distinct?: boolean | null
+  filter?: post_issue_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -14991,6 +19383,7 @@ export interface post_max_order_by {
   created_at?: order_by | null
   description?: order_by | null
   id?: order_by | null
+  pinned_at?: order_by | null
   position?: order_by | null
   published_at?: order_by | null
   source?: order_by | null
@@ -14998,6 +19391,17 @@ export interface post_max_order_by {
   updated_at?: order_by | null
   video_url?: order_by | null
   views?: order_by | null
+}
+
+export interface post_merchandise_aggregate_bool_exp {
+  count?: post_merchandise_aggregate_bool_exp_count | null
+}
+
+export interface post_merchandise_aggregate_bool_exp_count {
+  arguments?: post_merchandise_select_column[] | null
+  distinct?: boolean | null
+  filter?: post_merchandise_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15055,6 +19459,7 @@ export interface post_min_order_by {
   created_at?: order_by | null
   description?: order_by | null
   id?: order_by | null
+  pinned_at?: order_by | null
   position?: order_by | null
   published_at?: order_by | null
   source?: order_by | null
@@ -15079,6 +19484,17 @@ export interface post_on_conflict {
   constraint: post_constraint
   update_columns: post_update_column[]
   where?: post_bool_exp | null
+}
+
+export interface post_reaction_aggregate_bool_exp {
+  count?: post_reaction_aggregate_bool_exp_count | null
+}
+
+export interface post_reaction_aggregate_bool_exp_count {
+  arguments?: post_reaction_select_column[] | null
+  distinct?: boolean | null
+  filter?: post_reaction_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15123,6 +19539,17 @@ export interface post_reaction_on_conflict {
   constraint: post_reaction_constraint
   update_columns: post_reaction_update_column[]
   where?: post_reaction_bool_exp | null
+}
+
+export interface post_role_aggregate_bool_exp {
+  count?: post_role_aggregate_bool_exp_count | null
+}
+
+export interface post_role_aggregate_bool_exp_count {
+  arguments?: post_role_select_column[] | null
+  distinct?: boolean | null
+  filter?: post_role_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15203,6 +19630,17 @@ export interface post_sum_order_by {
   views?: order_by | null
 }
 
+export interface post_tag_aggregate_bool_exp {
+  count?: post_tag_aggregate_bool_exp_count | null
+}
+
+export interface post_tag_aggregate_bool_exp_count {
+  arguments?: post_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: post_tag_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "post_tag"
  */
@@ -15271,6 +19709,33 @@ export interface post_variance_order_by {
   views?: order_by | null
 }
 
+export interface practice_aggregate_bool_exp {
+  bool_and?: practice_aggregate_bool_exp_bool_and | null
+  bool_or?: practice_aggregate_bool_exp_bool_or | null
+  count?: practice_aggregate_bool_exp_count | null
+}
+
+export interface practice_aggregate_bool_exp_bool_and {
+  arguments: practice_select_column_practice_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: practice_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface practice_aggregate_bool_exp_bool_or {
+  arguments: practice_select_column_practice_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: practice_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface practice_aggregate_bool_exp_count {
+  arguments?: practice_select_column[] | null
+  distinct?: boolean | null
+  filter?: practice_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "practice"
  */
@@ -15286,6 +19751,17 @@ export interface practice_aggregate_order_by {
 export interface practice_arr_rel_insert_input {
   data: practice_insert_input[]
   on_conflict?: practice_on_conflict | null
+}
+
+export interface practice_attachment_aggregate_bool_exp {
+  count?: practice_attachment_aggregate_bool_exp_count | null
+}
+
+export interface practice_attachment_aggregate_bool_exp_count {
+  arguments?: practice_attachment_select_column[] | null
+  distinct?: boolean | null
+  filter?: practice_attachment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15343,8 +19819,11 @@ export interface practice_bool_exp {
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   practice_attachments?: practice_attachment_bool_exp | null
+  practice_attachments_aggregate?: practice_attachment_aggregate_bool_exp | null
   practice_issues?: practice_issue_bool_exp | null
+  practice_issues_aggregate?: practice_issue_aggregate_bool_exp | null
   practice_reactions?: practice_reaction_bool_exp | null
+  practice_reactions_aggregate?: practice_reaction_aggregate_bool_exp | null
   program_content?: program_content_bool_exp | null
   program_content_id?: uuid_comparison_exp | null
   reviewed_at?: timestamptz_comparison_exp | null
@@ -15371,6 +19850,17 @@ export interface practice_insert_input {
   reviewed_at?: any | null
   title?: string | null
   updated_at?: any | null
+}
+
+export interface practice_issue_aggregate_bool_exp {
+  count?: practice_issue_aggregate_bool_exp_count | null
+}
+
+export interface practice_issue_aggregate_bool_exp_count {
+  arguments?: practice_issue_select_column[] | null
+  distinct?: boolean | null
+  filter?: practice_issue_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15450,6 +19940,17 @@ export interface practice_on_conflict {
   where?: practice_bool_exp | null
 }
 
+export interface practice_reaction_aggregate_bool_exp {
+  count?: practice_reaction_aggregate_bool_exp_count | null
+}
+
+export interface practice_reaction_aggregate_bool_exp_count {
+  arguments?: practice_reaction_select_column[] | null
+  distinct?: boolean | null
+  filter?: practice_reaction_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "practice_reaction"
  */
@@ -15502,16 +20003,22 @@ export interface product_bool_exp {
   _not?: product_bool_exp | null
   _or?: product_bool_exp[] | null
   card_discounts?: card_discount_bool_exp | null
+  card_discounts_aggregate?: card_discount_aggregate_bool_exp | null
   cart_products?: cart_product_bool_exp | null
+  cart_products_aggregate?: cart_product_aggregate_bool_exp | null
   coin_back?: numeric_comparison_exp | null
   coin_period_amount?: Int_comparison_exp | null
   coin_period_type?: String_comparison_exp | null
   coupon_plan_products?: coupon_plan_product_bool_exp | null
+  coupon_plan_products_aggregate?: coupon_plan_product_aggregate_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
   id?: String_comparison_exp | null
   order_products?: order_product_bool_exp | null
+  order_products_aggregate?: order_product_aggregate_bool_exp | null
   product_enrollments?: product_enrollment_bool_exp | null
+  product_enrollments_aggregate?: product_enrollment_aggregate_bool_exp | null
   product_inventories?: product_inventory_bool_exp | null
+  product_inventories_aggregate?: product_inventory_aggregate_bool_exp | null
   product_inventory_status?: product_inventory_status_bool_exp | null
   product_owner?: product_owner_bool_exp | null
   sku?: String_comparison_exp | null
@@ -15519,6 +20026,34 @@ export interface product_bool_exp {
   type?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
   voucher_plan_products?: voucher_plan_product_bool_exp | null
+  voucher_plan_products_aggregate?: voucher_plan_product_aggregate_bool_exp | null
+}
+
+export interface product_enrollment_aggregate_bool_exp {
+  bool_and?: product_enrollment_aggregate_bool_exp_bool_and | null
+  bool_or?: product_enrollment_aggregate_bool_exp_bool_or | null
+  count?: product_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface product_enrollment_aggregate_bool_exp_bool_and {
+  arguments: product_enrollment_select_column_product_enrollment_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: product_enrollment_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface product_enrollment_aggregate_bool_exp_bool_or {
+  arguments: product_enrollment_select_column_product_enrollment_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: product_enrollment_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface product_enrollment_aggregate_bool_exp_count {
+  arguments?: product_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: product_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15575,6 +20110,17 @@ export interface product_insert_input {
   type?: string | null
   updated_at?: any | null
   voucher_plan_products?: voucher_plan_product_arr_rel_insert_input | null
+}
+
+export interface product_inventory_aggregate_bool_exp {
+  count?: product_inventory_aggregate_bool_exp_count | null
+}
+
+export interface product_inventory_aggregate_bool_exp_count {
+  arguments?: product_inventory_select_column[] | null
+  distinct?: boolean | null
+  filter?: product_inventory_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15710,6 +20256,33 @@ export interface product_owner_obj_rel_insert_input {
   data: product_owner_insert_input
 }
 
+export interface program_aggregate_bool_exp {
+  bool_and?: program_aggregate_bool_exp_bool_and | null
+  bool_or?: program_aggregate_bool_exp_bool_or | null
+  count?: program_aggregate_bool_exp_count | null
+}
+
+export interface program_aggregate_bool_exp_bool_and {
+  arguments: program_select_column_program_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: program_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_aggregate_bool_exp_bool_or {
+  arguments: program_select_column_program_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: program_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_aggregate_bool_exp_count {
+  arguments?: program_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program"
  */
@@ -15725,6 +20298,17 @@ export interface program_aggregate_order_by {
   var_pop?: program_var_pop_order_by | null
   var_samp?: program_var_samp_order_by | null
   variance?: program_variance_order_by | null
+}
+
+export interface program_announcement_aggregate_bool_exp {
+  count?: program_announcement_aggregate_bool_exp_count | null
+}
+
+export interface program_announcement_aggregate_bool_exp_count {
+  arguments?: program_announcement_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_announcement_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15804,6 +20388,17 @@ export interface program_announcement_on_conflict {
   constraint: program_announcement_constraint
   update_columns: program_announcement_update_column[]
   where?: program_announcement_bool_exp | null
+}
+
+export interface program_approval_aggregate_bool_exp {
+  count?: program_approval_aggregate_bool_exp_count | null
+}
+
+export interface program_approval_aggregate_bool_exp_count {
+  arguments?: program_approval_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_approval_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -15963,6 +20558,7 @@ export interface program_bool_exp {
   created_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   editors?: program_editor_bool_exp | null
+  editors_aggregate?: program_editor_aggregate_bool_exp | null
   id?: uuid_comparison_exp | null
   in_advance?: Boolean_comparison_exp | null
   is_countdown_timer_visible?: Boolean_comparison_exp | null
@@ -15977,28 +20573,52 @@ export interface program_bool_exp {
   meta_tag?: jsonb_comparison_exp | null
   metadata?: jsonb_comparison_exp | null
   package_items?: package_item_bool_exp | null
+  package_items_aggregate?: package_item_aggregate_bool_exp | null
   position?: Int_comparison_exp | null
   program_announcements?: program_announcement_bool_exp | null
+  program_announcements_aggregate?: program_announcement_aggregate_bool_exp | null
   program_approval_status?: program_approval_status_bool_exp | null
   program_approvals?: program_approval_bool_exp | null
+  program_approvals_aggregate?: program_approval_aggregate_bool_exp | null
   program_categories?: program_category_bool_exp | null
+  program_categories_aggregate?: program_category_aggregate_bool_exp | null
   program_content_enrollments?: program_content_enrollment_bool_exp | null
+  program_content_enrollments_aggregate?: program_content_enrollment_aggregate_bool_exp | null
   program_content_progress_enrollments?: program_content_progress_enrollment_bool_exp | null
+  program_content_progress_enrollments_aggregate?: program_content_progress_enrollment_aggregate_bool_exp | null
   program_content_sections?: program_content_section_bool_exp | null
+  program_content_sections_aggregate?: program_content_section_aggregate_bool_exp | null
   program_duration?: program_duration_bool_exp | null
   program_enrollments?: program_enrollment_bool_exp | null
+  program_enrollments_aggregate?: program_enrollment_aggregate_bool_exp | null
   program_package_programs?: program_package_program_bool_exp | null
+  program_package_programs_aggregate?: program_package_program_aggregate_bool_exp | null
   program_plans?: program_plan_bool_exp | null
+  program_plans_aggregate?: program_plan_aggregate_bool_exp | null
   program_related_items?: program_related_item_bool_exp | null
+  program_related_items_aggregate?: program_related_item_aggregate_bool_exp | null
   program_review_score?: program_review_score_bool_exp | null
   program_roles?: program_role_bool_exp | null
+  program_roles_aggregate?: program_role_aggregate_bool_exp | null
   program_tags?: program_tag_bool_exp | null
+  program_tags_aggregate?: program_tag_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   support_locales?: jsonb_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface program_category_aggregate_bool_exp {
+  count?: program_category_aggregate_bool_exp_count | null
+}
+
+export interface program_category_aggregate_bool_exp_count {
+  arguments?: program_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_category_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -16138,6 +20758,33 @@ export interface program_category_variance_order_by {
   position?: order_by | null
 }
 
+export interface program_content_aggregate_bool_exp {
+  bool_and?: program_content_aggregate_bool_exp_bool_and | null
+  bool_or?: program_content_aggregate_bool_exp_bool_or | null
+  count?: program_content_aggregate_bool_exp_count | null
+}
+
+export interface program_content_aggregate_bool_exp_bool_and {
+  arguments: program_content_select_column_program_content_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: program_content_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_content_aggregate_bool_exp_bool_or {
+  arguments: program_content_select_column_program_content_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: program_content_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_content_aggregate_bool_exp_count {
+  arguments?: program_content_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_content"
  */
@@ -16161,6 +20808,17 @@ export interface program_content_aggregate_order_by {
 export interface program_content_arr_rel_insert_input {
   data: program_content_insert_input[]
   on_conflict?: program_content_on_conflict | null
+}
+
+export interface program_content_attachment_aggregate_bool_exp {
+  count?: program_content_attachment_aggregate_bool_exp_count | null
+}
+
+export interface program_content_attachment_aggregate_bool_exp_count {
+  arguments?: program_content_attachment_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_attachment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -16255,6 +20913,7 @@ export interface program_content_body_bool_exp {
   description?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
   program_contents?: program_content_bool_exp | null
+  program_contents_aggregate?: program_content_aggregate_bool_exp | null
   target?: uuid_comparison_exp | null
   type?: String_comparison_exp | null
 }
@@ -16315,7 +20974,9 @@ export interface program_content_bool_exp {
   display_mode?: String_comparison_exp | null
   duration?: numeric_comparison_exp | null
   enrollments?: program_content_enrollment_bool_exp | null
+  enrollments_aggregate?: program_content_enrollment_aggregate_bool_exp | null
   exercises?: exercise_bool_exp | null
+  exercises_aggregate?: exercise_aggregate_bool_exp | null
   id?: uuid_comparison_exp | null
   is_notify_update?: Boolean_comparison_exp | null
   list_price?: numeric_comparison_exp | null
@@ -16323,19 +20984,36 @@ export interface program_content_bool_exp {
   notified_at?: timestamptz_comparison_exp | null
   position?: Int_comparison_exp | null
   practices?: practice_bool_exp | null
+  practices_aggregate?: practice_aggregate_bool_exp | null
   program_content_attachments?: program_content_attachment_bool_exp | null
+  program_content_attachments_aggregate?: program_content_attachment_aggregate_bool_exp | null
   program_content_body?: program_content_body_bool_exp | null
   program_content_materials?: program_content_material_bool_exp | null
+  program_content_materials_aggregate?: program_content_material_aggregate_bool_exp | null
   program_content_plans?: program_content_plan_bool_exp | null
+  program_content_plans_aggregate?: program_content_plan_aggregate_bool_exp | null
   program_content_progress?: program_content_progress_bool_exp | null
+  program_content_progress_aggregate?: program_content_progress_aggregate_bool_exp | null
   program_content_section?: program_content_section_bool_exp | null
   program_content_type?: program_content_type_bool_exp | null
   program_content_videos?: program_content_video_bool_exp | null
+  program_content_videos_aggregate?: program_content_video_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   sale_free?: program_content_sale_free_bool_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
+}
+
+export interface program_content_enrollment_aggregate_bool_exp {
+  count?: program_content_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface program_content_enrollment_aggregate_bool_exp_count {
+  arguments?: program_content_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -16436,6 +21114,17 @@ export interface program_content_insert_input {
   sale_price?: any | null
   sold_at?: any | null
   title?: string | null
+}
+
+export interface program_content_material_aggregate_bool_exp {
+  count?: program_content_material_aggregate_bool_exp_count | null
+}
+
+export interface program_content_material_aggregate_bool_exp_count {
+  arguments?: program_content_material_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_material_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -16605,6 +21294,17 @@ export interface program_content_order_by {
   title?: order_by | null
 }
 
+export interface program_content_plan_aggregate_bool_exp {
+  count?: program_content_plan_aggregate_bool_exp_count | null
+}
+
+export interface program_content_plan_aggregate_bool_exp_count {
+  arguments?: program_content_plan_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_plan_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_content_plan"
  */
@@ -16674,6 +21374,17 @@ export interface program_content_plan_on_conflict {
   where?: program_content_plan_bool_exp | null
 }
 
+export interface program_content_progress_aggregate_bool_exp {
+  count?: program_content_progress_aggregate_bool_exp_count | null
+}
+
+export interface program_content_progress_aggregate_bool_exp_count {
+  arguments?: program_content_progress_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_progress_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_content_progress"
  */
@@ -16723,6 +21434,17 @@ export interface program_content_progress_bool_exp {
   program_content_id?: uuid_comparison_exp | null
   progress?: numeric_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface program_content_progress_enrollment_aggregate_bool_exp {
+  count?: program_content_progress_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface program_content_progress_enrollment_aggregate_bool_exp_count {
+  arguments?: program_content_progress_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_progress_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -17045,6 +21767,17 @@ export interface program_content_sale_free_order_by {
   program_plan_id?: order_by | null
 }
 
+export interface program_content_section_aggregate_bool_exp {
+  count?: program_content_section_aggregate_bool_exp_count | null
+}
+
+export interface program_content_section_aggregate_bool_exp_count {
+  arguments?: program_content_section_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_section_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_content_section"
  */
@@ -17089,6 +21822,7 @@ export interface program_content_section_bool_exp {
   position?: Int_comparison_exp | null
   program?: program_bool_exp | null
   program_contents?: program_content_bool_exp | null
+  program_contents_aggregate?: program_content_aggregate_bool_exp | null
   program_id?: uuid_comparison_exp | null
   title?: String_comparison_exp | null
 }
@@ -17314,6 +22048,17 @@ export interface program_content_variance_order_by {
   sale_price?: order_by | null
 }
 
+export interface program_content_video_aggregate_bool_exp {
+  count?: program_content_video_aggregate_bool_exp_count | null
+}
+
+export interface program_content_video_aggregate_bool_exp_count {
+  arguments?: program_content_video_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_video_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_content_video"
  */
@@ -17428,6 +22173,17 @@ export interface program_duration_order_by {
   program_id?: order_by | null
 }
 
+export interface program_editor_aggregate_bool_exp {
+  count?: program_editor_aggregate_bool_exp_count | null
+}
+
+export interface program_editor_aggregate_bool_exp_count {
+  arguments?: program_editor_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_editor_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_editor"
  */
@@ -17477,6 +22233,17 @@ export interface program_editor_max_order_by {
 export interface program_editor_min_order_by {
   member_id?: order_by | null
   program_id?: order_by | null
+}
+
+export interface program_enrollment_aggregate_bool_exp {
+  count?: program_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface program_enrollment_aggregate_bool_exp_count {
+  arguments?: program_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -17719,6 +22486,33 @@ export interface program_order_by {
   updated_at?: order_by | null
 }
 
+export interface program_package_aggregate_bool_exp {
+  bool_and?: program_package_aggregate_bool_exp_bool_and | null
+  bool_or?: program_package_aggregate_bool_exp_bool_or | null
+  count?: program_package_aggregate_bool_exp_count | null
+}
+
+export interface program_package_aggregate_bool_exp_bool_and {
+  arguments: program_package_select_column_program_package_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: program_package_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_package_aggregate_bool_exp_bool_or {
+  arguments: program_package_select_column_program_package_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: program_package_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_package_aggregate_bool_exp_count {
+  arguments?: program_package_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_package_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_package"
  */
@@ -17754,11 +22548,26 @@ export interface program_package_bool_exp {
   is_private?: Boolean_comparison_exp | null
   meta_tag?: jsonb_comparison_exp | null
   program_package_categories?: program_package_category_bool_exp | null
+  program_package_categories_aggregate?: program_package_category_aggregate_bool_exp | null
   program_package_plans?: program_package_plan_bool_exp | null
+  program_package_plans_aggregate?: program_package_plan_aggregate_bool_exp | null
   program_package_programs?: program_package_program_bool_exp | null
+  program_package_programs_aggregate?: program_package_program_aggregate_bool_exp | null
   program_package_tags?: program_package_tag_bool_exp | null
+  program_package_tags_aggregate?: program_package_tag_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
+}
+
+export interface program_package_category_aggregate_bool_exp {
+  count?: program_package_category_aggregate_bool_exp_count | null
+}
+
+export interface program_package_category_aggregate_bool_exp_count {
+  arguments?: program_package_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_package_category_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -17987,6 +22796,33 @@ export interface program_package_order_by {
   title?: order_by | null
 }
 
+export interface program_package_plan_aggregate_bool_exp {
+  bool_and?: program_package_plan_aggregate_bool_exp_bool_and | null
+  bool_or?: program_package_plan_aggregate_bool_exp_bool_or | null
+  count?: program_package_plan_aggregate_bool_exp_count | null
+}
+
+export interface program_package_plan_aggregate_bool_exp_bool_and {
+  arguments: program_package_plan_select_column_program_package_plan_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: program_package_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_package_plan_aggregate_bool_exp_bool_or {
+  arguments: program_package_plan_select_column_program_package_plan_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: program_package_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_package_plan_aggregate_bool_exp_count {
+  arguments?: program_package_plan_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_package_plan_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_package_plan"
  */
@@ -18044,10 +22880,22 @@ export interface program_package_plan_bool_exp {
   program_package?: program_package_bool_exp | null
   program_package_id?: uuid_comparison_exp | null
   program_package_plan_enrollments?: program_package_plan_enrollment_bool_exp | null
+  program_package_plan_enrollments_aggregate?: program_package_plan_enrollment_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
+}
+
+export interface program_package_plan_enrollment_aggregate_bool_exp {
+  count?: program_package_plan_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface program_package_plan_enrollment_aggregate_bool_exp_count {
+  arguments?: program_package_plan_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_package_plan_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -18238,6 +23086,17 @@ export interface program_package_plan_variance_order_by {
   sale_price?: order_by | null
 }
 
+export interface program_package_program_aggregate_bool_exp {
+  count?: program_package_program_aggregate_bool_exp_count | null
+}
+
+export interface program_package_program_aggregate_bool_exp_count {
+  arguments?: program_package_program_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_package_program_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_package_program"
  */
@@ -18284,6 +23143,7 @@ export interface program_package_program_bool_exp {
   program_package?: program_package_bool_exp | null
   program_package_id?: uuid_comparison_exp | null
   program_tempo_deliveries?: program_tempo_delivery_bool_exp | null
+  program_tempo_deliveries_aggregate?: program_tempo_delivery_aggregate_bool_exp | null
 }
 
 /**
@@ -18383,6 +23243,17 @@ export interface program_package_program_var_samp_order_by {
  */
 export interface program_package_program_variance_order_by {
   position?: order_by | null
+}
+
+export interface program_package_tag_aggregate_bool_exp {
+  count?: program_package_tag_aggregate_bool_exp_count | null
+}
+
+export interface program_package_tag_aggregate_bool_exp_count {
+  arguments?: program_package_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_package_tag_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -18522,6 +23393,33 @@ export interface program_package_tag_variance_order_by {
   position?: order_by | null
 }
 
+export interface program_plan_aggregate_bool_exp {
+  bool_and?: program_plan_aggregate_bool_exp_bool_and | null
+  bool_or?: program_plan_aggregate_bool_exp_bool_or | null
+  count?: program_plan_aggregate_bool_exp_count | null
+}
+
+export interface program_plan_aggregate_bool_exp_bool_and {
+  arguments: program_plan_select_column_program_plan_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: program_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_plan_aggregate_bool_exp_bool_or {
+  arguments: program_plan_select_column_program_plan_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: program_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface program_plan_aggregate_bool_exp_count {
+  arguments?: program_plan_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_plan_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_plan"
  */
@@ -18586,8 +23484,10 @@ export interface program_plan_bool_exp {
   period_type?: String_comparison_exp | null
   program?: program_bool_exp | null
   program_content_permissions?: program_content_plan_bool_exp | null
+  program_content_permissions_aggregate?: program_content_plan_aggregate_bool_exp | null
   program_id?: uuid_comparison_exp | null
   program_plan_enrollments?: program_plan_enrollment_bool_exp | null
+  program_plan_enrollments_aggregate?: program_plan_enrollment_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   remind_period_amount?: Int_comparison_exp | null
   remind_period_type?: String_comparison_exp | null
@@ -18596,6 +23496,17 @@ export interface program_plan_bool_exp {
   started_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
   type?: Int_comparison_exp | null
+}
+
+export interface program_plan_enrollment_aggregate_bool_exp {
+  count?: program_plan_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface program_plan_enrollment_aggregate_bool_exp_count {
+  arguments?: program_plan_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_plan_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -18899,6 +23810,17 @@ export interface program_plan_variance_order_by {
   type?: order_by | null
 }
 
+export interface program_related_item_aggregate_bool_exp {
+  count?: program_related_item_aggregate_bool_exp_count | null
+}
+
+export interface program_related_item_aggregate_bool_exp_count {
+  arguments?: program_related_item_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_related_item_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_related_item"
  */
@@ -19073,6 +23995,17 @@ export interface program_review_score_order_by {
   score?: order_by | null
 }
 
+export interface program_role_aggregate_bool_exp {
+  count?: program_role_aggregate_bool_exp_count | null
+}
+
+export interface program_role_aggregate_bool_exp_count {
+  arguments?: program_role_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_role_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "program_role"
  */
@@ -19184,6 +24117,17 @@ export interface program_sum_order_by {
   list_price?: order_by | null
   position?: order_by | null
   sale_price?: order_by | null
+}
+
+export interface program_tag_aggregate_bool_exp {
+  count?: program_tag_aggregate_bool_exp_count | null
+}
+
+export interface program_tag_aggregate_bool_exp_count {
+  arguments?: program_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_tag_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -19323,6 +24267,17 @@ export interface program_tag_variance_order_by {
   position?: order_by | null
 }
 
+export interface program_tempo_delivery_aggregate_bool_exp {
+  count?: program_tempo_delivery_aggregate_bool_exp_count | null
+}
+
+export interface program_tempo_delivery_aggregate_bool_exp_count {
+  arguments?: program_tempo_delivery_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_tempo_delivery_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "program_tempo_delivery"
  */
@@ -19420,12 +24375,18 @@ export interface project_bool_exp {
   position?: Int_comparison_exp | null
   preview_url?: String_comparison_exp | null
   project_categories?: project_category_bool_exp | null
+  project_categories_aggregate?: project_category_aggregate_bool_exp | null
   project_plans?: project_plan_bool_exp | null
+  project_plans_aggregate?: project_plan_aggregate_bool_exp | null
   project_reactions?: project_reaction_bool_exp | null
+  project_reactions_aggregate?: project_reaction_aggregate_bool_exp | null
   project_roles?: project_role_bool_exp | null
+  project_roles_aggregate?: project_role_aggregate_bool_exp | null
   project_sales?: project_sales_bool_exp | null
   project_sections?: project_section_bool_exp | null
+  project_sections_aggregate?: project_section_aggregate_bool_exp | null
   project_tags?: project_tag_bool_exp | null
+  project_tags_aggregate?: project_tag_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   target_amount?: numeric_comparison_exp | null
   target_unit?: String_comparison_exp | null
@@ -19434,6 +24395,17 @@ export interface project_bool_exp {
   type?: String_comparison_exp | null
   updates?: jsonb_comparison_exp | null
   views?: numeric_comparison_exp | null
+}
+
+export interface project_category_aggregate_bool_exp {
+  count?: project_category_aggregate_bool_exp_count | null
+}
+
+export interface project_category_aggregate_bool_exp_count {
+  arguments?: project_category_select_column[] | null
+  distinct?: boolean | null
+  filter?: project_category_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -19668,6 +24640,33 @@ export interface project_order_by {
   views?: order_by | null
 }
 
+export interface project_plan_aggregate_bool_exp {
+  bool_and?: project_plan_aggregate_bool_exp_bool_and | null
+  bool_or?: project_plan_aggregate_bool_exp_bool_or | null
+  count?: project_plan_aggregate_bool_exp_count | null
+}
+
+export interface project_plan_aggregate_bool_exp_bool_and {
+  arguments: project_plan_select_column_project_plan_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: project_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface project_plan_aggregate_bool_exp_bool_or {
+  arguments: project_plan_select_column_project_plan_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: project_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface project_plan_aggregate_bool_exp_count {
+  arguments?: project_plan_select_column[] | null
+  distinct?: boolean | null
+  filter?: project_plan_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "project_plan"
  */
@@ -19731,12 +24730,25 @@ export interface project_plan_bool_exp {
   project?: project_bool_exp | null
   project_id?: uuid_comparison_exp | null
   project_plan_enrollments?: project_plan_enrollment_bool_exp | null
+  project_plan_enrollments_aggregate?: project_plan_enrollment_aggregate_bool_exp | null
   project_plan_inventory_status?: project_plan_inventory_status_bool_exp | null
   project_plan_products?: project_plan_product_bool_exp | null
+  project_plan_products_aggregate?: project_plan_product_aggregate_bool_exp | null
   published_at?: timestamptz_comparison_exp | null
   sale_price?: numeric_comparison_exp | null
   sold_at?: timestamptz_comparison_exp | null
   title?: String_comparison_exp | null
+}
+
+export interface project_plan_enrollment_aggregate_bool_exp {
+  count?: project_plan_enrollment_aggregate_bool_exp_count | null
+}
+
+export interface project_plan_enrollment_aggregate_bool_exp_count {
+  arguments?: project_plan_enrollment_select_column[] | null
+  distinct?: boolean | null
+  filter?: project_plan_enrollment_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -19900,6 +24912,17 @@ export interface project_plan_on_conflict {
   where?: project_plan_bool_exp | null
 }
 
+export interface project_plan_product_aggregate_bool_exp {
+  count?: project_plan_product_aggregate_bool_exp_count | null
+}
+
+export interface project_plan_product_aggregate_bool_exp_count {
+  arguments?: project_plan_product_select_column[] | null
+  distinct?: boolean | null
+  filter?: project_plan_product_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "project_plan_product"
  */
@@ -20021,6 +25044,17 @@ export interface project_plan_variance_order_by {
   sale_price?: order_by | null
 }
 
+export interface project_reaction_aggregate_bool_exp {
+  count?: project_reaction_aggregate_bool_exp_count | null
+}
+
+export interface project_reaction_aggregate_bool_exp_count {
+  arguments?: project_reaction_select_column[] | null
+  distinct?: boolean | null
+  filter?: project_reaction_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "project_reaction"
  */
@@ -20094,6 +25128,33 @@ export interface project_reaction_on_conflict {
   where?: project_reaction_bool_exp | null
 }
 
+export interface project_role_aggregate_bool_exp {
+  bool_and?: project_role_aggregate_bool_exp_bool_and | null
+  bool_or?: project_role_aggregate_bool_exp_bool_or | null
+  count?: project_role_aggregate_bool_exp_count | null
+}
+
+export interface project_role_aggregate_bool_exp_bool_and {
+  arguments: project_role_select_column_project_role_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: project_role_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface project_role_aggregate_bool_exp_bool_or {
+  arguments: project_role_select_column_project_role_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: project_role_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface project_role_aggregate_bool_exp_count {
+  arguments?: project_role_select_column[] | null
+  distinct?: boolean | null
+  filter?: project_role_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "project_role"
  */
@@ -20118,6 +25179,8 @@ export interface project_role_bool_exp {
   _and?: project_role_bool_exp[] | null
   _not?: project_role_bool_exp | null
   _or?: project_role_bool_exp[] | null
+  agreed_at?: timestamptz_comparison_exp | null
+  has_sended_marked_notification?: Boolean_comparison_exp | null
   id?: uuid_comparison_exp | null
   identity?: identity_bool_exp | null
   identity_id?: uuid_comparison_exp | null
@@ -20125,12 +25188,16 @@ export interface project_role_bool_exp {
   member_id?: String_comparison_exp | null
   project?: project_bool_exp | null
   project_id?: uuid_comparison_exp | null
+  rejected_at?: timestamptz_comparison_exp | null
+  rejected_reason?: String_comparison_exp | null
 }
 
 /**
  * input type for inserting data into table "project_role"
  */
 export interface project_role_insert_input {
+  agreed_at?: any | null
+  has_sended_marked_notification?: boolean | null
   id?: any | null
   identity?: identity_obj_rel_insert_input | null
   identity_id?: any | null
@@ -20138,26 +25205,34 @@ export interface project_role_insert_input {
   member_id?: string | null
   project?: project_obj_rel_insert_input | null
   project_id?: any | null
+  rejected_at?: any | null
+  rejected_reason?: string | null
 }
 
 /**
  * order by max() on columns of table "project_role"
  */
 export interface project_role_max_order_by {
+  agreed_at?: order_by | null
   id?: order_by | null
   identity_id?: order_by | null
   member_id?: order_by | null
   project_id?: order_by | null
+  rejected_at?: order_by | null
+  rejected_reason?: order_by | null
 }
 
 /**
  * order by min() on columns of table "project_role"
  */
 export interface project_role_min_order_by {
+  agreed_at?: order_by | null
   id?: order_by | null
   identity_id?: order_by | null
   member_id?: order_by | null
   project_id?: order_by | null
+  rejected_at?: order_by | null
+  rejected_reason?: order_by | null
 }
 
 /**
@@ -20204,6 +25279,17 @@ export interface project_sales_order_by {
   project?: project_order_by | null
   project_id?: order_by | null
   total_sales?: order_by | null
+}
+
+export interface project_section_aggregate_bool_exp {
+  count?: project_section_aggregate_bool_exp_count | null
+}
+
+export interface project_section_aggregate_bool_exp_count {
+  arguments?: project_section_select_column[] | null
+  distinct?: boolean | null
+  filter?: project_section_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -20343,6 +25429,17 @@ export interface project_section_variance_order_by {
   position?: order_by | null
 }
 
+export interface project_tag_aggregate_bool_exp {
+  count?: project_tag_aggregate_bool_exp_count | null
+}
+
+export interface project_tag_aggregate_bool_exp_count {
+  arguments?: project_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: project_tag_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "project_tag"
  */
@@ -20480,6 +25577,17 @@ export interface project_tag_variance_order_by {
   position?: order_by | null
 }
 
+export interface property_aggregate_bool_exp {
+  count?: property_aggregate_bool_exp_count | null
+}
+
+export interface property_aggregate_bool_exp_count {
+  arguments?: property_select_column[] | null
+  distinct?: boolean | null
+  filter?: property_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "property"
  */
@@ -20524,6 +25632,7 @@ export interface property_bool_exp {
   created_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
   member_properties?: member_property_bool_exp | null
+  member_properties_aggregate?: member_property_aggregate_bool_exp | null
   name?: String_comparison_exp | null
   placeholder?: String_comparison_exp | null
   position?: Int_comparison_exp | null
@@ -20641,6 +25750,17 @@ export interface property_variance_order_by {
   position?: order_by | null
 }
 
+export interface question_aggregate_bool_exp {
+  count?: question_aggregate_bool_exp_count | null
+}
+
+export interface question_aggregate_bool_exp_count {
+  arguments?: question_select_column[] | null
+  distinct?: boolean | null
+  filter?: question_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "question"
  */
@@ -20666,9 +25786,21 @@ export interface question_bool_exp {
   question_group?: question_group_bool_exp | null
   question_group_id?: uuid_comparison_exp | null
   question_options?: question_option_bool_exp | null
+  question_options_aggregate?: question_option_aggregate_bool_exp | null
   subject?: String_comparison_exp | null
   type?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
+}
+
+export interface question_group_aggregate_bool_exp {
+  count?: question_group_aggregate_bool_exp_count | null
+}
+
+export interface question_group_aggregate_bool_exp_count {
+  arguments?: question_group_select_column[] | null
+  distinct?: boolean | null
+  filter?: question_group_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -20694,6 +25826,7 @@ export interface question_group_bool_exp {
   question_library?: question_library_bool_exp | null
   question_library_id?: uuid_comparison_exp | null
   questions?: question_bool_exp | null
+  questions_aggregate?: question_aggregate_bool_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
@@ -20765,6 +25898,7 @@ export interface question_library_bool_exp {
   modifier?: member_bool_exp | null
   modifier_id?: String_comparison_exp | null
   question_groups?: question_group_bool_exp | null
+  question_groups_aggregate?: question_group_aggregate_bool_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
@@ -20819,6 +25953,33 @@ export interface question_on_conflict {
   where?: question_bool_exp | null
 }
 
+export interface question_option_aggregate_bool_exp {
+  bool_and?: question_option_aggregate_bool_exp_bool_and | null
+  bool_or?: question_option_aggregate_bool_exp_bool_or | null
+  count?: question_option_aggregate_bool_exp_count | null
+}
+
+export interface question_option_aggregate_bool_exp_bool_and {
+  arguments: question_option_select_column_question_option_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: question_option_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface question_option_aggregate_bool_exp_bool_or {
+  arguments: question_option_select_column_question_option_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: question_option_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface question_option_aggregate_bool_exp_count {
+  arguments?: question_option_select_column[] | null
+  distinct?: boolean | null
+  filter?: question_option_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "question_option"
  */
@@ -20869,6 +26030,17 @@ export interface question_option_on_conflict {
   where?: question_option_bool_exp | null
 }
 
+export interface review_aggregate_bool_exp {
+  count?: review_aggregate_bool_exp_count | null
+}
+
+export interface review_aggregate_bool_exp_count {
+  arguments?: review_select_column[] | null
+  distinct?: boolean | null
+  filter?: review_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "review"
  */
@@ -20893,7 +26065,9 @@ export interface review_bool_exp {
   path?: String_comparison_exp | null
   private_content?: String_comparison_exp | null
   review_reactions?: review_reaction_bool_exp | null
+  review_reactions_aggregate?: review_reaction_aggregate_bool_exp | null
   review_replies?: review_reply_bool_exp | null
+  review_replies_aggregate?: review_reply_aggregate_bool_exp | null
   score?: numeric_comparison_exp | null
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
@@ -20933,6 +26107,17 @@ export interface review_on_conflict {
   constraint: review_constraint
   update_columns: review_update_column[]
   where?: review_bool_exp | null
+}
+
+export interface review_reaction_aggregate_bool_exp {
+  count?: review_reaction_aggregate_bool_exp_count | null
+}
+
+export interface review_reaction_aggregate_bool_exp_count {
+  arguments?: review_reaction_select_column[] | null
+  distinct?: boolean | null
+  filter?: review_reaction_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -20977,6 +26162,17 @@ export interface review_reaction_on_conflict {
   constraint: review_reaction_constraint
   update_columns: review_reaction_update_column[]
   where?: review_reaction_bool_exp | null
+}
+
+export interface review_reply_aggregate_bool_exp {
+  count?: review_reply_aggregate_bool_exp_count | null
+}
+
+export interface review_reply_aggregate_bool_exp_count {
+  arguments?: review_reply_select_column[] | null
+  distinct?: boolean | null
+  filter?: review_reply_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -21038,6 +26234,7 @@ export interface role_bool_exp {
   id?: String_comparison_exp | null
   name?: String_comparison_exp | null
   role_permissions?: role_permission_bool_exp | null
+  role_permissions_aggregate?: role_permission_aggregate_bool_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
 
@@ -21067,6 +26264,17 @@ export interface role_on_conflict {
   constraint: role_constraint
   update_columns: role_update_column[]
   where?: role_bool_exp | null
+}
+
+export interface role_permission_aggregate_bool_exp {
+  count?: role_permission_aggregate_bool_exp_count | null
+}
+
+export interface role_permission_aggregate_bool_exp_count {
+  arguments?: role_permission_select_column[] | null
+  distinct?: boolean | null
+  filter?: role_permission_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -21115,6 +26323,17 @@ export interface role_permission_on_conflict {
   where?: role_permission_bool_exp | null
 }
 
+export interface search_tag_aggregate_bool_exp {
+  count?: search_tag_aggregate_bool_exp_count | null
+}
+
+export interface search_tag_aggregate_bool_exp_count {
+  arguments?: search_tag_select_column[] | null
+  distinct?: boolean | null
+  filter?: search_tag_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "search_tag"
  */
@@ -21161,6 +26380,33 @@ export interface search_tag_on_conflict {
   where?: search_tag_bool_exp | null
 }
 
+export interface setting_aggregate_bool_exp {
+  bool_and?: setting_aggregate_bool_exp_bool_and | null
+  bool_or?: setting_aggregate_bool_exp_bool_or | null
+  count?: setting_aggregate_bool_exp_count | null
+}
+
+export interface setting_aggregate_bool_exp_bool_and {
+  arguments: setting_select_column_setting_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: setting_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface setting_aggregate_bool_exp_bool_or {
+  arguments: setting_select_column_setting_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: setting_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface setting_aggregate_bool_exp_count {
+  arguments?: setting_select_column[] | null
+  distinct?: boolean | null
+  filter?: setting_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "setting"
  */
@@ -21177,7 +26423,9 @@ export interface setting_bool_exp {
   _not?: setting_bool_exp | null
   _or?: setting_bool_exp[] | null
   app_secrets?: app_secret_bool_exp | null
+  app_secrets_aggregate?: app_secret_aggregate_bool_exp | null
   app_settings?: app_setting_bool_exp | null
+  app_settings_aggregate?: app_setting_aggregate_bool_exp | null
   is_protected?: Boolean_comparison_exp | null
   is_required?: Boolean_comparison_exp | null
   is_secret?: Boolean_comparison_exp | null
@@ -21219,6 +26467,17 @@ export interface setting_on_conflict {
   constraint: setting_constraint
   update_columns: setting_update_column[]
   where?: setting_bool_exp | null
+}
+
+export interface sharing_code_aggregate_bool_exp {
+  count?: sharing_code_aggregate_bool_exp_count | null
+}
+
+export interface sharing_code_aggregate_bool_exp_count {
+  arguments?: sharing_code_select_column[] | null
+  distinct?: boolean | null
+  filter?: sharing_code_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -21304,6 +26563,17 @@ export interface sharing_code_on_conflict {
   where?: sharing_code_bool_exp | null
 }
 
+export interface social_card_aggregate_bool_exp {
+  count?: social_card_aggregate_bool_exp_count | null
+}
+
+export interface social_card_aggregate_bool_exp_count {
+  arguments?: social_card_select_column[] | null
+  distinct?: boolean | null
+  filter?: social_card_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "social_card"
  */
@@ -21327,6 +26597,7 @@ export interface social_card_bool_exp {
   membership_id?: String_comparison_exp | null
   name?: String_comparison_exp | null
   social_card_subscribers?: social_card_subscriber_bool_exp | null
+  social_card_subscribers_aggregate?: social_card_subscriber_aggregate_bool_exp | null
 }
 
 /**
@@ -21358,6 +26629,17 @@ export interface social_card_on_conflict {
   constraint: social_card_constraint
   update_columns: social_card_update_column[]
   where?: social_card_bool_exp | null
+}
+
+export interface social_card_subscriber_aggregate_bool_exp {
+  count?: social_card_subscriber_aggregate_bool_exp_count | null
+}
+
+export interface social_card_subscriber_aggregate_bool_exp_count {
+  arguments?: social_card_subscriber_select_column[] | null
+  distinct?: boolean | null
+  filter?: social_card_subscriber_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -21418,17 +26700,26 @@ export interface tag_bool_exp {
   _not?: tag_bool_exp | null
   _or?: tag_bool_exp[] | null
   activity_tags?: activity_tag_bool_exp | null
+  activity_tags_aggregate?: activity_tag_aggregate_bool_exp | null
   created_at?: timestamptz_comparison_exp | null
   filterable?: Boolean_comparison_exp | null
   member_specialities?: member_speciality_bool_exp | null
+  member_specialities_aggregate?: member_speciality_aggregate_bool_exp | null
   member_tags?: member_tag_bool_exp | null
+  member_tags_aggregate?: member_tag_aggregate_bool_exp | null
   merchandise_tags?: merchandise_tag_bool_exp | null
+  merchandise_tags_aggregate?: merchandise_tag_aggregate_bool_exp | null
   name?: String_comparison_exp | null
   podcast_program_tags?: podcast_program_tag_bool_exp | null
+  podcast_program_tags_aggregate?: podcast_program_tag_aggregate_bool_exp | null
   post_tags?: post_tag_bool_exp | null
+  post_tags_aggregate?: post_tag_aggregate_bool_exp | null
   program_tags?: program_tag_bool_exp | null
+  program_tags_aggregate?: program_tag_aggregate_bool_exp | null
   project_tags?: project_tag_bool_exp | null
+  project_tags_aggregate?: project_tag_aggregate_bool_exp | null
   search_tags?: search_tag_bool_exp | null
+  search_tags_aggregate?: search_tag_aggregate_bool_exp | null
   type?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
 }
@@ -21515,6 +26806,17 @@ export interface uuid_comparison_exp {
   _nin?: any[] | null
 }
 
+export interface voucher_aggregate_bool_exp {
+  count?: voucher_aggregate_bool_exp_count | null
+}
+
+export interface voucher_aggregate_bool_exp_count {
+  arguments?: voucher_select_column[] | null
+  distinct?: boolean | null
+  filter?: voucher_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "voucher"
  */
@@ -21540,6 +26842,17 @@ export interface voucher_bool_exp {
   voucher_code_id?: uuid_comparison_exp | null
 }
 
+export interface voucher_code_aggregate_bool_exp {
+  count?: voucher_code_aggregate_bool_exp_count | null
+}
+
+export interface voucher_code_aggregate_bool_exp_count {
+  arguments?: voucher_code_select_column[] | null
+  distinct?: boolean | null
+  filter?: voucher_code_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "voucher_code"
  */
@@ -21562,6 +26875,7 @@ export interface voucher_code_bool_exp {
   voucher_plan?: voucher_plan_bool_exp | null
   voucher_plan_id?: uuid_comparison_exp | null
   vouchers?: voucher_bool_exp | null
+  vouchers_aggregate?: voucher_aggregate_bool_exp | null
 }
 
 /**
@@ -21625,6 +26939,33 @@ export interface voucher_on_conflict {
   where?: voucher_bool_exp | null
 }
 
+export interface voucher_plan_aggregate_bool_exp {
+  bool_and?: voucher_plan_aggregate_bool_exp_bool_and | null
+  bool_or?: voucher_plan_aggregate_bool_exp_bool_or | null
+  count?: voucher_plan_aggregate_bool_exp_count | null
+}
+
+export interface voucher_plan_aggregate_bool_exp_bool_and {
+  arguments: voucher_plan_select_column_voucher_plan_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: voucher_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface voucher_plan_aggregate_bool_exp_bool_or {
+  arguments: voucher_plan_select_column_voucher_plan_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: voucher_plan_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface voucher_plan_aggregate_bool_exp_count {
+  arguments?: voucher_plan_select_column[] | null
+  distinct?: boolean | null
+  filter?: voucher_plan_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * order by aggregate values of table "voucher_plan"
  */
@@ -21681,7 +27022,9 @@ export interface voucher_plan_bool_exp {
   title?: String_comparison_exp | null
   updated_at?: timestamptz_comparison_exp | null
   voucher_codes?: voucher_code_bool_exp | null
+  voucher_codes_aggregate?: voucher_code_aggregate_bool_exp | null
   voucher_plan_products?: voucher_plan_product_bool_exp | null
+  voucher_plan_products_aggregate?: voucher_plan_product_aggregate_bool_exp | null
 }
 
 /**
@@ -21757,6 +27100,17 @@ export interface voucher_plan_on_conflict {
   constraint: voucher_plan_constraint
   update_columns: voucher_plan_update_column[]
   where?: voucher_plan_bool_exp | null
+}
+
+export interface voucher_plan_product_aggregate_bool_exp {
+  count?: voucher_plan_product_aggregate_bool_exp_count | null
+}
+
+export interface voucher_plan_product_aggregate_bool_exp_count {
+  arguments?: voucher_plan_product_select_column[] | null
+  distinct?: boolean | null
+  filter?: voucher_plan_product_bool_exp | null
+  predicate: Int_comparison_exp
 }
 
 /**
@@ -21894,6 +27248,17 @@ export interface voucher_status_obj_rel_insert_input {
   data: voucher_status_insert_input
 }
 
+export interface xuemi_assign_rule_aggregate_bool_exp {
+  count?: xuemi_assign_rule_aggregate_bool_exp_count | null
+}
+
+export interface xuemi_assign_rule_aggregate_bool_exp_count {
+  arguments?: xuemi_assign_rule_select_column[] | null
+  distinct?: boolean | null
+  filter?: xuemi_assign_rule_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "xuemi.assign_rule"
  */
@@ -21912,6 +27277,7 @@ export interface xuemi_assign_rule_bool_exp {
   id?: uuid_comparison_exp | null
   limit?: Int_comparison_exp | null
   manager_status?: xuemi_manager_status_bool_exp | null
+  manager_status_aggregate?: xuemi_manager_status_aggregate_bool_exp | null
   member?: member_bool_exp | null
   member_id?: String_comparison_exp | null
   member_selector?: xuemi_member_selector_bool_exp | null
@@ -21923,6 +27289,7 @@ export interface xuemi_assign_rule_bool_exp {
   target_member?: member_bool_exp | null
   target_member_id?: String_comparison_exp | null
   target_member_status?: xuemi_manager_status_bool_exp | null
+  target_member_status_aggregate?: xuemi_manager_status_aggregate_bool_exp | null
   total_limit?: Int_comparison_exp | null
   trigger?: xuemi_trigger_bool_exp | null
   trigger_id?: uuid_comparison_exp | null
@@ -21990,6 +27357,17 @@ export interface xuemi_assign_rule_status_obj_rel_insert_input {
   data: xuemi_assign_rule_status_insert_input
 }
 
+export interface xuemi_manager_status_aggregate_bool_exp {
+  count?: xuemi_manager_status_aggregate_bool_exp_count | null
+}
+
+export interface xuemi_manager_status_aggregate_bool_exp_count {
+  arguments?: xuemi_manager_status_select_column[] | null
+  distinct?: boolean | null
+  filter?: xuemi_manager_status_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
 /**
  * input type for inserting array relation for remote table "xuemi.manager_status"
  */
@@ -22030,6 +27408,7 @@ export interface xuemi_member_selector_bool_exp {
   _not?: xuemi_member_selector_bool_exp | null
   _or?: xuemi_member_selector_bool_exp[] | null
   assign_rules?: xuemi_assign_rule_bool_exp | null
+  assign_rules_aggregate?: xuemi_assign_rule_aggregate_bool_exp | null
   condition?: jsonb_comparison_exp | null
   description?: String_comparison_exp | null
   id?: uuid_comparison_exp | null
@@ -22072,6 +27451,7 @@ export interface xuemi_trigger_bool_exp {
   _not?: xuemi_trigger_bool_exp | null
   _or?: xuemi_trigger_bool_exp[] | null
   assign_rules?: xuemi_assign_rule_bool_exp | null
+  assign_rules_aggregate?: xuemi_assign_rule_aggregate_bool_exp | null
   condition?: String_comparison_exp | null
   description?: String_comparison_exp | null
   duration?: numeric_comparison_exp | null

@@ -33,6 +33,7 @@ type ProjectData = DeepPick<
   | 'enrollmentCount'
   | 'categories'
   | 'creatorId'
+  | 'authorId'
 >
 
 type ProjectContextCollection = ContextCollection<ProjectData>
@@ -130,6 +131,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
                     totalSales={project.totalSales}
                     enrollmentCount={project.enrollmentCount}
                     creatorId={project.creatorId}
+                    authorId={project.authorId}
                   />
                 )}
               />
@@ -260,6 +262,7 @@ const composeCollectionData = (data: hasura.GET_PROJECT_COLLECTION): ProjectData
     enrollmentCount: sum(p.project_plans.map(pp => pp.project_plan_enrollments_aggregate.aggregate?.count || 0)),
     categories: p.project_categories.map(pc => pc.category),
     creatorId: p.creator_id,
+    authorId: p.author[0]?.member?.id,
   }))
 
 const projectFields = gql`
@@ -277,6 +280,12 @@ const projectFields = gql`
     is_participants_visible
     is_countdown_timer_visible
     creator_id
+    author: project_roles(where: { identity: { name: { _eq: "author" } } }) {
+      id
+      member {
+        id
+      }
+    }
     project_sales {
       total_sales
     }
