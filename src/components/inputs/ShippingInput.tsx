@@ -1,4 +1,5 @@
 import { Button, Checkbox, Form, Input, Radio, Select } from 'antd'
+import TextArea from 'antd/lib/input/TextArea'
 import { camelCase } from 'lodash'
 import React, { useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
@@ -57,8 +58,7 @@ const ShippingInput: React.VFC<{
   isValidating?: boolean
   shippingMethods?: ShippingOptionProps[]
   isGiftPlanDeliverable?: boolean
-  isShippingMethodValidate?: boolean
-}> = ({ value, onChange, isValidating, shippingMethods, isGiftPlanDeliverable, isShippingMethodValidate }) => {
+}> = ({ value, onChange, isValidating, shippingMethods, isGiftPlanDeliverable }) => {
   const { formatMessage } = useIntl()
   const { currencyId: appCurrencyId, settings } = useApp()
   const { handleCityChange, handleDistrictChange } = useTwZipCode()
@@ -67,7 +67,7 @@ const ShippingInput: React.VFC<{
   const nameRef = useRef<Input | null>(null)
   const phoneRef = useRef<Input | null>(null)
   const addressRef = useRef<Input | null>(null)
-  const specificationRef = useRef(null)
+  const specificationRef = useRef<TextArea | null>(null)
 
   const cachedCvsOptions = localStorage.getItem('kolable.cart.shippingOptions')
   const [currentCvsOptions, setCurrentCvsOptions] = useState<{ [key: string]: cvsOptionsProps }>(
@@ -194,13 +194,14 @@ const ShippingInput: React.VFC<{
       )}
 
       {shippingMethods && !isOutsideTaiwanIsland && (
-        <Form.Item
-          required
-          label={formatMessage(inputMessages.ShippingInput.shippingMethod)}
-          rules={[{ required: true, message: '請選擇運送方式' }]}
-        >
+        <Form.Item required label={formatMessage(inputMessages.ShippingInput.shippingMethod)}>
           <Radio.Group
-            value={value?.shippingMethod || 'home-delivery'}
+            value={
+              value?.shippingMethod ||
+              shippingMethods.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === 'home-delivery')
+                ? 'home-delivery'
+                : shippingMethods.filter(shippingMethod => shippingMethod.enabled)?.[0]
+            }
             onChange={event => handleChange('shippingMethod', event.target.value)}
           >
             {shippingMethods
@@ -304,7 +305,7 @@ const ShippingInput: React.VFC<{
               >
                 {cities.map(city => {
                   return (
-                    <Select.Option key={city} value={city} disabled={['澎湖縣', '金門縣', '連江縣'].includes(city)}>
+                    <Select.Option key={city} disabled={['澎湖縣', '金門縣', '連江縣'].includes(city)}>
                       {city}
                     </Select.Option>
                   )
@@ -325,7 +326,6 @@ const ShippingInput: React.VFC<{
                   return (
                     <Select.Option
                       key={district}
-                      value={district}
                       disabled={['釣魚台列嶼', '綠島鄉', '蘭嶼鄉', '東沙群島', '南沙群島'].includes(district)}
                     >
                       {district}
