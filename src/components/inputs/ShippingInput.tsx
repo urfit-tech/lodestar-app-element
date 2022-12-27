@@ -200,7 +200,8 @@ const ShippingInput: React.VFC<{
         <Form.Item
           required
           label={formatMessage(inputMessages.ShippingInput.shippingMethod)}
-          validateStatus={isShippingMethodValidate ? undefined : 'error'}
+          // validateStatus={isShippingMethodValidate ? undefined : 'error'}
+          validateStatus="error"
         >
           <Radio.Group
             ref={shippingMethodRef}
