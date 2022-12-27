@@ -80,6 +80,7 @@ export type ProjectElementProps = ElementProps<{
   totalSales: number
   enrollmentCount: number
   creatorId: string | null
+  authorId?: string | null
 }>
 
 export type ActivityElementProps = ElementProps<{

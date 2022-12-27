@@ -71,6 +71,7 @@ export type Project = {
   enrollmentCount: number
   categories: Category[]
   creatorId: string | null
+  authorId?: string | null
 }
 
 export type Program = {
