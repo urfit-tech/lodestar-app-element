@@ -379,7 +379,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     }
   }, [check, productQuantity, remainingCoins, setIsModalDisable, setIsOrderCheckLoading])
 
-  if (isAuthenticating) {
+  if (isAuthenticating && !authToken) {
     return renderTrigger?.({ isLoading: true })
   }
 
@@ -388,7 +388,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   }
 
   if (productTarget === null || payment === undefined) {
-    return renderTrigger?.({ isLoading: isAuthenticating, disable: true })
+    return renderTrigger?.({ isLoading: isAuthenticating && !authToken, disable: true })
   }
 
   const handleSubmit = async () => {
@@ -536,7 +536,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       {renderTrigger({
         onOpen,
         onProductChange: productId => setProductId(productId),
-        isLoading: isAuthenticating,
+        isLoading: isAuthenticating && !authToken,
         isSubscription: productTarget.isSubscription,
         disable:
           (productTarget.endedAt ? new Date(productTarget.endedAt) < new Date(now()) : false) ||
