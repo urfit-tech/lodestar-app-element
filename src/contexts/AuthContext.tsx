@@ -36,7 +36,7 @@ type AuthProps = {
 }
 
 const defaultAuthContext: AuthProps = {
-  isAuthenticating: true,
+  isAuthenticating: (window as any).AUTH_TOKEN ? false : true,
   isAuthenticated: false,
   currentUserRole: 'anonymous',
   currentMemberId: null,
