@@ -50,7 +50,12 @@ type ProgramContextCollection = ContextCollection<ProgramData>
 
 export type ProgramCollectionProps = {
   name?: string
-  source?: ProductCustomSource | ProductPublishedAtSource | ProductCurrentPriceSource | ProductRecentWatchedSource
+  source?:
+    | ProductCustomSource
+    | ProductPublishedAtSource
+    | ProductCurrentPriceSource
+    | ProductRecentWatchedSource
+    | ProductPublishedAtSource<'popular'>
   variant?: 'primary' | 'secondary'
   layout?: CollectionLayout
   withSelector?: boolean
@@ -91,6 +96,9 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   switch (source.from) {
     case 'publishedAt':
       ContextCollection = collectPublishedAtCollection(source)
+      break
+    case 'popular':
+      ContextCollection = collectPopularCollection(source)
       break
     case 'currentPrice':
       ContextCollection = collectCurrentPriceCollection(source)
@@ -307,6 +315,49 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
   return ProgramElementCollection
 }
 
+const collectPopularCollection = (options: ProductPublishedAtSource<'popular'>) => {
+  const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
+    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+      getProgramCollectionQuery(programFields),
+      {
+        variables: {
+          limit: options.limit,
+          orderByClause: [
+            { views: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
+            { published_at: 'desc_nulls_last' as hasura.order_by },
+          ],
+          whereClause: {
+            is_private: { _eq: false },
+            published_at: { _lt: 'now()' },
+            program_categories: options.defaultCategoryIds?.length
+              ? {
+                  category_id: {
+                    _in: options.defaultCategoryIds,
+                  },
+                }
+              : undefined,
+            program_tags: options.defaultTagNames?.length
+              ? {
+                  tag_name: {
+                    _in: options.defaultTagNames,
+                  },
+                }
+              : undefined,
+          },
+        },
+      },
+    )
+    const composedData = data ? composeCollectionData(data) : []
+
+    return children({
+      loading,
+      errors: error && [new Error(error.message)],
+      data: composedData,
+    })
+  }
+  return ProgramElementCollection
+}
+
 const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
@@ -466,6 +517,7 @@ const programFields = gql`
     sale_price
     sold_at
     is_enrolled_count_visible
+    views
     program_categories(order_by: { position: asc }) {
       category {
         id
