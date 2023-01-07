@@ -202,6 +202,10 @@ export const craftPageMessages = {
     newest: { id: 'craft.label.newest', defaultMessage: '最新上架' },
     custom: { id: 'craft.label.newest', defaultMessage: '自訂項目' },
     ruleOfSort: { id: 'craft.label.ruleOfSort', defaultMessage: '排序規則' },
+    recentWatched: { id: 'program.ProgramCollectionSelector.recentWatched', defaultMessage: '依最後觀看時間' },
+    publishedAt: { id: 'program.ProgramCollectionSelector.publishedAt', defaultMessage: '依上架日期' },
+    currentPrice: { id: 'program.ProgramCollectionSelector.currentPrice', defaultMessage: '依產品價錢' },
+    popular: { id: 'craft.label.popular', defaultMessage: '依熱門程度' },
   }),
   text: defineMessages({
     chooseCategories: {

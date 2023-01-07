@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { pipe, prop, sortBy, sum, uniq, uniqBy } from 'ramda'
+import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
@@ -24,6 +25,7 @@ import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
 import Collection, { CollectionLayout, ContextCollection } from '../collections/Collection'
 import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
+import OrderSelector from '../common/OrderSelector'
 import CollectionCarousel from './CollectionCarousel'
 import collectionsMessages from './translation'
 
@@ -59,6 +61,7 @@ export type ProgramCollectionProps = {
   variant?: 'primary' | 'secondary'
   layout?: CollectionLayout
   withSelector?: boolean
+  withOrderSelector?: boolean
   collectionVariant?: 'grid' | 'carousel'
   carousel?: BaseCarouselProps
 }
@@ -68,6 +71,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   const { currentMemberId } = useAuth()
   const { formatMessage } = useIntl()
   const { loading, errors, children, source = { from: 'publishedAt' } } = props
+  const [sourceFrom, setSourceFrom] = useState(source.from)
   const { enrolledProgramIds, loadingProgramIds } = useEnrolledProgramIds(currentMemberId, {
     skip: source.from !== 'recentWatched',
   })
@@ -93,28 +97,56 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
       ? CollectionCarousel(collectionName, 'program', EntityElement)
       : Collection(collectionName, 'program', EntityElement, emptyText)
   let ContextCollection: ProgramContextCollection
-  switch (source.from) {
+  switch (sourceFrom) {
     case 'publishedAt':
-      ContextCollection = collectPublishedAtCollection(source)
+      if (source.from === 'custom') {
+        ContextCollection = collectPublishedAtCollection({ from: sourceFrom, limit: 4 })
+      } else {
+        ContextCollection = collectPublishedAtCollection({ ...source, from: sourceFrom })
+      }
       break
     case 'popular':
-      ContextCollection = collectPopularCollection(source)
+      if (source.from === 'custom') {
+        ContextCollection = collectPopularCollection({ from: sourceFrom, limit: 4 })
+      } else {
+        ContextCollection = collectPopularCollection({ ...source, from: sourceFrom })
+      }
       break
     case 'currentPrice':
-      ContextCollection = collectCurrentPriceCollection(source)
+      if (source.from === 'custom') {
+        ContextCollection = collectCurrentPriceCollection({ from: sourceFrom, limit: 4 })
+      } else {
+        ContextCollection = collectCurrentPriceCollection({ ...source, from: sourceFrom })
+      }
       break
     case 'recentWatched':
-      ContextCollection = collectRecentWatchedCollection({
-        ...source,
-        enrolledProgramIds,
-        currentMemberId: currentMemberId || '',
-      })
+      if (source.from === 'custom') {
+        ContextCollection = collectRecentWatchedCollection({
+          ...source,
+          from: sourceFrom,
+          limit: 4,
+          enrolledProgramIds,
+          currentMemberId: currentMemberId || '',
+        })
+      } else {
+        ContextCollection = collectRecentWatchedCollection({
+          ...source,
+          from: sourceFrom,
+          enrolledProgramIds,
+          currentMemberId: currentMemberId || '',
+        })
+      }
       break
     case 'custom':
-      ContextCollection = collectCustomCollection(source)
+      ContextCollection = collectCustomCollection({ ...source, from: sourceFrom })
       break
     default:
-      ContextCollection = collectPublishedAtCollection(source)
+      if (source.from === 'custom') {
+        ContextCollection = collectPublishedAtCollection({ from: sourceFrom, limit: 4 })
+      } else {
+        ContextCollection = collectPublishedAtCollection({ ...source, from: sourceFrom, limit: source?.limit || 4 })
+      }
+      break
   }
 
   return (
@@ -140,13 +172,26 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
 
         return (
           <div className={props.className}>
-            {props.withSelector && (
-              <CategorySelector
-                categories={categories}
-                activeCategoryId={activeCategoryId || null}
-                onActive={categoryId => setActive(categoryId)}
-              />
-            )}
+            <div className="d-flex justify-content-between">
+              <div>
+                {props.withSelector && (
+                  <CategorySelector
+                    categories={categories}
+                    activeCategoryId={activeCategoryId || null}
+                    onActive={categoryId => setActive(categoryId)}
+                  />
+                )}
+              </div>
+              <div>
+                {props.withOrderSelector && (
+                  <OrderSelector
+                    sourceFrom={sourceFrom}
+                    withOrderSelector={props.withOrderSelector}
+                    onChange={sourceFrom => setSourceFrom(sourceFrom)}
+                  />
+                )}
+              </div>
+            </div>
             {children}
             {ctx.loading || loadingProgramIds ? (
               <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
