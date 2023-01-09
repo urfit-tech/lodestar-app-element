@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { pipe, prop, sortBy, sum, uniq, uniqBy } from 'ramda'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
@@ -75,6 +75,13 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   const { enrolledProgramIds, loadingProgramIds } = useEnrolledProgramIds(currentMemberId, {
     skip: source.from !== 'recentWatched',
   })
+
+  useEffect(() => {
+    if (source.from !== sourceFrom) {
+      setSourceFrom(source.from)
+    }
+  }, [source])
+
   if (loading || errors) {
     return null
   }

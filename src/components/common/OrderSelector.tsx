@@ -1,4 +1,3 @@
-import { Select, Form } from 'antd'
 import { ElementComponent } from '../../types/element'
 import { useIntl } from 'react-intl'
 import {
@@ -8,6 +7,7 @@ import {
   ProductRecentWatchedSource,
 } from '../../types/options'
 import { craftPageMessages } from '../../helpers/translation'
+import { Select, Spinner } from '@chakra-ui/react'
 
 type OrderSelectorProps = {
   sourceFrom:
@@ -34,50 +34,42 @@ const OrderSelector: ElementComponent<OrderSelectorProps> = props => {
     return <div>Cannot read the data.</div>
   }
   return loading ? (
-    <Form>
-      <Form.Item label="a">
-        <Select loading className="order__selector" />
-      </Form.Item>
-    </Form>
+    <Select icon={<Spinner />} className="order__selector" />
   ) : (
-    <Form>
-      <Form.Item>
-        <Select
-          className="order__selector"
-          value={sourceFrom}
-          onChange={(
-            sourceFrom:
-              | ProductCustomSource['from']
-              | ProductPublishedAtSource['from']
-              | ProductPublishedAtSource<'popular'>['from']
-              | ProductCurrentPriceSource['from']
-              | ProductRecentWatchedSource['from'],
-          ) => {
-            onChange?.(sourceFrom)
-          }}
-        >
-          <Select.Option key="popular" value="popular">
-            {formatMessage(craftPageMessages.label.popular)}
-          </Select.Option>
-          <Select.Option key="publishedAt" value="publishedAt">
-            {formatMessage(craftPageMessages.label.publishedAt)}
-          </Select.Option>
-          <Select.Option key="currentPrice" value="currentPrice">
-            {formatMessage(craftPageMessages.label.currentPrice)}
-          </Select.Option>
-          {!withOrderSelector && (
-            <Select.Option key="recentWatched" value="recentWatched">
-              {formatMessage(craftPageMessages.label.recentWatched)}
-            </Select.Option>
-          )}
-          {!withOrderSelector && (
-            <Select.Option key="custom" value="custom">
-              {formatMessage(craftPageMessages.label.custom)}
-            </Select.Option>
-          )}
-        </Select>
-      </Form.Item>
-    </Form>
+    <Select
+      className="order__selector"
+      value={sourceFrom}
+      onChange={e => {
+        onChange?.(
+          e.target.value as
+            | ProductCustomSource['from']
+            | ProductPublishedAtSource['from']
+            | ProductPublishedAtSource<'popular'>['from']
+            | ProductCurrentPriceSource['from']
+            | ProductRecentWatchedSource['from'],
+        )
+      }}
+    >
+      <option key="popular" value="popular">
+        {formatMessage(craftPageMessages.label.popular)}
+      </option>
+      <option key="publishedAt" value="publishedAt">
+        {formatMessage(craftPageMessages.label.publishedAt)}
+      </option>
+      <option key="currentPrice" value="currentPrice">
+        {formatMessage(craftPageMessages.label.currentPrice)}
+      </option>
+      {!withOrderSelector && (
+        <option key="recentWatched" value="recentWatched">
+          {formatMessage(craftPageMessages.label.recentWatched)}
+        </option>
+      )}
+      {!withOrderSelector && (
+        <option key="custom" value="custom">
+          {formatMessage(craftPageMessages.label.custom)}
+        </option>
+      )}
+    </Select>
   )
 }
 
