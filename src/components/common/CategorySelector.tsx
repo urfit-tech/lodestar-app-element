@@ -1,18 +1,8 @@
-import { Button } from '@chakra-ui/button'
+import { Button } from '@chakra-ui/react'
 import { useIntl } from 'react-intl'
-import styled from 'styled-components'
 import { commonMessages } from '../../helpers/translation'
 import { Category } from '../../types/data'
 import { ElementComponent } from '../../types/element'
-
-const StyledButton = styled(Button)`
-  && {
-    height: 2.75rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    border-radius: 2rem;
-  }
-`
 
 type CategorySelectorProps = {
   categories: Category[]
@@ -30,26 +20,34 @@ const CategorySelector: ElementComponent<CategorySelectorProps> = props => {
       {loading ? (
         <Button loading className="category__button" />
       ) : (
-        <StyledButton
+        <Button
+          h="2.75rem"
+          borderRadius="2rem"
+          paddingLeft="1.5rem"
+          paddingRight="1.5rem"
           colorScheme="primary"
           variant={!props.activeCategoryId ? 'solid' : 'outline'}
           className="mb-2 category__button"
-          onClick={(e: Event) => (editing ? e.preventDefault() : props.onActive?.(null))}
+          onClick={e => (editing ? e.preventDefault() : props.onActive?.(null))}
         >
           {formatMessage(commonMessages.button.allCategory)}
-        </StyledButton>
+        </Button>
       )}
       {!loading &&
         props.categories.map(category => (
-          <StyledButton
+          <Button
+            h="2.75rem"
+            borderRadius="2rem"
+            paddingLeft="1.5rem"
+            paddingRight="1.5rem"
             key={category.id}
             colorScheme="primary"
             variant={props.activeCategoryId === category.id ? 'solid' : 'outline'}
             className="ml-2 mb-2 category__button"
-            onClick={(e: Event) => (editing ? e.preventDefault() : props.onActive?.(category.id))}
+            onClick={e => (editing ? e.preventDefault() : props.onActive?.(category.id))}
           >
             {category.name}
-          </StyledButton>
+          </Button>
         ))}
     </div>
   )
