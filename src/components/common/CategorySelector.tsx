@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/button'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { commonMessages } from '../../helpers/translation'
