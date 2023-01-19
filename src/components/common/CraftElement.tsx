@@ -4,6 +4,7 @@ import RichCard from '../cards/RichCard'
 import Collapse from '../collapses/Collapse'
 import ActivityCollection from '../collections/ActivityCollection'
 import MemberCollection from '../collections/MemberCollection'
+import PostCollection from '../collections/PostCollection'
 import ProgramCollection from '../collections/ProgramCollection'
 import ProgramContentCollection from '../collections/ProgramContentCollection'
 import ProgramPackageCollection from '../collections/ProgramPackageCollection'
@@ -39,3 +40,4 @@ export const CraftProgramContentCollection = Craftize(ProgramContentCollection)
 export const CraftProgramPackageCollection = Craftize(ProgramPackageCollection)
 export const CraftActivityCollection = Craftize(ActivityCollection)
 export const CraftProjectCollection = Craftize(ProjectCollection)
+export const CraftPostCollection = Craftize(PostCollection)

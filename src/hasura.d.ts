@@ -1122,6 +1122,79 @@ export interface GET_ACTIVITY_FAMILYVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GET_POST_COLLECTION
+// ====================================================
+
+export interface GET_POST_COLLECTION_post_post_roles_member {
+  __typename: 'member_public'
+  id: string | null
+  name: string | null
+}
+
+export interface GET_POST_COLLECTION_post_post_roles {
+  __typename: 'post_role'
+  id: any
+  /**
+   * An object relationship
+   */
+  member: GET_POST_COLLECTION_post_post_roles_member | null
+}
+
+export interface GET_POST_COLLECTION_post_post_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+  position: number
+}
+
+export interface GET_POST_COLLECTION_post_post_categories {
+  __typename: 'post_category'
+  id: any
+  /**
+   * An object relationship
+   */
+  category: GET_POST_COLLECTION_post_post_categories_category
+}
+
+export interface GET_POST_COLLECTION_post {
+  __typename: 'post'
+  id: any
+  title: string
+  cover_url: string | null
+  video_url: string | null
+  published_at: any | null
+  views: number
+  code_name: string | null
+  pinned_at: any | null
+  /**
+   * An array relationship
+   */
+  post_roles: GET_POST_COLLECTION_post_post_roles[]
+  /**
+   * An array relationship
+   */
+  post_categories: GET_POST_COLLECTION_post_post_categories[]
+}
+
+export interface GET_POST_COLLECTION {
+  /**
+   * fetch data from the table: "post"
+   */
+  post: GET_POST_COLLECTION_post[]
+}
+
+export interface GET_POST_COLLECTIONVariables {
+  whereClause?: post_bool_exp | null
+  limit?: number | null
+  orderByClause?: post_order_by[] | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GET_ENROLLED_CARD_IDS
 // ====================================================
 
@@ -2466,6 +2539,66 @@ export interface memberFields {
   abstract: string | null
   description: string | null
   picture_url: string | null
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: postFields
+// ====================================================
+
+export interface postFields_post_roles_member {
+  __typename: 'member_public'
+  id: string | null
+  name: string | null
+}
+
+export interface postFields_post_roles {
+  __typename: 'post_role'
+  id: any
+  /**
+   * An object relationship
+   */
+  member: postFields_post_roles_member | null
+}
+
+export interface postFields_post_categories_category {
+  __typename: 'category'
+  id: string
+  name: string
+  position: number
+}
+
+export interface postFields_post_categories {
+  __typename: 'post_category'
+  id: any
+  /**
+   * An object relationship
+   */
+  category: postFields_post_categories_category
+}
+
+export interface postFields {
+  __typename: 'post'
+  id: any
+  title: string
+  cover_url: string | null
+  video_url: string | null
+  published_at: any | null
+  views: number
+  code_name: string | null
+  pinned_at: any | null
+  /**
+   * An array relationship
+   */
+  post_roles: postFields_post_roles[]
+  /**
+   * An array relationship
+   */
+  post_categories: postFields_post_categories[]
 }
 
 /* tslint:disable */
@@ -5238,6 +5371,7 @@ export enum member_select_column {
   status = 'status',
   title = 'title',
   username = 'username',
+  verified_emails = 'verified_emails',
   youtube_channel_ids = 'youtube_channel_ids',
   zoom_user_id_deprecate = 'zoom_user_id_deprecate',
 }
@@ -5489,6 +5623,7 @@ export enum member_update_column {
   status = 'status',
   title = 'title',
   username = 'username',
+  verified_emails = 'verified_emails',
   youtube_channel_ids = 'youtube_channel_ids',
   zoom_user_id_deprecate = 'zoom_user_id_deprecate',
 }
@@ -7286,6 +7421,35 @@ export enum program_content_attachment_select_column {
 }
 
 /**
+ * unique or primary key constraints on table "program_content_audio"
+ */
+export enum program_content_audio_constraint {
+  program_content_audio_pkey = 'program_content_audio_pkey',
+}
+
+/**
+ * select columns of table "program_content_audio"
+ */
+export enum program_content_audio_select_column {
+  created_at = 'created_at',
+  data = 'data',
+  id = 'id',
+  program_content_id = 'program_content_id',
+  updated_at = 'updated_at',
+}
+
+/**
+ * update columns of table "program_content_audio"
+ */
+export enum program_content_audio_update_column {
+  created_at = 'created_at',
+  data = 'data',
+  id = 'id',
+  program_content_id = 'program_content_id',
+  updated_at = 'updated_at',
+}
+
+/**
  * unique or primary key constraints on table "program_content_body"
  */
 export enum program_content_body_constraint {
@@ -8291,6 +8455,7 @@ export enum project_role_constraint {
  */
 export enum project_role_select_column {
   agreed_at = 'agreed_at',
+  created_at = 'created_at',
   has_sended_marked_notification = 'has_sended_marked_notification',
   id = 'id',
   identity_id = 'identity_id',
@@ -8319,6 +8484,7 @@ export enum project_role_select_column_project_role_aggregate_bool_exp_bool_or_a
  */
 export enum project_role_update_column {
   agreed_at = 'agreed_at',
+  created_at = 'created_at',
   has_sended_marked_notification = 'has_sended_marked_notification',
   id = 'id',
   identity_id = 'identity_id',
@@ -8430,11 +8596,26 @@ export enum property_select_column {
   app_id = 'app_id',
   created_at = 'created_at',
   id = 'id',
+  is_editable = 'is_editable',
   name = 'name',
   placeholder = 'placeholder',
   position = 'position',
   type = 'type',
   updated_at = 'updated_at',
+}
+
+/**
+ * select "property_aggregate_bool_exp_bool_and_arguments_columns" columns of table "property"
+ */
+export enum property_select_column_property_aggregate_bool_exp_bool_and_arguments_columns {
+  is_editable = 'is_editable',
+}
+
+/**
+ * select "property_aggregate_bool_exp_bool_or_arguments_columns" columns of table "property"
+ */
+export enum property_select_column_property_aggregate_bool_exp_bool_or_arguments_columns {
+  is_editable = 'is_editable',
 }
 
 /**
@@ -8444,6 +8625,7 @@ export enum property_update_column {
   app_id = 'app_id',
   created_at = 'created_at',
   id = 'id',
+  is_editable = 'is_editable',
   name = 'name',
   placeholder = 'placeholder',
   position = 'position',
@@ -14731,6 +14913,7 @@ export interface member_bool_exp {
   status?: String_comparison_exp | null
   title?: String_comparison_exp | null
   username?: String_comparison_exp | null
+  verified_emails?: jsonb_comparison_exp | null
   vouchers?: voucher_bool_exp | null
   vouchers_aggregate?: voucher_aggregate_bool_exp | null
   youtube_channel_ids?: jsonb_comparison_exp | null
@@ -15025,6 +15208,7 @@ export interface member_insert_input {
   status?: string | null
   title?: string | null
   username?: string | null
+  verified_emails?: any | null
   vouchers?: voucher_arr_rel_insert_input | null
   youtube_channel_ids?: any | null
   zoom_user_id_deprecate?: string | null
@@ -15602,6 +15786,7 @@ export interface member_public_bool_exp {
   created_at?: timestamptz_comparison_exp | null
   description?: String_comparison_exp | null
   email?: String_comparison_exp | null
+  has_backstage_enter_permission?: Int_comparison_exp | null
   id?: String_comparison_exp | null
   member_specialities?: member_speciality_bool_exp | null
   member_specialities_aggregate?: member_speciality_aggregate_bool_exp | null
@@ -15610,6 +15795,7 @@ export interface member_public_bool_exp {
   picture_url?: String_comparison_exp | null
   role?: String_comparison_exp | null
   roles?: jsonb_comparison_exp | null
+  status?: String_comparison_exp | null
   tag_names?: jsonb_comparison_exp | null
   title?: String_comparison_exp | null
   username?: String_comparison_exp | null
@@ -15625,6 +15811,7 @@ export interface member_public_insert_input {
   created_at?: any | null
   description?: string | null
   email?: string | null
+  has_backstage_enter_permission?: number | null
   id?: string | null
   member_specialities?: member_speciality_arr_rel_insert_input | null
   metadata?: any | null
@@ -15632,6 +15819,7 @@ export interface member_public_insert_input {
   picture_url?: string | null
   role?: string | null
   roles?: any | null
+  status?: string | null
   tag_names?: any | null
   title?: string | null
   username?: string | null
@@ -15654,6 +15842,7 @@ export interface member_public_order_by {
   created_at?: order_by | null
   description?: order_by | null
   email?: order_by | null
+  has_backstage_enter_permission?: order_by | null
   id?: order_by | null
   member_specialities_aggregate?: member_speciality_aggregate_order_by | null
   metadata?: order_by | null
@@ -15661,6 +15850,7 @@ export interface member_public_order_by {
   picture_url?: order_by | null
   role?: order_by | null
   roles?: order_by | null
+  status?: order_by | null
   tag_names?: order_by | null
   title?: order_by | null
   username?: order_by | null
@@ -19262,11 +19452,35 @@ export interface post_category_aggregate_bool_exp_count {
 }
 
 /**
+ * order by aggregate values of table "post_category"
+ */
+export interface post_category_aggregate_order_by {
+  avg?: post_category_avg_order_by | null
+  count?: order_by | null
+  max?: post_category_max_order_by | null
+  min?: post_category_min_order_by | null
+  stddev?: post_category_stddev_order_by | null
+  stddev_pop?: post_category_stddev_pop_order_by | null
+  stddev_samp?: post_category_stddev_samp_order_by | null
+  sum?: post_category_sum_order_by | null
+  var_pop?: post_category_var_pop_order_by | null
+  var_samp?: post_category_var_samp_order_by | null
+  variance?: post_category_variance_order_by | null
+}
+
+/**
  * input type for inserting array relation for remote table "post_category"
  */
 export interface post_category_arr_rel_insert_input {
   data: post_category_insert_input[]
   on_conflict?: post_category_on_conflict | null
+}
+
+/**
+ * order by avg() on columns of table "post_category"
+ */
+export interface post_category_avg_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -19297,12 +19511,81 @@ export interface post_category_insert_input {
 }
 
 /**
+ * order by max() on columns of table "post_category"
+ */
+export interface post_category_max_order_by {
+  category_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "post_category"
+ */
+export interface post_category_min_order_by {
+  category_id?: order_by | null
+  id?: order_by | null
+  position?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
  * on_conflict condition type for table "post_category"
  */
 export interface post_category_on_conflict {
   constraint: post_category_constraint
   update_columns: post_category_update_column[]
   where?: post_category_bool_exp | null
+}
+
+/**
+ * order by stddev() on columns of table "post_category"
+ */
+export interface post_category_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "post_category"
+ */
+export interface post_category_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "post_category"
+ */
+export interface post_category_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "post_category"
+ */
+export interface post_category_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "post_category"
+ */
+export interface post_category_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "post_category"
+ */
+export interface post_category_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "post_category"
+ */
+export interface post_category_variance_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -19347,6 +19630,15 @@ export interface post_issue_aggregate_bool_exp_count {
 }
 
 /**
+ * order by aggregate values of table "post_issue"
+ */
+export interface post_issue_aggregate_order_by {
+  count?: order_by | null
+  max?: post_issue_max_order_by | null
+  min?: post_issue_min_order_by | null
+}
+
+/**
  * input type for inserting array relation for remote table "post_issue"
  */
 export interface post_issue_arr_rel_insert_input {
@@ -19374,6 +19666,22 @@ export interface post_issue_insert_input {
   issue_id?: any | null
   post?: post_obj_rel_insert_input | null
   post_id?: any | null
+}
+
+/**
+ * order by max() on columns of table "post_issue"
+ */
+export interface post_issue_max_order_by {
+  issue_id?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "post_issue"
+ */
+export interface post_issue_min_order_by {
+  issue_id?: order_by | null
+  post_id?: order_by | null
 }
 
 /**
@@ -19409,11 +19717,35 @@ export interface post_merchandise_aggregate_bool_exp_count {
 }
 
 /**
+ * order by aggregate values of table "post_merchandise"
+ */
+export interface post_merchandise_aggregate_order_by {
+  avg?: post_merchandise_avg_order_by | null
+  count?: order_by | null
+  max?: post_merchandise_max_order_by | null
+  min?: post_merchandise_min_order_by | null
+  stddev?: post_merchandise_stddev_order_by | null
+  stddev_pop?: post_merchandise_stddev_pop_order_by | null
+  stddev_samp?: post_merchandise_stddev_samp_order_by | null
+  sum?: post_merchandise_sum_order_by | null
+  var_pop?: post_merchandise_var_pop_order_by | null
+  var_samp?: post_merchandise_var_samp_order_by | null
+  variance?: post_merchandise_variance_order_by | null
+}
+
+/**
  * input type for inserting array relation for remote table "post_merchandise"
  */
 export interface post_merchandise_arr_rel_insert_input {
   data: post_merchandise_insert_input[]
   on_conflict?: post_merchandise_on_conflict | null
+}
+
+/**
+ * order by avg() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_avg_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -19444,12 +19776,81 @@ export interface post_merchandise_insert_input {
 }
 
 /**
+ * order by max() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_max_order_by {
+  id?: order_by | null
+  merchandise_id?: order_by | null
+  position?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_min_order_by {
+  id?: order_by | null
+  merchandise_id?: order_by | null
+  position?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
  * on_conflict condition type for table "post_merchandise"
  */
 export interface post_merchandise_on_conflict {
   constraint: post_merchandise_constraint
   update_columns: post_merchandise_update_column[]
   where?: post_merchandise_bool_exp | null
+}
+
+/**
+ * order by stddev() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "post_merchandise"
+ */
+export interface post_merchandise_variance_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -19490,6 +19891,36 @@ export interface post_on_conflict {
   where?: post_bool_exp | null
 }
 
+/**
+ * Ordering options when selecting data from "post".
+ */
+export interface post_order_by {
+  abstract?: order_by | null
+  app?: app_order_by | null
+  app_id?: order_by | null
+  code_name?: order_by | null
+  cover_url?: order_by | null
+  created_at?: order_by | null
+  description?: order_by | null
+  id?: order_by | null
+  is_deleted?: order_by | null
+  meta_tag?: order_by | null
+  pinned_at?: order_by | null
+  position?: order_by | null
+  post_categories_aggregate?: post_category_aggregate_order_by | null
+  post_issue_aggregate?: post_issue_aggregate_order_by | null
+  post_merchandises_aggregate?: post_merchandise_aggregate_order_by | null
+  post_reaction_aggregate?: post_reaction_aggregate_order_by | null
+  post_roles_aggregate?: post_role_aggregate_order_by | null
+  post_tags_aggregate?: post_tag_aggregate_order_by | null
+  published_at?: order_by | null
+  source?: order_by | null
+  title?: order_by | null
+  updated_at?: order_by | null
+  video_url?: order_by | null
+  views?: order_by | null
+}
+
 export interface post_reaction_aggregate_bool_exp {
   count?: post_reaction_aggregate_bool_exp_count | null
 }
@@ -19499,6 +19930,15 @@ export interface post_reaction_aggregate_bool_exp_count {
   distinct?: boolean | null
   filter?: post_reaction_bool_exp | null
   predicate: Int_comparison_exp
+}
+
+/**
+ * order by aggregate values of table "post_reaction"
+ */
+export interface post_reaction_aggregate_order_by {
+  count?: order_by | null
+  max?: post_reaction_max_order_by | null
+  min?: post_reaction_min_order_by | null
 }
 
 /**
@@ -19537,6 +19977,26 @@ export interface post_reaction_insert_input {
 }
 
 /**
+ * order by max() on columns of table "post_reaction"
+ */
+export interface post_reaction_max_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "post_reaction"
+ */
+export interface post_reaction_min_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  member_id?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
  * on_conflict condition type for table "post_reaction"
  */
 export interface post_reaction_on_conflict {
@@ -19557,11 +20017,35 @@ export interface post_role_aggregate_bool_exp_count {
 }
 
 /**
+ * order by aggregate values of table "post_role"
+ */
+export interface post_role_aggregate_order_by {
+  avg?: post_role_avg_order_by | null
+  count?: order_by | null
+  max?: post_role_max_order_by | null
+  min?: post_role_min_order_by | null
+  stddev?: post_role_stddev_order_by | null
+  stddev_pop?: post_role_stddev_pop_order_by | null
+  stddev_samp?: post_role_stddev_samp_order_by | null
+  sum?: post_role_sum_order_by | null
+  var_pop?: post_role_var_pop_order_by | null
+  var_samp?: post_role_var_samp_order_by | null
+  variance?: post_role_variance_order_by | null
+}
+
+/**
  * input type for inserting array relation for remote table "post_role"
  */
 export interface post_role_arr_rel_insert_input {
   data: post_role_insert_input[]
   on_conflict?: post_role_on_conflict | null
+}
+
+/**
+ * order by avg() on columns of table "post_role"
+ */
+export interface post_role_avg_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -19594,12 +20078,83 @@ export interface post_role_insert_input {
 }
 
 /**
+ * order by max() on columns of table "post_role"
+ */
+export interface post_role_max_order_by {
+  id?: order_by | null
+  member_id?: order_by | null
+  name?: order_by | null
+  position?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "post_role"
+ */
+export interface post_role_min_order_by {
+  id?: order_by | null
+  member_id?: order_by | null
+  name?: order_by | null
+  position?: order_by | null
+  post_id?: order_by | null
+}
+
+/**
  * on_conflict condition type for table "post_role"
  */
 export interface post_role_on_conflict {
   constraint: post_role_constraint
   update_columns: post_role_update_column[]
   where?: post_role_bool_exp | null
+}
+
+/**
+ * order by stddev() on columns of table "post_role"
+ */
+export interface post_role_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "post_role"
+ */
+export interface post_role_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "post_role"
+ */
+export interface post_role_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "post_role"
+ */
+export interface post_role_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "post_role"
+ */
+export interface post_role_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "post_role"
+ */
+export interface post_role_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "post_role"
+ */
+export interface post_role_variance_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -19646,11 +20201,35 @@ export interface post_tag_aggregate_bool_exp_count {
 }
 
 /**
+ * order by aggregate values of table "post_tag"
+ */
+export interface post_tag_aggregate_order_by {
+  avg?: post_tag_avg_order_by | null
+  count?: order_by | null
+  max?: post_tag_max_order_by | null
+  min?: post_tag_min_order_by | null
+  stddev?: post_tag_stddev_order_by | null
+  stddev_pop?: post_tag_stddev_pop_order_by | null
+  stddev_samp?: post_tag_stddev_samp_order_by | null
+  sum?: post_tag_sum_order_by | null
+  var_pop?: post_tag_var_pop_order_by | null
+  var_samp?: post_tag_var_samp_order_by | null
+  variance?: post_tag_variance_order_by | null
+}
+
+/**
  * input type for inserting array relation for remote table "post_tag"
  */
 export interface post_tag_arr_rel_insert_input {
   data: post_tag_insert_input[]
   on_conflict?: post_tag_on_conflict | null
+}
+
+/**
+ * order by avg() on columns of table "post_tag"
+ */
+export interface post_tag_avg_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -19681,12 +20260,81 @@ export interface post_tag_insert_input {
 }
 
 /**
+ * order by max() on columns of table "post_tag"
+ */
+export interface post_tag_max_order_by {
+  id?: order_by | null
+  position?: order_by | null
+  post_id?: order_by | null
+  tag_name?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "post_tag"
+ */
+export interface post_tag_min_order_by {
+  id?: order_by | null
+  position?: order_by | null
+  post_id?: order_by | null
+  tag_name?: order_by | null
+}
+
+/**
  * on_conflict condition type for table "post_tag"
  */
 export interface post_tag_on_conflict {
   constraint: post_tag_constraint
   update_columns: post_tag_update_column[]
   where?: post_tag_bool_exp | null
+}
+
+/**
+ * order by stddev() on columns of table "post_tag"
+ */
+export interface post_tag_stddev_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_pop() on columns of table "post_tag"
+ */
+export interface post_tag_stddev_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by stddev_samp() on columns of table "post_tag"
+ */
+export interface post_tag_stddev_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by sum() on columns of table "post_tag"
+ */
+export interface post_tag_sum_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_pop() on columns of table "post_tag"
+ */
+export interface post_tag_var_pop_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by var_samp() on columns of table "post_tag"
+ */
+export interface post_tag_var_samp_order_by {
+  position?: order_by | null
+}
+
+/**
+ * order by variance() on columns of table "post_tag"
+ */
+export interface post_tag_variance_order_by {
+  position?: order_by | null
 }
 
 /**
@@ -20898,6 +21546,90 @@ export interface program_content_attachment_min_order_by {
   updated_at?: order_by | null
 }
 
+export interface program_content_audio_aggregate_bool_exp {
+  count?: program_content_audio_aggregate_bool_exp_count | null
+}
+
+export interface program_content_audio_aggregate_bool_exp_count {
+  arguments?: program_content_audio_select_column[] | null
+  distinct?: boolean | null
+  filter?: program_content_audio_bool_exp | null
+  predicate: Int_comparison_exp
+}
+
+/**
+ * order by aggregate values of table "program_content_audio"
+ */
+export interface program_content_audio_aggregate_order_by {
+  count?: order_by | null
+  max?: program_content_audio_max_order_by | null
+  min?: program_content_audio_min_order_by | null
+}
+
+/**
+ * input type for inserting array relation for remote table "program_content_audio"
+ */
+export interface program_content_audio_arr_rel_insert_input {
+  data: program_content_audio_insert_input[]
+  on_conflict?: program_content_audio_on_conflict | null
+}
+
+/**
+ * Boolean expression to filter rows from the table "program_content_audio". All fields are combined with a logical 'AND'.
+ */
+export interface program_content_audio_bool_exp {
+  _and?: program_content_audio_bool_exp[] | null
+  _not?: program_content_audio_bool_exp | null
+  _or?: program_content_audio_bool_exp[] | null
+  created_at?: timestamptz_comparison_exp | null
+  data?: jsonb_comparison_exp | null
+  id?: uuid_comparison_exp | null
+  program_content?: program_content_bool_exp | null
+  program_content_id?: uuid_comparison_exp | null
+  updated_at?: timestamptz_comparison_exp | null
+}
+
+/**
+ * input type for inserting data into table "program_content_audio"
+ */
+export interface program_content_audio_insert_input {
+  created_at?: any | null
+  data?: any | null
+  id?: any | null
+  program_content?: program_content_obj_rel_insert_input | null
+  program_content_id?: any | null
+  updated_at?: any | null
+}
+
+/**
+ * order by max() on columns of table "program_content_audio"
+ */
+export interface program_content_audio_max_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * order by min() on columns of table "program_content_audio"
+ */
+export interface program_content_audio_min_order_by {
+  created_at?: order_by | null
+  id?: order_by | null
+  program_content_id?: order_by | null
+  updated_at?: order_by | null
+}
+
+/**
+ * on_conflict condition type for table "program_content_audio"
+ */
+export interface program_content_audio_on_conflict {
+  constraint: program_content_audio_constraint
+  update_columns: program_content_audio_update_column[]
+  where?: program_content_audio_bool_exp | null
+}
+
 /**
  * order by avg() on columns of table "program_content"
  */
@@ -20993,6 +21725,8 @@ export interface program_content_bool_exp {
   practices_aggregate?: practice_aggregate_bool_exp | null
   program_content_attachments?: program_content_attachment_bool_exp | null
   program_content_attachments_aggregate?: program_content_attachment_aggregate_bool_exp | null
+  program_content_audios?: program_content_audio_bool_exp | null
+  program_content_audios_aggregate?: program_content_audio_aggregate_bool_exp | null
   program_content_body?: program_content_body_bool_exp | null
   program_content_materials?: program_content_material_bool_exp | null
   program_content_materials_aggregate?: program_content_material_aggregate_bool_exp | null
@@ -21108,6 +21842,7 @@ export interface program_content_insert_input {
   position?: number | null
   practices?: practice_arr_rel_insert_input | null
   program_content_attachments?: program_content_attachment_arr_rel_insert_input | null
+  program_content_audios?: program_content_audio_arr_rel_insert_input | null
   program_content_body?: program_content_body_obj_rel_insert_input | null
   program_content_materials?: program_content_material_arr_rel_insert_input | null
   program_content_plans?: program_content_plan_arr_rel_insert_input | null
@@ -21286,6 +22021,7 @@ export interface program_content_order_by {
   position?: order_by | null
   practices_aggregate?: practice_aggregate_order_by | null
   program_content_attachments_aggregate?: program_content_attachment_aggregate_order_by | null
+  program_content_audios_aggregate?: program_content_audio_aggregate_order_by | null
   program_content_body?: program_content_body_order_by | null
   program_content_materials_aggregate?: program_content_material_aggregate_order_by | null
   program_content_plans_aggregate?: program_content_plan_aggregate_order_by | null
@@ -25197,6 +25933,7 @@ export interface project_role_bool_exp {
   _not?: project_role_bool_exp | null
   _or?: project_role_bool_exp[] | null
   agreed_at?: timestamptz_comparison_exp | null
+  created_at?: timestamptz_comparison_exp | null
   has_sended_marked_notification?: Boolean_comparison_exp | null
   id?: uuid_comparison_exp | null
   identity?: identity_bool_exp | null
@@ -25214,6 +25951,7 @@ export interface project_role_bool_exp {
  */
 export interface project_role_insert_input {
   agreed_at?: any | null
+  created_at?: any | null
   has_sended_marked_notification?: boolean | null
   id?: any | null
   identity?: identity_obj_rel_insert_input | null
@@ -25231,6 +25969,7 @@ export interface project_role_insert_input {
  */
 export interface project_role_max_order_by {
   agreed_at?: order_by | null
+  created_at?: order_by | null
   id?: order_by | null
   identity_id?: order_by | null
   member_id?: order_by | null
@@ -25244,6 +25983,7 @@ export interface project_role_max_order_by {
  */
 export interface project_role_min_order_by {
   agreed_at?: order_by | null
+  created_at?: order_by | null
   id?: order_by | null
   identity_id?: order_by | null
   member_id?: order_by | null
@@ -25595,7 +26335,23 @@ export interface project_tag_variance_order_by {
 }
 
 export interface property_aggregate_bool_exp {
+  bool_and?: property_aggregate_bool_exp_bool_and | null
+  bool_or?: property_aggregate_bool_exp_bool_or | null
   count?: property_aggregate_bool_exp_count | null
+}
+
+export interface property_aggregate_bool_exp_bool_and {
+  arguments: property_select_column_property_aggregate_bool_exp_bool_and_arguments_columns
+  distinct?: boolean | null
+  filter?: property_bool_exp | null
+  predicate: Boolean_comparison_exp
+}
+
+export interface property_aggregate_bool_exp_bool_or {
+  arguments: property_select_column_property_aggregate_bool_exp_bool_or_arguments_columns
+  distinct?: boolean | null
+  filter?: property_bool_exp | null
+  predicate: Boolean_comparison_exp
 }
 
 export interface property_aggregate_bool_exp_count {
@@ -25648,6 +26404,7 @@ export interface property_bool_exp {
   app_id?: String_comparison_exp | null
   created_at?: timestamptz_comparison_exp | null
   id?: uuid_comparison_exp | null
+  is_editable?: Boolean_comparison_exp | null
   member_properties?: member_property_bool_exp | null
   member_properties_aggregate?: member_property_aggregate_bool_exp | null
   name?: String_comparison_exp | null
@@ -25665,6 +26422,7 @@ export interface property_insert_input {
   app_id?: string | null
   created_at?: any | null
   id?: any | null
+  is_editable?: boolean | null
   member_properties?: member_property_arr_rel_insert_input | null
   name?: string | null
   placeholder?: string | null

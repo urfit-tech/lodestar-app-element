@@ -1,4 +1,5 @@
 import { Category, PeriodType, Project } from './data'
+import { PostRole } from './post'
 
 export type PropsWithState<P> = { editing?: boolean } & (
   | ({ loading: true; errors?: never } & Partial<P>)
@@ -102,4 +103,15 @@ export type MemberElementProps = ElementProps<{
   abstract: string | null
   avatarUrl: string | null
   description: string | null
+}>
+
+export type PostElementProps = ElementProps<{
+  id: string
+  codeName: string | null
+  title: string
+  coverUrl: string
+  videoUrl: string
+  publishedAt: Date | null
+  categories: Category[]
+  author: Pick<PostRole, 'id' | 'memberId' | 'name'>
 }>
