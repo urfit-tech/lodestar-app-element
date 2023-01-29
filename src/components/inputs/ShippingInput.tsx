@@ -1,7 +1,7 @@
 import { Button, Checkbox, Form, Input, Radio, Select } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 import { camelCase } from 'lodash'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { cities, districts, useTwZipCode, zipCodes } from 'use-tw-zipcode'
@@ -181,17 +181,18 @@ const ShippingInput: React.VFC<{
     window.open(cvsSelectionUrl)
   }
 
+  const currentShippingMethod = useMemo(
+    () =>
+      shippingMethods?.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === value?.shippingMethod)
+        ? value?.shippingMethod
+        : shippingMethods?.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === 'home-delivery')
+        ? 'home-delivery'
+        : shippingMethods?.filter(shippingMethod => shippingMethod.enabled)?.[0].id,
+    [shippingMethods],
+  )
   useEffect(() => {
-    const currentShippingMethod = shippingMethods
-      ?.filter(shippingMethod => shippingMethod.enabled)
-      .some(v => v.id === value?.shippingMethod)
-      ? value?.shippingMethod
-      : shippingMethods?.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === 'home-delivery')
-      ? 'home-delivery'
-      : shippingMethods?.filter(shippingMethod => shippingMethod.enabled)?.[0].id
     handleChange('shippingMethod', currentShippingMethod || '')
-  }, [shippingMethods])
-
+  }, [currentShippingMethod])
   return (
     <div>
       <StyledTitle className="mb-4">{formatMessage(inputMessages.ShippingInput.shippingInput)}</StyledTitle>
