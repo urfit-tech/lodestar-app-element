@@ -31,6 +31,7 @@ export type Module =
   | 'attend'
   | 'member_rejection'
   | 'member_note_demo'
+  | 'member_info_export'
   | 'learning_statistics_advanced'
   | 'commonhealth_login'
   | 'contract'
