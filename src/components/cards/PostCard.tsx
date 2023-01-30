@@ -105,7 +105,6 @@ const PostCard: React.VFC<PostElementProps> = props => {
     return <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
   }
   return (
-    // <div key={id} className="col-6 col-lg-4 pb-2 mb-4">
     <Link to={`/posts/${props.codeName || props.id}`}>
       <div className="mb-3">
         <PostPreviewCover coverUrl={props.coverUrl || EmptyCover} withVideo={typeof props.videoUrl === 'string'} />
@@ -113,7 +112,6 @@ const PostCard: React.VFC<PostElementProps> = props => {
       <StyledPostTitle rows={2}>{props.title}</StyledPostTitle>
       <PostPreviewMeta author={props.author} publishedAt={props.publishedAt} />
     </Link>
-    // </div>
   )
 }
 
@@ -141,11 +139,11 @@ const PostPreviewMeta: React.VFC<{
   return (
     <StyledPostMeta>
       <div className="mb-1">
-        <Icon as={UserOIcon} className="mr-1" />
+        <Icon as={UserOIcon} className="mr-1" style={{ display: 'inline-block' }} />
         <span className="mr-2">{author.name}</span>
       </div>
       <div className="mb-1">
-        <Icon as={CalendarAltOIcon} className="mr-1" />
+        <Icon as={CalendarAltOIcon} className="mr-1" style={{ display: 'inline-block' }} />
         <span>{publishedAt ? dayjs(publishedAt).format('YYYY-MM-DD') : ''}</span>
       </div>
     </StyledPostMeta>
