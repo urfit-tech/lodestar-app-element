@@ -268,7 +268,7 @@ const composeCollectionData = (data: hasura.GET_POST_COLLECTION): PostData[] =>
     codeName: p.code_name,
     pinnedAt: p.pinned_at ? new Date(p.pinned_at) : null,
     author: {
-      id: p.post_roles[0].id,
+      id: p.post_roles[0]?.id || '',
       memberId: p.post_roles[0].member?.id || '',
       name: p.post_roles[0].member?.name || '',
     },
