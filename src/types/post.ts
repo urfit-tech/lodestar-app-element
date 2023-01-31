@@ -1,4 +1,5 @@
 import { Category } from './data'
+import { MetaTag } from './general'
 
 export type PostRole = {
   id: string
