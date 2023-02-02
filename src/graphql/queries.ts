@@ -125,15 +125,11 @@ export const getActivityFamilyQuery = (fields: DocumentNode) => gql`
   ${fields}
 `
 
-// export const getMemberCollectionQuery = (memberFields: DocumentNode) => gql`
-//   query GET_PUBLIC_MEMBER_COLLECTION(
-//     $whereClause: member_public_bool_exp
-//     $limit: Int
-//     $orderByClause: [member_public_order_by!]
-//   ) {
-//     member_public(where: $whereClause, limit: $limit, order_by: $orderByClause) {
-//       ...memberFields
-//     }
-//   }
-//   ${memberFields}
-// `
+export const getPostCollectionQuery = (postFields: DocumentNode) => gql`
+  query GET_POST_COLLECTION($whereClause: post_bool_exp, $limit: Int, $orderByClause: [post_order_by!]) {
+    post(where: $whereClause, limit: $limit, order_by: $orderByClause) {
+      ...postFields
+    }
+  }
+  ${postFields}
+`
