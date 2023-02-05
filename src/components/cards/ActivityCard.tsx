@@ -5,9 +5,8 @@ import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { productMessages } from '../../helpers/translation'
+import { CalendarAltOIcon, UserOIcon } from '../../images'
 import EmptyCover from '../../images/empty-cover.png'
-import { ReactComponent as CalendarOIcon } from '../../images/icons/calendar-alt-o.svg'
-import { ReactComponent as UserOIcon } from '../../images/icons/user-o.svg'
 import { ActivityElementProps } from '../../types/element'
 import { CommonTitleMixin } from '../common'
 import { CustomRatioImage } from '../common/Image'
@@ -75,7 +74,7 @@ const ActivityCard: React.FC<ActivityElementProps> = props => {
           )}
         </StyledMeta>
         <StyledMeta className="d-flex align-items-center">
-          <CalendarOIcon />
+          <CalendarAltOIcon />
           {startDate && endDate ? (
             <span className="ml-2">
               {startDate}

@@ -293,6 +293,7 @@ const useEnrolledProgramIds = (memberId: string | null, options?: { skip?: boole
 }
 
 const collectCustomCollection = (options: ProductCustomSource) => {
+  const idList = (options.idList || []).filter(id => id !== '')
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
     const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
       getProgramCollectionQuery(programFields),
@@ -301,7 +302,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           limit: undefined,
           orderByClause: [],
           whereClause: {
-            id: { _in: options.idList || [] },
+            id: { _in: idList },
             is_private: { _eq: false },
             published_at: { _lt: 'now()' },
           },
