@@ -91,6 +91,7 @@ export type Module =
   | 'portfolio_project'
   | 'school'
   | 'device_management'
+  | 'timetable'
 
 export type Currency = {
   id: string
