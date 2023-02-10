@@ -31,6 +31,7 @@ export type PostCollectionProps = {
   source?: ProductCustomSource | ProductPublishedAtSource | ProductPublishedAtSource<'popular'>
   layout?: CollectionLayout
   withSelector?: boolean
+  withOrderSelector?: boolean
   collectionVariant?: 'grid' | 'carousel'
   carousel?: BaseCarouselProps
 }
