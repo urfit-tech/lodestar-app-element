@@ -105,7 +105,7 @@ const PostCard: React.VFC<PostElementProps> = props => {
     return <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
   }
   return (
-    <Link to={`/posts/${props.codeName || props.id}`}>
+    <Link to={!props.editing ? `/posts/${props.codeName || props.id}` : '#!'}>
       <div className="mb-3">
         <PostPreviewCover coverUrl={props.coverUrl || EmptyCover} withVideo={typeof props.videoUrl === 'string'} />
       </div>
