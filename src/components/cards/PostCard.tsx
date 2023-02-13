@@ -101,17 +101,23 @@ const PostCard: React.VFC<PostElementProps> = props => {
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
-  if (loading) {
-    return <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
-  }
+
   return (
-    <Link to={!props.editing ? `/posts/${props.codeName || props.id}` : '#!'}>
-      <div className="mb-3">
-        <PostPreviewCover coverUrl={props.coverUrl || EmptyCover} withVideo={typeof props.videoUrl === 'string'} />
-      </div>
-      <StyledPostTitle rows={2}>{props.title}</StyledPostTitle>
-      <PostPreviewMeta author={props.author} publishedAt={props.publishedAt} />
-    </Link>
+    <div className="post">
+      <Link to={!props.editing ? `/posts/${props.codeName || props.id}` : '#!'}>
+        <div className="mb-3">
+          {loading ? (
+            <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+          ) : (
+            <PostPreviewCover coverUrl={props.coverUrl || EmptyCover} withVideo={typeof props.videoUrl === 'string'} />
+          )}
+        </div>
+        <StyledPostTitle className="title" rows={2}>
+          {loading ? '---' : props.title}
+        </StyledPostTitle>
+        {!loading && <PostPreviewMeta author={props.author} publishedAt={props.publishedAt} />}
+      </Link>
+    </div>
   )
 }
 
@@ -121,7 +127,7 @@ const PostPreviewCover: React.VFC<{
   variant?: 'featuring' | 'popular' | 'list-item'
 }> = ({ coverUrl, withVideo, variant }) => {
   return (
-    <StyledCover>
+    <StyledCover className="cover">
       {withVideo ? (
         <StyledVideoIconBlock variant={variant}>
           <Icon as={PlayCircleIcon} />
@@ -137,7 +143,7 @@ const PostPreviewMeta: React.VFC<{
   publishedAt: Date | null
 }> = ({ author, publishedAt }) => {
   return (
-    <StyledPostMeta>
+    <StyledPostMeta className="meta">
       <div className="mb-1">
         <Icon as={UserOIcon} className="mr-1" style={{ display: 'inline-block' }} />
         <span className="mr-2">{author.name}</span>
