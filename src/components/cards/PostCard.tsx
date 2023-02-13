@@ -1,5 +1,6 @@
 import { Icon } from '@chakra-ui/icons'
 import { Skeleton } from '@chakra-ui/skeleton'
+import classNames from 'classnames'
 import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
 import { desktopViewMixin } from '../../helpers'
@@ -103,7 +104,7 @@ const PostCard: React.VFC<PostElementProps> = props => {
 
   return (
     <div
-      className={props.onClick ? `post cursor-pointer ${props.className}` : `post ${props.className}`}
+      className={classNames('activity', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
       onClick={props.onClick}
     >
       <div className="mb-3">
