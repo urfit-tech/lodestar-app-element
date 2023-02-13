@@ -379,6 +379,13 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     }
   }, [check, productQuantity, remainingCoins, setIsModalDisable, setIsOrderCheckLoading])
 
+  useEffect(() => {
+    if (isOpen) {
+      const resource = resourceCollection.find(notEmpty)
+      resource && tracking.addToCart(resource, { direct: true })
+    }
+  }, [isOpen, resourceCollection, tracking])
+
   if (isAuthenticating) {
     return renderTrigger?.({ isLoading: true })
   }
