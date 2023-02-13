@@ -103,8 +103,11 @@ const PostCard: React.VFC<PostElementProps> = props => {
   }
 
   return (
-    <div className="post">
-      <Link to={!props.editing ? `/posts/${props.codeName || props.id}` : '#!'}>
+    <div
+      className={props.onClick ? `post cursor-pointer ${props.className}` : `post ${props.className}`}
+      onClick={props.onClick}
+    >
+      <Link to={!props.editing && props.codeName && props.id ? `/posts/${props.codeName || props.id}` : '#!'}>
         <div className="mb-3">
           {loading ? (
             <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
@@ -113,7 +116,7 @@ const PostCard: React.VFC<PostElementProps> = props => {
           )}
         </div>
         <StyledPostTitle className="title" rows={2}>
-          {loading ? '---' : props.title}
+          {loading ? <Skeleton width={100} height={6} /> : props.title}
         </StyledPostTitle>
         {!loading && <PostPreviewMeta author={props.author} publishedAt={props.publishedAt} />}
       </Link>

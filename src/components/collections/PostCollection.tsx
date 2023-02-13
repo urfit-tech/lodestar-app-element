@@ -104,7 +104,7 @@ const PostCollection: ElementComponent<PostCollectionProps> = props => {
               </div>
             </div>
             {children}
-            {ctx.loading || loading ? (
+            {ctx.loading ? (
               <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
             ) : ctx.errors ? (
               <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={ctx.errors} />
