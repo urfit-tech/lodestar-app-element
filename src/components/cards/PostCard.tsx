@@ -1,7 +1,6 @@
 import { Icon } from '@chakra-ui/icons'
 import { Skeleton } from '@chakra-ui/skeleton'
 import dayjs from 'dayjs'
-import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { desktopViewMixin } from '../../helpers'
 import { CalendarAltOIcon, PlayCircleIcon, UserOIcon } from '../../images'
@@ -107,19 +106,17 @@ const PostCard: React.VFC<PostElementProps> = props => {
       className={props.onClick ? `post cursor-pointer ${props.className}` : `post ${props.className}`}
       onClick={props.onClick}
     >
-      <Link to={!props.editing && props.codeName && props.id ? `/posts/${props.codeName || props.id}` : '#!'}>
-        <div className="mb-3">
-          {loading ? (
-            <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
-          ) : (
-            <PostPreviewCover coverUrl={props.coverUrl || EmptyCover} withVideo={typeof props.videoUrl === 'string'} />
-          )}
-        </div>
-        <StyledPostTitle className="title" rows={2}>
-          {loading ? <Skeleton width={100} height={6} /> : props.title}
-        </StyledPostTitle>
-        {!loading && <PostPreviewMeta author={props.author} publishedAt={props.publishedAt} />}
-      </Link>
+      <div className="mb-3">
+        {loading ? (
+          <Skeleton width="100%" style={{ paddingTop: 'calc(100% * 9/16)' }} />
+        ) : (
+          <PostPreviewCover coverUrl={props.coverUrl || EmptyCover} withVideo={typeof props.videoUrl === 'string'} />
+        )}
+      </div>
+      <StyledPostTitle className="title" rows={2}>
+        {loading ? <Skeleton width={100} height={6} /> : props.title}
+      </StyledPostTitle>
+      {!loading && <PostPreviewMeta author={props.author} publishedAt={props.publishedAt} />}
     </div>
   )
 }
