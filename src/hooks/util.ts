@@ -142,6 +142,7 @@ export type AuthTokenPayload = {
   role: string
   permissions: string[]
   options?: { [key: string]: any }
+  isFinishedSignUpProperty?: boolean
 }
 
 export const parsePayload = (authToken: string) => {
@@ -161,6 +162,7 @@ export const parsePayload = (authToken: string) => {
       pictureUrl: { type: 'string', nullable: true },
       permissions: { type: 'array', items: { type: 'string' }, default: [] },
       options: { type: 'object', nullable: true },
+      isFinishedSignUpProperty: { type: 'boolean', nullable: true },
     },
     required: [],
   }
