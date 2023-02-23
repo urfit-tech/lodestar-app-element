@@ -93,6 +93,7 @@ export type Module =
   | 'school'
   | 'device_management'
   | 'timetable'
+  | 'business_member'
 
 export type Currency = {
   id: string

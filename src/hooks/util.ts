@@ -3,6 +3,7 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import Ajv, { JSONSchemaType } from 'ajv'
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
+import { Member } from 'lodestar-app-element/src/types/data'
 import { useContext, useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import { useApp } from '../contexts/AppContext'
@@ -142,6 +143,8 @@ export type AuthTokenPayload = {
   role: string
   permissions: string[]
   options?: { [key: string]: any }
+  isBusiness?: boolean | null
+  loggedInMembers?: Member[]
 }
 
 export const parsePayload = (authToken: string) => {
@@ -161,6 +164,8 @@ export const parsePayload = (authToken: string) => {
       pictureUrl: { type: 'string', nullable: true },
       permissions: { type: 'array', items: { type: 'string' }, default: [] },
       options: { type: 'object', nullable: true },
+      isBusiness: { type: 'boolean', nullable: true, default: false },
+      loggedInMembers: { type: 'array', items: { type: 'object', required: [] }, nullable: true, default: [] },
     },
     required: [],
   }
