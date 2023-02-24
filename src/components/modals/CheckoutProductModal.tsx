@@ -384,7 +384,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       const resource = resourceCollection.find(notEmpty)
       resource && tracking.addToCart(resource, { direct: true })
     }
-  }, [isOpen, resourceCollection, tracking])
+  }, [isOpen])
 
   if (isAuthenticating) {
     return renderTrigger?.({ isLoading: true })
@@ -538,6 +538,18 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       .catch(() => {})
   }
 
+  const trackCartItem = (currentQuantity: number, nextQuantity: number) => {
+    if (currentQuantity < nextQuantity) {
+      resourceCollection[0] &&
+        tracking.addToCart(resourceCollection[0], { direct: true, quantity: nextQuantity - currentQuantity })
+    }
+
+    if (currentQuantity > nextQuantity) {
+      resourceCollection[0] &&
+        tracking.removeFromCart(resourceCollection[0], { quantity: currentQuantity - nextQuantity })
+    }
+  }
+
   return (
     <>
       {renderTrigger({
@@ -556,7 +568,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         onClose={() => {
           onClose()
           const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection[0]
-          resource && tracking.removeFromCart(resource)
+          resource && tracking.removeFromCart(resource, { quantity: quantity })
+          setQuantity(1)
         }}
       >
         <div className="mb-4">
@@ -569,7 +582,12 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
                 : 'checkout'
             }
             quantity={quantity}
-            onChange={value => typeof value === 'number' && setQuantity(value)}
+            onChange={value => {
+              if (typeof value === 'number') {
+                trackCartItem(quantity, value)
+                setQuantity(value)
+              }
+            }}
           />
         </div>
 

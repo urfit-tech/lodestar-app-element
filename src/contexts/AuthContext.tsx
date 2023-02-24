@@ -27,9 +27,11 @@ type AuthProps = {
     email: string
     password: string
     withoutLogin?: boolean
+    isBusiness?: boolean
   }) => Promise<any>
   login?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
   socialLogin?: (data: { provider: ProviderType; providerToken: any; accountLinkToken?: string }) => Promise<void>
+  switchMember?: (data: { memberId: string }) => Promise<void>
   logout?: () => Promise<void>
   sendSmsCode?: (data: { phoneNumber: string }) => Promise<void>
   verifySmsCode?: (data: { phoneNumber: string; code: string }) => Promise<void>
@@ -133,6 +135,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               username: data.username,
               email: data.email,
               password: data.password,
+              isBusiness: data.isBusiness ?? false,
             },
             { withCredentials: true },
           ).then(({ data: { code, message, result } }) => {
@@ -270,6 +273,21 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               throw new Error(code)
             }
           }),
+        switchMember: async ({ memberId }) => {
+          return Axios.post(
+            `${process.env.REACT_APP_API_BASE_ROOT}/auth/switch-member`,
+            {
+              memberId,
+            },
+            { withCredentials: true, headers: { Authorization: 'Bearer ' + authToken } },
+          ).then(({ data: { code, message, result } }) => {
+            if (code === 'SUCCESS') {
+              setAuthToken(result.authToken)
+            } else {
+              throw new Error(code)
+            }
+          })
+        },
         logout: async () => {
           localStorage.clear()
           window.location.assign(`${process.env.REACT_APP_API_BASE_ROOT}/auth/logout?redirect=${window.location.href}`)

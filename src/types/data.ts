@@ -42,6 +42,7 @@ export type Member = {
   categories: Category[]
   provider: Record<MemberProvider, any>
   options: { [key: string]: any }
+  isBusiness?: boolean | null
 }
 
 export type PodcastProgram = {
