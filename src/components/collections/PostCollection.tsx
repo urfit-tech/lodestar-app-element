@@ -127,7 +127,7 @@ const PostCollection: ElementComponent<PostCollectionProps> = props => {
                       publishedAt={post.publishedAt}
                       onClick={() => {
                         onClick?.()
-                        !props.editing && history.push(`/post/${post.codeName || post.id}`)
+                        !props.editing && history.push(`/posts/${post.codeName || post.id}`)
                       }}
                     />
                   )
