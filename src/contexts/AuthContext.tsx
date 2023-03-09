@@ -232,27 +232,24 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             }
           }),
         login: async ({ account, password, accountLinkToken }) => {
-          return Axios.post(
+          const {
+            data: { code, message, result },
+          } = await Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
             { appId, account, password },
             { withCredentials: true },
           )
-            .then(({ data: { code, message, result } }) => {
-              if (code === 'SUCCESS') {
-                setAuthToken(result.authToken)
-                if (accountLinkToken && result.authToken) {
-                  window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
-                }
-              } else if (code === 'I_RESET_PASSWORD') {
-                window.location.assign(`/check-email?email=${account}&type=reset-password`)
-              } else {
-                setAuthToken(null)
-                throw getBackendServerError(code, message)
-              }
-            })
-            .catch((error: AxiosError) => {
-              throw error
-            })
+          if (code === 'SUCCESS') {
+            setAuthToken(result.authToken)
+            if (accountLinkToken && result.authToken) {
+              window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
+            }
+          } else if (code === 'I_RESET_PASSWORD') {
+            window.location.assign(`/check-email?email=${account}&type=reset-password`)
+          } else {
+            setAuthToken(null)
+            throw getBackendServerError(code, message)
+          }
         },
         socialLogin: async ({ provider, providerToken, accountLinkToken }) =>
           Axios.post(
