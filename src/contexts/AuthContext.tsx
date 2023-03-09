@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
+import { getBackendServerError } from '../helpers'
 import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hooks/util'
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
@@ -236,7 +237,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             { appId, account, password },
             { withCredentials: true },
           )
-            .then(({ data: { code, result } }) => {
+            .then(({ data: { code, message, result } }) => {
               if (code === 'SUCCESS') {
                 setAuthToken(result.authToken)
                 if (accountLinkToken && result.authToken) {
@@ -246,7 +247,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 window.location.assign(`/check-email?email=${account}&type=reset-password`)
               } else {
                 setAuthToken(null)
-                throw new Error(code)
+                throw getBackendServerError(code, message)
               }
             })
             .catch((error: AxiosError) => {

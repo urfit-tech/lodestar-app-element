@@ -5,6 +5,16 @@ import { css, FlattenSimpleInterpolation } from 'styled-components'
 import { BREAK_POINT } from '../components/common/Responsive'
 import { ContactInfo } from '../types/checkout'
 import { ProductPlan } from '../types/data'
+import {
+  BindDeviceError,
+  InputError,
+  LoginDeviceError,
+  NoMemberError,
+  NoModuleError,
+  PasswordError,
+  SendEmailError,
+  SessionError,
+} from './error'
 
 export const durationFullFormatter = (seconds: number) => {
   if (seconds >= 3600) {
@@ -151,4 +161,37 @@ export const checkUniformNumber = (uniformNumber: string | number) => {
   if (totalSum % 10 === 0) return true
   else if (splitNum[6] === '7' && (totalSum + 1) % 10 === 0) return true
   else return false
+}
+
+export const getBackendServerError = (code: string, message: string) => {
+  let errorObject: Error
+  switch (code) {
+    case 'E_INPUT':
+      errorObject = new InputError(message)
+      break
+    case 'E_SESSION':
+      errorObject = new SessionError(message)
+      break
+    case 'E_NO_MODULE':
+      errorObject = new NoModuleError(message)
+      break
+    case 'E_SEND_EMAIL':
+      errorObject = new SendEmailError(message)
+      break
+    case 'E_PASSWORD':
+      errorObject = new PasswordError(message)
+      break
+    case 'E_NO_MEMBER':
+      errorObject = new NoMemberError(message)
+      break
+    case 'E_BIND_DEVICE':
+      errorObject = new BindDeviceError(message)
+      break
+    case 'E_LOGIN_DEVICE':
+      errorObject = new LoginDeviceError(message)
+      break
+    default:
+      errorObject = new Error(message)
+  }
+  return errorObject
 }
