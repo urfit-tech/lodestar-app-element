@@ -18,6 +18,7 @@ type AuthProps = {
   currentMemberId: string | null
   authToken: string | null
   isFinishedSignUpProperty: boolean
+  isBusiness: boolean
   updateAuthToken?: (authToken: string | null) => void
   currentMember: Pick<Member, 'id' | 'name' | 'username' | 'email' | 'pictureUrl' | 'role' | 'options'> | null
   permissions: { [key in Permission]?: boolean }
@@ -48,6 +49,7 @@ const defaultAuthContext: AuthProps = {
   currentMember: null,
   permissions: {},
   isFinishedSignUpProperty: true,
+  isBusiness: false,
 }
 
 const AuthContext = createContext<AuthProps>(defaultAuthContext)
@@ -113,6 +115,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         authToken,
         updateAuthToken: authToken => setAuthToken(authToken),
         isFinishedSignUpProperty: !!payload?.isFinishedSignUpProperty,
+        isBusiness: !!payload?.isBusiness,
         currentMember: payload && {
           id: payload.sub,
           name: payload.name,
