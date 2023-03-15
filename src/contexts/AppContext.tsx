@@ -116,7 +116,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             name: data.app_by_pk.name || '',
             title: data.app_by_pk.title,
             description: data.app_by_pk.description,
-            host: data.app_by_pk.app_hosts.shift()?.host || window.location.host,
+            host: data.app_by_pk.app_hosts?.[0]?.host || window.location.host,
             hosts: data?.app_by_pk?.app_hosts.map(v => v.host) || [],
             enabledModules: Object.fromEntries(data.app_by_pk.app_modules.map(v => [v.module_id, true]) || []),
             navs: data.app_by_pk.app_navs.map(appNav => ({
