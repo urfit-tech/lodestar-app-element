@@ -94,6 +94,7 @@ export type Module =
   | 'device_management'
   | 'timetable'
   | 'business_member'
+  | 'background_mode'
 
 export type Currency = {
   id: string
