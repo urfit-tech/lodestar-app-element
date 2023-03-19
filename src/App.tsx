@@ -5,6 +5,7 @@ import { QueryParamProvider } from 'use-query-params'
 import * as CraftResolvers from './components/common/CraftElement'
 import { LodestarAppProvider } from './contexts/LodestarAppContext'
 import ActivityPage from './pages/ActivityPage'
+import AIBotPage from './pages/AIBotPage'
 import AuthPage from './pages/AuthPage'
 import CarouselPage from './pages/CarouselPage'
 import CheckoutPage from './pages/CheckoutPage'
@@ -31,6 +32,7 @@ const routes = [
   { name: 'Carousel', path: '/carousel', component: CarouselPage },
   { name: 'Image', path: '/image', component: ImagePage },
   { name: 'Checkout', path: '/checkout', component: CheckoutPage },
+  { name: 'AIBot', path: '/ai-bot', component: AIBotPage },
 ]
 const App: React.VFC = () => {
   const [editing, setEditing] = useState(false)

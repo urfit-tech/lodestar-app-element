@@ -9,6 +9,7 @@ import ProgramCollection from '../collections/ProgramCollection'
 import ProgramContentCollection from '../collections/ProgramContentCollection'
 import ProgramPackageCollection from '../collections/ProgramPackageCollection'
 import ProjectCollection from '../collections/ProjectCollection'
+import AIBot from './AIBot'
 import Carousel from './Carousel'
 import Craftize from './Craftize'
 import Embedded from './Embedded'
@@ -32,6 +33,7 @@ export const CraftRichCard = Craftize(RichCard)
 export const CraftCarousel = Craftize(Carousel)
 export const CraftCollapse = Craftize(Collapse)
 export const CraftEmbedded = Craftize(Embedded)
+export const CraftAIBot = Craftize(AIBot)
 
 // product catalog
 export const CraftMemberCollection = Craftize(MemberCollection)
