@@ -21,6 +21,9 @@ const AIBot: ElementComponent<AIBotProps> = props => {
   }
   const invalids = props.assistants.map((assistant, idx) => assistant.required === true && userMessages[idx] === '')
   const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = e => {
+    if (props.editing) {
+      return
+    }
     setIsInvalid(invalids)
     if (!invalids.some(v => v)) {
       const messages = [{ role: 'system', content: props.system }]
