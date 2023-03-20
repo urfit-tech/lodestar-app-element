@@ -95,6 +95,7 @@ export type Module =
   | 'timetable'
   | 'business_member'
   | 'background_mode'
+  | 'openai'
 
 export type Currency = {
   id: string
