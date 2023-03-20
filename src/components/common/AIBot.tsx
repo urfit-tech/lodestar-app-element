@@ -83,11 +83,14 @@ const AIBot: ElementComponent<AIBotProps> = props => {
         width="100%"
         isLoading={isLoading}
         onClick={handleSubmit}
-        disabled={props.editing || invalids.some(v => v)}
+        disabled={props.editing || isLoading || invalids.some(v => v)}
       >
         {props.submitText}
       </Button>
-      <p className="ai-form-result" dangerouslySetInnerHTML={{ __html: result.trim().replaceAll('\n', '<br/>') }} />
+      <p
+        className="ai-form-result"
+        dangerouslySetInnerHTML={{ __html: isLoading ? 'Loading...' : result.trim().replaceAll('\n', '<br/>') }}
+      />
     </form>
   )
 }
