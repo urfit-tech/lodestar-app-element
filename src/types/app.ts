@@ -96,6 +96,7 @@ export type Module =
   | 'business_member'
   | 'background_mode'
   | 'openai'
+  | 'meet_service'
 
 export type Currency = {
   id: string
