@@ -90,7 +90,7 @@ const AIBot: ElementComponent<AIBotProps> = props => {
       >
         {props.submitText}
       </Button>
-      <p className="ai-form-result" dangerouslySetInnerHTML={{ __html: result.replaceAll('\n', '<br/>') }} />
+      <p className="ai-form-result" dangerouslySetInnerHTML={{ __html: result.trim().replaceAll('\n', '<br/>') }} />
     </form>
   )
 }
