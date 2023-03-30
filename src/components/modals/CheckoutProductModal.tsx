@@ -512,7 +512,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       })
     }
 
-    placeOrder(
+    const { orderId, paymentNo, payToken } = await placeOrder(
       productTarget.isSubscription ? 'subscription' : 'perpetual',
       {
         ...invoice,
@@ -520,22 +520,19 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
       },
       payment,
     )
-      .then(taskId =>
-        // sync cart info
-        updateMemberMetadata({
-          variables: {
-            memberId: currentMember.id,
-            metadata: {
-              invoice,
-              shipping,
-              payment,
-            },
-            memberPhones: invoice.phone ? [{ member_id: currentMember.id, phone: invoice.phone }] : [],
-          },
-        }).then(() => taskId),
-      )
-      .then(taskId => history.push(`/tasks/order/${taskId}`))
-      .catch(() => {})
+
+    await updateMemberMetadata({
+      variables: {
+        memberId: currentMember.id,
+        metadata: {
+          invoice,
+          shipping,
+          payment,
+        },
+        memberPhones: invoice.phone ? [{ member_id: currentMember.id, phone: invoice.phone }] : [],
+      },
+    }).catch(() => {})
+    history.push(paymentNo ? `/payments/${paymentNo}?token=${payToken}` : `/orders/${orderId}?tracking=1`)
   }
 
   const trackCartItem = (currentQuantity: number, nextQuantity: number) => {
