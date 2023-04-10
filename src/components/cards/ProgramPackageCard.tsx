@@ -1,12 +1,22 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { defineMessages, useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProgramPackageElementProps } from '../../types/element'
+import { MultiLineTruncationMixin } from '../common'
 import { CustomRatioImage } from '../common/Image'
 import PriceLabel from '../labels/PriceLabel'
 import Card from './Card'
+
+const StyledTitle = styled.div`
+  ${MultiLineTruncationMixin}
+  height: 3em;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 0.8px;
+`
 
 const messages = defineMessages({
   totalCourses: { id: 'programPackage.card.totalCourses', defaultMessage: '{count} 堂課' },
@@ -34,9 +44,9 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
         {loading ? (
           <Skeleton className="mb-3" width="20" height={4} />
         ) : (
-          <Card.Title className="content__title">
+          <StyledTitle className="content__title">
             <Link to={!props.editing && props.link ? props.link : '#!'}>{props.title}</Link>
-          </Card.Title>
+          </StyledTitle>
         )}
         <Card.Description className="description">
           {loading ? (
