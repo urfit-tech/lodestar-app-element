@@ -14,7 +14,7 @@
     ]
   },
   "dependencies": {
-    "@apollo/react-hooks": "3.1.5",
+    "@apollo/client": "^3.7.11",
     "@bobthered/tailwindcss-palette-generator": "2.0.0",
     "@chakra-ui/icons": "1.0.0",
     "@chakra-ui/react": "1.1.2",
@@ -37,17 +37,14 @@
     "@types/uuid": "8.3.1",
     "ajv": "^8.11.2",
     "antd": "3",
-    "apollo-cache-inmemory": "1.6.6",
-    "apollo-client": "2.6.10",
-    "apollo-link": "1.2.14",
-    "apollo-link-error": "1.1.13",
-    "apollo-link-http": "1.5.17",
     "axios": "0.21.4",
     "braft-editor": "2.3.9",
     "classnames": "^2.3.1",
     "dayjs": "^1.11.7",
     "framer-motion": "2.9.4",
+    "graphql": "^16.6.0",
     "graphql-tag": "2.12.5",
+    "graphql-ws": "^5.12.1",
     "jsonwebtoken": "8.5.1",
     "libphonenumber-js": "1.9.34",
     "moment": "^2.29.1",
@@ -113,5 +110,8 @@
   "resolutions": {
     "@craftjs/utils": "0.1.0-beta.20",
     "@types/react": "17.0.0"
+  },
+  "volta": {
+    "node": "14.21.3"
   }
 }

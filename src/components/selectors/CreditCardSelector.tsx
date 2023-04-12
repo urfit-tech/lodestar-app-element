@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { Radio } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio'
 import gql from 'graphql-tag'

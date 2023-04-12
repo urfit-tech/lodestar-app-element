@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import moment from 'moment'
 import { pipe, prop, sortBy, sum, uniq, uniqBy } from 'ramda'

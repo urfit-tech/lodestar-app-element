@@ -1,9 +1,8 @@
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import ApolloClient from 'apollo-client'
-import { ApolloLink } from 'apollo-link'
-import { setContext } from 'apollo-link-context'
-import { onError } from 'apollo-link-error'
-import { createHttpLink } from 'apollo-link-http'
+import { ApolloClient, from, HttpLink, InMemoryCache, split } from '@apollo/client'
+import { onError } from '@apollo/client/link/error'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { getMainDefinition } from '@apollo/client/utilities'
+import { createClient } from 'graphql-ws'
 import { v4 as uuidv4 } from 'uuid'
 
 type ApolloClientOptions = {
@@ -29,46 +28,56 @@ const onErrorLink = (callbacks?: ApolloCallbacks) =>
     networkError && console.log(`[Network error]: ${JSON.stringify(networkError)}`)
   })
 
-// create auth context link
-const withAuthTokenLink = ({ appId, authToken }: ApolloClientOptions) =>
-  setContext(() =>
-    authToken
-      ? {
-          headers: { authorization: `Bearer ${authToken}` },
-        }
-      : {
-          headers: {
-            'x-hasura-org-id': null,
-            'x-hasura-app-id': appId,
-            'x-hasura-user-id': uuidv4(),
-            'x-hasura-role': 'anonymous',
-          },
-        },
+const createSplitLink = (appId: string, authToken: string | null) =>
+  split(
+    ({ query }) => {
+      const definition = getMainDefinition(query)
+      return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
+    },
+    new GraphQLWsLink(
+      createClient({
+        url: String(process.env.REACT_APP_GRAPHQL_WS_ENDPOINT),
+      }),
+    ),
+    split(
+      ({ query }) => {
+        const definition = getMainDefinition(query)
+        return (
+          (definition.kind === 'OperationDefinition' &&
+            (definition.name?.value.startsWith('Ph') || definition.name?.value.startsWith('PH_'))) ||
+          false
+        )
+      },
+      new HttpLink({
+        uri: process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
+        headers: authToken
+          ? {
+              authorization: `Bearer ${authToken}`,
+            }
+          : {
+              'x-hasura-app-id': appId,
+              'x-hasura-user-id': uuidv4(),
+              'x-hasura-role': 'anonymous',
+            },
+      }),
+      new HttpLink({
+        uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
+        headers: authToken
+          ? {
+              authorization: `Bearer ${authToken}`,
+            }
+          : {
+              'x-hasura-app-id': appId,
+              'x-hasura-user-id': uuidv4(),
+              'x-hasura-role': 'anonymous',
+            },
+      }),
+    ),
   )
-
-// create http link:
-const httpLink = createHttpLink({ uri: process.env.REACT_APP_GRAPHQL_ENDPOINT })
-
-// create ws link
-// const wsLink = new WebSocketLink({
-//   uri: `wss://${process.env.REACT_APP_GRAPHQL_ENDPOINT}`,
-//   options: {
-//     reconnect: true,
-//   },
-// })
-
-// const splitLink = split(
-//   ({ query }) => {
-//     const definition = getMainDefinition(query)
-//     return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
-//   },
-//   wsLink,
-//   httpLink,
-// )
 
 export const createApolloClient = (options: ApolloClientOptions, callbacks?: ApolloCallbacks) => {
   const apolloClient = new ApolloClient({
-    link: ApolloLink.from([onErrorLink(callbacks), withAuthTokenLink(options), httpLink]),
+    link: from([onErrorLink(callbacks), createSplitLink(options.appId, options.authToken)]),
     cache: new InMemoryCache(),
   })
   return apolloClient

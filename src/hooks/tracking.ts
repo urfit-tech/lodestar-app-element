@@ -1,4 +1,4 @@
-import { useApolloClient } from '@apollo/react-hooks'
+import { useApolloClient } from '@apollo/client'
 import Axios from 'axios'
 import { sum, uniq } from 'ramda'
 import { useApp } from '../contexts/AppContext'

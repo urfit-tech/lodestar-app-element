@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import gql from 'graphql-tag'

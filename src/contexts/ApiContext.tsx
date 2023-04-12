@@ -1,4 +1,4 @@
-import { ApolloProvider } from '@apollo/react-hooks'
+import { ApolloProvider } from '@apollo/client'
 import { createApolloClient } from '../helpers/apollo'
 import { useAuth } from './AuthContext'
 
