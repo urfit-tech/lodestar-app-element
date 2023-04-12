@@ -1,7 +1,6 @@
-import { useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import { Radio } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio'
-import gql from 'graphql-tag'
 import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import hasura from '../../hasura'

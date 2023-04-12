@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
 import { useHistory } from 'react-router'
@@ -215,7 +214,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
   data?.program_package.map(pp => ({
     id: pp.id,
     title: pp.title,
-    coverUrl: pp.cover_url,
+    coverUrl: pp.cover_url || null,
     categories: pp.program_package_categories.map(ppc => ({
       id: ppc.category.id,
       name: ppc.category.name,

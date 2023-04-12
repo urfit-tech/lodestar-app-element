@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
@@ -152,10 +151,10 @@ const composeCollectionData = (data: hasura.GET_MEMBER_COLLECTION): MemberData[]
   data.member_public.map(m => ({
     id: m.id || '',
     name: m.name || '',
-    title: m.title,
-    abstract: m.abstract,
-    pictureUrl: m.picture_url,
-    description: m.description,
+    title: m.title || null,
+    abstract: m.abstract || null,
+    pictureUrl: m.picture_url || null,
+    description: m.description || null,
   }))
 
 const memberFields = gql`

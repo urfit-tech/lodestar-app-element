@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import hasura from '../hasura'
 import { AppProps, NavProps } from '../types/app'
@@ -112,10 +111,10 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             error,
             refetch,
             id: data.app_by_pk.id,
-            orgId: data.app_by_pk.org_id,
+            orgId: data.app_by_pk.org_id || null,
             name: data.app_by_pk.name || '',
-            title: data.app_by_pk.title,
-            description: data.app_by_pk.description,
+            title: data.app_by_pk.title || null,
+            description: data.app_by_pk.description || null,
             host: data.app_by_pk.app_hosts?.[0]?.host || window.location.host,
             hosts: data?.app_by_pk?.app_hosts.map(v => v.host) || [],
             enabledModules: Object.fromEntries(data.app_by_pk.app_modules.map(v => [v.module_id, true]) || []),
@@ -124,21 +123,21 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
               block: appNav.block as NavProps['block'],
               position: appNav.position,
               label: appNav.label,
-              icon: appNav.icon,
+              icon: appNav.icon || null,
               href: appNav.href,
               external: appNav.external,
               locale: appNav.locale,
-              tag: appNav.tag,
+              tag: appNav.tag || null,
               subNavs: appNav.sub_app_navs.map(v => ({
                 id: v.id,
                 block: v.block as NavProps['block'],
                 position: v.position,
                 label: v.label,
-                icon: v.icon,
+                icon: v.icon || null,
                 href: v.href,
                 external: v.external,
                 locale: v.locale,
-                tag: v.tag,
+                tag: v.tag || null,
               })),
             })),
             settings,

@@ -1,7 +1,6 @@
-import { useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
-import gql from 'graphql-tag'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'

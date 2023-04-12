@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 export const programFamilyFields = gql`
   fragment trackingProgramPackageFields on program_package {

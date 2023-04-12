@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
 import { useHistory } from 'react-router'
@@ -216,7 +215,7 @@ const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityDa
   data?.activity.map(a => ({
     id: a.id,
     title: a.title,
-    coverUrl: a.cover_url,
+    coverUrl: a.cover_url || null,
     isParticipantVisible: a.is_participants_visible,
     organizerId: a.organizer_id,
     sessions: a.activity_sessions.map(as => ({

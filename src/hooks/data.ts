@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import moment from 'moment'
 import { sum } from 'ramda'
 import { DeepPick } from 'ts-deep-pick/lib'
@@ -172,7 +171,7 @@ export const usePublishedPodcastProgramCollection = (options?: { ids?: string[];
   >[] =
     data?.podcast_program.map(v => ({
       id: v.id,
-      coverUrl: v.cover_url,
+      coverUrl: v.cover_url || null,
       title: v.title,
       totalDuration: v.duration_second,
       roles: v.podcast_program_roles.map(ppr => ({
@@ -215,7 +214,7 @@ export const usePublicMember = (memberId: string) => {
       ? null
       : {
           id: data.member_public[0].id || '',
-          pictureUrl: data.member_public[0].picture_url,
+          pictureUrl: data.member_public[0].picture_url || null,
           name: data.member_public[0].name || data.member_public[0].username || '',
         }
 
@@ -258,11 +257,11 @@ export const useInstructorCollection = (appId: string, options?: { ids?: string[
     avatarUrl: string | null
   }[] =
     data?.instructor.map(v => ({
-      id: v.id,
-      name: v.name,
-      abstract: v.abstract,
-      description: v.description,
-      avatarUrl: v.picture_url,
+      id: v.id || null,
+      name: v.name || null,
+      abstract: v.abstract || null,
+      description: v.description || null,
+      avatarUrl: v.picture_url || null,
     })) || []
 
   return {
@@ -419,7 +418,7 @@ export const useCouponCollection = (memberId: string) => {
               constraint: coupon.coupon_code.coupon_plan.constraint,
               amount: coupon.coupon_code.coupon_plan.amount,
               title: coupon.coupon_code.coupon_plan.title,
-              description: coupon.coupon_code.coupon_plan.description,
+              description: coupon.coupon_code.coupon_plan.description || '',
               count: 0,
               remaining: 0,
               scope: coupon.coupon_code.coupon_plan.scope,

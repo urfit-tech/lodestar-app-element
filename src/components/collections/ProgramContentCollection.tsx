@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import { sum } from 'ramda'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
@@ -143,9 +142,9 @@ const collectCustomCollection = (options: ProductCustomSource) => {
         contentSection: {
           program: {
             id: pc.program_content_section.program.id,
-            coverUrl: pc.program_content_section.program.cover_url,
-            coverMobileUrl: pc.program_content_section.program.cover_mobile_url,
-            coverThumbnailUrl: pc.program_content_section.program.cover_thumbnail_url,
+            coverUrl: pc.program_content_section.program.cover_url || null,
+            coverMobileUrl: pc.program_content_section.program.cover_mobile_url || null,
+            coverThumbnailUrl: pc.program_content_section.program.cover_thumbnail_url || null,
           },
         },
         videos: pc.program_content_videos.map(pcv => ({ id: pcv.attachment_id })),
@@ -187,9 +186,9 @@ const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => 
         contentSection: {
           program: {
             id: pcp.program_content.program_content_section.program.id,
-            coverUrl: pcp.program_content.program_content_section.program.cover_url,
-            coverMobileUrl: pcp.program_content.program_content_section.program.cover_mobile_url,
-            coverThumbnailUrl: pcp.program_content.program_content_section.program.cover_thumbnail_url,
+            coverUrl: pcp.program_content.program_content_section.program.cover_url || null,
+            coverMobileUrl: pcp.program_content.program_content_section.program.cover_mobile_url || null,
+            coverThumbnailUrl: pcp.program_content.program_content_section.program.cover_thumbnail_url || null,
           },
         },
         videos: pcp.program_content.program_content_videos.map(pcv => ({ id: pcv.attachment_id })),

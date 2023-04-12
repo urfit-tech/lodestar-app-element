@@ -1,5 +1,4 @@
-import { ApolloClient, useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { ApolloClient, gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
 import hasura from '../hasura'
 import { Member } from '../types/data'

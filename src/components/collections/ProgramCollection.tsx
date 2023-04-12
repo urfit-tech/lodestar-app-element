@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import moment from 'moment'
 import { pipe, prop, sortBy, sum, uniq, uniqBy } from 'ramda'
 import { useEffect, useState } from 'react'
@@ -518,9 +517,9 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
     id: p.id,
     title: p.title,
     abstract: p.abstract || '',
-    coverUrl: p.cover_url,
-    coverMobileUrl: p.cover_mobile_url,
-    coverThumbnailUrl: p.cover_thumbnail_url,
+    coverUrl: p.cover_url || null,
+    coverMobileUrl: p.cover_mobile_url || null,
+    coverThumbnailUrl: p.cover_thumbnail_url || null,
     totalDuration: sum(
       p.program_content_sections.map(pcs => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0),
     ),

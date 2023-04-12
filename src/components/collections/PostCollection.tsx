@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import { pipe, prop, sortBy, uniqBy } from 'ramda'
 import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
@@ -262,11 +261,11 @@ const composeCollectionData = (data: hasura.GET_POST_COLLECTION): PostData[] =>
   data.post.map(p => ({
     id: p.id,
     title: p.title,
-    coverUrl: p.cover_url,
-    videoUrl: p.video_url,
+    coverUrl: p.cover_url || null,
+    videoUrl: p.video_url || null,
     publishedAt: p.published_at ? new Date(p.published_at) : null,
     views: Number(p.views),
-    codeName: p.code_name,
+    codeName: p.code_name || null,
     pinnedAt: p.pinned_at ? new Date(p.pinned_at) : null,
     author: {
       id: p.post_roles?.[0]?.id || '',

@@ -1,5 +1,5 @@
+import { gql } from '@apollo/client'
 import { DocumentNode } from 'graphql'
-import gql from 'graphql-tag'
 
 export const getMemberCollectionQuery = (memberFields: DocumentNode) => gql`
   query GET_MEMBER_COLLECTION(

@@ -1,5 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import hasura from '../hasura'
 import { MemberProps, UserRole } from '../types/member'
 
@@ -40,15 +39,15 @@ export const useMember = (memberId: string) => {
           username: data.member_by_pk.username,
           name: data.member_by_pk.name,
           email: data.member_by_pk.email,
-          pictureUrl: data.member_by_pk.picture_url,
+          pictureUrl: data.member_by_pk.picture_url || null,
           shipping: data.member_by_pk.metadata.shipping || null,
           invoice: data.member_by_pk.metadata.invoice || null,
           payment: data.member_by_pk.metadata.payment || null,
-          description: data.member_by_pk.description,
+          description: data.member_by_pk.description || null,
           createdAt: data.member_by_pk.created_at,
           loginedAt: data.member_by_pk.logined_at,
-          facebookUserId: data.member_by_pk.facebook_user_id,
-          googleUserId: data.member_by_pk.google_user_id,
+          facebookUserId: data.member_by_pk.facebook_user_id || null,
+          googleUserId: data.member_by_pk.google_user_id || null,
           youtubeChannelIds: data.member_by_pk.youtube_channel_ids,
           phone: data.member_by_pk.member_phones[0]?.phone || '',
         }

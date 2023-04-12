@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import { sum, uniqBy } from 'ramda'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
@@ -247,9 +246,9 @@ const composeCollectionData = (data: hasura.GET_PROJECT_COLLECTION): ProjectData
     id: p.id,
     title: p.title,
     abstract: p.abstract || '',
-    coverUrl: p.cover_url,
+    coverUrl: p.cover_url || null,
     coverType: (p.cover_type as ProjectData['coverType']) ?? 'image',
-    previewUrl: p.preview_url,
+    previewUrl: p.preview_url || null,
     type: p.type as ProjectData['type'],
     target: {
       amount: p.target_amount,
@@ -261,7 +260,7 @@ const composeCollectionData = (data: hasura.GET_PROJECT_COLLECTION): ProjectData
     totalSales: p.project_sales?.total_sales || 0,
     enrollmentCount: sum(p.project_plans.map(pp => pp.project_plan_enrollments_aggregate.aggregate?.count || 0)),
     categories: p.project_categories.map(pc => pc.category),
-    creatorId: p.creator_id,
+    creatorId: p.creator_id || null,
     authorId: p.author[0]?.member?.id,
   }))
 

@@ -1,5 +1,4 @@
-import { QueryHookOptions, useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, QueryHookOptions, useQuery } from '@apollo/client'
 import { sum } from 'ramda'
 import hasura from '../hasura'
 
