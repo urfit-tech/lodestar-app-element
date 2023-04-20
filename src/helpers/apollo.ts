@@ -2,6 +2,7 @@ import { ApolloClient, from, HttpLink, InMemoryCache, split } from '@apollo/clie
 import { onError } from '@apollo/client/link/error'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
+import { OperationTypeNode } from 'graphql'
 import { createClient } from 'graphql-ws'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -28,6 +29,21 @@ const onErrorLink = (callbacks?: ApolloCallbacks) =>
     networkError && console.log(`[Network error]: ${JSON.stringify(networkError)}`)
   })
 
+const createHttpLink = (endpoint: string | undefined, options: { authToken: string | null; appId: string }) =>
+  new HttpLink({
+    uri: endpoint,
+    headers: options.authToken
+      ? {
+          authorization: `Bearer ${options.authToken}`,
+        }
+      : {
+          'x-hasura-org-id': options.appId,
+          'x-hasura-app-id': options.appId,
+          'x-hasura-user-id': uuidv4(),
+          'x-hasura-role': 'anonymous',
+        },
+  })
+
 const createSplitLink = (appId: string, authToken: string | null) =>
   split(
     ({ query }) => {
@@ -42,38 +58,21 @@ const createSplitLink = (appId: string, authToken: string | null) =>
     split(
       ({ query }) => {
         const definition = getMainDefinition(query)
-        return (
-          (definition.kind === 'OperationDefinition' &&
-            (definition.name?.value.startsWith('Ph') || definition.name?.value.startsWith('PH_'))) ||
-          false
-        )
+        return (definition.kind === 'OperationDefinition' && definition.operation === OperationTypeNode.QUERY) || false
       },
-      new HttpLink({
-        uri: process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
-        headers: authToken
-          ? {
-              authorization: `Bearer ${authToken}`,
-            }
-          : {
-              'x-hasura-org-id': appId,
-              'x-hasura-app-id': appId,
-              'x-hasura-user-id': uuidv4(),
-              'x-hasura-role': 'anonymous',
-            },
-      }),
-      new HttpLink({
-        uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
-        headers: authToken
-          ? {
-              authorization: `Bearer ${authToken}`,
-            }
-          : {
-              'x-hasura-org-id': appId,
-              'x-hasura-app-id': appId,
-              'x-hasura-user-id': uuidv4(),
-              'x-hasura-role': 'anonymous',
-            },
-      }),
+      split(
+        ({ query }) => {
+          const definition = getMainDefinition(query)
+          return (
+            (definition.kind === 'OperationDefinition' &&
+              (definition.name?.value.startsWith('Ph') || definition.name?.value.startsWith('PH_'))) ||
+            false
+          )
+        },
+        createHttpLink(process.env.REACT_APP_GRAPHQL_PH_ENDPOINT, { authToken, appId }),
+        createHttpLink(process.env.REACT_APP_GRAPHQL_RH_ENDPOINT, { authToken, appId }),
+      ),
+      createHttpLink(process.env.REACT_APP_GRAPHQL_PH_ENDPOINT, { authToken, appId }),
     ),
   )
 
