@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { ElementComponent } from '../../types/element'
 
 export type SectionProps = {
+  id?: string
   link?: string
   openTab?: boolean
   horizontal?: boolean
