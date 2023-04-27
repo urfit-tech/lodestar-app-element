@@ -3,7 +3,7 @@ import { CodegenConfig } from '@graphql-codegen/cli'
 
 console.log(process.env.NODE_ENV)
 const config: CodegenConfig = {
-  schema: process.env.REACT_APP_GRAPHQL_ENDPOINT,
+  schema: process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
   documents: ['src/**/*.ts', 'src/**/*.tsx'],
   generates: {
     './src/hasura.d.ts': {

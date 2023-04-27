@@ -148,9 +148,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 const currentMemberId = jwt.decode(result.authToken)?.sub
                 const phone = sessionStorage.getItem('phone')
                 if (phone) {
-                  process.env.REACT_APP_GRAPHQL_ENDPOINT &&
+                  process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
-                      process.env.REACT_APP_GRAPHQL_ENDPOINT,
+                      process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
                       {
                         query: `
                         mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
@@ -173,9 +173,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                   sessionStorage.getItem('memberProperties') || '[]',
                 )
                 if (categoryIds.length) {
-                  process.env.REACT_APP_GRAPHQL_ENDPOINT &&
+                  process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
-                      process.env.REACT_APP_GRAPHQL_ENDPOINT,
+                      process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
                       {
                         query: `
                         mutation INSERT_MEMBER_CATEGORIES($memberProperties: [member_property_insert_input!]!, $data: [member_category_insert_input!]!) {
@@ -205,9 +205,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 }
                 const star = sessionStorage.getItem('star')
                 if (star) {
-                  process.env.REACT_APP_GRAPHQL_ENDPOINT &&
+                  process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
-                      process.env.REACT_APP_GRAPHQL_ENDPOINT,
+                      process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
                       {
                         query: `
                         mutation SET_MEMBER_STAR($memberId: String!, $star: numeric!) {
