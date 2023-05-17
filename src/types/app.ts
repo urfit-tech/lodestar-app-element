@@ -97,6 +97,13 @@ export type Module =
   | 'background_mode'
   | 'openai'
   | 'meet_service'
+  | 'sale_manager'
+  | 'media_library'
+  | 'program'
+  | 'promotion'
+  | 'member_contract_manager'
+  | 'sales_call'
+  | 'analytics'
 
 export type Currency = {
   id: string
