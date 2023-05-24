@@ -105,6 +105,7 @@ export type Module =
   | 'sales_call'
   | 'analytics'
   | 'member_level'
+  | 'product_level'
 
 export type Currency = {
   id: string
