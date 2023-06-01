@@ -316,7 +316,7 @@ const ShippingInput: React.VFC<{
                 }}
                 disabled={isOutsideTaiwanIsland}
               >
-                {cities.map(city => {
+                {cities?.map(city => {
                   return (
                     <Select.Option key={city} disabled={['澎湖縣', '金門縣', '連江縣'].includes(city)}>
                       {city}
@@ -335,7 +335,7 @@ const ShippingInput: React.VFC<{
                 }}
                 disabled={isOutsideTaiwanIsland}
               >
-                {districts[value?.city || ''].map(district => {
+                {districts?.[value?.city || '']?.map(district => {
                   return (
                     <Select.Option
                       key={district}
