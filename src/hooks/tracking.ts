@@ -604,7 +604,10 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             event: 'view_item_list',
             label: items.map(item => item.item_name).join('|'),
             value: sum(items.map(item => item.price || 0)),
-            ecommerce: { items },
+            ecommerce: {
+              type: 'ga4',
+              items,
+            },
           })
         }
       }
@@ -648,6 +651,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           label: resource.title,
           value: resource.price,
           ecommerce: {
+            type: 'ga4',
             currency: appCurrencyId,
             value: resource.price,
             items,
@@ -693,6 +697,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           label: resource.title,
           value: resource.price,
           ecommerce: {
+            type: 'ga4',
             currency: appCurrencyId,
             value: resource.price,
             items,
@@ -727,6 +732,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         label: resource.title,
         value: resource.price,
         ecommerce: {
+          type: 'ga4',
           currency: appCurrencyId,
           value: resource.price,
           items: [item],
@@ -759,6 +765,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         label: resource.title,
         value: resource.price,
         ecommerce: {
+          type: 'ga4',
           currency: appCurrencyId,
           value: resource.price,
           items: [item],
@@ -802,6 +809,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           label: resources.map(resource => resource.title).join('|'),
           value: sum(resources.map(resource => resource.price || 0)),
           ecommerce: {
+            type: 'ga4',
             currency: appCurrencyId,
             value: sum(resources.map(resource => resource.price || 0)),
             items,
@@ -819,6 +827,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       //   label: resources.map(resource => resource.title).join('|'),
       //   value: sum(resources.map(resource => resource.price || 0)),
       //   ecommerce: {
+      // type: 'ga4',
       //     currency: appCurrencyId,
       //     value: sum(resources.map(resource => resource.price || 0)),
       //     items: ecProducts.map((product, index) => ({
@@ -875,6 +884,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
           value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
           ecommerce: {
+            type: 'ga4',
             currency: appCurrencyId,
             value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
             transaction_id: orderId,
