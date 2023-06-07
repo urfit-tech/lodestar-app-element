@@ -102,6 +102,7 @@ const convertCwProduct: (
 export const useTracking = (trackingOptions = { separator: '|' }) => {
   const { settings, currencyId: appCurrencyId, id: appId } = useApp()
   const brand = settings['name'] || document.title
+  const enabledGA4 = Boolean(Number(settings['tracking.ga4.enabled']))
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
   const apolloClient = useApolloClient()
   const EC_ITEM_MAP_KEY_PREFIX = `ga.event.item`
@@ -566,7 +567,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       UAimpress(resources, options)
-      if (options?.ignore !== 'EEC') {
+      if (enabledGA4 && options?.ignore !== 'EEC') {
         const items: EcItem[] = resources.reduce<EcItem[]>((prev, curr, index) => {
           const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
           const products =
@@ -621,7 +622,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       UAclick(resource, options)
-      if (options?.ignore !== 'EEC') {
+      if (enabledGA4 && options?.ignore !== 'EEC') {
         const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
         const items: EcItem[] = resourceOrProducts
           .map(resource => {
@@ -668,7 +669,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       UAdetail(resource, options)
-      if (options?.ignore !== 'EEC') {
+      if (enabledGA4 && options?.ignore !== 'EEC') {
         const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
         const items: EcItem[] = resourceOrProducts
           .map(resource => {
@@ -713,31 +714,33 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       UAaddToCart(resource, options)
-      const itemId = resource.sku || resource.id
-      const item: EcItem = {
-        ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
-        item_id: itemId,
-        item_name: resource.title,
-        price: resource.price,
-        quantity: options?.quantity || 1, // TODO: use the inventory
-        item_brand: brand,
-        item_category: resource.categories?.join(trackingOptions.separator),
-      }
-      // update cookie cache
-      Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'add_to_cart',
-        label: resource.title,
-        value: resource.price,
-        ecommerce: {
-          type: 'ga4',
-          currency: appCurrencyId,
+      if (enabledGA4) {
+        const itemId = resource.sku || resource.id
+        const item: EcItem = {
+          ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+          item_id: itemId,
+          item_name: resource.title,
+          price: resource.price,
+          quantity: options?.quantity || 1, // TODO: use the inventory
+          item_brand: brand,
+          item_category: resource.categories?.join(trackingOptions.separator),
+        }
+        // update cookie cache
+        Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: 'add_to_cart',
+          label: resource.title,
           value: resource.price,
-          items: [item],
-        },
-      })
+          ecommerce: {
+            type: 'ga4',
+            currency: appCurrencyId,
+            value: resource.price,
+            items: [item],
+          },
+        })
+      }
     },
     removeFromCart: (
       resource: Resource,
@@ -746,31 +749,33 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       UAremoveFromCart(resource, options)
-      const itemId = resource.sku || resource.id
-      const item: EcItem = {
-        ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
-        item_id: itemId,
-        item_name: resource.title,
-        price: resource.price,
-        quantity: options?.quantity || 1, // TODO: use the inventory
-        item_brand: brand,
-        item_category: resource.categories?.join(trackingOptions.separator),
-      }
-      // update cookie cache
-      Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'remove_from_cart',
-        label: resource.title,
-        value: resource.price,
-        ecommerce: {
-          type: 'ga4',
-          currency: appCurrencyId,
+      if (enabledGA4) {
+        const itemId = resource.sku || resource.id
+        const item: EcItem = {
+          ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+          item_id: itemId,
+          item_name: resource.title,
+          price: resource.price,
+          quantity: options?.quantity || 1, // TODO: use the inventory
+          item_brand: brand,
+          item_category: resource.categories?.join(trackingOptions.separator),
+        }
+        // update cookie cache
+        Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({
+          event: 'remove_from_cart',
+          label: resource.title,
           value: resource.price,
-          items: [item],
-        },
-      })
+          ecommerce: {
+            type: 'ga4',
+            currency: appCurrencyId,
+            value: resource.price,
+            items: [item],
+          },
+        })
+      }
     },
     checkout: (
       resources: Resource[],
@@ -781,40 +786,42 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       UAcheckout(resources, options)
-      const items: EcItem[] = resources
-        .map(resource => {
-          const itemId = resource.sku || resource.id
-          const item = resource
-            ? {
-                ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
-                item_id: itemId,
-                item_name: resource.title,
-                price: resource.price,
-                quantity: resource.options?.quantity || 1, // TODO: use the cart product
-                item_brand: brand,
-                item_category: resource.categories?.join(trackingOptions.separator),
-                item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-              }
-            : null
-          // update cookie cache
-          Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
-          return item
-        })
-        .filter(notEmpty)
-      if (items.length > 0) {
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        ;(window as any).dataLayer.push({
-          event: 'begin_checkout',
-          label: resources.map(resource => resource.title).join('|'),
-          value: sum(resources.map(resource => resource.price || 0)),
-          ecommerce: {
-            type: 'ga4',
-            currency: appCurrencyId,
+      if (enabledGA4) {
+        const items: EcItem[] = resources
+          .map(resource => {
+            const itemId = resource.sku || resource.id
+            const item = resource
+              ? {
+                  ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                  item_id: itemId,
+                  item_name: resource.title,
+                  price: resource.price,
+                  quantity: resource.options?.quantity || 1, // TODO: use the cart product
+                  item_brand: brand,
+                  item_category: resource.categories?.join(trackingOptions.separator),
+                  item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+                }
+              : null
+            // update cookie cache
+            Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+            return item
+          })
+          .filter(notEmpty)
+        if (items.length > 0) {
+          ;(window as any).dataLayer = (window as any).dataLayer || []
+          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+          ;(window as any).dataLayer.push({
+            event: 'begin_checkout',
+            label: resources.map(resource => resource.title).join('|'),
             value: sum(resources.map(resource => resource.price || 0)),
-            items,
-          },
-        })
+            ecommerce: {
+              type: 'ga4',
+              currency: appCurrencyId,
+              value: sum(resources.map(resource => resource.price || 0)),
+              items,
+            },
+          })
+        }
       }
     },
     // TODO: add resource argument
@@ -859,38 +866,40 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       UApurchase(orderId, orderProducts, orderDiscounts, options)
-      const items: EcItem[] =
-        orderProducts.map(product => {
-          const itemId = product.sku || product.id
-          const item = {
-            ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
-            item_id: product.sku || product.id,
-            item_name: product.title,
-            price: product.price,
-            quantity: product.quantity,
-            item_brand: brand,
-            item_category: product.categories?.join(trackingOptions.separator),
-            item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
-          }
-          // update cookie cache
-          Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
-          return item
-        }) || []
-      if (items.length > 0) {
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        ;(window as any).dataLayer.push({
-          event: 'purchase',
-          label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
-          value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
-          ecommerce: {
-            type: 'ga4',
-            currency: appCurrencyId,
+      if (enabledGA4) {
+        const items: EcItem[] =
+          orderProducts.map(product => {
+            const itemId = product.sku || product.id
+            const item = {
+              ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+              item_id: product.sku || product.id,
+              item_name: product.title,
+              price: product.price,
+              quantity: product.quantity,
+              item_brand: brand,
+              item_category: product.categories?.join(trackingOptions.separator),
+              item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
+            }
+            // update cookie cache
+            Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+            return item
+          }) || []
+        if (items.length > 0) {
+          ;(window as any).dataLayer = (window as any).dataLayer || []
+          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+          ;(window as any).dataLayer.push({
+            event: 'purchase',
+            label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
             value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
-            transaction_id: orderId,
-            items,
-          },
-        })
+            ecommerce: {
+              type: 'ga4',
+              currency: appCurrencyId,
+              value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
+              transaction_id: orderId,
+              items,
+            },
+          })
+        }
       }
     },
     login: () => {
