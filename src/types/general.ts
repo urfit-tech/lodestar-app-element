@@ -41,3 +41,21 @@ export type MetaTag = {
   seo?: { pageTitle?: string; description: string; keywords?: string }
   openGraph?: { title?: string; description?: string; image?: string; imageAlt?: string }
 }
+
+export type EcItem = {
+  item_id: string
+  item_name: string
+  currency?: string
+  price?: number
+  quantity?: number
+  item_brand?: string
+  item_category?: string
+  item_category2?: string
+  item_category3?: string
+  item_category4?: string
+  item_category5?: string
+  index?: number
+  item_list_id?: string
+  item_list_name?: string
+  item_variant?: string
+}

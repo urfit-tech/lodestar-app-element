@@ -1,9 +1,10 @@
 import { useApolloClient } from '@apollo/client'
-import Axios from 'axios'
+import Cookies from 'js-cookie'
 import { sum, uniq } from 'ramda'
 import { useApp } from '../contexts/AppContext'
 import { convertPathName, notEmpty } from '../helpers'
 import { Member } from '../types/data'
+import { EcItem } from '../types/general'
 import { getResourceCollection, Resource, ResourceType } from './resource'
 import { getCookie } from './util'
 
@@ -103,6 +104,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   const brand = settings['name'] || document.title
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
   const apolloClient = useApolloClient()
+  const EC_ITEM_MAP_KEY_PREFIX = `ga.event.item`
   return {
     view: (
       currentMember: Pick<Member, 'id' | 'name' | 'username' | 'email' | 'pictureUrl' | 'role' | 'options'> | null,
@@ -156,52 +158,44 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       },
     ) => {
       if (options?.ignore !== 'EEC') {
-        const impressionsWithProducts = resources.reduce<
-          {
-            id: string
-            name: string
-            price: number
-            brand: string
-            category?: string
-            variant?: string
-            quantity: number
-            list: string
-            position: number
-          }[]
-        >((prev, curr, index) => {
+        const items: EcItem[] = resources.reduce<EcItem[]>((prev, curr, index) => {
           const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
           const products =
             flattenedResources
-              ?.map(product =>
-                product
+              ?.map(product => {
+                const itemId = product?.sku || product?.id || ''
+                const item = product
                   ? {
-                      id: product.sku || product.id,
-                      name: product.title,
+                      ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                      item_id: itemId,
+                      item_name: product.title,
+                      currency: appCurrencyId,
                       price: product.price || 0,
-                      brand,
-                      category: product.categories?.join(trackingOptions.separator),
-                      variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
-                      quantity: 1, // TODO: use the inventory
-                      list: options?.collection || convertPathName(window.location.pathname),
-                      position: index + 1,
+                      quantity: 1,
+                      item_brand: brand,
+                      item_category: product.categories?.join(trackingOptions.separator),
+                      index: index + 1,
+                      item_list_id: options?.collection || convertPathName(window.location.pathname),
+                      item_list_name: options?.collection || convertPathName(window.location.pathname),
+                      item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
                     }
-                  : null,
-              )
+                  : null
+                // update cookie cache
+                Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+                return item
+              })
               .filter(notEmpty) || []
           return [...prev, ...products]
         }, [])
 
-        if (impressionsWithProducts.length > 0) {
+        if (items.length > 0) {
           ;(window as any).dataLayer = (window as any).dataLayer || []
-          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+          ;(window as any).dataLayer.push({ ecommerce: null })
           ;(window as any).dataLayer.push({
-            event: 'productImpression',
-            label: impressionsWithProducts.map(impression => impression.name).join('|'),
-            value: sum(impressionsWithProducts.map(impression => impression.price || 0)),
-            ecommerce: {
-              currencyCode: appCurrencyId,
-              impressions: impressionsWithProducts,
-            },
+            event: 'view_item_list',
+            label: items.map(item => item.item_name).join('|'),
+            value: sum(items.map(item => item.price || 0)),
+            ecommerce: { items },
           })
         }
       }
@@ -232,33 +226,37 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     ) => {
       if (options?.ignore !== 'EEC') {
         const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
-        const products = resourceOrProducts
-          .map(resource =>
-            resource
+        const items: EcItem[] = resourceOrProducts
+          .map(resource => {
+            const itemId = resource?.sku || resource?.id || ''
+            const item = resource
               ? {
-                  id: resource.sku || resource.id,
-                  name: resource.title,
-                  price: resource.price,
-                  brand,
-                  category: resource.categories?.join(trackingOptions.separator),
-                  variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-                  position: options?.position,
+                  ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                  item_id: itemId,
+                  item_name: resource.title,
+                  currency: appCurrencyId,
+                  price: resource.price || 0,
+                  item_brand: brand,
+                  item_category: resource.categories?.join(trackingOptions.separator),
+                  index: options?.position,
+                  item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 }
-              : null,
-          )
+              : null
+            // update cookie cache
+            Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+            return item
+          })
           .filter(notEmpty)
         ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({ ecommerce: null })
         ;(window as any).dataLayer.push({
-          event: 'productClick',
+          event: 'select_item',
           label: resource.title,
           value: resource.price,
           ecommerce: {
-            currencyCode: appCurrencyId,
-            click: {
-              actionField: { list: options?.collection || convertPathName(window.location.pathname) },
-              products,
-            },
+            currency: appCurrencyId,
+            value: resource.price,
+            items,
           },
         })
       }
@@ -273,32 +271,36 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     ) => {
       if (options?.ignore !== 'EEC') {
         const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
-        const products = resourceOrProducts
-          .map(resource =>
-            resource
+        const items: EcItem[] = resourceOrProducts
+          .map(resource => {
+            const itemId = resource?.sku || resource?.id || ''
+            const item = resource
               ? {
-                  id: resource.sku || resource.id,
-                  name: resource.title,
+                  ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                  item_id: itemId,
+                  item_name: resource.title,
+                  currency: appCurrencyId,
                   price: resource.price,
-                  brand: settings['name'] || document.title,
-                  category: resource.categories?.join(trackingOptions.separator),
-                  variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+                  item_brand: brand,
+                  item_category: resource.categories?.join(trackingOptions.separator),
+                  item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 }
-              : null,
-          )
+              : null
+            // update cookie cache
+            Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+            return item
+          })
           .filter(notEmpty)
         ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+        ;(window as any).dataLayer.push({ ecommerce: null })
         ;(window as any).dataLayer.push({
-          event: 'productDetail',
+          event: 'view_item',
           label: resource.title,
           value: resource.price,
           ecommerce: {
-            currencyCode: appCurrencyId,
-            detail: {
-              actionField: { list: options?.collection || convertPathName(window.location.pathname) },
-              products,
-            },
+            currency: appCurrencyId,
+            value: resource.price,
+            items,
           },
         })
       }
@@ -344,28 +346,28 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         quantity?: number
       },
     ) => {
+      const itemId = resource.sku || resource.id
+      const item: EcItem = {
+        ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+        item_id: itemId,
+        item_name: resource.title,
+        price: resource.price,
+        quantity: options?.quantity || 1, // TODO: use the inventory
+        item_brand: brand,
+        item_category: resource.categories?.join(trackingOptions.separator),
+      }
+      // update cookie cache
+      Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
-        event: 'addToCart',
+        event: 'add_to_cart',
         label: resource.title,
         value: resource.price,
         ecommerce: {
-          currencyCode: appCurrencyId,
-          add: {
-            direct: options?.direct,
-            products: [
-              {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-                quantity: options?.quantity || 1, // TODO: use the inventory
-              },
-            ],
-          },
+          currency: appCurrencyId,
+          value: resource.price,
+          items: [item],
         },
       })
     },
@@ -375,27 +377,28 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         quantity?: number
       },
     ) => {
+      const itemId = resource.sku || resource.id
+      const item: EcItem = {
+        ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+        item_id: itemId,
+        item_name: resource.title,
+        price: resource.price,
+        quantity: options?.quantity || 1, // TODO: use the inventory
+        item_brand: brand,
+        item_category: resource.categories?.join(trackingOptions.separator),
+      }
+      // update cookie cache
+      Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
-        event: 'removeFromCart',
+        event: 'remove_from_cart',
         label: resource.title,
         value: resource.price,
         ecommerce: {
-          currencyCode: appCurrencyId,
-          remove: {
-            products: [
-              {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand: settings['name'] || document.title,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-                quantity: options?.quantity || 1, // TODO: use the inventory
-              },
-            ],
-          },
+          currency: appCurrencyId,
+          value: resource.price,
+          items: [item],
         },
       })
     },
@@ -407,34 +410,37 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         utmSource?: string
       },
     ) => {
-      const ecProducts = resources
-        .map(resource =>
-          resource
+      const items: EcItem[] = resources
+        .map(resource => {
+          const itemId = resource.sku || resource.id
+          const item = resource
             ? {
-                id: resource.sku || resource.id,
-                name: resource.title,
+                ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                item_id: itemId,
+                item_name: resource.title,
                 price: resource.price,
-                brand,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 quantity: resource.options?.quantity || 1, // TODO: use the cart product
+                item_brand: brand,
+                item_category: resource.categories?.join(trackingOptions.separator),
+                item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
               }
-            : null,
-        )
+            : null
+          // update cookie cache
+          Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+          return item
+        })
         .filter(notEmpty)
-      if (ecProducts.length > 0) {
+      if (items.length > 0) {
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
-          event: 'checkout',
+          event: 'begin_checkout',
           label: resources.map(resource => resource.title).join('|'),
           value: sum(resources.map(resource => resource.price || 0)),
           ecommerce: {
-            currencyCode: appCurrencyId,
-            checkout: {
-              actionField: { step: options?.step || 1 },
-              products: ecProducts,
-            },
+            currency: appCurrencyId,
+            value: sum(resources.map(resource => resource.price || 0)),
+            items,
           },
         })
       }
@@ -456,23 +462,34 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         }
       }
     },
+    // TODO: add resource argument
     addPaymentInfo: (options?: { step?: number; gateway?: string; method?: string }) => {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'checkoutOption',
-        label: options?.gateway,
-        value: 0,
-        ecommerce: {
-          currencyCode: appCurrencyId,
-          checkout_option: {
-            actionField: {
-              step: options?.step || 2,
-              option: `${options?.gateway || 'unknown'}.${options?.method || 'unknown'}`,
-            },
-          },
-        },
-      })
+      // ;(window as any).dataLayer = (window as any).dataLayer || []
+      // ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
+      // ;(window as any).dataLayer.push({
+      //   event: 'add_payment_info',
+      //   label: resources.map(resource => resource.title).join('|'),
+      //   value: sum(resources.map(resource => resource.price || 0)),
+      //   ecommerce: {
+      //     currency: appCurrencyId,
+      //     value: sum(resources.map(resource => resource.price || 0)),
+      //     items: ecProducts.map((product, index) => ({
+      //       item_id: product.id,
+      //       item_name: product.name,
+      //       currency: appCurrencyId,
+      //       price: product.price,
+      //       quantity: product.quantity,
+      //       item_brand: product.brand,
+      //       item_category: product.category?.split(',')[0],
+      //       item_category2: product.category?.split(',')[1],
+      //       item_category3: product.category?.split(',')[2],
+      //       item_category4: product.category?.split(',')[3],
+      //       item_category5: product.category?.split(',')[4],
+      //       index,
+      //       item_variant: product.variant,
+      //     })),
+      //   },
+      // })
     },
     purchase: (
       orderId: string,
@@ -484,17 +501,24 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         utmSource?: string
       },
     ) => {
-      const ecProducts =
-        orderProducts.map(product => ({
-          id: product.sku || product.id,
-          name: product.title,
-          price: product.price,
-          brand,
-          category: product.categories?.join(trackingOptions.separator),
-          variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
-          quantity: product.quantity,
-        })) || []
-      if (ecProducts.length > 0) {
+      const items: EcItem[] =
+        orderProducts.map(product => {
+          const itemId = product.sku || product.id
+          const item = {
+            ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+            item_id: product.sku || product.id,
+            item_name: product.title,
+            price: product.price,
+            quantity: product.quantity,
+            item_brand: brand,
+            item_category: product.categories?.join(trackingOptions.separator),
+            item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
+          }
+          // update cookie cache
+          Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+          return item
+        }) || []
+      if (items.length > 0) {
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
@@ -502,45 +526,12 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
           value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
           ecommerce: {
-            currencyCode: appCurrencyId,
-            purchase: {
-              actionField: {
-                id: orderId,
-                affiliation: settings['name'] || document.title,
-                revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
-                coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
-              },
-              products: ecProducts,
-            },
+            currency: appCurrencyId,
+            value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
+            transaction_id: orderId,
+            items,
           },
         })
-        // For CW Tracking Temporary
-        try {
-          if (
-            (orderId.startsWith('CW') || orderId.startsWith('PAR') || orderId.startsWith('COM')) &&
-            process.env.NODE_ENV === 'production'
-          ) {
-            Axios.post(`https://55abbca99f39d3fa90c34399fa610dd4.m.pipedream.net/${orderId}`, {
-              body: {
-                event: 'purchase',
-                label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
-                value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
-                ecommerce: {
-                  currencyCode: appCurrencyId,
-                  purchase: {
-                    actionField: {
-                      id: orderId,
-                      affiliation: settings['name'] || document.title,
-                      revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
-                      coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
-                    },
-                    products: ecProducts,
-                  },
-                },
-              },
-            }).catch(() => {})
-          }
-        } catch (err) {}
       }
       if (enabledCW && options?.ignore !== 'CUSTOM') {
         const cwProducts =
