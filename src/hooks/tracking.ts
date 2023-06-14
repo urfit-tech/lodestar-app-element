@@ -107,6 +107,18 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   const apolloClient = useApolloClient()
   const EC_ITEM_MAP_KEY_PREFIX = `ga.event.item`
 
+  // clear localStorage cache
+  for (const key in localStorage) {
+    if (key.startsWith(EC_ITEM_MAP_KEY_PREFIX) && key.endsWith('.expired_at')) {
+      const itemId = key.split('.')[3]
+      const expiredAt = dayjs(localStorage[key])
+      if (dayjs() > expiredAt) {
+        localStorage.removeItem(key)
+        localStorage.removeItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`)
+      }
+    }
+  }
+
   const UAview = (
     currentMember: Pick<Member, 'id' | 'name' | 'username' | 'email' | 'pictureUrl' | 'role' | 'options'> | null,
     options?: {
