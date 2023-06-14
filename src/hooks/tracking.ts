@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client'
-import Cookies from 'js-cookie'
+import dayjs from 'dayjs'
 import { sum, uniq } from 'ramda'
 import { useApp } from '../contexts/AppContext'
 import { convertPathName, notEmpty } from '../helpers'
@@ -574,9 +574,13 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             flattenedResources
               ?.map(product => {
                 const itemId = product?.sku || product?.id || ''
+                const cachedItem =
+                  dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
+                    ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
+                    : {}
                 const item = product
                   ? {
-                      ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                      ...cachedItem,
                       item_id: itemId,
                       item_name: product.title,
                       currency: appCurrencyId,
@@ -590,8 +594,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                       item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
                     }
                   : null
-                // update cookie cache
-                Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+                // update localStorage cache
+                localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
+                localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
                 return item
               })
               .filter(notEmpty) || []
@@ -627,9 +632,14 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         const items: EcItem[] = resourceOrProducts
           .map(resource => {
             const itemId = resource?.sku || resource?.id || ''
+            const cachedItem =
+              dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
+                ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
+                : {}
+
             const item = resource
               ? {
-                  ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                  ...cachedItem,
                   item_id: itemId,
                   item_name: resource.title,
                   currency: appCurrencyId,
@@ -640,8 +650,10 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                   item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 }
               : null
-            // update cookie cache
-            Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+            // update localStorage cache
+            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
+            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
+
             return item
           })
           .filter(notEmpty)
@@ -674,9 +686,14 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         const items: EcItem[] = resourceOrProducts
           .map(resource => {
             const itemId = resource?.sku || resource?.id || ''
+            const cachedItem =
+              dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
+                ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
+                : {}
+
             const item = resource
               ? {
-                  ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                  ...cachedItem,
                   item_id: itemId,
                   item_name: resource.title,
                   currency: appCurrencyId,
@@ -686,8 +703,10 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                   item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 }
               : null
-            // update cookie cache
-            Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+            // update localStorage cache
+            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
+            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
+
             return item
           })
           .filter(notEmpty)
@@ -716,8 +735,13 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       UAaddToCart(resource, options)
       if (enabledGA4) {
         const itemId = resource.sku || resource.id
+        const cachedItem =
+          dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
+            ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
+            : {}
+
         const item: EcItem = {
-          ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+          ...cachedItem,
           item_id: itemId,
           item_name: resource.title,
           price: resource.price,
@@ -725,8 +749,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           item_brand: brand,
           item_category: resource.categories?.join(trackingOptions.separator),
         }
-        // update cookie cache
-        Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+        // update localStorage cache
+        localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
+        localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
@@ -751,8 +776,14 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       UAremoveFromCart(resource, options)
       if (enabledGA4) {
         const itemId = resource.sku || resource.id
+
+        const cachedItem =
+          dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
+            ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
+            : {}
+
         const item: EcItem = {
-          ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+          ...cachedItem,
           item_id: itemId,
           item_name: resource.title,
           price: resource.price,
@@ -760,8 +791,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
           item_brand: brand,
           item_category: resource.categories?.join(trackingOptions.separator),
         }
-        // update cookie cache
-        Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+        // update localStorage cache
+        localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
+        localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
         ;(window as any).dataLayer = (window as any).dataLayer || []
         ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
         ;(window as any).dataLayer.push({
@@ -790,9 +822,14 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         const items: EcItem[] = resources
           .map(resource => {
             const itemId = resource.sku || resource.id
+            const cachedItem =
+              dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
+                ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
+                : {}
+
             const item = resource
               ? {
-                  ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+                  ...cachedItem,
                   item_id: itemId,
                   item_name: resource.title,
                   price: resource.price,
@@ -802,8 +839,10 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                   item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
                 }
               : null
-            // update cookie cache
-            Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+            // update localStorage cache
+            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
+            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
+
             return item
           })
           .filter(notEmpty)
@@ -870,8 +909,13 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         const items: EcItem[] =
           orderProducts.map(product => {
             const itemId = product.sku || product.id
+            const cachedItem =
+              dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
+                ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
+                : {}
+
             const item = {
-              ...JSON.parse(Cookies.get(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '{}'),
+              ...cachedItem,
               item_id: product.sku || product.id,
               item_name: product.title,
               price: product.price,
@@ -880,8 +924,10 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               item_category: product.categories?.join(trackingOptions.separator),
               item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
             }
-            // update cookie cache
-            Cookies.set(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item), { expires: 1 })
+            // update localStorage cache
+            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
+            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
+
             return item
           }) || []
         if (items.length > 0) {
