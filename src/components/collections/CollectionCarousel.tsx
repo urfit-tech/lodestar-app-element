@@ -67,7 +67,7 @@ const CollectionCarousel = <P extends object>(
                   ElementComponent,
                   onClick: () => {
                     const resource = resourceCollection[idx]
-                    resource && tracking.click(resource, { collection: name, position: idx + 1 })
+                    // resource && tracking.click(resource, { collection: name, position: idx + 1 })
                   },
                 })}
               </div>

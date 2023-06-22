@@ -1,12 +1,29 @@
-import { useApolloClient } from '@apollo/client'
 import dayjs from 'dayjs'
-import { sum, uniq } from 'ramda'
 import { useApp } from '../contexts/AppContext'
-import { convertPathName, notEmpty } from '../helpers'
-import { Member } from '../types/data'
-import { EcItem } from '../types/general'
-import { getResourceCollection, Resource, ResourceType } from './resource'
-import { getCookie } from './util'
+import { FBTrackingEvent, GATrackingEvent } from '../types/tracking'
+import { Resource, ResourceType } from './resource'
+
+export const sendEventToDataLayer = (
+  data: any,
+  callbacks?: { beforeSend?: (dataLayer: any[]) => void; afterSend?: (dataLayer: any[]) => void },
+) => {
+  ;(window as any).dataLayer = (window as any).dataLayer || []
+  callbacks?.beforeSend?.((window as any).dataLayer)
+  ;(window as any).dataLayer.push(data)
+  callbacks?.afterSend?.((window as any).dataLayer)
+}
+
+const sendEventToGA = (event: GATrackingEvent) => {
+  ;(window as any).gtag = (window as any).gtag || null
+  const { name, ...options } = event
+  ;(window as any).gtag('event', name, options)
+}
+
+const sendEventToFB = (event: FBTrackingEvent) => {
+  ;(window as any).fbq = (window as any).fbq || null
+  const { name, ...options } = event
+  ;(window as any).fbq('track', name, options)
+}
 
 const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) => ResourceType = (
   originalType: ResourceType,
@@ -14,17 +31,17 @@ const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) =
 ) => {
   switch (originalType) {
     case 'program_content':
-      return toMetaProduct ? ('program' as ResourceType) : originalType
+      return toMetaProduct ? ('program' as const) : originalType
     case 'program_plan':
-      return toMetaProduct ? ('program' as ResourceType) : originalType
+      return toMetaProduct ? ('program' as const) : originalType
     case 'program_package_plan':
-      return toMetaProduct ? ('program_package' as ResourceType) : originalType
+      return toMetaProduct ? ('program_package' as const) : originalType
     case 'activity_ticket':
-      return toMetaProduct ? ('activity' as ResourceType) : originalType
+      return toMetaProduct ? ('activity' as const) : originalType
     case 'merchandise_spec':
-      return toMetaProduct ? ('merchandise' as ResourceType) : originalType
+      return toMetaProduct ? ('merchandise' as const) : originalType
     case 'project_plan':
-      return toMetaProduct ? ('project' as ResourceType) : originalType
+      return toMetaProduct ? ('project' as const) : originalType
     default:
       return originalType
   }
@@ -100,18 +117,15 @@ const convertCwProduct: (
 }
 
 export const useTracking = (trackingOptions = { separator: '|' }) => {
-  const { settings, currencyId: appCurrencyId, id: appId } = useApp()
+  const { settings, currencyId: appCurrencyId, id: appId, loading: isAppLoading } = useApp()
   const brand = settings['name'] || document.title
-  const enabledGA4 = Boolean(Number(settings['tracking.ga4.enabled']))
-  const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
-  const apolloClient = useApolloClient()
   const EC_ITEM_MAP_KEY_PREFIX = `ga.event.item`
 
   // clear localStorage cache
   for (const key in localStorage) {
     if (key.startsWith(EC_ITEM_MAP_KEY_PREFIX) && key.endsWith('.expired_at')) {
       const itemId = key.split('.')[3]
-      const expiredAt = dayjs(localStorage[key])
+      const expiredAt = dayjs(localStorage[key]).add(1, 'day')
       if (dayjs() > expiredAt) {
         localStorage.removeItem(key)
         localStorage.removeItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`)
@@ -119,852 +133,127 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     }
   }
 
-  const UAview = (
-    currentMember: Pick<Member, 'id' | 'name' | 'username' | 'email' | 'pictureUrl' | 'role' | 'options'> | null,
-    options?: {
-      ignore?: 'EEC' | 'CUSTOM'
-      utmSource?: string
-    },
-  ) => {
-    ;(window as any).dataLayer = (window as any).dataLayer || []
-    !currentMember && (window as any).dataLayer.push({ event: 'clearMember', member: null })
-    currentMember &&
-      (window as any).dataLayer.push({
-        event: 'updateMember',
-        member: {
-          id: currentMember.id,
-          email: currentMember.email,
-        },
-      })
-    if (currentMember && enabledCW && options?.ignore !== 'CUSTOM') {
-      const memberType = '會員'
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ memberData: null })
-      ;(window as any).dataLayer.push({
-        event: 'cwData',
-        memberData: {
-          member_type: memberType,
-          id: currentMember.options[appId]?.id || '',
-          social_id: currentMember.options[appId]?.social_id || '',
-          uid: currentMember.options[appId]?.uid || '',
-          uuid: currentMember.options[appId]?.uuid || '',
-          env:
-            window.location.href.includes('local') ||
-            window.location.href.includes('dev') ||
-            window.location.href.includes('127.0.0.1')
-              ? 'develop'
-              : 'prod',
-          email: currentMember.email,
-          dmp_id: getCookie('__eruid'),
-          salesforce_id: currentMember.options[appId]?.salesforce_id || '',
-          utm_source: options?.utmSource,
-        },
-      })
-    }
-  }
-  const UAimpress = (
-    resources: (Resource | null)[],
-    options?: {
-      collection?: string
-      ignore?: 'EEC' | 'CUSTOM'
-      utmSource?: string
-    },
-  ) => {
-    if (options?.ignore !== 'EEC') {
-      const impressionsWithProducts = resources.reduce<
-        {
-          id: string
-          name: string
-          price: number
-          brand: string
-          category?: string
-          variant?: string
-          quantity: number
-          list: string
-          position: number
-        }[]
-      >((prev, curr, index) => {
-        const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
-        const products =
-          flattenedResources
-            ?.map(product =>
-              product
-                ? {
-                    id: product.sku || product.id,
-                    name: product.title,
-                    price: product.price || 0,
-                    brand,
-                    category: product.categories?.join(trackingOptions.separator),
-                    variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
-                    quantity: 1, // TODO: use the inventory
-                    list: options?.collection || convertPathName(window.location.pathname),
-                    position: index + 1,
-                  }
-                : null,
-            )
-            .filter(notEmpty) || []
-        return [...prev, ...products]
-      }, [])
-
-      if (impressionsWithProducts.length > 0) {
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        ;(window as any).dataLayer.push({
-          event: 'productImpression',
-          label: impressionsWithProducts.map(impression => impression.name).join('|'),
-          value: sum(impressionsWithProducts.map(impression => impression.price || 0)),
-          ecommerce: {
-            type: 'ua',
-            currencyCode: appCurrencyId,
-            impressions: impressionsWithProducts,
-          },
-        })
-      }
-    }
-
-    if (enabledCW && options?.ignore !== 'CUSTOM') {
-      const cwProducts = resources.map(r => (r ? convertCwProduct(r, options?.utmSource) : null)).filter(notEmpty)
-      if (cwProducts.length > 0) {
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
-        ;(window as any).dataLayer.push({
-          event: 'cwData',
-          itemData: {
-            products: cwProducts,
-            program: cwProducts,
-            article: cwProducts,
-          },
-        })
-      }
-    }
-  }
-  const UAclick = (
-    resource: Resource,
-    options?: {
-      collection?: string
-      position?: number
-      ignore?: 'EEC' | 'CUSTOM'
-    },
-  ) => {
-    if (options?.ignore !== 'EEC') {
-      const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
-      const products = resourceOrProducts
-        .map(resource =>
-          resource
-            ? {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-                position: options?.position,
-              }
-            : null,
-        )
-        .filter(notEmpty)
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'productClick',
-        label: resource.title,
-        value: resource.price,
-        ecommerce: {
-          type: 'ua',
-          currencyCode: appCurrencyId,
-          click: {
-            actionField: { list: options?.collection || convertPathName(window.location.pathname) },
-            products,
-          },
-        },
-      })
-    }
-  }
-  const UAdetail = async (
-    resource: Resource,
-    options?: {
-      collection?: string
-      ignore?: 'EEC' | 'CUSTOM'
-      utmSource?: string
-    },
-  ) => {
-    if (options?.ignore !== 'EEC') {
-      const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
-      const products = resourceOrProducts
-        .map(resource =>
-          resource
-            ? {
-                id: resource.sku || resource.id,
-                name: resource.title,
-                price: resource.price,
-                brand: settings['name'] || document.title,
-                category: resource.categories?.join(trackingOptions.separator),
-                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-              }
-            : null,
-        )
-        .filter(notEmpty)
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'productDetail',
-        label: resource.title,
-        value: resource.price,
-        ecommerce: {
-          type: 'ua',
-          currencyCode: appCurrencyId,
-          detail: {
-            actionField: { list: options?.collection || convertPathName(window.location.pathname) },
-            products,
-          },
-        },
-      })
-    }
-    if (enabledCW && options?.ignore !== 'CUSTOM') {
-      const isProgramContent = resource.type === 'program_content'
-      let products = resource.products?.filter(r => r?.type !== 'program_content')
-      if (isProgramContent && resource.metaId) {
-        const metaProducts = await getResourceCollection(apolloClient, [resource.metaId], true)
-        products = metaProducts[0]?.products?.filter(p => p?.type === 'program_plan')
-      }
-      const targetResource = resource && convertCwProduct(resource, options?.utmSource)
-      const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p, options?.utmSource))
-
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
-
-      if (subResources) {
-        ;(window as any).dataLayer.push({
-          event: 'cwData',
-          itemData: {
-            products: subResources.map(r => ({ ...targetResource, ...r })),
-            program: { ...targetResource, ...subResources[0] },
-            article: { ...targetResource, ...subResources[0] },
-          },
-        })
-        return
-      }
-
-      ;(window as any).dataLayer.push({
-        event: 'cwData',
-        itemData: {
-          products: [targetResource],
-          program: targetResource,
-          article: targetResource,
-        },
-      })
-    }
-  }
-  const UAaddToCart = (
-    resource: Resource,
-    options?: {
-      direct?: boolean
-      quantity?: number
-    },
-  ) => {
-    ;(window as any).dataLayer = (window as any).dataLayer || []
-    ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-    ;(window as any).dataLayer.push({
-      event: 'addToCart',
-      label: resource.title,
-      value: resource.price,
-      ecommerce: {
-        type: 'ua',
-        currencyCode: appCurrencyId,
-        add: {
-          direct: options?.direct,
-          products: [
-            {
-              id: resource.sku || resource.id,
-              name: resource.title,
-              price: resource.price,
-              brand,
-              category: resource.categories?.join(trackingOptions.separator),
-              variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-              quantity: options?.quantity || 1, // TODO: use the inventory
-            },
-          ],
-        },
-      },
-    })
-  }
-  const UAremoveFromCart = (
-    resource: Resource,
-    options?: {
-      quantity?: number
-    },
-  ) => {
-    ;(window as any).dataLayer = (window as any).dataLayer || []
-    ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-    ;(window as any).dataLayer.push({
-      event: 'removeFromCart',
-      label: resource.title,
-      value: resource.price,
-      ecommerce: {
-        type: 'ua',
-        currencyCode: appCurrencyId,
-        remove: {
-          products: [
-            {
-              id: resource.sku || resource.id,
-              name: resource.title,
-              price: resource.price,
-              brand: settings['name'] || document.title,
-              category: resource.categories?.join(trackingOptions.separator),
-              variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-              quantity: options?.quantity || 1, // TODO: use the inventory
-            },
-          ],
-        },
-      },
-    })
-  }
-  const UAcheckout = (
-    resources: Resource[],
-    options?: {
-      step?: number
-      ignore?: 'EEC' | 'CUSTOM'
-      utmSource?: string
-    },
-  ) => {
-    const ecProducts = resources
-      .map(resource =>
-        resource
-          ? {
-              id: resource.sku || resource.id,
-              name: resource.title,
-              price: resource.price,
-              brand,
-              category: resource.categories?.join(trackingOptions.separator),
-              variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-              quantity: resource.options?.quantity || 1, // TODO: use the cart product
-            }
-          : null,
-      )
-      .filter(notEmpty)
-    if (ecProducts.length > 0) {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'checkout',
-        label: resources.map(resource => resource.title).join('|'),
-        value: sum(resources.map(resource => resource.price || 0)),
-        ecommerce: {
-          type: 'ua',
-          currencyCode: appCurrencyId,
-          checkout: {
-            actionField: { step: options?.step || 1 },
-            products: ecProducts,
-          },
-        },
-      })
-    }
-    if (enabledCW && options?.ignore !== 'CUSTOM') {
-      const cwProducts = resources
-        .map(resource => (resource ? convertCwProduct(resource, options?.utmSource) : null))
-        .filter(notEmpty)
-      if (cwProducts.length > 0) {
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
-        ;(window as any).dataLayer.push({
-          event: 'cwData',
-          itemData: {
-            products: cwProducts,
-            program: cwProducts[0],
-            article: cwProducts[0],
-          },
-        })
-      }
-    }
-  }
-  const UAaddPaymentInfo = (options?: { step?: number; gateway?: string; method?: string }) => {
-    ;(window as any).dataLayer = (window as any).dataLayer || []
-    ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-    ;(window as any).dataLayer.push({
-      event: 'checkoutOption',
-      label: options?.gateway,
-      value: 0,
-      ecommerce: {
-        type: 'ua',
-        currencyCode: appCurrencyId,
-        checkout_option: {
-          actionField: {
-            step: options?.step || 2,
-            option: `${options?.gateway || 'unknown'}.${options?.method || 'unknown'}`,
-          },
-        },
-      },
-    })
-  }
-  const UApurchase = (
-    orderId: string,
-    orderProducts: (Resource & { quantity: number })[],
-    orderDiscounts: { name: string; price: number }[],
-    options?: {
-      step?: number
-      ignore?: 'EEC' | 'CUSTOM'
-      utmSource?: string
-    },
-  ) => {
-    const ecProducts =
-      orderProducts.map(product => ({
-        id: product.sku || product.id,
-        name: product.title,
-        price: product.price,
-        brand,
-        category: product.categories?.join(trackingOptions.separator),
-        variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
-        quantity: product.quantity,
-      })) || []
-    if (ecProducts.length > 0) {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      ;(window as any).dataLayer.push({
-        event: 'purchase',
-        label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
-        value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
-        ecommerce: {
-          type: 'ua',
-          currencyCode: appCurrencyId,
-          purchase: {
-            actionField: {
-              id: orderId,
-              affiliation: settings['name'] || document.title,
-              revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
-              coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
-            },
-            products: ecProducts,
-          },
-        },
-      })
-    }
-    if (enabledCW && options?.ignore !== 'CUSTOM') {
-      const cwProducts =
-        orderProducts.map(product => {
-          return {
-            ...convertCwProduct(product, options?.utmSource),
-            order_number: orderId,
-          }
-        }) || []
-      if (cwProducts.length > 0) {
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
-        ;(window as any).dataLayer.push({
-          event: 'cwData',
-          itemData: {
-            products: cwProducts,
-            program: cwProducts[0],
-            article: cwProducts[0],
-          },
-        })
-      }
-    }
-  }
   return {
-    view: (
-      currentMember: Pick<Member, 'id' | 'name' | 'username' | 'email' | 'pictureUrl' | 'role' | 'options'> | null,
-      options?: {
-        ignore?: 'EEC' | 'CUSTOM'
-        utmSource?: string
-      },
-    ) => {
-      UAview(currentMember, options)
-    },
-    impress: (
-      resources: (Resource | null)[],
-      options?: {
-        collection?: string
-        ignore?: 'EEC' | 'CUSTOM'
-        utmSource?: string
-      },
-    ) => {
-      UAimpress(resources, options)
-      if (enabledGA4 && options?.ignore !== 'EEC') {
-        const items: EcItem[] = resources.reduce<EcItem[]>((prev, curr, index) => {
-          const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
-          const products =
-            flattenedResources
-              ?.map(product => {
-                const itemId = product?.sku || product?.id || ''
-                const cachedItem =
-                  dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
-                    ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
-                    : {}
-                const item = product
-                  ? {
-                      ...cachedItem,
-                      item_id: itemId,
-                      item_name: product.title,
-                      currency: appCurrencyId,
-                      price: product.price || 0,
-                      quantity: 1,
-                      item_brand: brand,
-                      item_category: product.categories?.join(trackingOptions.separator),
-                      index: index + 1,
-                      item_list_id: options?.collection || convertPathName(window.location.pathname),
-                      item_list_name: options?.collection || convertPathName(window.location.pathname),
-                      item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
-                    }
-                  : null
-                // update localStorage cache
-                localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
-                localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
-                return item
-              })
-              .filter(notEmpty) || []
-          return [...prev, ...products]
-        }, [])
-
-        if (items.length > 0) {
-          ;(window as any).dataLayer = (window as any).dataLayer || []
-          ;(window as any).dataLayer.push({ ecommerce: null })
-          ;(window as any).dataLayer.push({
-            event: 'view_item_list',
-            label: items.map(item => item.item_name).join('|'),
-            value: sum(items.map(item => item.price || 0)),
-            ecommerce: {
-              type: 'ga4',
-              items,
-            },
-          })
-        }
-      }
-    },
-    click: (
-      resource: Resource,
-      options?: {
-        collection?: string
-        position?: number
-        ignore?: 'EEC' | 'CUSTOM'
-      },
-    ) => {
-      UAclick(resource, options)
-      if (enabledGA4 && options?.ignore !== 'EEC') {
-        const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
-        const items: EcItem[] = resourceOrProducts
-          .map(resource => {
-            const itemId = resource?.sku || resource?.id || ''
-            const cachedItem =
-              dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
-                ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
-                : {}
-
-            const item = resource
-              ? {
-                  ...cachedItem,
-                  item_id: itemId,
-                  item_name: resource.title,
-                  currency: appCurrencyId,
-                  price: resource.price || 0,
-                  item_brand: brand,
-                  item_category: resource.categories?.join(trackingOptions.separator),
-                  index: options?.position,
-                  item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-                }
-              : null
-            // update localStorage cache
-            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
-            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
-
-            return item
-          })
-          .filter(notEmpty)
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null })
-        ;(window as any).dataLayer.push({
-          event: 'select_item',
-          label: resource.title,
-          value: resource.price,
-          ecommerce: {
-            type: 'ga4',
-            currency: appCurrencyId,
-            value: resource.price,
-            items,
-          },
-        })
-      }
-    },
-    detail: async (
-      resource: Resource,
-      options?: {
-        collection?: string
-        ignore?: 'EEC' | 'CUSTOM'
-        utmSource?: string
-      },
-    ) => {
-      UAdetail(resource, options)
-      if (enabledGA4 && options?.ignore !== 'EEC') {
-        const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
-        const items: EcItem[] = resourceOrProducts
-          .map(resource => {
-            const itemId = resource?.sku || resource?.id || ''
-            const cachedItem =
-              dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
-                ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
-                : {}
-
-            const item = resource
-              ? {
-                  ...cachedItem,
-                  item_id: itemId,
-                  item_name: resource.title,
-                  currency: appCurrencyId,
-                  price: resource.price,
-                  item_brand: brand,
-                  item_category: resource.categories?.join(trackingOptions.separator),
-                  item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-                }
-              : null
-            // update localStorage cache
-            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
-            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
-
-            return item
-          })
-          .filter(notEmpty)
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null })
-        ;(window as any).dataLayer.push({
-          event: 'view_item',
-          label: resource.title,
-          value: resource.price,
-          ecommerce: {
-            type: 'ga4',
-            currency: appCurrencyId,
-            value: resource.price,
-            items,
-          },
-        })
-      }
-    },
-    addToCart: (
-      resource: Resource,
-      options?: {
-        direct?: boolean
-        quantity?: number
-      },
-    ) => {
-      UAaddToCart(resource, options)
-      if (enabledGA4) {
-        const itemId = resource.sku || resource.id
-        const cachedItem =
-          dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
-            ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
-            : {}
-
-        const item: EcItem = {
-          ...cachedItem,
-          item_id: itemId,
-          item_name: resource.title,
-          price: resource.price,
-          quantity: options?.quantity || 1, // TODO: use the inventory
-          item_brand: brand,
-          item_category: resource.categories?.join(trackingOptions.separator),
-        }
-        // update localStorage cache
-        localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
-        localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        ;(window as any).dataLayer.push({
-          event: 'add_to_cart',
-          label: resource.title,
-          value: resource.price,
-          ecommerce: {
-            type: 'ga4',
-            currency: appCurrencyId,
-            value: resource.price,
-            items: [item],
-          },
-        })
-      }
-    },
-    removeFromCart: (
-      resource: Resource,
-      options?: {
-        quantity?: number
-      },
-    ) => {
-      UAremoveFromCart(resource, options)
-      if (enabledGA4) {
-        const itemId = resource.sku || resource.id
-
-        const cachedItem =
-          dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
-            ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
-            : {}
-
-        const item: EcItem = {
-          ...cachedItem,
-          item_id: itemId,
-          item_name: resource.title,
-          price: resource.price,
-          quantity: options?.quantity || 1, // TODO: use the inventory
-          item_brand: brand,
-          item_category: resource.categories?.join(trackingOptions.separator),
-        }
-        // update localStorage cache
-        localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
-        localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-        ;(window as any).dataLayer.push({
-          event: 'remove_from_cart',
-          label: resource.title,
-          value: resource.price,
-          ecommerce: {
-            type: 'ga4',
-            currency: appCurrencyId,
-            value: resource.price,
-            items: [item],
-          },
-        })
-      }
-    },
-    checkout: (
-      resources: Resource[],
-      options?: {
-        step?: number
-        ignore?: 'EEC' | 'CUSTOM'
-        utmSource?: string
-      },
-    ) => {
-      UAcheckout(resources, options)
-      if (enabledGA4) {
-        const items: EcItem[] = resources
-          .map(resource => {
-            const itemId = resource.sku || resource.id
-            const cachedItem =
-              dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
-                ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
-                : {}
-
-            const item = resource
-              ? {
-                  ...cachedItem,
-                  item_id: itemId,
-                  item_name: resource.title,
-                  price: resource.price,
-                  quantity: resource.options?.quantity || 1, // TODO: use the cart product
-                  item_brand: brand,
-                  item_category: resource.categories?.join(trackingOptions.separator),
-                  item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
-                }
-              : null
-            // update localStorage cache
-            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
-            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
-
-            return item
-          })
-          .filter(notEmpty)
-        if (items.length > 0) {
-          ;(window as any).dataLayer = (window as any).dataLayer || []
-          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-          ;(window as any).dataLayer.push({
-            event: 'begin_checkout',
-            label: resources.map(resource => resource.title).join('|'),
-            value: sum(resources.map(resource => resource.price || 0)),
-            ecommerce: {
-              type: 'ga4',
-              currency: appCurrencyId,
-              value: sum(resources.map(resource => resource.price || 0)),
-              items,
-            },
-          })
-        }
-      }
-    },
-    // TODO: add resource argument
-    addPaymentInfo: (options?: { step?: number; gateway?: string; method?: string }) => {
-      UAaddPaymentInfo(options)
-      // ;(window as any).dataLayer = (window as any).dataLayer || []
-      // ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-      // ;(window as any).dataLayer.push({
-      //   event: 'add_payment_info',
-      //   label: resources.map(resource => resource.title).join('|'),
-      //   value: sum(resources.map(resource => resource.price || 0)),
-      //   ecommerce: {
-      // type: 'ga4',
-      //     currency: appCurrencyId,
-      //     value: sum(resources.map(resource => resource.price || 0)),
-      //     items: ecProducts.map((product, index) => ({
-      //       item_id: product.id,
-      //       item_name: product.name,
-      //       currency: appCurrencyId,
-      //       price: product.price,
-      //       quantity: product.quantity,
-      //       item_brand: product.brand,
-      //       item_category: product.category?.split(',')[0],
-      //       item_category2: product.category?.split(',')[1],
-      //       item_category3: product.category?.split(',')[2],
-      //       item_category4: product.category?.split(',')[3],
-      //       item_category5: product.category?.split(',')[4],
-      //       index,
-      //       item_variant: product.variant,
-      //     })),
-      //   },
-      // })
-    },
-    purchase: (
-      orderId: string,
-      orderProducts: (Resource & { quantity: number })[],
-      orderDiscounts: { name: string; price: number }[],
-      options?: {
-        step?: number
-        ignore?: 'EEC' | 'CUSTOM'
-        utmSource?: string
-      },
-    ) => {
-      UApurchase(orderId, orderProducts, orderDiscounts, options)
-      if (enabledGA4) {
-        const items: EcItem[] =
-          orderProducts.map(product => {
-            const itemId = product.sku || product.id
-            const cachedItem =
-              dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
-                ? JSON.parse(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`) || '')
-                : {}
-
-            const item = {
-              ...cachedItem,
-              item_id: product.sku || product.id,
-              item_name: product.title,
-              price: product.price,
-              quantity: product.quantity,
-              item_brand: brand,
-              item_category: product.categories?.join(trackingOptions.separator),
-              item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
-            }
-            // update localStorage cache
-            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
-            localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`, dayjs().add(1, 'day').toString())
-
-            return item
-          }) || []
-        if (items.length > 0) {
-          ;(window as any).dataLayer = (window as any).dataLayer || []
-          ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
-          ;(window as any).dataLayer.push({
-            event: 'purchase',
-            label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
-            value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
-            ecommerce: {
-              type: 'ga4',
-              currency: appCurrencyId,
-              value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
-              transaction_id: orderId,
-              items,
-            },
-          })
-        }
-      }
-    },
     login: () => {
-      ;(window as any).dataLayer = (window as any).dataLayer || []
-      ;(window as any).dataLayer.push({
-        event: 'login',
-      })
+      console.log('login')
+      // const gaEvent: GATrackingLoginEvent = {}
+      // sendEventToDataLayer({ event: gaEvent.name, ...gaEvent })
+      // sendEventToGA(gaEvent)
+      // sendEventToFB
+    },
+    search: () => {
+      console.log('search')
+    },
+    selectContent: () => {
+      console.log('selectContent')
+    },
+    share: () => {
+      console.log('share')
+    },
+    signUp: () => {
+      console.log('signUp')
+      // fb: completeRegistration
+    },
+    tutorialBegin: () => {
+      console.log('tutorialBegin')
+    },
+    tutorialComplete: () => {
+      console.log('tutorialComplete')
+    },
+    earnVirtualCurrency: () => {
+      console.log('earnVirtualCurrency')
+    },
+    spendVirtualCurrency: () => {
+      console.log('spendVirtualCurrency')
+    },
+    joinGroup: () => {
+      console.log('joinGroup')
+    },
+    levelStart: () => {
+      console.log('levelStart')
+    },
+    levelEnd: () => {
+      console.log('levelEnd')
+    },
+    levelUp: () => {
+      console.log('levelUp')
+    },
+    postScore: () => {
+      console.log('postScore')
+    },
+    unlockAchievement: () => {
+      console.log('unlockAchievement')
+    },
+    purchase: () => {
+      console.log('purchase')
+    },
+    addToCart: () => {
+      console.log('addToCart')
+      // sendToDataLayer('add_to_cart', {}, { beforeSend: dataLayer => dataLayer.push({ ecommerce: null }) })
+    },
+    addToWishlist: () => {
+      console.log('addToWishlist')
+    },
+    viewItemList: () => {
+      console.log('viewItemList')
+    },
+    viewItem: () => {
+      console.log('viewItem')
+      // fb: viewContent
+    },
+    viewPromotion: () => {
+      console.log('viewPromotion')
+    },
+    selectPromotion: () => {
+      console.log('selectPromotion')
+    },
+    removeFromCart: () => {
+      console.log('removeFromCart')
+    },
+    beginCheckout: () => {
+      console.log('beginCheckout')
+      // fb: initiateCheckout
+    },
+    addShippingInfo: () => {
+      console.log('addShippingInfo')
+    },
+    addPaymentInfo: () => {
+      console.log('addPaymentInfo')
+      // fb: submitApplication
+    },
+    generateLead: () => {
+      console.log('generateLead')
+      // fb: lead
+    },
+    refund: () => {
+      console.log('refund')
+    },
+    selectItem: () => {
+      console.log('selectItem')
+    },
+    viewCart: () => {
+      console.log('viewCart')
+    },
+    contact: () => {
+      console.log('contact')
+    },
+    customizeProduct: () => {
+      console.log('customizeProduct')
+    },
+    donate: () => {
+      console.log('donate')
+    },
+    subscribe: () => {
+      console.log('subscribe')
+    },
+    findLocation: () => {
+      console.log('findLocation')
+    },
+    schedule: () => {
+      console.log('schedule')
+    },
+    startTrial: () => {
+      console.log('startTrial')
     },
   }
 }

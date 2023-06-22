@@ -16,7 +16,7 @@ const View: React.VFC<{
 
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
   useEffect(() => {
-    tracking.view(currentMember, { ignore, utmSource: utmSource || '' })
+    // tracking.view(currentMember, { ignore, utmSource: utmSource || '' })
   }, [enabledCW, currentMember, tracking, utmSource, ignore])
   return <></>
 }, equals)
@@ -29,7 +29,7 @@ const Impression: React.FC<{
   const tracking = useTracking()
   const [utmSource] = useQueryParam('utm_source', StringParam)
   useEffect(() => {
-    tracking.impress(resources, { collection, ignore, utmSource: utmSource || '' })
+    // tracking.impress(resources, { collection, ignore, utmSource: utmSource || '' })
   }, [collection, resources, tracking, utmSource, ignore])
   return <></>
 }, equals)
@@ -39,7 +39,7 @@ const Detail: React.FC<{ resource: Resource; ignore?: 'EEC' | 'CUSTOM' }> = Reac
   const [utmSource] = useQueryParam('utm_source', StringParam)
   const tracking = useTracking()
   useEffect(() => {
-    tracking.detail(resource, { collection: pageFrom || undefined, ignore, utmSource: utmSource || '' })
+    // tracking.detail(resource, { collection: pageFrom || undefined, ignore, utmSource: utmSource || '' })
   }, [pageFrom, utmSource, resource, tracking, ignore])
   return <></>
 }, equals)
@@ -52,7 +52,7 @@ const Checkout: React.FC<{
   const tracking = useTracking()
   const [utmSource] = useQueryParam('utm_source', StringParam)
   useEffect(() => {
-    tracking.checkout(resources, { ignore, utmSource: utmSource || '' })
+    // tracking.checkout(resources, { ignore, utmSource: utmSource || '' })
     onCheckout?.()
   }, [onCheckout, resources, tracking, utmSource, ignore])
   return <></>
@@ -68,7 +68,7 @@ const Purchase: React.FC<{
   const tracking = useTracking()
   const [utmSource] = useQueryParam('utm_source', StringParam)
   useEffect(() => {
-    tracking.purchase(orderId, products, discounts, { ignore, utmSource: utmSource || '' })
+    // tracking.purchase(orderId, products, discounts, { ignore, utmSource: utmSource || '' })
     onTracked?.()
   }, [discounts, utmSource, orderId, products, tracking, ignore])
   return <></>

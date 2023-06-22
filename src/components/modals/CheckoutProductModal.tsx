@@ -381,7 +381,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       const resource = resourceCollection.find(notEmpty)
-      resource && tracking.addToCart(resource, { direct: true })
+      // resource && tracking.addToCart(resource, { direct: true })
     }
   }, [isOpen])
 
@@ -536,13 +536,13 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   const trackCartItem = (currentQuantity: number, nextQuantity: number) => {
     if (currentQuantity < nextQuantity) {
-      resourceCollection[0] &&
-        tracking.addToCart(resourceCollection[0], { direct: true, quantity: nextQuantity - currentQuantity })
+      // resourceCollection[0] &&
+      // tracking.addToCart(resourceCollection[0], { direct: true, quantity: nextQuantity - currentQuantity })
     }
 
     if (currentQuantity > nextQuantity) {
-      resourceCollection[0] &&
-        tracking.removeFromCart(resourceCollection[0], { quantity: currentQuantity - nextQuantity })
+      // resourceCollection[0] &&
+      // tracking.removeFromCart(resourceCollection[0], { quantity: currentQuantity - nextQuantity })
     }
   }
 
@@ -564,7 +564,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         onClose={() => {
           onClose()
           const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection[0]
-          resource && tracking.removeFromCart(resource, { quantity: quantity })
+          // resource && tracking.removeFromCart(resource, { quantity: quantity })
           setQuantity(1)
         }}
       >
@@ -767,7 +767,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             onClick={() => {
               onClose()
               const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection[0]
-              resource && tracking.removeFromCart(resource)
+              // resource && tracking.removeFromCart(resource)
             }}
             className="mr-3"
           >
