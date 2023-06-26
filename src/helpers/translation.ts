@@ -46,6 +46,7 @@ export const commonMessages = {
   text: defineMessages({
     selfReferringIsNotAllowed: { id: 'common.text.selfReferringIsNotAllowed', defaultMessage: '不可填寫自己的信箱' },
     notFoundMemberEmail: { id: 'common.text.notFoundMemberEmail', defaultMessage: '找不到這個註冊信箱' },
+    emailFormatError: { id: 'common.text.emailFormatError', defaultMessage: '請輸入正確信箱格式' },
   }),
 }
 
@@ -331,7 +332,7 @@ export const checkoutMessages = {
     },
     partnerEmail: {
       id: 'checkout.label.partnerEmail',
-      defaultMessage: '同行者信箱',
+      defaultMessage: '第{index}位同行者',
     },
     shippingInput: { id: 'checkout.label.shippingInput', defaultMessage: '寄送資訊' },
     shippingMethod: { id: 'checkout.label.shippingMethod', defaultMessage: '寄送方式' },
@@ -450,10 +451,18 @@ export const checkoutMessages = {
     },
     groupBuyingDescription2: {
       id: 'checkout.text.groupBuyingDescription2',
-      defaultMessage: '若本次未填寫同行者信箱，則會保留在後台的「我的揪團」，可以之後再指定開通給其他會員。',
+      defaultMessage: '請{warning}；若因填寫錯誤導致權益開通失敗，造成權益損失，{appName}恕不負責。',
+    },
+    groupBuyingDescriptionComfirmWarning: {
+      id: 'checkout.text.groupBuyingDescriptionComfirmWarning',
+      defaultMessage: '務必確認同行者信箱帳號正確',
     },
     groupBuyingDescription3: {
       id: 'checkout.text.groupBuyingDescription3',
+      defaultMessage: '若本次未填寫同行者信箱，則會保留在後台的「我的揪團」，可以之後再指定開通給其他會員。',
+    },
+    groupBuyingDescription4: {
+      id: 'checkout.text.groupBuyingDescription4',
       defaultMessage: '注意事項：購買即同意以下多人同行揪團{modal}辦法。',
     },
     existingPartner: {
