@@ -44,17 +44,17 @@ const Detail: React.FC<{ resource: Resource; ignore?: 'EEC' | 'CUSTOM' }> = Reac
   return <></>
 }, equals)
 
-const Checkout: React.FC<{
+const ViewCart: React.FC<{
   resources: Resource[]
-  onCheckout?: () => void
+  onViewCart?: () => void
   ignore?: 'EEC' | 'CUSTOM'
-}> = React.memo(({ resources, onCheckout, ignore }) => {
+}> = React.memo(({ resources, onViewCart, ignore }) => {
   const tracking = useTracking()
   const [utmSource] = useQueryParam('utm_source', StringParam)
   useEffect(() => {
-    tracking.checkout(resources, { ignore, utmSource: utmSource || '' })
-    onCheckout?.()
-  }, [onCheckout, resources, tracking, utmSource, ignore])
+    tracking.viewCart(resources, { ignore, utmSource: utmSource || '' })
+    onViewCart?.()
+  }, [onViewCart, resources, tracking, utmSource, ignore])
   return <></>
 }, equals)
 
@@ -78,7 +78,7 @@ const Tracking = {
   View,
   Detail,
   Impression,
-  Checkout,
+  ViewCart,
   Purchase,
 }
 export default Tracking
