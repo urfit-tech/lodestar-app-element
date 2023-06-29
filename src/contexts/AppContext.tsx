@@ -25,6 +25,8 @@ const defaultAppContextProps: AppContextProps = {
   currencyId: 'TWD',
   currencies: {},
   loading: true,
+  options: {},
+  endedAt: '',
 }
 
 const AppContext = createContext<AppContextProps>(defaultAppContextProps)
@@ -86,6 +88,8 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
           app_hosts(order_by: { priority: asc }) {
             host
           }
+          options
+          ended_at
         }
       }
     `,
@@ -154,6 +158,8 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
                 }
                 return accumulator
               }, {} as AppProps['currencies']) || {},
+            options: data.app_by_pk.options,
+            endedAt: data.app_by_pk.ended_at || null,
           }
         : defaultAppContextProps,
     [data?.app_by_pk, data?.currency, error, loading, refetch, secrets, settings],

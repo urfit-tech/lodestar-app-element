@@ -152,6 +152,8 @@ export type AppProps = {
   currencyId: string
   currencies: { [currencyId: string]: Currency }
   navs: AppNavProps[]
+  options: Object
+  endedAt: string
 }
 
 export type Permission =
