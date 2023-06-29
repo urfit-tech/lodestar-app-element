@@ -115,6 +115,11 @@ export type Currency = {
   minorUnits: number
 }
 
+export type Options = {
+  video_duration: number
+  watched_seconds: number
+}
+
 export type NavProps = {
   id: string
   block: 'header' | 'footer' | 'social_media'
@@ -152,7 +157,7 @@ export type AppProps = {
   currencyId: string
   currencies: { [currencyId: string]: Currency }
   navs: AppNavProps[]
-  options: Object
+  options: Options
   endedAt: string
 }
 
