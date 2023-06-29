@@ -1051,6 +1051,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 currency: appCurrencyId,
                 value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
                 transaction_id: orderId,
+                coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
                 items,
               },
             })
