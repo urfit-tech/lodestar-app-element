@@ -110,7 +110,6 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     [data?.app_by_pk?.app_secrets],
   )
 
-  console.log(data)
   const app: AppContextProps = useMemo(
     () =>
       data?.app_by_pk
