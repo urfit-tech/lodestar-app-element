@@ -49,7 +49,7 @@ const CheckoutPage = () => {
             CheckoutProductModal
           </Button>
         )}
-        defaultProductId={`ProgramPlan_428d84bd-116f-4c8b-bc92-6d0560923cb9`}
+        defaultProductId={`ProgramPlan_551ec07a-03ec-4c5e-9541-cf141dab1f97`}
       />
       <CheckoutProductModal
         renderTrigger={({ onOpen, disable, isLoginAlert }) => (
