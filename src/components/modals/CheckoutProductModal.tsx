@@ -1,15 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  OrderedList,
-  SkeletonText,
-  useDisclosure,
-  useToast,
-  Text,
-} from '@chakra-ui/react'
+import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
@@ -188,7 +178,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
   const [quantity, setQuantity] = useState(1)
-  const app = useApp()
 
   useEffect(() => {
     if (!checkoutOpened.current && checkoutProductId === defaultProductId) {
@@ -330,9 +319,8 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   const [groupBuying, setGroupBuying] = useState<{
     memberIds: string[]
-    memberEmails: string[]
     withError: boolean
-  }>({ memberIds: [], memberEmails: [], withError: false })
+  }>({ memberIds: [], withError: false })
 
   const { totalPrice, placeOrder, check, orderChecking, orderPlacing } = useCheck({
     productIds: [productId],
@@ -348,7 +336,6 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         from: window.location.pathname,
         sharingCode,
         groupBuyingPartnerIds: groupBuying.memberIds,
-        groupBuyingPartnerEmails: groupBuying.memberEmails,
         quantity: quantity,
       },
     },
@@ -630,19 +617,9 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             <StyledBlockTitle className="mb-3">{formatMessage(checkoutMessages.label.groupBuying)}</StyledBlockTitle>
             <OrderedList className="mb-4">
               <StyledListItem>{formatMessage(checkoutMessages.text.groupBuyingDescription1)}</StyledListItem>
+              <StyledListItem>{formatMessage(checkoutMessages.text.groupBuyingDescription2)}</StyledListItem>
               <StyledListItem>
-                {formatMessage(checkoutMessages.text.groupBuyingDescription2, {
-                  appName: app.name,
-                  warning: (
-                    <span style={{ color: 'var(--error)' }}>
-                      {formatMessage(checkoutMessages.text.groupBuyingDescriptionComfirmWarning)}
-                    </span>
-                  ),
-                })}
-              </StyledListItem>
-              <StyledListItem>{formatMessage(checkoutMessages.text.groupBuyingDescription3)}</StyledListItem>
-              <StyledListItem>
-                {formatMessage(checkoutMessages.text.groupBuyingDescription4, { modal: <GroupBuyingRuleModal /> })}
+                {formatMessage(checkoutMessages.text.groupBuyingDescription3, { modal: <GroupBuyingRuleModal /> })}
               </StyledListItem>
             </OrderedList>
             <CheckoutGroupBuyingForm
