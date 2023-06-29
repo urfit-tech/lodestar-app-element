@@ -1049,7 +1049,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               ecommerce: {
                 type: 'ga4',
                 currency: appCurrencyId,
-                value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
+                value: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
                 transaction_id: orderId,
                 coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
                 items,
