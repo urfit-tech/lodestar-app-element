@@ -29,7 +29,7 @@ const defaultAppContextProps: AppContextProps = {
     video_duration: 0,
     watched_seconds: 0,
   },
-  endedAt: '',
+  endedAt: null,
 }
 
 const AppContext = createContext<AppContextProps>(defaultAppContextProps)
@@ -110,6 +110,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     [data?.app_by_pk?.app_secrets],
   )
 
+  console.log(data)
   const app: AppContextProps = useMemo(
     () =>
       data?.app_by_pk

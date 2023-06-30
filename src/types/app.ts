@@ -115,7 +115,7 @@ export type Currency = {
   minorUnits: number
 }
 
-export type Options = {
+export type AppOptions = {
   video_duration: number
   watched_seconds: number
 }
@@ -157,8 +157,8 @@ export type AppProps = {
   currencyId: string
   currencies: { [currencyId: string]: Currency }
   navs: AppNavProps[]
-  options: Options
-  endedAt: string
+  options: AppOptions
+  endedAt: Date | null
 }
 
 export type Permission =
