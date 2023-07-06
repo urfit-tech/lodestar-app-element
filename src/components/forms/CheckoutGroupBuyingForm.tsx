@@ -44,13 +44,12 @@ const CheckoutGroupBuyingForm: React.FC<{
   const { target } = useSimpleProduct({ id: productId || '' })
   const [emails, setEmails] = useState<string[]>(new Array(partnerCount).fill(''))
   const [, setMembers] = useState<{ id: string; email: string }[]>([])
-
   useEffect(
     () => setEmails(emails => new Array(partnerCount).fill('').map((blankEmail, index) => emails[index] || blankEmail)),
     [partnerCount],
   )
-  
-  const checkEmail = (email: string) => {
+
+  const checkEmail = (email: string, emails: string[]) => {
     const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/
     const isInvalid = !!email && !emailRegex.test(email)
     const isSelf = !!email && email === currentMember?.email
@@ -67,9 +66,9 @@ const CheckoutGroupBuyingForm: React.FC<{
 
     timeout = setTimeout(async () => {
       const newEmails = emails.map((v, i) => (i === index ? value : v))
-      setEmails(newEmails)
-      const errors = newEmails.map(email => {
-        const { isError } = checkEmail(email)
+      setEmails(() => newEmails)
+      const errors = emails.map(email => {
+        const { isError } = checkEmail(email, newEmails)
         return isError
       })
       const members = await searchEmails(uniq(newEmails))
@@ -81,7 +80,6 @@ const CheckoutGroupBuyingForm: React.FC<{
           members.push({ id: '', email: newEmail })
         }
       })
-
       setMembers(members)
       onChange?.({
         memberIds: members.map(member => member.id),
@@ -98,7 +96,7 @@ const CheckoutGroupBuyingForm: React.FC<{
       </StyledPlanTitle>
 
       {emails.map((email, i) => {
-        const { isInvalid, isSelf, isDuplicated, isError } = checkEmail(email)
+        const { isInvalid, isSelf, isDuplicated, isError } = checkEmail(email, emails)
         const errorMessage = isInvalid
           ? formatMessage(commonMessages.text.emailFormatError)
           : isSelf
