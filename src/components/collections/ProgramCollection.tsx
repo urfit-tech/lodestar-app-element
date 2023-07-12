@@ -582,7 +582,7 @@ const programFields = gql`
       name
       member_id
     }
-    program_plans {
+    program_plans(where: { published_at: { _is_null: false } }, order_by: { created_at: asc }) {
       id
       type
       title
