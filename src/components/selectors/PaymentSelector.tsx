@@ -77,8 +77,8 @@ const PaymentSelector: React.FC<{
     }
   }
 
-  const paymentFromLocalStrorage = localStorage.getItem('kolable.cart.payment.perpetual')
-  const cachedPayment = paymentFromLocalStrorage && JSON.parse(paymentFromLocalStrorage)
+  const paymentFromLocalStorage = localStorage.getItem('kolable.cart.payment.perpetual')
+  const cachedPayment = paymentFromLocalStorage && JSON.parse(paymentFromLocalStorage)
 
   return (
     <Form.Item
