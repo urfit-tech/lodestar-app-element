@@ -1,15 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  OrderedList,
-  SkeletonText,
-  useDisclosure,
-  useToast,
-  Text,
-} from '@chakra-ui/react'
+import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
@@ -277,11 +267,14 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     ...cachedCartInfo.invoice,
   })
 
-  const [payment, setPayment] = useState<PaymentProps | null | undefined>()
-  const [isApproved, setIsApproved] = useState(settings['checkout.approvement'] !== 'true')
+  const [payment, setPayment] = useState<PaymentProps | null | undefined>(memberCartInfo.payment)
+  const [isApproved, setIsApproved] = useState(localStorage.getItem('kolable.checkout.approvement') === 'true')
+
+  // 讓「我同意」按鈕在使用者重新進入後保持一樣
   useEffect(() => {
-    setIsApproved(settings['checkout.approvement'] !== 'true')
-  }, [settings])
+    localStorage.setItem('kolable.checkout.approvement', JSON.stringify(isApproved))
+    setIsApproved(localStorage.getItem('kolable.checkout.approvement') === 'true')
+  }, [isApproved])
 
   useEffect(() => {
     if (currentMember) {
@@ -307,7 +300,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   useEffect(() => {
     if (typeof productTarget?.isSubscription === 'boolean') {
-      setPayment(initialPayment)
+      setPayment(memberCartInfo?.payment)
     }
   }, [productTarget?.isSubscription, initialPayment])
 
