@@ -41,3 +41,4 @@ export type ProductType =
   | 'PodcastAlbum'
   | 'VoucherPlan'
   | 'Token'
+  | 'Estimator'
