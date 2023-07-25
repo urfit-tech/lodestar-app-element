@@ -107,6 +107,7 @@ export type Module =
   | 'member_level'
   | 'product_level'
   | 'voucher_pin_code'
+  | 'coin_back'
 
 export type Currency = {
   id: string
