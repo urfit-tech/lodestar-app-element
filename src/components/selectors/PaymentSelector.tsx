@@ -77,9 +77,6 @@ const PaymentSelector: React.FC<{
     }
   }
 
-  const paymentFromLocalStorage = localStorage.getItem('kolable.cart.payment.perpetual')
-  const cachedPayment = paymentFromLocalStorage && JSON.parse(paymentFromLocalStorage)
-
   return (
     <Form.Item
       className="mb-0"
@@ -103,11 +100,7 @@ const PaymentSelector: React.FC<{
         placeholder={formatMessage(checkoutMessages.label.paymentMethodPlaceholder)}
       >
         {paymentOptions.map(option => (
-          <option
-            key={option.name}
-            value={JSON.stringify(option.payment)}
-            selected={JSON.stringify(option.payment) === JSON.stringify(cachedPayment)}
-          >
+          <option key={option.name} value={JSON.stringify(option.payment)}>
             {option.name}
           </option>
         ))}
