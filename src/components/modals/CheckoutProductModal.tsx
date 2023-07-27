@@ -791,7 +791,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             onClick={handleSubmit}
             disabled={
               (totalPrice === 0 && productTarget.isSubscription && !isCreditCardReady) ||
-              isApproved === false ||
+              (settings['checkout.approvement'] === 'true' && isApproved === false) ||
               !isCoinsEnough
             }
           >
