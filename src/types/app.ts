@@ -108,6 +108,7 @@ export type Module =
   | 'product_level'
   | 'voucher_pin_code'
   | 'coin_back'
+  | 'report'
 
 export type Currency = {
   id: string
@@ -330,3 +331,4 @@ export type Permission =
   | 'TEACHER_PURCHASER_REVIEW'
   | 'TEACHER_MANAGEMENT'
   | 'MATERIAL_AUDIT_LOG_ADMIN'
+  | 'REPORT_ADMIN'
