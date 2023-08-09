@@ -121,6 +121,7 @@ export type Currency = {
 export type AppOptions = {
   video_duration: number
   watched_seconds: number
+  close_site_at?: Date
 }
 
 export type NavProps = {
