@@ -360,7 +360,7 @@ export const useCouponCollection = (memberId: string) => {
   >(
     gql`
       query GET_COUPON_COLLECTION($memberId: String!) {
-        coupon(where: { member_id: { _eq: $memberId } }) {
+        coupon(where: { member_id: { _eq: $memberId }, coupon_code: { deleted_at: { _is_null: true } } }) {
           id
           status {
             outdated
