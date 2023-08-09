@@ -917,6 +917,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     },
     checkout: (
       resources: Resource[],
+      orderDiscount: { name: string; price: number },
       options?: {
         step?: number
         ignore?: 'EEC' | 'CUSTOM'
@@ -964,6 +965,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 type: 'ga4',
                 currency: appCurrencyId,
                 value: sum(resources.map(resource => resource.price || 0)),
+                coupon: orderDiscount,
                 items,
               },
             })
