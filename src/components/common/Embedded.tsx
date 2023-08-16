@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
+import InnerHTML from 'dangerously-set-html-content'
 
 const StyledDiv = styled.div<EmbeddedProps>`
   iframe {
@@ -15,7 +16,7 @@ const Embedded: ElementComponent<EmbeddedProps> = props => {
   // FIXME: escape special characters
   return (
     <StyledDiv {...props}>
-      {props.iframe ? <div dangerouslySetInnerHTML={{ __html: props.iframe }} /> : '請填入 iframe'}
+      {props.iframe ? <InnerHTML html={props.iframe} />: '請填入 iframe'}
     </StyledDiv>
   )
 }

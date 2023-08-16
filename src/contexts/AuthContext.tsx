@@ -7,6 +7,8 @@ import { getBackendServerError } from '../helpers'
 import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hooks/util'
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
+import { LodestarWindow } from '../types/lodestar.window'
+declare let window: LodestarWindow
 
 type ProviderType = 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth' | 'cw'
 type LoginDeviceStatus = 'existed' | 'available' | 'limited' | 'unsupported'
@@ -48,6 +50,10 @@ const defaultAuthContext: AuthProps = {
   currentMember: null,
   permissions: {},
   isFinishedSignUpProperty: true,
+}
+
+const initLodestarWindow = () => {
+  window.lodestar = window.lodestar || {}
 }
 
 const AuthContext = createContext<AuthProps>(defaultAuthContext)
@@ -103,6 +109,20 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
     setIsAuthenticating(false)
   }, [appId])
 
+  const currentMember = payload && {
+    id: payload.sub,
+    name: payload.name,
+    username: payload.username,
+    email: payload.email,
+    pictureUrl: payload.pictureUrl || null,
+    role: payload.role as UserRole,
+    options: payload.options || {},
+  }
+
+  initLodestarWindow()
+  window.lodestar.getCurrentMember = () => currentMember
+  window.lodestar.getDataLayerByEvent = (event: string) => (window as any).dataLayer.find((d: any) => d.event === event)
+
   return (
     <AuthContext.Provider
       value={{
@@ -113,15 +133,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         authToken,
         updateAuthToken: authToken => setAuthToken(authToken),
         isFinishedSignUpProperty: !!payload?.isFinishedSignUpProperty,
-        currentMember: payload && {
-          id: payload.sub,
-          name: payload.name,
-          username: payload.username,
-          email: payload.email,
-          pictureUrl: payload.pictureUrl || null,
-          role: payload.role as UserRole,
-          options: payload.options || {},
-        },
+        currentMember,
         permissions:
           payload?.permissions?.reduce((accumulator: { [key: string]: boolean }, currentValue: string) => {
             accumulator[currentValue] = true
