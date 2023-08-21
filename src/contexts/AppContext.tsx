@@ -19,6 +19,7 @@ const defaultAppContextProps: AppContextProps = {
   host: '',
   hosts: [],
   enabledModules: {},
+  appPlanId: '',
   navs: [],
   settings: {},
   secrets: {},
@@ -58,6 +59,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             id
             module_id
           }
+          app_plan_id
           app_navs(order_by: { position: asc }, where: { parent_id: { _is_null: true } }) {
             id
             block
@@ -124,6 +126,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             host: data.app_by_pk.app_hosts?.[0]?.host || window.location.host,
             hosts: data?.app_by_pk?.app_hosts.map(v => v.host) || [],
             enabledModules: Object.fromEntries(data.app_by_pk.app_modules.map(v => [v.module_id, true]) || []),
+            appPlanId: data?.app_by_pk.app_plan_id,
             navs: data.app_by_pk.app_navs.map(appNav => ({
               id: appNav.id,
               block: appNav.block as NavProps['block'],

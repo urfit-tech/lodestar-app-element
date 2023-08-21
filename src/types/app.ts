@@ -152,6 +152,7 @@ export type AppProps = {
   enabledModules: {
     [key in Module]?: boolean
   }
+  appPlanId: string
   settings: Record<string, string>
   secrets: Record<string, string> & {
     'payment.perpetual.default_gateway'?: undefined
