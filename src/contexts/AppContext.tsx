@@ -79,6 +79,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
               external
               locale
               tag
+              parent_id
             }
           }
           app_settings {
@@ -146,6 +147,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
                 external: v.external,
                 locale: v.locale,
                 tag: v.tag || null,
+                parentId: v.parent_id || null,
               })),
             })),
             settings,
