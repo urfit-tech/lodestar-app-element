@@ -134,6 +134,7 @@ export type NavProps = {
   external: boolean
   locale: string
   tag: string | null
+  parentId?: string | null
 }
 
 export type AppNavProps = NavProps & {

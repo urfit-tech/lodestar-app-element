@@ -68,6 +68,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             external
             locale
             tag
+            parent_id
             sub_app_navs(order_by: { position: asc }) {
               id
               block
@@ -134,6 +135,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
               external: appNav.external,
               locale: appNav.locale,
               tag: appNav.tag || null,
+              parentId: appNav.parent_id || null,
               subNavs: appNav.sub_app_navs.map(v => ({
                 id: v.id,
                 block: v.block as NavProps['block'],
