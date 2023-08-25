@@ -62,6 +62,7 @@ export type Module =
   | 'activity_online'
   | 'zoom'
   | 'fb_pixel'
+  | 'fb_conversion_api'
   | 'ga'
   | 'transfer_voucher'
   | 'sale_voucher'

@@ -21,6 +21,7 @@ import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
 import hasura from '../../hasura'
 import { notEmpty, validateContactInfo } from '../../helpers'
+import { getConversionApiData } from '../../helpers/conversionApi'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
@@ -29,6 +30,7 @@ import { useResourceCollection } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
 import { getResourceByProductId, useTappay } from '../../hooks/util'
 import { ContactInfo, InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
+import { ConversionApiContent, ConversionApiEvent } from '../../types/conversionApi'
 import { ShippingMethodProps } from '../../types/merchandise'
 import { BREAK_POINT } from '../common/Responsive'
 import CheckoutGroupBuyingForm, { StyledBlockTitle, StyledListItem } from '../forms/CheckoutGroupBuyingForm'
@@ -469,6 +471,21 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
         currency: 'TWD',
       })
     }
+
+    if (settings['tracking.fb_pixel_id'] && settings['tracking.fb_access_token'] && enabledModules.fb_conversion_api) {
+      const contents: ConversionApiContent[] = [{ id: productTarget.title || productId, quantity: 1 }]
+      const event: ConversionApiEvent = {
+        sourceUrl: window.location.href,
+        purchaseData: {
+          currency: 'TWD',
+          contentName: productTarget.title || productId,
+          value: totalPrice,
+        },
+      }
+      const { conversionApi } = getConversionApiData(currentMember, { contents, event })
+      await conversionApi(authToken || '', 'AddToCart').catch(error => console.log(error))
+    }
+
     if (settings['tracking.ga_id']) {
       ReactGA.plugin.execute('ec', 'addProduct', {
         id: productId,
