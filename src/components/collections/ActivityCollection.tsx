@@ -83,6 +83,8 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
                   .filter(category => source.from === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
                   [],
               )
+        console.log('categories', categories)
+
         const filter = (d: ActivityData) =>
           !props.withSelector ||
           !activeCategoryId ||
