@@ -80,7 +80,7 @@ const PostCollection: ElementComponent<PostCollectionProps> = props => {
               )(
                 ctx.data
                   ?.flatMap(d => d.categories)
-                  .filter(category => source.from === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
+                  .filter(category => source.from === 'custom' || source.defaultCategoryIds?.includes(category.id)) ||
                   [],
               )
 
