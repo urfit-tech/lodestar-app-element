@@ -269,7 +269,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
     ...cachedCartInfo.invoice,
   })
 
-  const [payment, setPayment] = useState<PaymentProps | null | undefined>(memberCartInfo.payment)
+  const [payment, setPayment] = useState<PaymentProps | null | undefined>()
   const [isApproved, setIsApproved] = useState(localStorage.getItem('kolable.checkout.approvement') === 'true')
 
   // 讓「我同意」按鈕在使用者重新進入後保持一樣
@@ -302,7 +302,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
 
   useEffect(() => {
     if (typeof productTarget?.isSubscription === 'boolean') {
-      setPayment(memberCartInfo?.payment)
+      setPayment(initialPayment)
     }
   }, [productTarget?.isSubscription, initialPayment])
 
