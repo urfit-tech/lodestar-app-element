@@ -9,6 +9,7 @@ export type ImageProps = {
   isAutoHeight?: boolean
   widthAspect?: number
   heightAspect?: number
+  ariaLabel?: string
 }
 
 export const StyledImage = styled.div<ImageProps>`
@@ -36,6 +37,8 @@ const Image: ElementComponent<ImageProps & { customStyle?: CSSObject }> = props 
   return (
     <StyledImage
       {...props}
+      aria-label={props.ariaLabel}
+      role={'img'}
       width={props.customStyle?.width || props.width}
       height={props.customStyle?.height || props.height}
     />
