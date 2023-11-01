@@ -110,6 +110,9 @@ export type Module =
   | 'voucher_pin_code'
   | 'coin_back'
   | 'report'
+  | 'inquiry_ai_partner'
+  | 'inquiry_ai_professor'
+  | 'inquiry_ai_pilot'
 
 export type Currency = {
   id: string
