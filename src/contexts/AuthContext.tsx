@@ -286,7 +286,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               }
             } else {
               setAuthToken(null)
-              throw new Error(code)
+              throw getBackendServerError(code, message)
             }
           }),
         switchMember: async ({ memberId }) => {
