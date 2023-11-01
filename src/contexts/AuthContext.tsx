@@ -33,7 +33,12 @@ type AuthProps = {
     isBusiness?: boolean
   }) => Promise<any>
   login?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
-  socialLogin?: (data: { provider: ProviderType; providerToken: any; accountLinkToken?: string }) => Promise<void>
+  socialLogin?: (data: {
+    provider: ProviderType
+    providerToken: any
+    accountLinkToken?: string
+    isForceLogin?: boolean
+  }) => Promise<void>
   switchMember?: (data: { memberId: string }) => Promise<void>
   logout?: () => Promise<void>
   sendSmsCode?: (data: { phoneNumber: string }) => Promise<void>
@@ -263,13 +268,14 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             throw getBackendServerError(code, message)
           }
         },
-        socialLogin: async ({ provider, providerToken, accountLinkToken }) =>
+        socialLogin: async ({ provider, providerToken, accountLinkToken, isForceLogin }) =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/social-login`,
             {
               appId,
               provider,
               providerToken,
+              isForceLogin,
             },
             { withCredentials: true },
           ).then(({ data: { code, message, result } }) => {
