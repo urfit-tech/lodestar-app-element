@@ -109,6 +109,11 @@ const InvoiceInput: React.VFC<{
 
   const errorFields = isValidating && value ? validateInvoice(value) : []
 
+  const invoiceTypes = settings['invoice.types'] ? JSON.parse(settings['invoice.types']) : null
+  const invoiceTypeOptions = invoiceTypes
+    ? (invoiceTypes as Array<InvoiceType>)
+    : ['donation', 'electronic', 'uniform-number']
+
   const customCharities: { code: string; name: string }[] = (() => {
     try {
       return JSON.parse(settings['invoice.charities']) || []
@@ -123,7 +128,10 @@ const InvoiceInput: React.VFC<{
     }
 
     if (enabledModules.invoice) {
-      setSelectedType((settings['invoice.default_type'] as InvoiceType) || 'donation')
+      const initInvoiceType = invoiceTypeOptions.includes(settings['invoice.default_type'])
+        ? settings['invoice.default_type']
+        : invoiceTypeOptions[0]
+      setSelectedType(initInvoiceType as InvoiceType)
       settings['invoice.default_type'] === 'electronic' && setSelectedOption('send-to-email')
       customCharities[0]?.code && setSelectedCharity(customCharities[0]?.code)
     } else {
@@ -142,8 +150,10 @@ const InvoiceInput: React.VFC<{
         value?: InvoiceProps
       } = JSON.parse(cachedInvoiceRaw)
 
-      cachedInvoice.type && setSelectedType(cachedInvoice.type)
-      cachedInvoice.option && setSelectedOption(cachedInvoice.option)
+      invoiceTypeOptions.includes(cachedInvoice.type || '') && cachedInvoice.type && setSelectedType(cachedInvoice.type)
+      invoiceTypeOptions.includes(cachedInvoice.type || '') &&
+        cachedInvoice.option &&
+        setSelectedOption(cachedInvoice.option)
     } catch (error) {}
   }, [loading, enabledModules.invoice])
 
@@ -250,8 +260,6 @@ const InvoiceInput: React.VFC<{
   }
 
   const isMemberInfoDisable = Boolean(Number(settings['feature.invoice_member_info_input.disable']))
-
-  const invoiceTypeOptions = ['donation', 'electronic', 'uniform-number']
   const group = getRootProps()
 
   return (
