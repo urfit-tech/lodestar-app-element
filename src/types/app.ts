@@ -343,3 +343,4 @@ export type Permission =
   | 'TEACHER_MANAGEMENT'
   | 'MATERIAL_AUDIT_LOG_ADMIN'
   | 'REPORT_ADMIN'
+  | 'REPORT_VIEW'
