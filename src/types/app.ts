@@ -113,7 +113,7 @@ export type Module =
   | 'inquiry_ai_partner'
   | 'inquiry_ai_professor'
   | 'inquiry_ai_pilot'
-  | ' ebook'
+  | 'ebook'
 
 export type Currency = {
   id: string
