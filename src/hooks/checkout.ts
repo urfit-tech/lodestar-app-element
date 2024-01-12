@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
 import { useApp } from '../contexts/AppContext'
 import { useAuth } from '../contexts/AuthContext'
+import { getTrackingCookie } from '../helpers'
 import {
   CheckProps,
   InvoiceProps,
@@ -84,6 +85,8 @@ export const useCheck = ({
       payment?: PaymentProps | null,
     ) => {
       setOrderPlacing(true)
+      const trackingCookie = getTrackingCookie()
+      const trackingOptions = { ...trackingCookie }
       return Axios.post<{
         code: string
         message: string
@@ -105,6 +108,7 @@ export const useCheck = ({
           shipping,
           invoice,
           options,
+          tracking: trackingOptions,
         },
         {
           headers: { authorization: `Bearer ${authToken}` },

@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios'
+import Cookies from 'js-cookie'
 import moment from 'moment'
 import queryString from 'query-string'
 import { css, FlattenSimpleInterpolation } from 'styled-components'
@@ -194,4 +195,18 @@ export const getBackendServerError = (code: string, message: string) => {
       errorObject = new Error(message)
   }
   return errorObject
+}
+
+export const getTrackingCookie = () => {
+  const fbc = Cookies.get('_fbc') // dmpId
+  const fbp = Cookies.get('_fbp') // dmpId
+  const dmpId = Cookies.get('__eruid') // dmpId
+  let utm = Cookies.get('utm')
+  utm = utm ? JSON.parse(utm) : null
+  const trackingCookie = {}
+  if (utm) Object.assign(trackingCookie, { utm })
+  if (dmpId) Object.assign(trackingCookie, { dmpId })
+  if (fbc) Object.assign(trackingCookie, { fbc })
+  if (fbp) Object.assign(trackingCookie, { fbp })
+  return trackingCookie
 }
