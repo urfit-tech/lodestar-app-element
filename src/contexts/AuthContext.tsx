@@ -295,8 +295,10 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                   {
                     event: 'insertCustomMemberProperty',
                     memberId: currentMemberId,
-                    utmQuery,
-                    landing,
+                    options: {
+                      utmQuery,
+                      landing,
+                    },
                   },
                   { headers: { authorization: `Bearer ${result.authToken}` } },
                 )
