@@ -9,6 +9,7 @@ import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hook
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 import { LodestarWindow } from '../types/lodestar.window'
+import { useApp } from './AppContext'
 declare let window: LodestarWindow
 
 type ProviderType = 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth' | 'cw'
@@ -65,6 +66,7 @@ const AuthContext = createContext<AuthProps>(defaultAuthContext)
 export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
+  const { settings } = useApp()
   const [isAuthenticating, setIsAuthenticating] = useState(defaultAuthContext.isAuthenticating)
   const [authToken, setAuthToken] = useState<string | null>((window as any).AUTH_TOKEN || null)
   const payload = useMemo(() => (authToken ? parsePayload(authToken) : null), [authToken])
@@ -289,22 +291,26 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               let utmQuery = Cookies.get('utm')
               utmQuery = utmQuery ? JSON.parse(utmQuery) : {}
               const landing = Cookies.get('landing') || ''
-              try {
-                await Axios.post(
-                  `${process.env.REACT_APP_KOLABLE_SERVER_ENDPOINT}/${appId}/custom`,
-                  {
-                    event: 'insertCustomMemberProperty',
-                    memberId: currentMemberId,
-                    options: {
-                      utmQuery,
-                      landing,
+
+              if (settings['custom_api.insertCustomMemberProperty.enabled']) {
+                try {
+                  await Axios.post(
+                    `${process.env.REACT_APP_KOLABLE_SERVER_ENDPOINT}/${appId}/custom/insertCustomMemberProperty`,
+                    {
+                      event: 'insertCustomMemberProperty',
+                      memberId: currentMemberId,
+                      options: {
+                        utmQuery,
+                        landing,
+                      },
                     },
-                  },
-                  { headers: { authorization: `Bearer ${result.authToken}` } },
-                )
-              } catch (error) {
-                console.log(error)
+                    { headers: { authorization: `Bearer ${result.authToken}` } },
+                  )
+                } catch (error) {
+                  console.log(error)
+                }
               }
+
               if (accountLinkToken && result.authToken) {
                 window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
               }
