@@ -1,4 +1,5 @@
 import Axios, { AxiosError } from 'axios'
+import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
@@ -8,10 +9,10 @@ import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hook
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 import { LodestarWindow } from '../types/lodestar.window'
+import { useApp } from './AppContext'
 declare let window: LodestarWindow
 
 type ProviderType = 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth' | 'cw'
-type LoginDeviceStatus = 'existed' | 'available' | 'limited' | 'unsupported'
 
 type AuthProps = {
   isAuthenticating: boolean
@@ -65,6 +66,7 @@ const AuthContext = createContext<AuthProps>(defaultAuthContext)
 export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
+  const { settings } = useApp()
   const [isAuthenticating, setIsAuthenticating] = useState(defaultAuthContext.isAuthenticating)
   const [authToken, setAuthToken] = useState<string | null>((window as any).AUTH_TOKEN || null)
   const payload = useMemo(() => (authToken ? parsePayload(authToken) : null), [authToken])
@@ -94,7 +96,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
     const fingerPrintId = await getFingerPrintId()
     const { ip, country, countryCode } = await fetchCurrentGeolocation()
     const {
-      data: { code, message, result },
+      data: { code, result },
     } = await Axios.post(
       `${process.env.REACT_APP_API_BASE_ROOT}/auth/refresh-token`,
       { appId, fingerPrintId, geoLocation: { ip, country, countryCode } },
@@ -278,9 +280,37 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               isForceLogin,
             },
             { withCredentials: true },
-          ).then(({ data: { code, message, result } }) => {
+          ).then(async ({ data: { code, message, result } }) => {
             if (code === 'SUCCESS') {
               setAuthToken(result.authToken)
+              const decodedToken = parsePayload(result.authToken)
+              if (!decodedToken) {
+                throw new Error('no auth token')
+              }
+              const currentMemberId = decodedToken.sub
+              let utmQuery = Cookies.get('utm')
+              utmQuery = utmQuery ? JSON.parse(utmQuery) : {}
+              const landing = Cookies.get('landing') || ''
+
+              if (settings['custom_api.insertCustomMemberProperty.enabled']) {
+                try {
+                  await Axios.post(
+                    `${process.env.REACT_APP_KOLABLE_SERVER_ENDPOINT}/${appId}/marketing/insertCustomMemberProperty`,
+                    {
+                      event: 'insertCustomMemberProperty',
+                      memberId: currentMemberId,
+                      options: {
+                        utmQuery,
+                        landing,
+                      },
+                    },
+                    { headers: { authorization: `Bearer ${result.authToken}` } },
+                  )
+                } catch (error) {
+                  console.log(error)
+                }
+              }
+
               if (accountLinkToken && result.authToken) {
                 window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
               }
