@@ -76,14 +76,7 @@ export type PaymentMethodType =
   | 'linepay'
   | 'atome'
 
-export type PaymentGatewayType =
-  | 'spgateway'
-  | 'tappay'
-  | 'parenting'
-  | 'paypal'
-  | 'commonhealth'
-  | 'atome'
-  | 'spgateway2'
+export type PaymentGatewayType = 'spgateway' | 'tappay' | 'parenting' | 'paypal' | 'commonhealth' | 'atome'
 
 export type ShippingProps = {
   name?: string
