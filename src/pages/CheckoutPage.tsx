@@ -18,7 +18,7 @@ const CheckoutPage = () => {
             Free auto subscription
           </Button>
         )}
-        defaultProductId={`ProgramPlan_e231abd7-25fa-4007-868b-6ff1901a0cee`}
+        defaultProductId={`ProgramPlan_baa1aa67-13ba-4371-9146-93dcc011fa55`}
       />
 
       <CheckoutProductModal
