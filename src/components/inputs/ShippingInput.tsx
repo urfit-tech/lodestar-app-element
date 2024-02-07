@@ -58,7 +58,8 @@ const ShippingInput: React.VFC<{
   isValidating?: boolean
   shippingMethods?: ShippingOptionProps[]
   isGiftPlanDeliverable?: boolean
-}> = ({ value, onChange, isValidating, shippingMethods, isGiftPlanDeliverable }) => {
+  defaultValue?: ShippingProps
+}> = ({ value, onChange, isValidating, shippingMethods, isGiftPlanDeliverable, defaultValue }) => {
   const { formatMessage } = useIntl()
   const { currencyId: appCurrencyId, settings } = useApp()
   const { handleCityChange, handleDistrictChange } = useTwZipCode()
@@ -87,20 +88,22 @@ const ShippingInput: React.VFC<{
       localStorage.setItem('kolable.cart.shippingOptions', JSON.stringify(newShippingOption))
     }
 
-    let newValue: ShippingProps = {
-      name: value?.name?.trim() || '',
-      phone: value?.phone?.trim() || '',
-      zipCode: value?.zipCode || '100',
-      city: value?.city || '台北市',
-      district: value?.district || '中正區',
-      address: value?.address?.trim() || '',
-      isOutsideTaiwanIsland: value?.isOutsideTaiwanIsland || 'false',
-      shippingMethod: value?.shippingMethod || 'home-delivery',
-      specification: value?.specification?.trim() || '',
-      storeId: value?.storeId || '',
-      storeName: value?.storeName || '',
-      ...newShippingOption,
-    }
+    let newValue: ShippingProps = defaultValue
+      ? defaultValue
+      : {
+          name: value?.name?.trim() || '',
+          phone: value?.phone?.trim() || '',
+          zipCode: value?.zipCode || '',
+          city: value?.city || '',
+          district: value?.district || '',
+          address: value?.address?.trim() || '',
+          isOutsideTaiwanIsland: value?.isOutsideTaiwanIsland || 'false',
+          shippingMethod: value?.shippingMethod || 'home-delivery',
+          specification: value?.specification?.trim() || '',
+          storeId: value?.storeId || '',
+          storeName: value?.storeName || '',
+          ...newShippingOption,
+        }
 
     let newZipCode = value?.zipCode
 
