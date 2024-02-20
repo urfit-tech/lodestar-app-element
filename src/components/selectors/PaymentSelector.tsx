@@ -77,7 +77,7 @@ const getPaymentOptions = () => {
   const { data, loading, error } = useQuery<hasura.getPaymentGatewayMethod>(
     gql`
       query getPaymentGatewayMethod {
-        app_payment_gateway_method(where: { app_payment_gateway: { status: { _eq: "enabled" } } }) {
+        app_payment_gateway_method(where: { status: { _eq: "enabled" } }) {
           method {
             name
           }
