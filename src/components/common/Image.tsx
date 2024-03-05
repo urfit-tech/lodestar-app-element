@@ -1,4 +1,4 @@
-import styled, { css, CSSObject } from 'styled-components'
+import styled, { CSSObject } from 'styled-components'
 import { ElementComponent } from '../../types/element'
 
 export type ImageProps = {
@@ -12,20 +12,13 @@ export type ImageProps = {
   ariaLabel?: string
 }
 
-export const StyledImage = styled.div<ImageProps>`
+export const extractNumber = (string?: string) => (string?.match(/\d+/g)?.[0] ? Number(string.match(/\d+/g)?.[0]) : 0)
+
+export const StyledImage = styled.img<ImageProps>`
   background-size: cover;
   background-position: center;
-  ${props => {
-    const width = (typeof props.width === 'number' ? props.width + 'px' : props.width) || '100%'
-    const height = typeof props.height === 'number' ? props.height + 'px' : props.height
-    const ratio = props.ratio || 3 / 4
-    return css`
-      width: ${width};
-      padding-top: ${height || `calc(${width} * ${ratio})`};
-    `
-  }}
-  background-size: cover;
-  background-position: center;
+  width: ${props => (typeof props.width === 'number' ? props.width + 'px' : props.width) || '100%'};
+  height: ${props => (typeof props.height === 'number' ? props.height + 'px' : props.height) || '100%'};
   ${props =>
     props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : undefined};
 `
