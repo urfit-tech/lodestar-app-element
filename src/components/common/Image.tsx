@@ -14,7 +14,7 @@ export type ImageProps = {
 
 export const extractNumber = (string?: string) => (string?.match(/\d+/g)?.[0] ? Number(string.match(/\d+/g)?.[0]) : 0)
 
-export const StyledImage = styled.img<ImageProps>`
+export const StyledImage = styled.div<ImageProps>`
   background-size: cover;
   background-position: center;
   width: ${props => (typeof props.width === 'number' ? props.width + 'px' : props.width) || '100%'};
