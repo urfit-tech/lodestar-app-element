@@ -18,7 +18,7 @@ export const StyledImage = styled.div<ImageProps>`
   background-size: cover;
   background-position: center;
   width: ${props => (typeof props.width === 'number' ? props.width + 'px' : props.width) || '100%'};
-  height: ${props => (typeof props.height === 'number' ? props.height + 'px' : props.height) || '100%'};
+  padding-top: ${props => (typeof props.height === 'number' ? props.height + 'px' : props.height) || '100%'};
   ${props =>
     props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : undefined};
 `
