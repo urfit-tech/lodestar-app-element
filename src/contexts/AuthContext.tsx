@@ -194,6 +194,10 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                     })
                       .then(response => response.json())
                       .then(json => console.log(json))
+                      .catch(error => {
+                        console.log('mockapi', error)
+                        throw error
+                      })
 
                     fetch(process.env.REACT_APP_GRAPHQL_PH_ENDPOINT, {
                       method: 'POST',
