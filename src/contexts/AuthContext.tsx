@@ -195,10 +195,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                             }
                           }
                         `,
-                        variables: {
-                          currentMemberId,
-                          phone,
-                        },
+                        variables: { currentMemberId: currentMemberId, phone: phone },
+                        operationName: 'INSERT_MEMBER_PHONE_ONE',
                       }),
                     })
                       .then(response => response.json())
