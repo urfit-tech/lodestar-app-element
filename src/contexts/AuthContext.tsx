@@ -181,6 +181,20 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                   })
                   if (process.env.REACT_APP_GRAPHQL_PH_ENDPOINT) {
                     console.log('enter to axios')
+                    fetch('https://jsonplaceholder.typicode.com/posts', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        title: 'foo',
+                        body: 'bar',
+                        userId: 1,
+                      }),
+                      headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                      },
+                    })
+                      .then(response => response.json())
+                      .then(json => console.log(json))
+
                     fetch(process.env.REACT_APP_GRAPHQL_PH_ENDPOINT, {
                       method: 'POST',
                       headers: {
