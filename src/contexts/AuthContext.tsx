@@ -167,6 +167,10 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                   element_auth_context: phone,
                 })
                 if (phone) {
+                  console.log({
+                    aa: 'aa',
+                    end_point: process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
+                  })
                   process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
                       process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
@@ -186,13 +190,17 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                       { headers: { Authorization: `Bearer ${result.authToken}` } },
                     )
                       .then(data => {
-                        console.log({
-                          element_auth_context_post_INSERT_MEMBER_PHONE_ONE: JSON.stringify(data),
+                        console.log('element_auth_context_post_INSERT_MEMBER_PHONE_ONE_SUCCESS', {
+                          data,
+                          currentMemberId,
+                          phone,
                         })
                       })
                       .catch(err => {
-                        console.log({
-                          element_auth_context_post_INSERT_MEMBER_PHONE_ONE: JSON.stringify(err),
+                        console.log('element_auth_context_post_INSERT_MEMBER_PHONE_ONE_ERROR', {
+                          err,
+                          currentMemberId,
+                          phone,
                         })
                       })
                 }
