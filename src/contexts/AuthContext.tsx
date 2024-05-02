@@ -163,6 +163,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               try {
                 const currentMemberId = jwt.decode(result.authToken)?.sub
                 const phone = localStorage.getItem('phone')
+                console.log({
+                  element_auth_context: phone,
+                })
                 if (phone) {
                   process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
@@ -181,7 +184,11 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                         },
                       },
                       { headers: { Authorization: `Bearer ${result.authToken}` } },
-                    )
+                    ).catch(err => {
+                      console.log({
+                        element_auth_context_post_INSERT_MEMBER_PHONE_ONE: JSON.stringify(err),
+                      })
+                    })
                 }
 
                 const categoryIds: string[] = JSON.parse(sessionStorage.getItem('categoryIds') || '[]')
