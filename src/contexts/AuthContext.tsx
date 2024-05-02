@@ -184,11 +184,17 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                         },
                       },
                       { headers: { Authorization: `Bearer ${result.authToken}` } },
-                    ).catch(err => {
-                      console.log({
-                        element_auth_context_post_INSERT_MEMBER_PHONE_ONE: JSON.stringify(err),
+                    )
+                      .then(data => {
+                        console.log({
+                          element_auth_context_post_INSERT_MEMBER_PHONE_ONE: JSON.stringify(data),
+                        })
                       })
-                    })
+                      .catch(err => {
+                        console.log({
+                          element_auth_context_post_INSERT_MEMBER_PHONE_ONE: JSON.stringify(err),
+                        })
+                      })
                 }
 
                 const categoryIds: string[] = JSON.parse(sessionStorage.getItem('categoryIds') || '[]')
