@@ -156,6 +156,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             },
             { withCredentials: true },
           ).then(({ data: { code, message, result } }) => {
+            console.log({ code, message, result })
             if (code === 'SUCCESS') {
               if (!data.withoutLogin) {
                 setAuthToken(result.authToken)
@@ -165,11 +166,16 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 const phone = localStorage.getItem('phone')
                 console.log({
                   element_auth_context: phone,
+                  token: result.authToken,
+                  currentMemberId,
                 })
                 if (phone) {
                   console.log({
                     aa: 'aa',
                     end_point: process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
+                    currentMemberId,
+                    phone,
+                    token: result.authToken,
                   })
                   process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
