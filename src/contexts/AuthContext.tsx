@@ -201,7 +201,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                         },
                       }),
                     })
-                      .then(response => response.json()) // Transform the response into JSON
+                      .then(response => response.json())
                       .then(data => {
                         console.log('INSERT_MEMBER_PHONE_ONE_SUCCESS', {
                           response: data,
