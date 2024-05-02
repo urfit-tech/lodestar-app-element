@@ -181,31 +181,35 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                   })
                   if (process.env.REACT_APP_GRAPHQL_PH_ENDPOINT) {
                     console.log('enter to axios')
-                    Axios.post(
-                      process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
-                      {
+                    fetch(process.env.REACT_APP_GRAPHQL_PH_ENDPOINT, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${result.authToken}`,
+                      },
+                      body: JSON.stringify({
                         query: `
-                              mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
-                                  insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
-                                      id
-                                  }
-                              }
-                          `,
+                          mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
+                            insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
+                              id
+                            }
+                          }
+                        `,
                         variables: {
                           currentMemberId,
                           phone,
                         },
-                      },
-                      { headers: { Authorization: `Bearer ${result.authToken}` } },
-                    )
-                      .then(response => {
+                      }),
+                    })
+                      .then(response => response.json()) // Transform the response into JSON
+                      .then(data => {
                         console.log('INSERT_MEMBER_PHONE_ONE_SUCCESS', {
-                          response,
+                          response: data,
                           currentMemberId,
                           phone,
                         })
-                        console.log('After Axios request')
-                        return response
+                        console.log('After fetch request')
+                        return data
                       })
                       .catch(error => {
                         console.log('INSERT_MEMBER_PHONE_ONE_ERROR', {
