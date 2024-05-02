@@ -164,11 +164,13 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               try {
                 const currentMemberId = jwt.decode(result.authToken)?.sub
                 const phone = localStorage.getItem('phone')
-                console.log({
-                  element_auth_context: phone,
-                  token: result.authToken,
-                  currentMemberId,
-                })
+                console.log(
+                  JSON.stringify({
+                    element_auth_context: phone,
+                    token: result.authToken,
+                    currentMemberId,
+                  }),
+                )
                 if (phone) {
                   console.log({
                     aa: 'aa',
@@ -177,17 +179,18 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                     phone,
                     token: result.authToken,
                   })
+                  process.env.REACT_APP_GRAPHQL_PH_ENDPOINT && console.log('Before Axios request')
                   process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
                       process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
                       {
                         query: `
-                        mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
-                          insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
-                            id
-                          }
-                        }
-                    `,
+                              mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
+                                  insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
+                                      id
+                                  }
+                              }
+                          `,
                         variables: {
                           currentMemberId,
                           phone,
@@ -195,20 +198,23 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                       },
                       { headers: { Authorization: `Bearer ${result.authToken}` } },
                     )
-                      .then(data => {
-                        console.log('element_auth_context_post_INSERT_MEMBER_PHONE_ONE_SUCCESS', {
-                          data,
+                      .then(response => {
+                        console.log('INSERT_MEMBER_PHONE_ONE_SUCCESS', {
+                          response,
                           currentMemberId,
                           phone,
                         })
+                        return response
                       })
-                      .catch(err => {
-                        console.log('element_auth_context_post_INSERT_MEMBER_PHONE_ONE_ERROR', {
-                          err,
+                      .catch(error => {
+                        console.log('INSERT_MEMBER_PHONE_ONE_ERROR', {
+                          error,
                           currentMemberId,
                           phone,
                         })
+                        throw error
                       })
+                  console.log('After Axios request')
                 }
 
                 const categoryIds: string[] = JSON.parse(sessionStorage.getItem('categoryIds') || '[]')
