@@ -156,6 +156,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             },
             { withCredentials: true },
           ).then(({ data: { code, message, result } }) => {
+            console.log({ code, message, result })
             if (code === 'SUCCESS') {
               if (!data.withoutLogin) {
                 setAuthToken(result.authToken)
@@ -163,32 +164,57 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               try {
                 const currentMemberId = jwt.decode(result.authToken)?.sub
                 const phone = localStorage.getItem('phone')
-                console.log({
-                  element_auth_context: phone,
-                })
+                console.log(
+                  JSON.stringify({
+                    element_auth_context: phone,
+                    token: result.authToken,
+                    currentMemberId,
+                  }),
+                )
                 if (phone) {
+                  console.log({
+                    aa: 'aa',
+                    end_point: process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
+                    currentMemberId,
+                    phone,
+                    token: result.authToken,
+                  })
                   process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
                       process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
                       {
                         query: `
-                        mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
-                          insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
-                            id
-                          }
-                        }
-                    `,
+                              mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
+                                  insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
+                                      id
+                                  }
+                              }
+                          `,
                         variables: {
                           currentMemberId,
                           phone,
                         },
                       },
                       { headers: { Authorization: `Bearer ${result.authToken}` } },
-                    ).catch(err => {
-                      console.log({
-                        element_auth_context_post_INSERT_MEMBER_PHONE_ONE: JSON.stringify(err),
+                    )
+                      .then(response => {
+                        console.log('INSERT_MEMBER_PHONE_ONE_SUCCESS', {
+                          response,
+                          currentMemberId,
+                          phone,
+                        })
+                        // 在请求完成后执行
+                        console.log('After Axios request')
+                        return response
                       })
-                    })
+                      .catch(error => {
+                        console.log('INSERT_MEMBER_PHONE_ONE_ERROR', {
+                          error,
+                          currentMemberId,
+                          phone,
+                        })
+                        throw error
+                      })
                 }
 
                 const categoryIds: string[] = JSON.parse(sessionStorage.getItem('categoryIds') || '[]')
