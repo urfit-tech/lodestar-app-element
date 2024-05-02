@@ -179,7 +179,6 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                     phone,
                     token: result.authToken,
                   })
-                  process.env.REACT_APP_GRAPHQL_PH_ENDPOINT && console.log('Before Axios request')
                   process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
                       process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
@@ -204,6 +203,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                           currentMemberId,
                           phone,
                         })
+                        // 在请求完成后执行
+                        console.log('After Axios request')
                         return response
                       })
                       .catch(error => {
@@ -214,7 +215,6 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                         })
                         throw error
                       })
-                  console.log('After Axios request')
                 }
 
                 const categoryIds: string[] = JSON.parse(sessionStorage.getItem('categoryIds') || '[]')
