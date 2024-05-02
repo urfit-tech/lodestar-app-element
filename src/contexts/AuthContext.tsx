@@ -162,7 +162,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               }
               try {
                 const currentMemberId = jwt.decode(result.authToken)?.sub
-                const phone = sessionStorage.getItem('phone')
+                const phone = localStorage.getItem('phone')
                 if (phone) {
                   process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
                     Axios.post(
