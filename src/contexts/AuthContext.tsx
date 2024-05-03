@@ -144,109 +144,115 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             return accumulator
           }, {}) || {},
         refreshToken,
-        register: async data =>
-          Axios.post(
-            `${process.env.REACT_APP_API_BASE_ROOT}/auth/register`,
-            {
-              appId: data.appId || appId,
-              username: data.username,
-              email: data.email,
-              password: data.password,
-              isBusiness: data.isBusiness ?? false,
-            },
-            { withCredentials: true },
-          ).then(({ data: { code, message, result } }) => {
-            if (code === 'SUCCESS') {
-              if (!data.withoutLogin) {
-                setAuthToken(result.authToken)
-              }
-              try {
-                const currentMemberId = jwt.decode(result.authToken)?.sub
-                const phone = sessionStorage.getItem('phone')
-                if (phone) {
-                  process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
-                    Axios.post(
-                      process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
-                      {
-                        query: `
-                        mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
-                          insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
-                            id
-                          }
-                        }
-                    `,
-                        variables: {
-                          currentMemberId,
-                          phone,
-                        },
-                      },
-                      { headers: { Authorization: `Bearer ${result.authToken}` } },
-                    )
+        register: async data => {
+          try {
+            Axios.post(
+              `${process.env.REACT_APP_API_BASE_ROOT}/auth/register`,
+              {
+                appId: data.appId || appId,
+                username: data.username,
+                email: data.email,
+                password: data.password,
+                isBusiness: data.isBusiness ?? false,
+              },
+              { withCredentials: true },
+            ).then(({ data: { code, message, result } }) => {
+              if (code === 'SUCCESS') {
+                if (!data.withoutLogin) {
+                  setAuthToken(result.authToken)
                 }
+                try {
+                  const currentMemberId = jwt.decode(result.authToken)?.sub
+                  const phone = sessionStorage.getItem('phone')
+                  if (phone) {
+                    process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
+                      Axios.post(
+                        process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
+                        {
+                          query: `
+                          mutation INSERT_MEMBER_PHONE_ONE($currentMemberId: String!, $phone: String!) {
+                            insert_member_phone_one(object: { member_id: $currentMemberId, phone: $phone }) {
+                              id
+                            }
+                          }
+                      `,
+                          variables: {
+                            currentMemberId,
+                            phone,
+                          },
+                        },
+                        { headers: { Authorization: `Bearer ${result.authToken}` } },
+                      )
+                  }
 
-                const categoryIds: string[] = JSON.parse(sessionStorage.getItem('categoryIds') || '[]')
-                const memberProperties: { propertyId?: string; value?: string }[] = JSON.parse(
-                  sessionStorage.getItem('memberProperties') || '[]',
-                )
-                if (categoryIds.length) {
-                  process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
-                    Axios.post(
-                      process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
-                      {
-                        query: `
-                        mutation INSERT_MEMBER_CATEGORIES($memberProperties: [member_property_insert_input!]!, $data: [member_category_insert_input!]!) {
-                          insert_member_property(objects: $memberProperties) {
-                            affected_rows
+                  const categoryIds: string[] = JSON.parse(sessionStorage.getItem('categoryIds') || '[]')
+                  const memberProperties: { propertyId?: string; value?: string }[] = JSON.parse(
+                    sessionStorage.getItem('memberProperties') || '[]',
+                  )
+                  if (categoryIds.length) {
+                    process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
+                      Axios.post(
+                        process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
+                        {
+                          query: `
+                          mutation INSERT_MEMBER_CATEGORIES($memberProperties: [member_property_insert_input!]!, $data: [member_category_insert_input!]!) {
+                            insert_member_property(objects: $memberProperties) {
+                              affected_rows
+                            }
+                            insert_member_category(objects: $data) {
+                              affected_rows
+                            }
                           }
-                          insert_member_category(objects: $data) {
-                            affected_rows
-                          }
-                        }
-                      `,
-                        variables: {
-                          memberProperties: memberProperties.map(v => ({
-                            member_id: currentMemberId,
-                            property_id: v.propertyId,
-                            value: v.value,
-                          })),
-                          data: categoryIds.map((categoryId, index) => ({
-                            member_id: currentMemberId,
-                            category_id: categoryId,
-                            position: index,
-                          })),
+                        `,
+                          variables: {
+                            memberProperties: memberProperties.map(v => ({
+                              member_id: currentMemberId,
+                              property_id: v.propertyId,
+                              value: v.value,
+                            })),
+                            data: categoryIds.map((categoryId, index) => ({
+                              member_id: currentMemberId,
+                              category_id: categoryId,
+                              position: index,
+                            })),
+                          },
                         },
-                      },
-                      { headers: { Authorization: `Bearer ${result.authToken}` } },
-                    )
-                }
-                const star = sessionStorage.getItem('star')
-                if (star) {
-                  process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
-                    Axios.post(
-                      process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
-                      {
-                        query: `
-                        mutation SET_MEMBER_STAR($memberId: String!, $star: numeric!) {
-                          update_member(where: {id: {_eq: $memberId}}, _set: {star: $star}) {
-                            affected_rows
-                          }
-                        }                      
-                      `,
-                        variables: {
-                          memberId: currentMemberId,
-                          star: parseInt(star),
+                        { headers: { Authorization: `Bearer ${result.authToken}` } },
+                      )
+                  }
+                  const star = sessionStorage.getItem('star')
+                  if (star) {
+                    process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&
+                      Axios.post(
+                        process.env.REACT_APP_GRAPHQL_PH_ENDPOINT,
+                        {
+                          query: `
+                          mutation SET_MEMBER_STAR($memberId: String!, $star: numeric!) {
+                            update_member(where: {id: {_eq: $memberId}}, _set: {star: $star}) {
+                              affected_rows
+                            }
+                          }                      
+                        `,
+                          variables: {
+                            memberId: currentMemberId,
+                            star: parseInt(star),
+                          },
                         },
-                      },
-                      { headers: { Authorization: `Bearer ${result.authToken}` } },
-                    )
-                }
-                return result.authToken
-              } catch {}
-            } else {
-              setAuthToken(null)
-              throw new Error(code)
-            }
-          }),
+                        { headers: { Authorization: `Bearer ${result.authToken}` } },
+                      )
+                  }
+                  return result.authToken
+                } catch {}
+              } else {
+                setAuthToken(null)
+                throw new Error(code)
+              }
+            })
+          } catch (error) {
+            console.error(`Registration error ${error}`)
+          }
+        },
+
         login: async ({ account, password, accountLinkToken }) => {
           const {
             data: { code, message, result },
