@@ -90,7 +90,7 @@ const PriceLabel: React.VFC<
             {firstPeriodPrice === 0 && !noFreeText && (
               <span className="downPrice__free">{formatMessage(commonMessages.label.free)}</span>
             )}
-            <span className="downPrice__firstPeriodPriceAmount">{formatCurrency(firstPeriodPrice)}</span>
+            <span className="downPrice__firstPeriodPriceAmount">{formatCurrency(firstPeriodPrice)} TT</span>
           </div>
         )}
 

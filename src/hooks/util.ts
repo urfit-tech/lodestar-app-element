@@ -38,10 +38,22 @@ export const useCurrency = (currencyId?: string, coinUnit?: string) => {
   const { currencies, settings } = useApp()
 
   const formatCurrency = (value: number) => {
+    console.log({
+      value,
+    })
     const currentCurrencyId = currencyId || settings['currency_id'] || 'TWD'
     const currency = currencies[currentCurrencyId]
+    console.log({
+      value,
+      currency,
+      currentCurrencyId,
+    })
 
     if (currentCurrencyId === 'LSC') {
+      console.log({
+        unit: settings['coin.unit'],
+        coinUnit: coinUnit,
+      })
       return value + ' ' + settings['coin.unit'] || coinUnit || 'Coins'
     }
 
