@@ -785,7 +785,7 @@ const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
             </StyledCheckoutBlock>
             <StyledCheckoutPrice className="mb-3">
               {!isCoinMerchandise || isCoinsEnough ? (
-                <PriceLabel listPrice={totalPrice} />
+                <PriceLabel listPrice={totalPrice} currencyId={'LSC'} />
               ) : (
                 `${settings['coin.unit'] || check.orderProducts[0].options?.currencyId} ${formatMessage(
                   checkoutMessages.message.notEnough,
