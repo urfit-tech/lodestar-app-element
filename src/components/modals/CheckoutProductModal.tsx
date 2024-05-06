@@ -101,6 +101,7 @@ const CheckoutProductItem: React.VFC<{
   saleAmount?: number
   defaultProductId?: string
 }> = ({ name, price, currencyId, quantity, saleAmount, defaultProductId }) => {
+  console.log('CheckoutProductItem', { name, price, currencyId, quantity, saleAmount, defaultProductId })
   return (
     <div className="d-flex align-items-center justify-content-between">
       <span className="flex-grow-1 mr-4">
@@ -113,7 +114,7 @@ const CheckoutProductItem: React.VFC<{
       </span>
 
       <span className="flex-shrink-0">
-        <PriceLabel listPrice={price} currencyId={currencyId} />
+        <PriceLabel listPrice={price} currencyId={'LSC'} />
       </span>
     </div>
   )
