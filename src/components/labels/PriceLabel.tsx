@@ -70,6 +70,14 @@ const PriceLabel: React.VFC<
   const displayPrice = salePrice || listPrice
   const firstPeriodPrice = displayPrice - (downPrice || 0)
 
+  console.log({
+    render,
+    variant,
+    displayPrice,
+    firstPeriodPrice,
+    periodType,
+  })
+
   if (render) {
     return render({ ...options, formatCurrency })
   }
@@ -109,7 +117,7 @@ const PriceLabel: React.VFC<
                 <span className="salePrice__saleAmount">
                   {formatMessage(productMessages.label.voucherPlanPriceLabel, { saleAmount: saleAmount })}
                 </span>
-                <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
+                <span className="salePrice__amount">{formatCurrency(salePrice)} saleAmount</span>
               </>
             ) : (
               <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
