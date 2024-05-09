@@ -38,8 +38,13 @@ export const useCurrency = (currencyId?: string, coinUnit?: string) => {
   const { currencies, settings } = useApp()
 
   const formatCurrency = (value: number) => {
+    console.group('useCurrency.formatCurrency')
     console.log({
       value,
+      currencyId,
+      coinUnit,
+      settings,
+      currencies,
     })
     const currentCurrencyId = currencyId || settings['currency_id'] || 'TWD'
     const currency = currencies[currentCurrencyId]
@@ -48,15 +53,31 @@ export const useCurrency = (currencyId?: string, coinUnit?: string) => {
       currency,
       currentCurrencyId,
     })
+    console.groupEnd()
 
     if (currentCurrencyId === 'LSC') {
+      console.group('useCurrency.formatCurrency.LSC')
       console.log({
         unit: settings['coin.unit'],
-        coinUnit: coinUnit,
+        coinUnit,
       })
+      console.groupEnd()
       return value + ' ' + settings['coin.unit'] || coinUnit || 'Coins'
     }
 
+    console.log('useCurrency.formatCurrency.return', {
+      value,
+      locale,
+      currencyId,
+      currentCurrencyId,
+      currency,
+      formattedValue: value.toLocaleString(locale || navigator.language, {
+        style: 'currency',
+        currency: currentCurrencyId,
+        maximumFractionDigits: currency?.['minorUnits'] || 0,
+        minimumFractionDigits: 0,
+      }),
+    })
     return (
       value.toLocaleString(locale || navigator.language, {
         style: 'currency',
