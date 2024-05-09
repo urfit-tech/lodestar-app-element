@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { commonMessages, productMessages } from '../../helpers/translation'
@@ -66,10 +66,15 @@ const PriceLabel: React.VFC<
   const displayPrice = salePrice || listPrice
   const firstPeriodPrice = displayPrice - (downPrice || 0)
 
-  const formatPrice = useMemo(() => (price: number) => formatCurrency(price), [formatCurrency])
+  const [formattedPrice, setFormattedPrice] = useState<string>('')
+
+  useEffect(() => {
+    const formatPrice = (price: number) => formatCurrency(price)
+    setFormattedPrice(formatPrice(listPrice))
+  }, [formatCurrency, listPrice])
 
   if (render) {
-    return render({ ...options, formatPrice })
+    return render({ ...options, formatPrice: (price: number) => formatCurrency(price) })
   }
 
   const periodElem = !!periodType && (
@@ -88,7 +93,7 @@ const PriceLabel: React.VFC<
             {firstPeriodPrice === 0 && !noFreeText && (
               <span className="downPrice__free">{formatMessage(commonMessages.label.free)}</span>
             )}
-            <span className="downPrice__firstPeriodPriceAmount">{formatPrice(firstPeriodPrice)} TT</span>
+            <span className="downPrice__firstPeriodPriceAmount">{formatCurrency(firstPeriodPrice)} TT</span>
           </div>
         )}
 
@@ -107,10 +112,10 @@ const PriceLabel: React.VFC<
                 <span className="salePrice__saleAmount">
                   {formatMessage(productMessages.label.voucherPlanPriceLabel, { saleAmount: saleAmount })}
                 </span>
-                <span className="salePrice__amount">{formatPrice(salePrice)} saleAmount</span>
+                <span className="salePrice__amount">{formatCurrency(salePrice)} saleAmount</span>
               </>
             ) : (
-              <span className="salePrice__amount">{formatPrice(salePrice)}</span>
+              <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
             )}
             <span className="salePrice__periodUnit" style={{ fontSize: '16px' }}>
               {periodElem}
@@ -131,7 +136,7 @@ const PriceLabel: React.VFC<
           {listPrice === 0 && !noFreeText && (
             <span className="listPrice__freeText">{formatMessage(commonMessages.label.free)}</span>
           )}
-          <span className="listPrice__amount">{formatPrice(listPrice)}</span>
+          <span className="listPrice__amount">{formattedPrice}</span>
           <span className="listPrice__periodUnit" style={{ fontSize: '16px' }}>
             {periodElem}
           </span>
@@ -144,12 +149,12 @@ const PriceLabel: React.VFC<
     return (
       <InlinePrice className="price">
         <ListPrice className="listPrice">
-          <span className="listPrice__amount">{formatPrice(listPrice)}</span>
+          <span className="listPrice__amount">{formattedPrice}</span>
           <span className="listPrice__periodUnit">{periodElem}</span>
         </ListPrice>
         {typeof salePrice === 'number' && (
           <SalePrice className="salePrice">
-            <span className="salePrice__amount">{formatPrice(salePrice)}</span>
+            <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
             <span className="salePrice__periodUnit">{periodElem}</span>
           </SalePrice>
         )}
@@ -157,7 +162,7 @@ const PriceLabel: React.VFC<
     )
   }
 
-  return <span className="price listPrice__amount">{formatPrice(listPrice)}</span>
+  return <span className="price listPrice__amount">{formattedPrice}</span>
 }
 
 export default PriceLabel
