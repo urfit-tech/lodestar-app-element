@@ -19,9 +19,7 @@ const messages = defineMessages({
   unknownType: { id: 'common.unknownType', defaultMessage: '未知' },
 })
 
-const ProductTypeLabel: React.VFC<{
-  productType: ProductType
-}> = ({ productType }) => {
+const ProductTypeLabel = ({ productType }: { productType: ProductType }) => {
   const { formatMessage } = useIntl()
 
   switch (productType) {
