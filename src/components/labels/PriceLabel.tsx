@@ -71,7 +71,7 @@ const PriceLabel: React.VFC<
   useEffect(() => {
     const formatPrice = (price: number) => formatCurrency(price)
     setFormattedPrice(formatPrice(listPrice))
-  }, [formatCurrency, listPrice])
+  }, [formatCurrency, listPrice, currencyId, coinUnit])
 
   if (render) {
     return render({ ...options, formatPrice: (price: number) => formatCurrency(price) })
