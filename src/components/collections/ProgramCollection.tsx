@@ -63,6 +63,7 @@ export type ProgramCollectionProps = {
   withOrderSelector?: boolean
   collectionVariant?: 'grid' | 'carousel'
   carousel?: BaseCarouselProps
+  programStatus?: 'public' | 'private' | 'membership_card'
 }
 const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
   const history = useHistory()
@@ -79,7 +80,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
     if (source.from !== sourceFrom) {
       setSourceFrom(source.from)
     }
-  }, [source])
+  }, [source, sourceFrom])
 
   if (loading || errors) {
     return null
@@ -150,7 +151,11 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
       if (source.from === 'custom') {
         ContextCollection = collectPublishedAtCollection({ from: sourceFrom, limit: 4 })
       } else {
-        ContextCollection = collectPublishedAtCollection({ ...source, from: sourceFrom, limit: source?.limit || 4 })
+        ContextCollection = collectPublishedAtCollection({
+          ...source,
+          from: sourceFrom,
+          limit: source?.limit || 4,
+        })
       }
       break
   }
@@ -294,7 +299,7 @@ const useEnrolledProgramIds = (memberId: string | null, options?: { skip?: boole
 const collectCustomCollection = (options: ProductCustomSource) => {
   const idList = (options.idList || []).filter(id => id !== '')
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+    const { data, loading, error } = useQuery<hasura.GetProgramCollection, hasura.GetProgramCollectionVariables>(
       getProgramCollectionQuery(programFields),
       {
         variables: {
@@ -302,7 +307,7 @@ const collectCustomCollection = (options: ProductCustomSource) => {
           orderByClause: [],
           whereClause: {
             id: { _in: idList },
-            is_private: { _eq: false },
+            is_private: { _eq: options.programStatus === 'private' },
             published_at: { _lt: 'now()' },
           },
         },
@@ -329,14 +334,14 @@ const collectCustomCollection = (options: ProductCustomSource) => {
 
 const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+    const { data, loading, error } = useQuery<hasura.GetProgramCollection, hasura.GetProgramCollectionVariables>(
       getProgramCollectionQuery(programFields),
       {
         variables: {
           limit: options.limit,
           orderByClause: [{ published_at: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
           whereClause: {
-            is_private: { _eq: false },
+            is_private: { _eq: options.programStatus === 'private' },
             published_at: { _lt: 'now()' },
             program_categories: options.defaultCategoryIds?.length
               ? {
@@ -349,6 +354,15 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
               ? {
                   tag_name: {
                     _in: options.defaultTagNames,
+                  },
+                }
+              : undefined,
+            program_plans: !!options.membershipCardId
+              ? {
+                  card_products: {
+                    card_id: {
+                      _eq: options.membershipCardId,
+                    },
                   },
                 }
               : undefined,
@@ -369,7 +383,7 @@ const collectPublishedAtCollection = (options: ProductPublishedAtSource) => {
 
 const collectPopularCollection = (options: ProductPublishedAtSource<'popular'>) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+    const { data, loading, error } = useQuery<hasura.GetProgramCollection, hasura.GetProgramCollectionVariables>(
       getProgramCollectionQuery(programFields),
       {
         variables: {
@@ -379,7 +393,7 @@ const collectPopularCollection = (options: ProductPublishedAtSource<'popular'>) 
             { published_at: 'desc_nulls_last' as hasura.order_by },
           ],
           whereClause: {
-            is_private: { _eq: false },
+            is_private: { _eq: options.programStatus === 'private' },
             published_at: { _lt: 'now()' },
             program_categories: options.defaultCategoryIds?.length
               ? {
@@ -392,6 +406,15 @@ const collectPopularCollection = (options: ProductPublishedAtSource<'popular'>) 
               ? {
                   tag_name: {
                     _in: options.defaultTagNames,
+                  },
+                }
+              : undefined,
+            program_plans: !!options.membershipCardId
+              ? {
+                  card_products: {
+                    card_id: {
+                      _eq: options.membershipCardId,
+                    },
                   },
                 }
               : undefined,
@@ -412,7 +435,7 @@ const collectPopularCollection = (options: ProductPublishedAtSource<'popular'>) 
 
 const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+    const { data, loading, error } = useQuery<hasura.GetProgramCollection, hasura.GetProgramCollectionVariables>(
       getProgramCollectionQuery(programFields),
       {
         variables: {
@@ -422,7 +445,7 @@ const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
             { list_price: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
           ],
           whereClause: {
-            is_private: { _eq: false },
+            is_private: { _eq: options.programStatus === 'private' },
             published_at: { _lt: 'now()' },
             program_categories: options.defaultCategoryIds?.length
               ? {
@@ -435,6 +458,15 @@ const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
               ? {
                   tag_name: {
                     _in: options.defaultTagNames,
+                  },
+                }
+              : undefined,
+            program_plans: !!options.membershipCardId
+              ? {
+                  card_products: {
+                    card_id: {
+                      _eq: options.membershipCardId,
+                    },
                   },
                 }
               : undefined,
@@ -464,7 +496,7 @@ const collectCurrentPriceCollection = (options: ProductCurrentPriceSource) => {
 
 const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => {
   const ProgramElementCollection: ProgramContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(
+    const { data, loading, error } = useQuery<hasura.GetProgramCollection, hasura.GetProgramCollectionVariables>(
       getProgramCollectionQuery(programFields),
       {
         variables: {
@@ -478,7 +510,7 @@ const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => 
           ],
           whereClause: {
             id: { _in: options.enrolledProgramIds },
-            is_private: { _eq: false },
+            is_private: { _eq: options.programStatus === 'private' },
             published_at: { _lt: 'now()' },
             program_content_progress_enrollments: {
               member_id: { _eq: options.currentMemberId },
@@ -497,6 +529,15 @@ const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => 
                   },
                 }
               : undefined,
+            program_plans: !!options.membershipCardId
+              ? {
+                  card_products: {
+                    card_id: {
+                      _eq: options.membershipCardId,
+                    },
+                  },
+                }
+              : undefined,
           },
         },
       },
@@ -512,7 +553,7 @@ const collectRecentWatchedCollection = (options: ProductRecentWatchedSource) => 
   return ProgramElementCollection
 }
 
-const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData[] =>
+const composeCollectionData = (data: hasura.GetProgramCollection): ProgramData[] =>
   data.program.map(p => ({
     id: p.id,
     title: p.title,
@@ -549,6 +590,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
               }
             : null,
         isPrimary: pp.is_primary,
+        cardProduct: pp.card_products,
       })),
     categories: p.program_categories.map(pc => ({
       id: pc.category.id,
@@ -582,7 +624,7 @@ const programFields = gql`
       name
       member_id
     }
-    program_plans(where: { published_at: { _is_null: false } }, order_by: { created_at: asc }) {
+    program_plans(order_by: { created_at: asc }) {
       id
       type
       title
@@ -607,6 +649,9 @@ const programFields = gql`
       auto_renewed
       is_primary
       published_at
+      card_products {
+        id
+      }
     }
     program_content_sections {
       program_contents {
