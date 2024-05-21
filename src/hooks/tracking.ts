@@ -1128,29 +1128,38 @@ export const useMemberShipCardDetails = (memberId: string | undefined = '') => {
   const [transformedMemberShipCardDetails, setTransformedMemberShipCardDetails] = useState<CwMemberShipCardDetails>([])
   useEffect(() => {
     if (loading) return
-    const cardIds = new Set()
-    const filteredAndUniqueData: CwCardEnrollment = []
-    ;(memberShipCardDetails?.card_enrollment as CwCardEnrollment)?.forEach(cardEnrollment => {
-      const filteredOrderLogs = cardEnrollment.member.order_logs.filter(orderLog => orderLog.order_products.length > 0)
-      if (!cardIds.has(cardEnrollment.card_id)) {
-        filteredAndUniqueData.push({
-          ...cardEnrollment,
-          member: {
-            ...cardEnrollment.member,
-            order_logs: filteredOrderLogs,
-          },
-        })
-        cardIds.add(cardEnrollment.card_id)
-      }
-    })
-    const transformedData = filteredAndUniqueData.map(cardEnrollment => ({
-      id: cardEnrollment.card_id,
-      title: cardEnrollment.card.title,
-      ended_at: cardEnrollment.member.order_logs[0]?.order_products[0]?.ended_at || null,
-      delivered_at: cardEnrollment.member.order_logs[0]?.order_products[0]?.delivered_at || null,
-    }))
 
-    setTransformedMemberShipCardDetails(transformedData)
+    const filteredAndUniqueData: CwMemberShipCardDetails = []
+    const cardIdToDatesMap = new Map()
+    ;(memberShipCardDetails?.card_enrollment as CwCardEnrollment)?.forEach(cardEnrollment => {
+      const cardId = cardEnrollment.card_id
+      const cardTitle = cardEnrollment.card.title
+
+      cardEnrollment.member.order_logs.forEach(orderLog => {
+        orderLog.order_products.forEach(orderProduct => {
+          const { ended_at, delivered_at } = orderProduct
+
+          if (!cardIdToDatesMap.has(cardId)) {
+            cardIdToDatesMap.set(cardId, [])
+          }
+
+          const dateList = cardIdToDatesMap.get(cardId)
+          const dateString = `ended_at:${ended_at}-delivered_at:${delivered_at}` //Date unique key
+          if (!dateList.includes(dateString)) {
+            dateList.push(dateString)
+
+            filteredAndUniqueData.push({
+              id: cardId,
+              title: cardTitle,
+              ended_at: ended_at,
+              delivered_at: delivered_at,
+            })
+          }
+        })
+      })
+    })
+
+    setTransformedMemberShipCardDetails(filteredAndUniqueData)
   }, [loading, memberShipCardDetails])
 
   return transformedMemberShipCardDetails
