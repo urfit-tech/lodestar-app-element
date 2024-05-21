@@ -1,6 +1,7 @@
-import { useApolloClient } from '@apollo/client'
+import { gql, useApolloClient, useQuery } from '@apollo/client'
 import dayjs from 'dayjs'
 import { sum, uniq } from 'ramda'
+import { useEffect, useState } from 'react'
 import { useApp } from '../contexts/AppContext'
 import { convertPathName, notEmpty } from '../helpers'
 import { Member } from '../types/data'
@@ -51,6 +52,28 @@ type CwProductContentType = CwProductBaseType & {
 type CwProductSalesType = CwProductBaseType & {
   price: number
 }
+
+type CwCardEnrollment = {
+  card_id: string
+  card: {
+    title: string
+  }
+  member: {
+    order_logs: {
+      order_products: {
+        ended_at: string | null
+        delivered_at: string | null
+      }[]
+    }[]
+  }
+}[]
+
+type CwMemberShipCardDetails = {
+  id: string
+  title: string
+  ended_at: string | null
+  delivered_at: string | null
+}[]
 
 const convertCwProduct: (
   resource: Resource,
@@ -143,6 +166,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       ignore?: 'EEC' | 'CUSTOM'
       utmSource?: string
     },
+    memberShipCardDetails?: CwMemberShipCardDetails,
   ) => {
     const memberType = '會員'
     ;(window as any).dataLayer = (window as any).dataLayer || []
@@ -165,6 +189,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         dmp_id: getCookie('__eruid'),
         salesforce_id: currentMember.options[appId]?.salesforce_id || '',
         utm_source: options?.utmSource,
+        memberShipCardDetails,
       },
     })
   }
@@ -599,9 +624,11 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         ignore?: 'EEC' | 'CUSTOM'
         utmSource?: string
       },
+      memberShipCardDetails?: CwMemberShipCardDetails,
     ) => {
       UAview(currentMember, options)
-      if (currentMember && enabledCW && options?.ignore !== 'CUSTOM') CustomView(currentMember, options)
+      if (currentMember && enabledCW && options?.ignore !== 'CUSTOM')
+        CustomView(currentMember, options, memberShipCardDetails)
     },
     impress: (
       resources: (Resource | null)[],
@@ -1068,4 +1095,63 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       })
     },
   }
+}
+
+export const useMemberShipCardDetails = (memberId: string | undefined = '') => {
+  if (memberId == null) memberId = ''
+  const { loading, data: memberShipCardDetails } = useQuery(
+    gql`
+      query memberShipCardDetails($memberId: String!) {
+        card_enrollment(where: { member_id: { _eq: $memberId } }) {
+          card_id
+          card {
+            title
+          }
+          member {
+            order_logs {
+              order_products(where: { product_id: { _ilike: "Card%" } }) {
+                ended_at
+                delivered_at
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      variables: {
+        memberId,
+      },
+    },
+  )
+
+  const [transformedMemberShipCardDetails, setTransformedMemberShipCardDetails] = useState<CwMemberShipCardDetails>([])
+  useEffect(() => {
+    if (loading) return
+    const cardIds = new Set()
+    const filteredAndUniqueData: CwCardEnrollment = []
+    ;(memberShipCardDetails?.card_enrollment as CwCardEnrollment)?.forEach(cardEnrollment => {
+      const filteredOrderLogs = cardEnrollment.member.order_logs.filter(orderLog => orderLog.order_products.length > 0)
+      if (!cardIds.has(cardEnrollment.card_id)) {
+        filteredAndUniqueData.push({
+          ...cardEnrollment,
+          member: {
+            ...cardEnrollment.member,
+            order_logs: filteredOrderLogs,
+          },
+        })
+        cardIds.add(cardEnrollment.card_id)
+      }
+    })
+    const transformedData = filteredAndUniqueData.map(cardEnrollment => ({
+      id: cardEnrollment.card_id,
+      title: cardEnrollment.card.title,
+      ended_at: cardEnrollment.member.order_logs[0]?.order_products[0]?.ended_at || null,
+      delivered_at: cardEnrollment.member.order_logs[0]?.order_products[0]?.delivered_at || null,
+    }))
+
+    setTransformedMemberShipCardDetails(transformedData)
+  }, [loading, memberShipCardDetails])
+
+  return transformedMemberShipCardDetails
 }
