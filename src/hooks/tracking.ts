@@ -1097,8 +1097,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
   }
 }
 
-export const useMemberShipCardDetails = (memberId: string | undefined = '') => {
-  if (memberId == null) memberId = ''
+export const useMemberShipCardDetails = (memberId: string | undefined) => {
   const { loading, data: memberShipCardDetails } = useQuery(
     gql`
       query memberShipCardDetails($memberId: String!) {
@@ -1120,7 +1119,7 @@ export const useMemberShipCardDetails = (memberId: string | undefined = '') => {
     `,
     {
       variables: {
-        memberId,
+        memberId: memberId ?? '',
       },
     },
   )
