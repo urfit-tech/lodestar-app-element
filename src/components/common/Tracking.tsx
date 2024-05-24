@@ -4,7 +4,7 @@ import { StringParam, useQueryParam } from 'use-query-params'
 import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { Resource } from '../../hooks/resource'
-import { useTracking } from '../../hooks/tracking'
+import { useMemberShipCardDetails, useTracking } from '../../hooks/tracking'
 
 const View: React.VFC<{
   ignore?: 'EEC' | 'CUSTOM'
@@ -13,11 +13,12 @@ const View: React.VFC<{
   const [utmSource] = useQueryParam('utm_source', StringParam)
   const { settings } = useApp()
   const { currentMember } = useAuth()
+  const memberShipCardDetails = useMemberShipCardDetails(currentMember?.id)
 
   const enabledCW = Boolean(Number(settings['tracking.cw.enabled']))
   useEffect(() => {
-    tracking.view(currentMember, { ignore, utmSource: utmSource || '' })
-  }, [enabledCW, currentMember, tracking, utmSource, ignore])
+    tracking.view(currentMember, { ignore, utmSource: utmSource || '' }, memberShipCardDetails)
+  }, [enabledCW, currentMember, tracking, utmSource, ignore, memberShipCardDetails])
   return <></>
 }, equals)
 
