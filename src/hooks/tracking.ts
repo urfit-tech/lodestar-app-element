@@ -1,5 +1,7 @@
 import { gql, useApolloClient, useQuery } from '@apollo/client'
 import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import { sum, uniq } from 'ramda'
 import { useEffect, useState } from 'react'
 import { useApp } from '../contexts/AppContext'
@@ -1123,10 +1125,19 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
       },
     },
   )
+  dayjs.extend(utc)
+  dayjs.extend(timezone)
 
   const [transformedMemberShipCardDetails, setTransformedMemberShipCardDetails] = useState<CwMemberShipCardDetails>([])
   useEffect(() => {
     if (loading) return
+
+    const userTimezone = dayjs.tz.guess()
+    const transFormatDate = (date: string | null) => {
+      if (!date) return 'Infinite Date'
+      if (!dayjs(date).isValid()) return 'Invalid Date'
+      return dayjs.utc(date).tz(userTimezone).format()
+    }
 
     const filteredAndUniqueData: CwMemberShipCardDetails = []
     const cardIdToDatesMap = new Map()
@@ -1150,8 +1161,8 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
             filteredAndUniqueData.push({
               id: cardId,
               title: cardTitle,
-              ended_at: ended_at,
-              delivered_at: delivered_at,
+              ended_at: transFormatDate(ended_at),
+              delivered_at: transFormatDate(delivered_at),
             })
           }
         })
