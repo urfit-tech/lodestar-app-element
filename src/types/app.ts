@@ -115,6 +115,7 @@ export type Module =
   | 'inquiry_ai_pilot'
   | 'ebook'
   | 'membership_card'
+  | 'program_template'
 
 export type Currency = {
   id: string
