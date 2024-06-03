@@ -8,3 +8,4 @@ export type MetaProductType =
   | 'PodcastAlbum'
   | 'Post'
   | 'Certificate'
+  | 'MembershipCard'
