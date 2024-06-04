@@ -1110,7 +1110,7 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
             title
           }
           member {
-            order_logs {
+            order_logs(where: { status: { _eq: "SUCCESS" } }) {
               order_products(where: { product_id: { _ilike: "Card%" } }) {
                 product_id
                 ended_at
