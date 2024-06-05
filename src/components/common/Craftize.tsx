@@ -59,6 +59,7 @@ export type PropsWithCraft<P> = ElementBaseProps<P> & {
 }
 export type CraftTemplate = { rootNodeId: NodeId; serializedNodes: SerializedNodes }
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
+  console.log('enter craftize block')
   const StyledCraftElement = styled(WrappedComponent)(
     (props: PropsWithCraft<P>) => props.customStyle,
   ) as ElementComponent<P>
