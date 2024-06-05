@@ -72,6 +72,12 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       maxWidth: DESKTOP_BREAK_POINT - 1,
     })
     const isDesktop = useMediaQuery({ minWidth: DESKTOP_BREAK_POINT })
+
+    console.log('isTablet:', isTablet)
+    console.log('isDesktop:', isDesktop)
+    console.log('editor.editing:', editor.editing)
+    console.log('node.data.custom?.device:', node.data.custom?.device)
+
     const device = editor.editing
       ? node.data.custom?.device || 'desktop'
       : isDesktop
@@ -79,6 +85,9 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
       : isTablet
       ? 'tablet'
       : 'mobile'
+
+    console.log('Determined device:', device)
+
     const responsiveProps = mergeDeepRight(
       props,
       props.responsive?.[device as keyof typeof props.responsive] || {},
