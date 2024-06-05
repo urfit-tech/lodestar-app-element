@@ -63,6 +63,7 @@ type CwCardEnrollment = {
   member: {
     order_logs: {
       order_products: {
+        product_id: string
         ended_at: string | null
         delivered_at: string | null
       }[]
@@ -1109,8 +1110,9 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
             title
           }
           member {
-            order_logs {
+            order_logs(where: { status: { _eq: "SUCCESS" } }) {
               order_products(where: { product_id: { _ilike: "Card%" } }) {
+                product_id
                 ended_at
                 delivered_at
               }
@@ -1133,8 +1135,9 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
     if (loading) return
 
     const userTimezone = dayjs.tz.guess()
-    const transFormatDate = (date: string | null) => {
-      if (!date) return 'Infinite Date'
+    const transFormatDate = (date: string | null, target: 'endedAt' | 'deliveredAt') => {
+      if (!date && target === 'endedAt') return 'Infinite Date'
+      if (!date && target === 'deliveredAt') return 'Not Yet Delivered'
       if (!dayjs(date).isValid()) return 'Invalid Date'
       return dayjs.utc(date).tz(userTimezone).format()
     }
@@ -1147,6 +1150,7 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
 
       cardEnrollment.member.order_logs.forEach(orderLog => {
         orderLog.order_products.forEach(orderProduct => {
+          if (!orderProduct.product_id.endsWith(cardId)) return
           const { ended_at, delivered_at } = orderProduct
 
           if (!cardIdToDatesMap.has(cardId)) {
@@ -1161,8 +1165,8 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
             filteredAndUniqueData.push({
               id: cardId,
               title: cardTitle,
-              ended_at: transFormatDate(ended_at),
-              delivered_at: transFormatDate(delivered_at),
+              ended_at: transFormatDate(ended_at, 'endedAt'),
+              delivered_at: transFormatDate(delivered_at, 'deliveredAt'),
             })
           }
         })
