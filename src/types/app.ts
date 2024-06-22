@@ -116,6 +116,7 @@ export type Module =
   | 'ebook'
   | 'membership_card'
   | 'program_layout_template'
+  | 'announcement'
 
 export type Currency = {
   id: string
