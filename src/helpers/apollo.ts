@@ -53,6 +53,18 @@ const createSplitLink = (appId: string, authToken: string | null) =>
     new GraphQLWsLink(
       createClient({
         url: String(process.env.REACT_APP_GRAPHQL_WS_ENDPOINT),
+        connectionParams: {
+          headers: authToken
+            ? {
+                authorization: `Bearer ${authToken}`,
+              }
+            : {
+                'x-hasura-org-id': appId,
+                'x-hasura-app-id': appId,
+                'x-hasura-user-id': uuidv4(),
+                'x-hasura-role': 'anonymous',
+              },
+        },
       }),
     ),
     split(
