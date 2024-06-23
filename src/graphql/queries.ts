@@ -23,7 +23,7 @@ export const getProjectCollectionQuery = (projectFields: DocumentNode) => gql`
 `
 
 export const getProgramCollectionQuery = (programFields: DocumentNode) => gql`
-  query GET_PROGRAM_COLLECTION($whereClause: program_bool_exp, $limit: Int, $orderByClause: [program_order_by!]) {
+  query GetProgramCollection($whereClause: program_bool_exp, $limit: Int, $orderByClause: [program_order_by!]) {
     program(where: $whereClause, limit: $limit, order_by: $orderByClause) {
       ...programFields
     }

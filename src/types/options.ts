@@ -1,5 +1,12 @@
 export type ProductSource<T, P> = { from: T } & P
-export type ProductCustomSource = ProductSource<'custom', { idList?: string[] }>
+export type ProductCustomSource = ProductSource<
+  'custom',
+  {
+    idList?: string[]
+    programStatus?: 'public' | 'private' | 'membership_card'
+    membershipCardId?: string
+  }
+>
 export type ProductPublishedAtSource<T = 'publishedAt'> = ProductSource<
   T,
   {
@@ -7,6 +14,8 @@ export type ProductPublishedAtSource<T = 'publishedAt'> = ProductSource<
     asc?: boolean
     defaultTagNames?: string[]
     defaultCategoryIds?: string[]
+    programStatus?: 'public' | 'private' | 'membership_card'
+    membershipCardId?: string
   }
 >
 export type ProductCurrentPriceSource = ProductSource<
@@ -18,6 +27,8 @@ export type ProductCurrentPriceSource = ProductSource<
     max?: number
     defaultTagNames?: string[]
     defaultCategoryIds?: string[]
+    programStatus?: 'public' | 'private' | 'membership_card'
+    membershipCardId?: string
   }
 >
 export type ProductRecentWatchedSource = ProductSource<
@@ -30,6 +41,8 @@ export type ProductRecentWatchedSource = ProductSource<
     defaultCategoryIds?: string[]
     enrolledProgramIds?: string[]
     currentMemberId?: string
+    programStatus?: 'public' | 'private' | 'membership_card'
+    membershipCardId?: string
   }
 >
 
