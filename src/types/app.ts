@@ -369,3 +369,4 @@ export type Permission =
   | 'MEMBER_VOUCHER_PLAN_VIEW'
   | 'RECLAIM_COIN'
   | 'ANNOUNCEMENT_ADMIN'
+  | 'ANNOUNCEMENT_VIEW'
