@@ -261,6 +261,8 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               { withCredentials: true },
             )
 
+            console.log('loginstatus', code)
+
             if (code === 'SUCCESS') {
               setAuthToken(result.authToken)
               if (accountLinkToken && result.authToken) {
