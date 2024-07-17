@@ -31,7 +31,7 @@ type AuthProps = {
     withoutLogin?: boolean
     isBusiness?: boolean
   }) => Promise<any>
-  login?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
+  login?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<{ code: string }>
   socialLogin?: (data: {
     provider: ProviderType
     providerToken: any
@@ -269,7 +269,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               throw getBackendServerError(code, message)
             }
 
-            return code
+            return { code }
           } catch (error) {
             throw error
           }
