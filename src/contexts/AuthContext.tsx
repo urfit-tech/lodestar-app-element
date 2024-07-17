@@ -31,7 +31,7 @@ type AuthProps = {
     withoutLogin?: boolean
     isBusiness?: boolean
   }) => Promise<any>
-  login?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<void>
+  login?: (data: { account: string; password: string; accountLinkToken?: string }) => Promise<{ code: string }>
   socialLogin?: (data: {
     provider: ProviderType
     providerToken: any
@@ -248,23 +248,30 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             }
           }),
         login: async ({ account, password, accountLinkToken }) => {
-          const {
-            data: { code, message, result },
-          } = await Axios.post(
-            `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
-            { appId, account, password },
-            { withCredentials: true },
-          )
-          if (code === 'SUCCESS') {
-            setAuthToken(result.authToken)
-            if (accountLinkToken && result.authToken) {
-              window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
+          try {
+            const {
+              data: { code, message, result },
+            } = await Axios.post(
+              `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
+              { appId, account, password },
+              { withCredentials: true },
+            )
+
+            if (code === 'SUCCESS') {
+              setAuthToken(result.authToken)
+              if (accountLinkToken && result.authToken) {
+                window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
+              }
+            } else if (code === 'I_RESET_PASSWORD') {
+              window.location.assign(`/check-email?email=${account}&type=reset-password`)
+            } else {
+              setAuthToken(null)
+              throw getBackendServerError(code, message)
             }
-          } else if (code === 'I_RESET_PASSWORD') {
-            window.location.assign(`/check-email?email=${account}&type=reset-password`)
-          } else {
-            setAuthToken(null)
-            throw getBackendServerError(code, message)
+
+            return { code }
+          } catch (error) {
+            throw error
           }
         },
         socialLogin: async ({ provider, providerToken, accountLinkToken, isForceLogin }) =>
