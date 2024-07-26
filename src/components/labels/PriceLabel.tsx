@@ -95,6 +95,7 @@ const PriceLabel: React.VFC<
 
         {typeof salePrice === 'number' && (
           <SalePrice className="salePrice">
+            <span>{affix?.salePricePrefix}</span>
             {!!downPrice && (
               <span className="salePrice__fromSecondPeriod">
                 {formatMessage(commonMessages.label.fromSecondPeriod)}
