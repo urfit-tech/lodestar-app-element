@@ -65,7 +65,7 @@ const PriceLabel: React.VFC<
   const { listPrice, salePrice, saleAmount, downPrice, currencyId, coinUnit, periodAmount, periodType } = options
   const { formatMessage } = useIntl()
   const { formatCurrency } = useCurrency(currencyId, coinUnit)
-  console.log('affix', affix)
+
   const displayPrice = salePrice || listPrice
   const firstPeriodPrice = displayPrice - (downPrice || 0)
 
@@ -89,9 +89,7 @@ const PriceLabel: React.VFC<
             {firstPeriodPrice === 0 && !noFreeText && (
               <span className="downPrice__free">{formatMessage(commonMessages.label.free)}</span>
             )}
-            <span>{affix?.salePricePrefix}</span>
             <span className="downPrice__firstPeriodPriceAmount">{formatCurrency(firstPeriodPrice)}</span>
-            <span>{affix?.salePriceSuffix}</span>
           </div>
         )}
 
@@ -110,24 +108,21 @@ const PriceLabel: React.VFC<
                 <span className="salePrice__saleAmount">
                   {formatMessage(productMessages.label.voucherPlanPriceLabel, { saleAmount: saleAmount })}
                 </span>
-                <span>{affix?.salePricePrefix}</span>
+
                 <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
-                <span>{affix?.salePriceSuffix}</span>
               </>
             ) : (
-              <>
-                <span>{affix?.salePricePrefix}</span>
-                <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
-                <span>{affix?.salePriceSuffix}</span>
-              </>
+              <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
             )}
             <span className="salePrice__periodUnit" style={{ fontSize: '16px' }}>
               {periodElem}
             </span>
+            <span>{affix?.salePriceSuffix}</span>
           </SalePrice>
         )}
 
         <ListPrice className="listPrice">
+          <span>{affix?.listPricePrefix}</span>
           {typeof salePrice === 'number' ? (
             <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
           ) : !!downPrice ? (
@@ -140,12 +135,11 @@ const PriceLabel: React.VFC<
           {listPrice === 0 && !noFreeText && (
             <span className="listPrice__freeText">{formatMessage(commonMessages.label.free)}</span>
           )}
-          <span>{affix?.listPricePrefix}</span>
           <span className="listPrice__amount">{formatCurrency(listPrice)}</span>
-          <span>{affix?.listPriceSuffix}</span>
           <span className="listPrice__periodUnit" style={{ fontSize: '16px' }}>
             {periodElem}
           </span>
+          <span>{affix?.listPriceSuffix}</span>
         </ListPrice>
       </FullDetailPrice>
     )
