@@ -65,7 +65,7 @@ const PriceLabel: React.VFC<
   const { listPrice, salePrice, saleAmount, downPrice, currencyId, coinUnit, periodAmount, periodType } = options
   const { formatMessage } = useIntl()
   const { formatCurrency } = useCurrency(currencyId, coinUnit)
-
+  console.log('affix', affix)
   const displayPrice = salePrice || listPrice
   const firstPeriodPrice = displayPrice - (downPrice || 0)
 
