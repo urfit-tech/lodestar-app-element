@@ -117,6 +117,8 @@ export type Module =
   | 'membership_card'
   | 'program_layout_template'
   | 'announcement'
+  | 'invoice_printer'
+  | 'card_reader'
 
 export type Currency = {
   id: string
