@@ -314,6 +314,7 @@ export const checkoutMessages = {
     taiwanpay: { id: 'checkout.label.taiwanpay', defaultMessage: '台灣 Pay' },
     linepay: { id: 'checkout.label.linepay', defaultMessage: 'Line Pay' },
     spgateway: { id: 'checkout.label.spgateway', defaultMessage: '藍新' },
+    physical: { id: 'checkout.label.physical', defaultMessage: '實體' },
     spgateway2: { id: 'checkout.label.spgateway2', defaultMessage: '藍新' },
     tappay: { id: 'checkout.label.tappay', defaultMessage: 'tappay' },
     paypal: { id: 'checkout.label.paypal', defaultMessage: 'PayPal - 限非台灣地區' },
