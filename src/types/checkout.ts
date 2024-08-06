@@ -127,5 +127,9 @@ export type PaymentProps =
       method: Extract<PaymentMethodType, 'credit'>
     }
   | { gateway: 'atome'; method: 'atome' }
+  | {
+      gateway: 'physical'
+      method: Extract<PaymentMethodType, 'cash' | 'bankTransfer' | 'physicalCredit' | 'physicalRemoteCredit'>
+    }
 
 export type ContactInfo = { name: string; phone: string; email: string }
