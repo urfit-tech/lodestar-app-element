@@ -1,1 +1,1 @@
-export type TokenType = 'GiftPlan'
+export type TokenType = 'GiftPlan' | 'contract'

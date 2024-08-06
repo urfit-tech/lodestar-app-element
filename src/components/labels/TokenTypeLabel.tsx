@@ -15,6 +15,8 @@ const TokenTypeLabel: React.VFC<{
   switch (tokenType) {
     case 'GiftPlan':
       return <>{formatMessage(messages.giftPlan)}</>
+    case 'contract':
+      return <></>
     default:
       return <>{formatMessage(messages.unknownType)}</>
   }
