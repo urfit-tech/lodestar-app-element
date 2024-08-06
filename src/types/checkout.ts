@@ -75,6 +75,10 @@ export type PaymentMethodType =
   | 'taiwanpay'
   | 'linepay'
   | 'atome'
+  | 'cash'
+  | 'bankTransfer'
+  | 'physicalCredit'
+  | 'physicalRemoteCredit'
 
 export type PaymentGatewayType =
   | 'spgateway'
@@ -84,6 +88,7 @@ export type PaymentGatewayType =
   | 'commonhealth'
   | 'atome'
   | 'spgateway2'
+  | 'physical'
 
 export type ShippingProps = {
   name?: string
