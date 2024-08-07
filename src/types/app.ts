@@ -119,6 +119,7 @@ export type Module =
   | 'announcement'
   | 'invoice_printer'
   | 'card_reader'
+  | 'google_meet_api'
 
 export type Currency = {
   id: string
