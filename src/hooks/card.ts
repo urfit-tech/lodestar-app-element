@@ -105,8 +105,8 @@ export const useMembershipCard = (cardId: string) => {
       : {
           id: data.card_by_pk.id,
           title: data.card_by_pk.title,
-          description: data.card_by_pk.description,
-          template: data.card_by_pk.template,
+          description: data.card_by_pk.description || '',
+          template: data.card_by_pk.template || '',
         }
 
   return {
