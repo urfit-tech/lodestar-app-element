@@ -120,16 +120,16 @@ export type InvoiceProps = {
 export type PaymentProps =
   | {
       gateway: Extract<PaymentGatewayType, 'spgateway'>
-      method: PaymentMethodType
+      method?: PaymentMethodType
     }
   | {
       gateway: Exclude<PaymentGatewayType, 'spgateway' | 'atome'>
-      method: Extract<PaymentMethodType, 'credit'>
+      method?: Extract<PaymentMethodType, 'credit'>
     }
   | { gateway: 'atome'; method: 'atome' }
   | {
       gateway: 'physical'
-      method: Extract<PaymentMethodType, 'cash' | 'bankTransfer' | 'physicalCredit' | 'physicalRemoteCredit'>
+      method?: Extract<PaymentMethodType, 'cash' | 'bankTransfer' | 'physicalCredit' | 'physicalRemoteCredit'>
     }
 
 export type ContactInfo = { name: string; phone: string; email: string }
