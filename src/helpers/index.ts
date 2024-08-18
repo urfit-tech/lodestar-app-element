@@ -210,3 +210,13 @@ export const getTrackingCookie = () => {
   if (fbp) Object.assign(trackingCookie, { fbp })
   return trackingCookie
 }
+
+export const currencyFormatter = (value?: number | string | null, currencyId?: string, coinUnit?: string) => {
+  if (value === null || value === undefined) {
+    return
+  } else if (currencyId === 'LSC') {
+    return `${value} ${coinUnit || currencyId}`
+  } else {
+    return `NT$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
+}
