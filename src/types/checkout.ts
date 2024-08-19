@@ -123,7 +123,7 @@ export type PaymentProps =
       method?: PaymentMethodType
     }
   | {
-      gateway: Exclude<PaymentGatewayType, 'spgateway' | 'atome' | 'tappay'>
+      gateway: PaymentGatewayType
       method?: Extract<PaymentMethodType, 'credit'>
     }
   | { gateway: 'atome'; method: 'atome' }
