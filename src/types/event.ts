@@ -11,8 +11,8 @@ export type FetchedResource = {
   appId: string
 }
 
-const isKeyNullish = curry((object: object, key: keyof object) => object?.[key])
-const areSomeKeysNullish = curry((object: object, keys: Array<string>) => any(isKeyNullish(object), keys))
+const isKeyNullish = curry((object: object, key: keyof object) => !!object?.[key])
+const areSomeKeysNullish = (object: object) => any(isKeyNullish(object) as any)
 
 export const isFetchedResource = (fetchedResource: any) =>
   fetchedResource && !areSomeKeysNullish(fetchedResource)(['id', 'type', 'target'])

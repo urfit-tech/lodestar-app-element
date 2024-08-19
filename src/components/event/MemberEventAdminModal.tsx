@@ -17,8 +17,6 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react'
-import { useApp } from 'lodestar-app-element/src/contexts/AppContext'
-import { useAuth } from 'lodestar-app-element/src/contexts/AuthContext'
 import moment, { Moment } from 'moment'
 import { curry, filter, map, pipe } from 'ramda'
 import { useState } from 'react'
@@ -37,7 +35,7 @@ import {
   ModalDefaultEventForEditMode,
   Resource,
 } from '../../types/event'
-import { FetchButton } from './FetchButton'
+import { FetchButton } from '../buttons/FetchButton'
 
 const MemberEventAdminModal: React.FC<{
   memberId: string
@@ -66,9 +64,6 @@ const MemberEventAdminModal: React.FC<{
   deleteResourceEventFetcher,
 }) => {
   const { formatMessage } = useIntl()
-  const { authToken } = useAuth()
-  const { id: appId } = useApp()
-
   const [isRrulePanelOpen, setIsRrulePanelOpen] = useState(!isRruleOptional)
 
   const toggleRrulePanel = () => {
@@ -152,7 +147,6 @@ const MemberEventAdminModal: React.FC<{
 
   const eventPayload = {
     ...{
-      app_id: appId,
       title,
       description,
       started_at: startTime.toDate(),
