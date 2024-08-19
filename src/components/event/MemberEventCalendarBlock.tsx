@@ -20,7 +20,7 @@ import {
 import { adaptEventsToCalendar, adaptEventToModal } from './eventAdaptor'
 import MemberEventAdminModal from './MemberEventAdminModal'
 
-const MemberEventCalendarBlock: React.FC<{
+export const MemberEventCalendarBlock: React.FC<{
   memberId: string
   resourceEventsFetcher: (typeTarget: { type: ResourceType; targets: Array<string> }) => (startUntil: {
     startedAt: Date
