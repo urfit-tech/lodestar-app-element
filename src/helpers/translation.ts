@@ -34,6 +34,9 @@ export const commonMessages = {
     selectImage: { id: 'common.ui.selectImage', defaultMessage: '選擇圖片' },
     save: { id: 'common.ui.save', defaultMessage: '儲存' },
     cancel: { id: 'common.ui.cancel', defaultMessage: '取消' },
+    modify: { id: 'common.ui.modify', defaultMessage: '更改' },
+    add: { id: 'common.ui.add', defaultMessage: '新增' },
+    delete: { id: 'common.ui.delete', defaultMessage: '刪除' },
   }),
   button: defineMessages({
     allCategory: { id: 'common.button.allCategory', defaultMessage: '全部分類' },

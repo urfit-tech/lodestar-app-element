@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 import { QueryParamProvider } from 'use-query-params'
 import * as CraftResolvers from './components/common/CraftElement'
+import MemberEventCalendarBlock from './components/event/MemberEventCalendarBlock'
 import { LodestarAppProvider } from './contexts/LodestarAppContext'
 import ActivityPage from './pages/ActivityPage'
 import AIBotPage from './pages/AIBotPage'
@@ -33,6 +34,7 @@ const routes = [
   { name: 'Image', path: '/image', component: ImagePage },
   { name: 'Checkout', path: '/checkout', component: CheckoutPage },
   { name: 'AIBot', path: '/ai-bot', component: AIBotPage },
+  { name: 'event', path: '/event', component: MemberEventCalendarBlock },
 ]
 const App: React.VFC = () => {
   const [editing, setEditing] = useState(false)
