@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { AiOutlineClockCircle, AiOutlineUser } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { useApp } from '../../contexts/AppContext'
 import { durationFormatter } from '../../helpers'
 import { useProgramEnrollmentAggregate } from '../../hooks/program'
 import EmptyCover from '../../images/empty-cover.png'
@@ -38,10 +39,17 @@ const StyledExtraBlock = styled.div`
   gap: 10px;
 `
 const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
-  const { loading, errors } = props
-  const { data: enrolledCount, loading: enrolledCountLoading } = useProgramEnrollmentAggregate(props.id || '', {
+  const { loading, errors, id: programId } = props
+  const { settings } = useApp()
+  const { data: enrolledCount } = useProgramEnrollmentAggregate(props.id || '', {
     skip: !props.id || !props.isEnrolledCountVisible,
   })
+  const programAdditionalSoldHeadcountSettings: { programId: string; count: number }[] = JSON.parse(
+    settings['program.additional.sold.headcount'] ?? '[]',
+  )
+  const programAdditionalSoldHeadcount =
+    programAdditionalSoldHeadcountSettings.find(setting => setting.programId === programId)?.count || 0
+
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
@@ -107,7 +115,7 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
                 {props.isEnrolledCountVisible && (
                   <div className="d-flex align-items-center enrolledCount">
                     <Icon className="mr-1 enrolledCount__userIcon" as={AiOutlineUser} />
-                    <span className="enrolledCount__amount">{enrolledCount}</span>
+                    <span className="enrolledCount__amount">{enrolledCount + programAdditionalSoldHeadcount}</span>
                   </div>
                 )}
               </StyledExtraBlock>
