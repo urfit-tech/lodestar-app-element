@@ -121,6 +121,8 @@ export type Module =
   | 'card_reader'
   | 'google_meet_api'
   | 'event_arrangement'
+  | 'coupon'
+  | 'program_issue'
 
 export type Currency = {
   id: string
