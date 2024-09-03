@@ -19,18 +19,18 @@ const eventKeysMapForRecurring = {
 
 const keysMapSelector = (event: { [key: string]: any }) => (event?.rrule ? eventKeysMapForRecurring : eventKeysMap)
 
-export const adaptEventsToCalendar: (events: Array<FetchedResourceEvent>) => Array<EventInput> = pipe(
-  map((event: { [key: string]: any }) => (event ? renameKey(keysMapSelector(event))(event) : undefined)),
-  project(['id', 'title', 'start', 'end', 'rrule', 'duration']),
-)
-
 const fetchedEventValuesAdaptorMap: { [K in keyof FetchedResourceEvent]?: Function } = {
   started_at: inertTransform(moment),
   ended_at: inertTransform(moment),
   published_at: inertTransform(moment),
   event_deleted_at: inertTransform(moment),
   rrule: inertTransform(rrulestr),
-  until: inertTransform(Date),
+  until: inertTransform((string: string) => new Date(string)),
 }
+
+export const adaptEventsToCalendar: (events: Array<FetchedResourceEvent>) => Array<EventInput> = pipe(
+  map((event: { [key: string]: any }) => (event ? renameKey(keysMapSelector(event))(event) : undefined)),
+  project(['id', 'title', 'start', 'end', 'rrule', 'duration']),
+)
 
 export const adaptEventToModal = adaptValue(fetchedEventValuesAdaptorMap)

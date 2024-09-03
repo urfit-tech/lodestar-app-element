@@ -101,8 +101,11 @@ export const MemberEventCalendarBlock: React.FC<{
     resources: Array<FetchedResource>
     resourceEvents: Array<FetchedResourceEvent>
   }
+
   if (!resources || resources.length === 0) createResourceForMember()
   const memberResource = filter(resource => (resource as FetchedResource).target === memberId)(resources)
+
+  console.log(108, resourceEvents)
 
   return (
     <Box>

@@ -23,6 +23,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Frequency, Options, RRule, Weekday, WeekdayStr } from 'rrule'
 import useSWRMutation from 'swr/mutation'
+import { FetchButton } from '../../components/buttons/FetchButton'
 import { commonMessages } from '../../helpers/translation'
 import {
   EventRequest,
@@ -35,7 +36,6 @@ import {
   ModalDefaultEventForEditMode,
   Resource,
 } from '../../types/event'
-import { FetchButton } from '../buttons/FetchButton'
 
 const MemberEventAdminModal: React.FC<{
   memberId: string
@@ -85,6 +85,7 @@ const MemberEventAdminModal: React.FC<{
         ? value
         : undefined,
   )
+  console.log(focusedEvent)
 
   const [startTime, setStartTime] = useState(focusedEvent.started_at)
   const [endTime, setEndTime] = useState(focusedEvent.ended_at)
@@ -104,7 +105,7 @@ const MemberEventAdminModal: React.FC<{
     generateDefaultRecurringEventValue('freq')(RRule.WEEKLY) as Frequency | undefined,
   )
   const [until, setUntil] = useState(
-    generateDefaultRecurringEventValue('until')(focusedEvent.ended_at.toDate()) as Date | undefined,
+    generateDefaultRecurringEventValue('until')(focusedEvent.ended_at.toDate()) as Date,
   )
   const [byweekday, setByweekday] = useState(
     generateDefaultRecurringEventValue('byweekday')([momentToWeekday(startTime)]) as Array<Weekday> | undefined,
@@ -112,10 +113,18 @@ const MemberEventAdminModal: React.FC<{
 
   const [role, setRole] = useState(generateDefaultEventValue('role')('') as string)
 
-  const changeEventStartDate = (targetStartDate: Moment) => {
-    setStartTime(targetStartDate)
-    setByweekday([momentToWeekday(targetStartDate)])
-    setEndTime(targetStartDate)
+  const changeEventStartTime = (targetStartTime: Moment) => {
+    if (targetStartTime < endTime) {
+      setStartTime(targetStartTime)
+      setByweekday([momentToWeekday(targetStartTime)])
+      setEndTime(targetStartTime)
+    }
+  }
+
+  const changeEventEndTime = (targetEndDate: Moment) => {
+    if (targetEndDate > startTime) {
+      setEndTime(targetEndDate)
+    }
   }
 
   function momentToWeekday(moment: Moment): Weekday {
@@ -139,10 +148,11 @@ const MemberEventAdminModal: React.FC<{
   const formatLocalDateTime = (moment: Moment | undefined) => moment?.format?.('YYYY-MM-DD HH:mm:ss')
 
   const rrule = new RRule({
-    dtstart: startTime.toDate(),
+    dtstart: startTime.clone().utc(true).toDate(),
     freq: rruleFreq,
     byweekday,
-    until,
+    until: until,
+    tzid: 'Asia/Taipei',
   })
 
   const eventPayload = {
@@ -202,14 +212,14 @@ const MemberEventAdminModal: React.FC<{
             size="md"
             type="datetime-local"
             value={formatLocalDateTime(startTime)}
-            onChange={e => changeEventStartDate(moment(e.target.value))}
+            onChange={e => changeEventStartTime(moment(e.target.value))}
           />
           To
           <Input
             size="md"
             type="datetime-local"
             value={formatLocalDateTime(endTime)}
-            onChange={e => setEndTime(moment(e.target.value))}
+            onChange={e => changeEventEndTime(moment(e.target.value))}
           />
           <Accordion
             defaultIndex={isRruleOptional ? undefined : [0]}
@@ -243,10 +253,10 @@ const MemberEventAdminModal: React.FC<{
                 </ButtonGroup>
                 <p>Until</p>
                 <Input
-                  value={formatLocalDateTime(moment(until))}
+                  value={formatLocalDateTime(moment(until).utc(false))}
                   size="md"
                   type="datetime-local"
-                  onChange={e => setUntil(new Date(e.target.value))}
+                  onChange={e => setUntil(moment(e.target.value).utc(true).toDate())}
                 />
               </AccordionPanel>
             </AccordionItem>
