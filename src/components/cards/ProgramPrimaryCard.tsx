@@ -46,9 +46,13 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
   })
 
   const programAdditionalSoldHeadcountSetting = settings['program.additional.sold.headcount'] || '[]'
-  const programAdditionalSoldHeadcountSettingValue: { programId: string; count: number }[] | [] = JSON.parse(
-    programAdditionalSoldHeadcountSetting,
-  )
+  let programAdditionalSoldHeadcountSettingValue: { programId: string; count: number }[] | [] = []
+  try {
+    programAdditionalSoldHeadcountSettingValue = JSON.parse(programAdditionalSoldHeadcountSetting)
+  } catch (err) {
+    console.error('App Setting: "program.additional.sold.headcount" Error:', err)
+  }
+
   const programAdditionalSoldHeadcount =
     (Array.isArray(programAdditionalSoldHeadcountSettingValue) &&
       programAdditionalSoldHeadcountSettingValue.length > 0 &&
