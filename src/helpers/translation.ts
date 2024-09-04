@@ -204,7 +204,7 @@ export const craftPageMessages = {
     fundraising: { id: 'craft.label.fundraising', defaultMessage: '募資' },
     preOrder: { id: 'craft.label.preOrder', defaultMessage: '預購' },
     newest: { id: 'craft.label.newest', defaultMessage: '最新上架' },
-    custom: { id: 'craft.label.newest', defaultMessage: '自訂項目' },
+    custom: { id: 'craft.label.custom', defaultMessage: '自訂項目' },
     ruleOfSort: { id: 'craft.label.ruleOfSort', defaultMessage: '排序規則' },
     recentWatched: { id: 'program.ProgramCollectionSelector.recentWatched', defaultMessage: '依最後觀看時間' },
     publishedAt: { id: 'program.ProgramCollectionSelector.publishedAt', defaultMessage: '依上架日期' },
