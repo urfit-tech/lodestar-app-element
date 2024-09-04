@@ -101,13 +101,16 @@ const CheckoutProductItem: React.VFC<{
   saleAmount?: number
   defaultProductId?: string
 }> = ({ name, price, currencyId, quantity, saleAmount, defaultProductId }) => {
+  const { formatMessage } = useIntl()
   return (
     <div className="d-flex align-items-center justify-content-between">
       <span className="flex-grow-1 mr-4">
         {name}
         {quantity && saleAmount && (
           <span>{` X${quantity} ${
-            defaultProductId?.includes('MerchandiseSpec_') ? '' : `(${quantity * saleAmount} 張)`
+            defaultProductId?.includes('MerchandiseSpec_')
+              ? ''
+              : `(${quantity * saleAmount} ${formatMessage(checkoutMessages.unit.piece)})`
           }`}</span>
         )}
       </span>

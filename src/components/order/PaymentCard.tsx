@@ -5,7 +5,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { OrderLog, PaymentLog } from '../../types/order'
-import orderMessages from './translations'
+import orderMessages from './translation'
 
 dayjs.extend(timezone)
 dayjs.extend(utc)
@@ -78,21 +78,25 @@ const PaymentCard: React.FC<{
                 )}
                 {!!order.options?.installmentPlans && (
                   <div className="row mb-2 justify-content-between">
-                    <StyledInfoTitle className="column">款項</StyledInfoTitle>
+                    <StyledInfoTitle className="column">
+                      {formatMessage(orderMessages.PaymentCard.paymentAmount)}
+                    </StyledInfoTitle>
                     <StyledInfoMessage className="column">
                       {order.options?.installmentPlans?.length === 2
                         ? order.options?.installmentPlans?.filter(plan => plan.price === payment.price)[0]?.index === 0
-                          ? '訂金'
-                          : '尾款'
+                          ? formatMessage(orderMessages.PaymentCard.deposit)
+                          : formatMessage(orderMessages.PaymentCard.finalPayment)
                         : `${
                             order.options?.installmentPlans?.filter(plan => plan.price === payment.price)[0]?.index + 1
-                          } 期`}
+                          } ${formatMessage(orderMessages.PaymentCard.installmentPeriod)}`}
                     </StyledInfoMessage>
                   </div>
                 )}
                 {!!payment.options?.bankCode && (
                   <div className="row mb-2 justify-content-between">
-                    <StyledInfoTitle className="column">銀行後五碼</StyledInfoTitle>
+                    <StyledInfoTitle className="column">
+                      {formatMessage(orderMessages.PaymentCard.bankLastFiveDigits)}
+                    </StyledInfoTitle>
                     <StyledInfoMessage className="column">{payment.options?.bankCode}</StyledInfoMessage>
                   </div>
                 )}

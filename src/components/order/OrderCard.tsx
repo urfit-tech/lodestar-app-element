@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { currencyFormatter } from '../../helpers'
 import { OrderDiscount, OrderProduct } from '../../types/order'
 import OrderStatusTag from './OrderStatusTag'
-import orderMessages from './translations'
+import orderMessages from './translation'
 
 const StyledCard = styled.div`
   padding: 16px;

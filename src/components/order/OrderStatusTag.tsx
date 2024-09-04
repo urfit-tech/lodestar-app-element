@@ -1,7 +1,7 @@
 import { Tag } from 'antd'
 import React from 'react'
 import { useIntl } from 'react-intl'
-import orderMessages from './translations'
+import orderMessages from './translation'
 
 const OrderStatusTag: React.FC<{
   status: string

@@ -15,7 +15,7 @@ import InvoiceCard from './InvoiceCard'
 import OrderCard from './OrderCard'
 import OrderOtherInfoCard from './OrderOtherInfoCard'
 import PaymentCard from './PaymentCard'
-import orderMessages from './translations'
+import orderMessages from './translation'
 
 dayjs.extend(timezone)
 dayjs.extend(utc)
@@ -131,17 +131,17 @@ const OrderDetailDrawer: React.FC<{
                 invoiceEmail={orderLog.invoiceOptions?.email || ''}
                 invoiceTarget={
                   orderLog.invoiceOptions?.donationCode
-                    ? '捐贈'
+                    ? formatMessage(orderMessages.OrderDetailDrawer.donation)
                     : orderLog.invoiceOptions?.uniformNumber
-                    ? '公司'
-                    : '個人'
+                    ? formatMessage(orderMessages.OrderDetailDrawer.company)
+                    : formatMessage(orderMessages.OrderDetailDrawer.personal)
                 }
                 donationCode={orderLog.invoiceOptions?.donationCode || ''}
                 invoiceCarrier={
                   orderLog.invoiceOptions?.phoneBarCode
-                    ? '手機'
+                    ? formatMessage(orderMessages.OrderDetailDrawer.phone)
                     : orderLog.invoiceOptions?.citizenCode
-                    ? '自然人憑證'
+                    ? formatMessage(orderMessages.OrderDetailDrawer.citizenCertificate)
                     : ''
                 }
                 uniformNumber={orderLog.invoiceOptions?.uniformNumber || ''}

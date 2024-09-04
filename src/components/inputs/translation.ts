@@ -50,6 +50,28 @@ const inputMessages = {
     receiverAddress: { id: 'checkout.form.label.receiverAddress', defaultMessage: '收件人地址' },
     mobilePhone: { id: 'checkout.form.label.mobilePhone', defaultMessage: '手機' },
     addressText: { id: 'checkout.form.message.addressText', defaultMessage: '請輸入地址' },
+    penghuCounty: { id: 'checkout.option.penghuCounty', defaultMessage: '澎湖縣' },
+    kinmenCounty: { id: 'checkout.option.kinmenCounty', defaultMessage: '金門縣' },
+    lienchiangCounty: { id: 'checkout.option.lienchiangCounty', defaultMessage: '連江縣' },
+    diaoyutaiIslands: { id: 'checkout.option.diaoyutaiIslands', defaultMessage: '釣魚台列嶼' },
+    ludaoTownship: { id: 'checkout.option.ludaoTownship', defaultMessage: '綠島鄉' },
+    lanyuTownship: { id: 'checkout.option.lanyuTownship', defaultMessage: '蘭嶼鄉' },
+    dongshaIslands: { id: 'checkout.option.dongshaIslands', defaultMessage: '東沙群島' },
+    nanshaIslands: { id: 'checkout.option.nanshaIslands', defaultMessage: '南沙群島' },
+  }),
+  InvoiceInput: defineMessages({
+    edenSocialWelfareFoundation: {
+      id: 'option.edenSocialWelfareFoundation',
+      defaultMessage: '25885 財團法人伊甸社會福利基金會',
+    },
+    taiwanAlzheimerAssociation: {
+      id: 'option.taiwanAlzheimerAssociation',
+      defaultMessage: '5380 社團法人台灣失智症協會',
+    },
+    strayAnimalsHomeFoundation: {
+      id: 'option.strayAnimalsHomeFoundation',
+      defaultMessage: '8957282 財團法人流浪動物之家基金會',
+    },
   }),
 }
 

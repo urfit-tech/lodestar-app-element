@@ -1,6 +1,8 @@
+import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
 import Paragraph from '../common/Paragraph'
+import cardsMessages from './translation'
 
 const StyledAvatar = styled.img<{ size?: number }>`
   display: block;
@@ -36,17 +38,23 @@ const ReferrerCard: ElementComponent<{
   description?: string
 }> = ({
   avatarSrc = 'https://static.kolable.com/images/sixdigital/referrer-1.jpg',
-  name = '陳慕天',
-  title = '共同創辦人',
-  description = '設計，是這個世代必備的溝通手段，很高興看到一個源自網路社群的設計學院誕生！',
+  name,
+  title,
+  description,
   className,
 }) => {
+  const { formatMessage } = useIntl()
+
+  const defaultName = formatMessage(cardsMessages.ReferrerCard.defaultName)
+  const defaultTitle = formatMessage(cardsMessages.ReferrerCard.defaultTitle)
+  const defaultDescription = formatMessage(cardsMessages.ReferrerCard.defaultDescription)
+
   return (
     <StyledReferrerBlock className={className}>
       {avatarSrc && <StyledAvatar src={avatarSrc} alt="referrer" />}
-      <div className="mb-3 text-center">{name}</div>
-      <StyledSubTitle className="subtitle">{title}</StyledSubTitle>
-      <StyledParagraph className="paragraph">{description}</StyledParagraph>
+      <div className="mb-3 text-center">{name || defaultName}</div>
+      <StyledSubTitle className="subtitle">{title || defaultTitle}</StyledSubTitle>
+      <StyledParagraph className="paragraph">{description || defaultDescription}</StyledParagraph>
     </StyledReferrerBlock>
   )
 }

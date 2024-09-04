@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import xss from 'xss'
 import { useApp } from '../../contexts/AppContext'
-import orderMessages from './translations'
+import orderMessages from './translation'
 
 const StyledContainer = styled.div`
   padding: 16px;

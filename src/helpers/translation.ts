@@ -271,6 +271,9 @@ export const certificateMessages = {
 }
 
 export const checkoutMessages = {
+  unit: defineMessages({
+    piece: { id: 'checkout.piece', defaultMessage: '張' },
+  }),
   form: {
     label: defineMessages({
       cardNo: { id: 'checkout.form.label.cardNo', defaultMessage: '卡號' },
