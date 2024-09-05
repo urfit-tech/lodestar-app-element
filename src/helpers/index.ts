@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 import Cookies from 'js-cookie'
 import moment from 'moment'
 import queryString from 'query-string'
+import { useIntl } from 'react-intl'
 import { css, FlattenSimpleInterpolation } from 'styled-components'
 import { BREAK_POINT } from '../components/common/Responsive'
 import { ContactInfo } from '../types/checkout'
@@ -32,6 +33,8 @@ export const durationFullFormatter = (seconds: number) => {
 }
 
 export const durationFormatter = (value?: number | null) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { formatMessage } = useIntl()
   return typeof value === 'number' && `約 ${(value / 60).toFixed(0)} 分鐘`
 }
 

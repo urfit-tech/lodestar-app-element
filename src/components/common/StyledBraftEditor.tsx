@@ -1,10 +1,14 @@
 import BraftEditor from 'braft-editor'
 import React, { useRef } from 'react'
+import { useIntl } from 'react-intl'
 import styled, { css } from 'styled-components'
 import { isHTMLString } from '../../helpers'
 import QuotationLeft from '../../images/quotation-left.png'
 import QuotationRight from '../../images/quotation-right.png'
 
+interface StyledBraftEditorProps {
+  formatMessage: (message: { id: string; defaultMessage?: string }) => string
+}
 const OutputMixin = css`
   width: 100%;
   h1 {
@@ -133,7 +137,7 @@ const OutputMixin = css`
   }
 `
 
-const StyledBraftEditor = styled(BraftEditor)`
+const StyledBraftEditor = styled(BraftEditor)<StyledBraftEditorProps>`
   .bf-dropdown .dropdown-content .menu-item.active {
     background-color: ${props => props.theme['@primary-color']};
     color: #fff;
@@ -143,7 +147,7 @@ const StyledBraftEditor = styled(BraftEditor)`
     li.menu-item:nth-child(1) {
       position: relative;
       ::before {
-        content: '標題1';
+        content: '${props => props.formatMessage({ id: 'XXXXX' })}';
         position: absolute;
         width: 160px;
         height: 41px;
@@ -212,5 +216,10 @@ export const BraftContent: React.FC<{ isEditable?: boolean; onEdit?: (content: s
     </div>
   )
 }
+const MyEditor: React.FC = () => {
+  const { formatMessage } = useIntl()
 
-export default StyledBraftEditor
+  return <StyledBraftEditor formatMessage={formatMessage} />
+}
+
+export default MyEditor

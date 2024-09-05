@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
+import { useIntl } from 'react-intl'
 import { getBackendServerError } from '../helpers'
 import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hooks/util'
 import { Permission } from '../types/app'
@@ -64,6 +65,7 @@ const AuthContext = createContext<AuthProps>(defaultAuthContext)
 export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
+  const { formatMessage } = useIntl()
   const [isAuthenticating, setIsAuthenticating] = useState(defaultAuthContext.isAuthenticating)
   const [authToken, setAuthToken] = useState<string | null>((window as any).AUTH_TOKEN || null)
   const payload = useMemo(() => (authToken ? parsePayload(authToken) : null), [authToken])
