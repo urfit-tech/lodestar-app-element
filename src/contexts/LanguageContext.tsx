@@ -4,7 +4,7 @@ import { createContext, useEffect, useState } from 'react'
 import { IntlProvider } from 'react-intl'
 import { useApp } from './AppContext'
 
-const supportedLanguages = ['zh-tw', 'zh-cn', 'en', 'vi', 'acsi']
+const supportedLanguages = ['zh-tw', 'zh-cn', 'en-us', 'vi', 'acsi']
 
 type LanguageProps = {
   currentLanguage: string
@@ -54,6 +54,8 @@ export const LanguageProvider: React.FC = ({ children }) => {
   let messages: any = {}
   try {
     if (enabledModules.locale) {
+      console.log(currentLanguage)
+
       messages = require(`../translations/locales/${currentLanguage}.json`)
     }
   } catch {}
