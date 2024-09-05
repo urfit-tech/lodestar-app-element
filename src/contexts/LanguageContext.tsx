@@ -54,8 +54,6 @@ export const LanguageProvider: React.FC = ({ children }) => {
   let messages: any = {}
   try {
     if (enabledModules.locale) {
-      console.log(currentLanguage)
-
       messages = require(`../translations/locales/${currentLanguage}.json`)
     }
   } catch {}
