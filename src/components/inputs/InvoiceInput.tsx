@@ -11,6 +11,7 @@ import { useMember } from '../../hooks/member'
 import { InvoiceProps, ShippingProps } from '../../types/checkout'
 import { CommonTitleMixin } from '../common'
 import RadioCard from '../common/RadioCard'
+import inputMessages from './translation'
 
 const StyledWrapper = styled.div`
   .ant-select {
@@ -402,9 +403,9 @@ const InvoiceInput: React.VFC<{
                   {v.code} {v.name}
                 </option>
               ))}
-              <option value="25885">25885 財團法人伊甸社會福利基金會</option>
-              <option value="5380">5380 社團法人台灣失智症協會</option>
-              <option value="8957282">8957282 財團法人流浪動物之家基金會</option>
+              <option value="25885">{formatMessage(inputMessages.InvoiceInput.edenSocialWelfareFoundation)}</option>
+              <option value="5380">{formatMessage(inputMessages.InvoiceInput.taiwanAlzheimerAssociation)}</option>
+              <option value="8957282">{formatMessage(inputMessages.InvoiceInput.strayAnimalsHomeFoundation)}</option>
             </Select>
           </div>
         </div>

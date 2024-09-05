@@ -15,6 +15,10 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.11",
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
+    "@babel/preset-react": "^7.13.13",
     "@bobthered/tailwindcss-palette-generator": "2.0.0",
     "@chakra-ui/icons": "1.0.0",
     "@chakra-ui/react": "1.1.2",
@@ -44,6 +48,8 @@
     "ajv": "^8.11.2",
     "antd": "3",
     "axios": "0.21.4",
+    "babel-plugin-import": "^1.13.3",
+    "babel-plugin-react-intl": "^7.5.28",
     "braft-editor": "2.3.9",
     "classnames": "^2.3.1",
     "dangerously-set-html-content": "^1.0.13",
@@ -67,6 +73,7 @@
     "react-hotjar": "^4.0.0",
     "react-icons": "4.3.1",
     "react-intl": "5.20.9",
+    "react-intl-translations-manager": "^5.0.3",
     "react-is": "^17.0.2",
     "react-responsive": "8.1.0",
     "react-router-dom": "5.2.0",
@@ -99,7 +106,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "typegen": "graphql-codegen"
+    "typegen": "graphql-codegen",
+    "trans:compile": "tsc --noEmit false --outDir src/extracted",
+    "trans:extract": "babel --config-file ./.intl.babelrc ./src/extracted > /dev/null",
+    "trans:manage": "node manageTranslations.js",
+    "trans:clean": "rm -rf ./src/extracted",
+    "trans": "npm run trans:clean && npm run trans:compile && npm run trans:extract && npm run trans:manage && npm run trans:clean"
   },
   "eslintConfig": {
     "extends": [

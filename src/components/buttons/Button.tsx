@@ -1,7 +1,9 @@
+import { useIntl } from 'react-intl'
 import styled, { css } from 'styled-components'
 import { ElementComponent } from '../../types/element'
 import { ProductOpenLinkSource, ProductPurchaseProductSource } from '../../types/options'
 import CheckoutProductModal from '../modals/CheckoutProductModal'
+import buttonsMessages from './translation'
 
 export type ButtonProps = {
   title: string
@@ -56,6 +58,7 @@ const StyledButton = styled.button<ButtonProps>`
 `
 
 const Button: ElementComponent<ButtonProps> = props => {
+  const { formatMessage } = useIntl()
   const { loading, errors, editing } = props
   return loading || errors ? null : props.source?.from ? (
     <CheckoutProductModal
@@ -78,7 +81,7 @@ const Button: ElementComponent<ButtonProps> = props => {
                   }
                   break
                 case 'purchaseProduct':
-                  if (isLoginAlert) return window.alert('請先登入')
+                  if (isLoginAlert) return window.alert(formatMessage(buttonsMessages.Button.loginAlert))
                   onOpen?.()
                   break
                 default:

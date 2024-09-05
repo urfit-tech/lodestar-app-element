@@ -1,19 +1,36 @@
 import { Element } from '@craftjs/core'
+import { useIntl } from 'react-intl'
 import { CraftAIBot, CraftSection } from '../components/common/CraftElement'
+import pagesMessages from './translation'
 
 const AIBotPage: React.VFC = () => {
+  const { formatMessage } = useIntl()
   return (
     <Element id="Section" is={CraftSection} canvas customStyle={{ padding: 0 }}>
       <Element
         is={CraftAIBot}
         temperature={1}
-        system="你是一位人資，請根據以下問答撰寫求職信（Cover letter）"
+        system={formatMessage(pagesMessages.AIBotPage.coverLetter)}
         assistants={[
-          { label: '你的名字', content: '你的名字是？', placeholder: '姓名' },
-          { label: '想申請的公司名稱', content: '想申請的公司名稱', placeholder: '公司名稱', required: true },
-          { label: '職位名稱', content: '職位名稱', placeholder: '公司名稱', required: true },
+          {
+            label: formatMessage(pagesMessages.AIBotPage.nameLabel),
+            content: formatMessage(pagesMessages.AIBotPage.nameContent),
+            placeholder: formatMessage(pagesMessages.AIBotPage.namePlaceholder),
+          },
+          {
+            label: formatMessage(pagesMessages.AIBotPage.applyCompanyName),
+            content: formatMessage(pagesMessages.AIBotPage.applyCompanyName),
+            placeholder: formatMessage(pagesMessages.AIBotPage.companyName),
+            required: true,
+          },
+          {
+            label: formatMessage(pagesMessages.AIBotPage.position),
+            content: formatMessage(pagesMessages.AIBotPage.position),
+            placeholder: formatMessage(pagesMessages.AIBotPage.positionPlaceholder),
+            required: true,
+          },
         ]}
-        submitText="送出"
+        submitText={formatMessage(pagesMessages.AIBotPage.submit)}
       />
     </Element>
   )

@@ -7,6 +7,11 @@ const orderMessages = {
     otherInfo: { id: 'order.OrderDetailDrawer.otherInfo', defaultMessage: '其他資訊' },
     invoiceInfo: { id: 'order.OrderDetailDrawer.invoiceInfo', defaultMessage: '發票資訊' },
     paymentInfo: { id: 'order.OrderDetailDrawer.paymentInfo', defaultMessage: '交易紀錄' },
+    donation: { id: 'order.OrderDetailDrawer.donation', defaultMessage: '捐贈' },
+    company: { id: 'order.OrderDetailDrawer.company', defaultMessage: '公司' },
+    personal: { id: 'order.OrderDetailDrawer.personal', defaultMessage: '個人' },
+    phone: { id: 'order.OrderDetailDrawer.phone', defaultMessage: '手機' },
+    citizenCertificate: { id: 'order.OrderDetailDrawer.citizenCertificate', defaultMessage: '自然人憑證' },
   }),
   OrderCard: defineMessages({
     orderId: { id: 'order.OrderCard.orderId', defaultMessage: '訂單編號' },
@@ -53,6 +58,11 @@ const orderMessages = {
     paymentNo: { id: 'order.PaymentCard.paymentNo', defaultMessage: '交易編號' },
     price: { id: 'order.PaymentCard.price', defaultMessage: '金額' },
     gateway: { id: 'order.PaymentCard.gateway', defaultMessage: '交易渠道' },
+    paymentAmount: { id: 'order.PaymentCard.paymentAmount', defaultMessage: '款項' },
+    deposit: { id: 'order.PaymentCard.deposit', defaultMessage: '訂金' },
+    finalPayment: { id: 'order.PaymentCard.finalPayment', defaultMessage: '尾款' },
+    installmentPeriod: { id: 'order.PaymentCard.installmentPeriod', defaultMessage: '期' },
+    bankLastFiveDigits: { id: 'order.paymentCard.bankLastFiveDigits', defaultMessage: '銀行後五碼' },
   }),
   status: defineMessages({
     deleted: { id: 'order.status.deleted', defaultMessage: '已刪除' },

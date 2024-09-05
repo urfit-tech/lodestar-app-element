@@ -2,8 +2,10 @@ import { gql, useQuery } from '@apollo/client'
 import { Radio } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio'
 import React, { useEffect, useMemo } from 'react'
+import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import hasura from '../../hasura'
+import selectorsMessages from './translation'
 
 const StyledRadio = styled(Radio)`
   display: block !important;
@@ -26,6 +28,7 @@ type CreditCardSelectorProps = {
 }
 const CreditCardSelector: React.VFC<CreditCardSelectorProps> = ({ memberId, value, onChange }) => {
   const { memberCreditCards } = useMemberCreditCards(memberId)
+  const { formatMessage } = useIntl()
 
   const handleCreditCardChange = (e: RadioChangeEvent) => {
     const value = e.target.value
@@ -41,12 +44,15 @@ const CreditCardSelector: React.VFC<CreditCardSelectorProps> = ({ memberId, valu
       {memberCreditCards.map(memberCreditCard => {
         return (
           <StyledRadio key={memberCreditCard.cardIdentifier} value={memberCreditCard.id}>
-            <span className="ml-1">末四碼：{memberCreditCard.cardInfo['last_four']}</span>
+            <span className="ml-1">
+              {formatMessage(selectorsMessages.CreditCardSelector.lastFourDigits)}
+              {memberCreditCard.cardInfo['last_four']}
+            </span>
           </StyledRadio>
         )
       })}
       <StyledRadio value="new">
-        <span className="ml-1">新增信用卡</span>
+        <span className="ml-1">{formatMessage(selectorsMessages.CreditCardSelector.addCreditCard)}</span>
       </StyledRadio>
     </Radio.Group>
   )

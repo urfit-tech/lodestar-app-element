@@ -4,7 +4,7 @@ import { createContext, useEffect, useState } from 'react'
 import { IntlProvider } from 'react-intl'
 import { useApp } from './AppContext'
 
-const supportedLanguages = ['zh', 'zh-cn', 'en', 'vi', 'acsi']
+const supportedLanguages = ['zh-tw', 'zh-cn', 'en-us', 'vi', 'acsi']
 
 type LanguageProps = {
   currentLanguage: string
@@ -12,16 +12,16 @@ type LanguageProps = {
   setCurrentLanguage?: (language: string) => void
 }
 const defaultLanguage: LanguageProps = {
-  currentLanguage: 'zh',
-  locale: 'zh',
+  currentLanguage: 'zh-tw',
+  locale: 'zh-tw',
 }
 
 const LanguageContext = createContext<LanguageProps>(defaultLanguage)
 
 export const LanguageProvider: React.FC = ({ children }) => {
   const { enabledModules, settings } = useApp()
-  const [currentLanguage, setCurrentLanguage] = useState('zh')
-  const [locale, setLocale] = useState('zh')
+  const [currentLanguage, setCurrentLanguage] = useState('zh-tw')
+  const [locale, setLocale] = useState('zh-tw')
   moment.locale('zh-tw')
 
   useEffect(() => {
@@ -33,16 +33,16 @@ export const LanguageProvider: React.FC = ({ children }) => {
           ? cachedLanguage
           : supportedLanguages.includes(browserLanguage)
           ? browserLanguage
-          : 'zh'
-        : 'zh',
+          : 'zh-tw'
+        : 'zh-tw',
     )
   }, [enabledModules, settings])
 
   useEffect(() => {
     switch (currentLanguage) {
-      case 'zh':
+      case 'zh-tw':
       case 'acsi':
-        setLocale('zh')
+        setLocale('zh-tw')
         moment.locale('zh-tw')
         break
       default:
@@ -54,6 +54,8 @@ export const LanguageProvider: React.FC = ({ children }) => {
   let messages: any = {}
   try {
     if (enabledModules.locale) {
+      console.log(currentLanguage)
+
       messages = require(`../translations/locales/${currentLanguage}.json`)
     }
   } catch {}
@@ -71,7 +73,7 @@ export const LanguageProvider: React.FC = ({ children }) => {
         },
       }}
     >
-      <IntlProvider defaultLocale="zh" locale={locale} messages={messages}>
+      <IntlProvider defaultLocale="zh-tw" locale={locale} messages={messages}>
         {children}
       </IntlProvider>
     </LanguageContext.Provider>

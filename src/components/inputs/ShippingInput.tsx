@@ -321,7 +321,14 @@ const ShippingInput: React.VFC<{
               >
                 {cities?.map(city => {
                   return (
-                    <Select.Option key={city} disabled={['澎湖縣', '金門縣', '連江縣'].includes(city)}>
+                    <Select.Option
+                      key={city}
+                      disabled={[
+                        formatMessage(inputMessages.ShippingInput.penghuCounty),
+                        formatMessage(inputMessages.ShippingInput.kinmenCounty),
+                        formatMessage(inputMessages.ShippingInput.lienchiangCounty),
+                      ].includes(city)}
+                    >
                       {city}
                     </Select.Option>
                   )
@@ -342,7 +349,13 @@ const ShippingInput: React.VFC<{
                   return (
                     <Select.Option
                       key={district}
-                      disabled={['釣魚台列嶼', '綠島鄉', '蘭嶼鄉', '東沙群島', '南沙群島'].includes(district)}
+                      disabled={[
+                        formatMessage(inputMessages.ShippingInput.diaoyutaiIslands),
+                        formatMessage(inputMessages.ShippingInput.ludaoTownship),
+                        formatMessage(inputMessages.ShippingInput.lanyuTownship),
+                        formatMessage(inputMessages.ShippingInput.dongshaIslands),
+                        formatMessage(inputMessages.ShippingInput.nanshaIslands),
+                      ].includes(district)}
                     >
                       {district}
                     </Select.Option>

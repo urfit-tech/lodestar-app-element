@@ -1,6 +1,8 @@
+import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
 import Paragraph from '../common/Paragraph'
+import cardsMessages from './translation'
 
 const StyledSlideTitle = styled.h3`
   display: flex;
@@ -65,23 +67,29 @@ const Dialog: ElementComponent<{
   avatarSrc?: string
   name?: string
 }> = ({
-  title = '行銷',
-  description = '本身非本科生，但目前有在業界從事網頁設計實習工作。對於網頁的知識和技能都是靠高中補習遙遠的記憶和零散的自學，但一直沒有融會貫通的感覺，每個功能都只是似懂非懂，搞不太清楚“為什麼要這樣做”，無法全靠自己刻出一個完整的頁面。',
+  title,
+  description,
   avatarSrc = 'https://static.kolable.com/images/xuemi/storyAvatar1.png',
-  name = 'Letitia',
+  name,
   className,
 }) => {
+  const { formatMessage } = useIntl()
+
+  const defaultTitle = formatMessage(cardsMessages.DialogCard.title)
+  const defaultDescription = formatMessage(cardsMessages.DialogCard.description)
+  const defaultName = formatMessage(cardsMessages.DialogCard.name)
+
   return (
     <div>
       <StyledDialogBlock className={className}>
         <StyledSlideTitle className="title">
-          <span>{title}</span>
+          <span>{title || defaultTitle}</span>
         </StyledSlideTitle>
-        <Paragraph className="paragraph" content={description}></Paragraph>
+        <Paragraph className="paragraph" content={description || defaultDescription}></Paragraph>
       </StyledDialogBlock>
       <StyledUserBlock>
         <img src={avatarSrc} alt="avatar" />
-        <span>{name}</span>
+        <span>{name || defaultName}</span>
       </StyledUserBlock>
     </div>
   )

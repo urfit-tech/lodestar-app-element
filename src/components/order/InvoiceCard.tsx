@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { useApp } from '../../contexts/AppContext'
-import orderMessages from './translations'
+import orderMessages from './translation'
 
 const StyledCard = styled.div`
   padding: 16px;
