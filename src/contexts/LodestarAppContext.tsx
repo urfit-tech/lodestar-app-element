@@ -14,15 +14,15 @@ export const LodestarAppProvider: React.FC<{ appId: string; extend?: { chakraThe
   const LodestarAppContext = createContext({ appId })
   return (
     <LodestarAppContext.Provider value={{ appId }}>
-      <AuthProvider appId={appId}>
-        <ApiProvider appId={appId}>
-          <AppProvider appId={appId}>
-            <LanguageProvider>
+      <LanguageProvider>
+        <AuthProvider appId={appId}>
+          <ApiProvider appId={appId}>
+            <AppProvider appId={appId}>
               <AppThemeProvider extendChakraTheme={extend?.chakraTheme}>{children}</AppThemeProvider>
-            </LanguageProvider>
-          </AppProvider>
-        </ApiProvider>
-      </AuthProvider>
+            </AppProvider>
+          </ApiProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </LodestarAppContext.Provider>
   )
 }
