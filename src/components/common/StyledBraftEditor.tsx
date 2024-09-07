@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components'
 import { isHTMLString } from '../../helpers'
 import QuotationLeft from '../../images/quotation-left.png'
 import QuotationRight from '../../images/quotation-right.png'
-
+import commonMessages from './translation'
 interface StyledBraftEditorProps {
   formatMessage: (message: { id: string; defaultMessage?: string }) => string
 }
@@ -147,7 +147,7 @@ const StyledBraftEditor = styled(BraftEditor)<StyledBraftEditorProps>`
     li.menu-item:nth-child(1) {
       position: relative;
       ::before {
-        content: '${props => props.formatMessage({ id: 'XXXXX' })}';
+        content: '${props => props.formatMessage(commonMessages.StyledBraftEditor.title)}';
         position: absolute;
         width: 160px;
         height: 41px;
@@ -164,7 +164,7 @@ const StyledBraftEditor = styled(BraftEditor)<StyledBraftEditorProps>`
       position: relative;
       color: rgba(255, 255, 255, 0);
       ::before {
-        content: '內文';
+        content: '${props => props.formatMessage(commonMessages.StyledBraftEditor.content)}';
         position: absolute;
         width: 160px;
         height: 41px;

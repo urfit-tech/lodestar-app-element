@@ -28,6 +28,12 @@ export const commonMessages = {
     referrer: { id: 'common.label.referrer', defaultMessage: '推薦人' },
     referrerEmail: { id: 'common.label.referrerEmail', defaultMessage: '請輸入推薦人的註冊信箱' },
   }),
+  durationFormatter: defineMessages({
+    min: {
+      id: 'common.durationFormatter',
+      defaultMessage: '約 {min} 分鐘',
+    },
+  }),
   ui: defineMessages({
     uploadImage: { id: 'common.ui.uploadImage', defaultMessage: '上傳圖片' },
     upload: { id: 'common.ui.upload', defaultMessage: '上傳' },

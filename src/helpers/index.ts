@@ -17,6 +17,7 @@ import {
   SendEmailError,
   SessionError,
 } from './error'
+import { commonMessages } from './translation'
 
 export const durationFullFormatter = (seconds: number) => {
   if (seconds >= 3600) {
@@ -35,7 +36,9 @@ export const durationFullFormatter = (seconds: number) => {
 export const durationFormatter = (value?: number | null) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { formatMessage } = useIntl()
-  return typeof value === 'number' && `約 ${(value / 60).toFixed(0)} 分鐘`
+  return (
+    typeof value === 'number' && formatMessage(commonMessages.durationFormatter.min, { min: (value / 60).toFixed(0) })
+  )
 }
 
 export const uploadFile = async (key: string, file: Blob, authToken: string | null, config?: AxiosRequestConfig) =>

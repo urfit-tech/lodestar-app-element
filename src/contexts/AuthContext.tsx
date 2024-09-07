@@ -9,6 +9,7 @@ import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hook
 import { Permission } from '../types/app'
 import { Member, UserRole } from '../types/data'
 import { LodestarWindow } from '../types/lodestar.window'
+import contextsMessages from './translation'
 declare let window: LodestarWindow
 
 type ProviderType = 'facebook' | 'google' | 'line' | 'parenting' | 'commonhealth' | 'cw'
@@ -108,7 +109,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
       setAuthToken(result.authToken)
     } else if (code === 'E_NO_DEVICE') {
       setAuthToken(null)
-      alert('您已被登出，目前有其他裝置登入這組帳號')
+      alert(formatMessage(contextsMessages.AuthContext.logOut))
     } else {
       setAuthToken(null)
     }
