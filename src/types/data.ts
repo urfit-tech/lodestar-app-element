@@ -93,6 +93,8 @@ export type Program = {
   plans: ProductPlan[]
   contentSections: Omit<ProgramContentSection, 'program'>[]
   categories: Category[]
+  label: string
+  labelColorType: string
 }
 
 export type ProgramContentSection = {

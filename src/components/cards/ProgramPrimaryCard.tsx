@@ -1,4 +1,4 @@
-import { Icon } from '@chakra-ui/react'
+import { Box, Icon, Text } from '@chakra-ui/react'
 import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
 import { AiOutlineClockCircle, AiOutlineUser } from 'react-icons/ai'
@@ -39,18 +39,33 @@ const StyledExtraBlock = styled.div`
   gap: 10px;
 `
 const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
-  const { loading, errors, id: programId } = props
-  const { settings } = useApp()
+  const { loading, errors, id: programId, label, labelColorType } = props
+  const { settings, enabledModules } = useApp()
   const { data: enrolledCount } = useProgramEnrollmentAggregate(props.id || '', {
     skip: !props.id || !props.isEnrolledCountVisible,
   })
 
   const programAdditionalSoldHeadcountSetting = settings['program.additional.sold.headcount'] || '[]'
   let programAdditionalSoldHeadcountSettingValue: { programId: string; count: number }[] | [] = []
+  let programLabelColorConfig: { id: number; backgroundColor: string; textColor: string }[] = []
+
   try {
     programAdditionalSoldHeadcountSettingValue = JSON.parse(programAdditionalSoldHeadcountSetting)
   } catch (err) {
     console.error('App Setting: "program.additional.sold.headcount" Error:', err)
+  }
+
+  if (!!settings['program_label_color.config'] && !!enabledModules.program_label) {
+    try {
+      programLabelColorConfig = JSON.parse(settings['program_label_color.config'])
+    } catch (err) {
+      console.error('App Setting: "program_label_color.config" Error:', err)
+    }
+  }
+
+  const programLabelColor = programLabelColorConfig.find(config => config.id === Number(labelColorType)) || {
+    backgroundColor: '#ececec',
+    textColor: '#585858',
   }
 
   const programAdditionalSoldHeadcount =
@@ -82,6 +97,20 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
         ) : (
           <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
         )}
+
+        <Box paddingX="10px" marginTop="10px" minH="25px" width="fit-content">
+          {label !== '' && (
+            <Text
+              backgroundColor={programLabelColor?.backgroundColor}
+              textColor={programLabelColor?.textColor}
+              paddingX="10px"
+              borderRadius="4px"
+            >
+              {label}
+            </Text>
+          )}
+        </Box>
+
         <Card.Content className="content">
           {loading ? (
             <Skeleton className="mb-3" width="20" height={4} />
