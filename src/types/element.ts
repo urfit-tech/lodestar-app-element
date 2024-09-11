@@ -27,6 +27,8 @@ export type ProgramElementProps = ElementProps<{
     amount: number
     type: PeriodType
   }
+  label: string
+  labelColorType: string
 }>
 
 export type ProgramContentElementProps = ElementProps<{

@@ -123,6 +123,7 @@ export type Module =
   | 'event_arrangement'
   | 'coupon'
   | 'program_issue'
+  | 'program_label'
 
 export type Currency = {
   id: string

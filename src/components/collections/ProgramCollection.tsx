@@ -46,6 +46,8 @@ type ProgramData = DeepPick<
   | 'soldAt'
   | 'plans.[].!title'
   | 'categories'
+  | 'label'
+  | 'labelColorType'
 >
 type ProgramContextCollection = ContextCollection<ProgramData>
 
@@ -218,6 +220,8 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       abstract={program.abstract || ''}
                       totalDuration={program.totalDuration || 0}
                       coverUrl={program.coverThumbnailUrl || program.coverMobileUrl || program.coverUrl}
+                      label={program.label}
+                      labelColorType={program.labelColorType}
                       instructorIds={program.roles.map(programRole => programRole.member.id)}
                       salePrice={
                         typeof primaryProgramPlan?.salePrice === 'number' &&
@@ -523,6 +527,8 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
     totalDuration: sum(
       p.program_content_sections.map(pcs => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0),
     ),
+    label: p.label || '',
+    labelColorType: p.label_color_type || '',
     roles: p.program_roles.map(pr => ({
       id: pr.id,
       name: pr.name as ProductRole['name'],
@@ -570,6 +576,8 @@ const programFields = gql`
     sold_at
     is_enrolled_count_visible
     views
+    label
+    label_color_type
     program_categories(order_by: { position: asc }) {
       category {
         id
