@@ -98,18 +98,20 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
           <CustomRatioImage className="cover" width="100%" ratio={9 / 16} src={props.coverUrl || EmptyCover} />
         )}
 
-        <Box paddingX="10px" marginTop="10px" minH="25px" width="fit-content">
-          {label !== '' && (
-            <Text
-              backgroundColor={programLabelColor?.backgroundColor}
-              textColor={programLabelColor?.textColor}
-              paddingX="10px"
-              borderRadius="4px"
-            >
-              {label}
-            </Text>
-          )}
-        </Box>
+        {!!enabledModules.program_label && (
+          <Box alignSelf="flex-start" paddingX="10px" marginTop="10px" minH="25px" width="fit-content">
+            {label !== '' && (
+              <Text
+                backgroundColor={programLabelColor?.backgroundColor}
+                textColor={programLabelColor?.textColor}
+                paddingX="10px"
+                borderRadius="4px"
+              >
+                {label}
+              </Text>
+            )}
+          </Box>
+        )}
 
         <Card.Content className="content">
           {loading ? (
