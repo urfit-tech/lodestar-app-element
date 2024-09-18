@@ -79,6 +79,7 @@ export type PaymentMethodType =
   | 'bankTransfer'
   | 'physicalCredit'
   | 'physicalRemoteCredit'
+  | 'applepay'
 
 export type PaymentGatewayType =
   | 'spgateway'

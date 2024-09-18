@@ -319,6 +319,7 @@ export const checkoutMessages = {
     esumwallet: { id: 'checkout.label.esumwallet', defaultMessage: '玉山 Wallet' },
     taiwanpay: { id: 'checkout.label.taiwanpay', defaultMessage: '台灣 Pay' },
     linepay: { id: 'checkout.label.linepay', defaultMessage: 'Line Pay' },
+    applepay: { id: 'checkout.label.applepay', defaultMessage: 'Apple Pay' },
     spgateway: { id: 'checkout.label.spgateway', defaultMessage: '藍新' },
     physical: { id: 'checkout.label.physical', defaultMessage: '實體' },
     spgateway2: { id: 'checkout.label.spgateway2', defaultMessage: '藍新' },
