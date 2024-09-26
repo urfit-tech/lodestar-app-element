@@ -79,6 +79,7 @@ const InvoiceInput: React.VFC<{
     errorFields: string[]
     handleChange: () => void
   }) => React.ReactNode
+  hidePhoneInput?: boolean
 }> = ({
   value,
   onChange,
@@ -87,6 +88,7 @@ const InvoiceInput: React.VFC<{
   renderMemberInfoInput,
   renderDescription,
   renderUniformNumber,
+  hidePhoneInput,
 }) => {
   const { formatMessage } = useIntl()
   const { currentMemberId } = useAuth()
@@ -308,58 +310,59 @@ const InvoiceInput: React.VFC<{
         </div>
       )}
 
-      {renderMemberInfoInput?.({ value, nameRef, phoneRef, emailRef }) || (
-        <div className="row" style={isMemberInfoDisable ? { display: 'none' } : {}}>
-          <div className="col-12 col-lg-3">
-            <Form.Item
-              label={formatMessage(checkoutMessages.label.name)}
-              required
-              validateStatus={isValidating && errorFields.includes('name') ? 'error' : undefined}
-              help={errorFields.includes('name') && formatMessage(checkoutMessages.message.errorName)}
-            >
-              <Input
-                disabled={isSameToShipping}
-                ref={nameRef}
-                placeholder={formatMessage(checkoutMessages.placeholder.nameText)}
-                defaultValue={isMemberInfoDisable ? member?.name || member?.username : value ? value.name : ''}
-                onBlur={() => handleChange({})}
-              />
-            </Form.Item>
+      {renderMemberInfoInput?.({ value, nameRef, phoneRef, emailRef }) ||
+        (!hidePhoneInput && (
+          <div className="row" style={isMemberInfoDisable ? { display: 'none' } : {}}>
+            <div className="col-12 col-lg-3">
+              <Form.Item
+                label={formatMessage(checkoutMessages.label.name)}
+                required
+                validateStatus={isValidating && errorFields.includes('name') ? 'error' : undefined}
+                help={errorFields.includes('name') && formatMessage(checkoutMessages.message.errorName)}
+              >
+                <Input
+                  disabled={isSameToShipping}
+                  ref={nameRef}
+                  placeholder={formatMessage(checkoutMessages.placeholder.nameText)}
+                  defaultValue={isMemberInfoDisable ? member?.name || member?.username : value ? value.name : ''}
+                  onBlur={() => handleChange({})}
+                />
+              </Form.Item>
+            </div>
+            <div className="col-12 col-lg-3">
+              <Form.Item
+                label={formatMessage(checkoutMessages.label.phone)}
+                required
+                validateStatus={isValidating && errorFields.includes('phone') ? 'error' : undefined}
+                help={errorFields.includes('phone') && formatMessage(checkoutMessages.message.errorPhone)}
+              >
+                <Input
+                  disabled={isSameToShipping}
+                  ref={phoneRef}
+                  placeholder={formatMessage(checkoutMessages.message.phone)}
+                  defaultValue={isMemberInfoDisable ? member?.phone || '' : value ? value.phone : ''}
+                  onBlur={() => handleChange({})}
+                />
+              </Form.Item>
+            </div>
+            <div className="col-12 col-lg-6">
+              <Form.Item
+                label={formatMessage(checkoutMessages.label.email)}
+                required
+                validateStatus={isValidating && errorFields.includes('email') ? 'error' : undefined}
+                help={errorFields.includes('email') && formatMessage(checkoutMessages.message.errorEmail)}
+              >
+                <Input
+                  disabled={isSameToShipping}
+                  ref={emailRef}
+                  placeholder={formatMessage(checkoutMessages.message.emailText)}
+                  defaultValue={isMemberInfoDisable ? member?.email : value ? value.email : ''}
+                  onBlur={() => handleChange({})}
+                />
+              </Form.Item>
+            </div>
           </div>
-          <div className="col-12 col-lg-3">
-            <Form.Item
-              label={formatMessage(checkoutMessages.label.phone)}
-              required
-              validateStatus={isValidating && errorFields.includes('phone') ? 'error' : undefined}
-              help={errorFields.includes('phone') && formatMessage(checkoutMessages.message.errorPhone)}
-            >
-              <Input
-                disabled={isSameToShipping}
-                ref={phoneRef}
-                placeholder={formatMessage(checkoutMessages.message.phone)}
-                defaultValue={isMemberInfoDisable ? member?.phone || '' : value ? value.phone : ''}
-                onBlur={() => handleChange({})}
-              />
-            </Form.Item>
-          </div>
-          <div className="col-12 col-lg-6">
-            <Form.Item
-              label={formatMessage(checkoutMessages.label.email)}
-              required
-              validateStatus={isValidating && errorFields.includes('email') ? 'error' : undefined}
-              help={errorFields.includes('email') && formatMessage(checkoutMessages.message.errorEmail)}
-            >
-              <Input
-                disabled={isSameToShipping}
-                ref={emailRef}
-                placeholder={formatMessage(checkoutMessages.message.emailText)}
-                defaultValue={isMemberInfoDisable ? member?.email : value ? value.email : ''}
-                onBlur={() => handleChange({})}
-              />
-            </Form.Item>
-          </div>
-        </div>
-      )}
+        ))}
 
       <div className="row mb-4">
         <div className="col-12 col-lg-6">
