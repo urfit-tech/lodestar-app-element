@@ -124,6 +124,7 @@ export type Module =
   | 'coupon'
   | 'program_issue'
   | 'program_label'
+  | 'order_payment_link_module'
 
 export type Currency = {
   id: string
