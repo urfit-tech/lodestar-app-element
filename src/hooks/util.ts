@@ -42,7 +42,7 @@ export const useCurrency = (currencyId?: string, coinUnit?: string) => {
     const currency = currencies[currentCurrencyId]
 
     if (currentCurrencyId === 'LSC') {
-      return value + ' ' + settings['coin.unit'] || coinUnit || 'Coins'
+      return `${value} ${settings['coin.unit'] || coinUnit || 'Coins'}`
     }
 
     return (
