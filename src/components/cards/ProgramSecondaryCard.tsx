@@ -3,7 +3,8 @@ import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { useReviewAggregate } from '../../hooks/review'
+import { useApp } from '../../contexts/AppContext'
+import { useAdaptedReviewable, useReviewAggregate } from '../../hooks/review'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProgramElementProps } from '../../types/element'
 import { MultiLineTruncationMixin } from '../common'
@@ -31,12 +32,17 @@ const StyledScore = styled.div`
 `
 
 const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
-  const { loading, errors } = props
-  const { loading: loadingReviewAggregate, averageScore } = useReviewAggregate(`/programs/${props.id}`)
+  const { id: appId } = useApp()
+  const { loading: propsLoading, errors } = props
+  const path = `/programs/${props.id}`
+  const { data: rawReviewable, loading: reviewableLoading } = useAdaptedReviewable(path, appId)
+  const loading = propsLoading && reviewableLoading
+  const { loading: loadingReviewAggregate, averageScore } = useReviewAggregate(path)
 
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
+
   return (
     <div
       className={classNames('program', { 'cursor-pointer': Boolean(props.onClick) }, props.className)}
@@ -60,13 +66,13 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
         ) : (
           <div className="d-flex justify-content-between align-items-center">
             <StyledCategories className="category">
-              {props.categories
-                .filter((_, i) => i < 3)
+              {props?.categories
+                ?.filter?.((_, i) => i < 3)
                 // FIXME display subCategory instead split '/' here
                 .map(category => category.name.split('/').pop())
                 .join('・')}
             </StyledCategories>
-            {averageScore !== 0 && (
+            {rawReviewable?.is_score_viewable && averageScore !== 0 && (
               <StyledScore className="d-flex align-items-center score">
                 <span className="score__amount">{averageScore.toFixed(1)}</span>
                 <StarIcon className="ml-1 score__starIcon" style={{ width: '14px', height: '14px' }} />
