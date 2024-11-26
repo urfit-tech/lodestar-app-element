@@ -3,9 +3,9 @@ import { defaultTo, evolve, head, mergeRight, pipe, prop } from 'ramda'
 import hasura from '../hasura'
 
 export const useReviewable = (path: string, appId: string) =>
-  useQuery<hasura.GET_REVIEWABLE, hasura.GET_REVIEWABLEVariables>(
+  useQuery<hasura.GetReviewable, hasura.GetReviewableVariables>(
     gql`
-      query GET_REVIEWABLE($path: String!, $appId: String!) {
+      query GetReviewable($path: String!, $appId: String!) {
         reviewable(where: { path: { _eq: $path }, app_id: { _eq: $appId } }) {
           is_item_viewable
           is_score_viewable
@@ -16,7 +16,7 @@ export const useReviewable = (path: string, appId: string) =>
     { variables: { path, appId } },
   )
 
-export const reviewableAdaptor: (reviewable: hasura.GET_REVIEWABLE | undefined) => {
+export const reviewableAdaptor: (reviewable: hasura.GetReviewable | undefined) => {
   is_item_viewable: boolean
   is_score_viewable: boolean
   is_writable: boolean
@@ -37,9 +37,9 @@ export const useAdaptedReviewable = (path: string, appId: string) =>
   })(useReviewable(path, appId))
 
 export const useReviewAggregate = (path: string) => {
-  const { loading, error, data, refetch } = useQuery<hasura.GET_REVIEW_AGGREGATE, hasura.GET_REVIEW_AGGREGATEVariables>(
+  const { loading, error, data, refetch } = useQuery<hasura.GetReviewAggregate, hasura.GetReviewAggregateVariables>(
     gql`
-      query GET_REVIEW_AGGREGATE($path: String) {
+      query GetReviewAggregate($path: String) {
         review_public_aggregate(where: { path: { _eq: $path } }) {
           aggregate {
             avg {
