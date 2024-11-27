@@ -247,6 +247,7 @@
   "common.unknownType": "Unknown",
   "common.voucherPlan": "Voucher",
   "commonMessages.Embedded.iframe": "Please enter iframe",
+  "commonMessages.review.noReviews": "No reviews yet",
   "contexts.AuthContext.logOut": "You have been logged out, another device is currently logged into this account",
   "craft.label.activity": "Activity",
   "craft.label.activityBlock": "Activity Block",

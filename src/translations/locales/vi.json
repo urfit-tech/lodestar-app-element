@@ -247,6 +247,7 @@
   "common.unknownType": "Không xác định",
   "common.voucherPlan": "Phiếu đổi quà",
   "commonMessages.Embedded.iframe": "Vui lòng nhập iframe",
+  "commonMessages.review.noReviews": "Chưa có đánh giá nào",
   "contexts.AuthContext.logOut": "Bạn đã bị đăng xuất, hiện có thiết bị khác đăng nhập tài khoản này",
   "craft.label.activity": "Hoạt động",
   "craft.label.activityBlock": "Khối hoạt động",

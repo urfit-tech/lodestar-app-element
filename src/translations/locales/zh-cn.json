@@ -247,6 +247,7 @@
   "common.unknownType": "未知",
   "common.voucherPlan": "兑换票券",
   "commonMessages.Embedded.iframe": "请输入 iframe",
+  "commonMessages.review.noReviews": "目前无评价",
   "contexts.AuthContext.logOut": "您已被登出，目前有其他设备登录此账号",
   "craft.label.activity": "活动",
   "craft.label.activityBlock": "活动区块",
