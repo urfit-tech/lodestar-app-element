@@ -247,6 +247,8 @@
   "common.unknownType": "未知",
   "common.voucherPlan": "交換券",
   "commonMessages.Embedded.iframe": "iframeを入力してください",
+  "commonMessages.review.noReviews": "まだレビューがありません",
+  "commonMessages.review.reviewCount": "{count} 件のレビュー",
   "contexts.AuthContext.logOut": "ログアウトされました。他のデバイスでこのアカウントがログインされています",
   "craft.label.activity": "アクティビティ",
   "craft.label.activityBlock": "アクティビティブロック",
