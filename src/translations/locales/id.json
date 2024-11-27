@@ -247,6 +247,7 @@
   "common.unknownType": "Tidak diketahui",
   "common.voucherPlan": "Tiket penukaran",
   "commonMessages.Embedded.iframe": "Harap masukkan iframe",
+  "commonMessages.review.reviewCount": "{count} bài đánh giá",
   "commonMessages.review.noReviews": "Belum ada ulasan",
   "contexts.AuthContext.logOut": "Anda telah keluar, ada perangkat lain yang masuk menggunakan akun ini",
   "craft.label.activity": "Aktivitas",
