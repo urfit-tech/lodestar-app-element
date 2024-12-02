@@ -26,6 +26,7 @@ const StyledCategories = styled.div`
   font-weight: 500;
   letter-spacing: 0.4px;
   color: var(--gray-dark);
+  white-space: nowrap;
 `
 
 const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
