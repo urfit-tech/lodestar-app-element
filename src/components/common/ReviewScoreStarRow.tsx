@@ -12,11 +12,14 @@ const StyledReviewRating = styled.div`
   font-size: 14px;
   letter-spacing: 0.4px;
   text-align: justify;
-  align-items: center;
   flex-direction: column;
 `
 
-const ReviewScoreStarRow: FC<{ path: string; appId: string }> = ({ path, appId }) => {
+const ReviewScoreStarRow: FC<{ path: string; appId: string; direction?: 'row' | 'column' }> = ({
+  path,
+  appId,
+  direction = 'row',
+}) => {
   const { formatMessage } = useIntl()
   const { enabledModules, settings } = useApp()
   const { currentUserRole } = useAuth()
@@ -29,7 +32,7 @@ const ReviewScoreStarRow: FC<{ path: string; appId: string }> = ({ path, appId }
     currentUserRole === 'app-owner' ||
     (reviewable?.is_score_viewable &&
       reviewCount >= (settings.review_lower_bound ? Number(settings.review_lower_bound) : 3)) ? (
-      <StyledReviewRating className="d-flex">
+      <StyledReviewRating className="d-flex" style={{ flexDirection: direction }}>
         <StarRating score={Math.round((Math.round(averageScore * 10) / 10) * 2) / 2} max={5} size="20px" />
         <span style={{ whiteSpace: 'nowrap' }}>
           ({formatMessage(commonMessages.review.reviewCount, { count: reviewCount })})

@@ -73,7 +73,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
                 .join('・')}
             </StyledCategories>
             {enabledModules.customer_review && Boolean(averageScore) && (
-              <ReviewScoreStarRow path={path} appId={appId} />
+              <ReviewScoreStarRow path={path} appId={appId} direction="column" />
             )}
           </div>
         )}
