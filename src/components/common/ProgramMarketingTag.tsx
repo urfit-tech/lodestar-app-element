@@ -29,7 +29,7 @@ const ProgramMarketingTag: FC<{ label: string | undefined; labelColorType: strin
       }
     } catch (err) {
       console.error(
-        `Cannot parse program_label_color.config in app setting - ${labelColorConfig.toString()}. Error:`,
+        `Cannot parse program_label_color.config in app setting - ${labelColorConfig?.toString()}. Error:`,
         err,
       )
     }
