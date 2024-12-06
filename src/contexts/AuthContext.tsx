@@ -266,7 +266,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               window.location.assign(`/check-email?email=${account}&type=reset-password`)
             } else {
               setAuthToken(null)
-              throw getBackendServerError(code, message)
+              throw getBackendServerError(code, message, result)
             }
 
             return { code }
@@ -296,7 +296,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               }
             } else {
               setAuthToken(null)
-              throw getBackendServerError(code, message)
+              throw getBackendServerError(code, message, result)
             }
           }),
         switchMember: async ({ memberId }) => {
