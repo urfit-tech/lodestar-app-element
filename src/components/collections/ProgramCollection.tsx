@@ -557,9 +557,9 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
         isPrimary: pp.is_primary,
       })),
     categories: p.program_categories.map(pc => ({
-      id: pc.category.id,
-      name: pc.category.name,
-      position: pc.category.position,
+      id: pc.category?.id,
+      name: pc.category?.name,
+      position: pc.category?.position,
     })),
   }))
 
