@@ -230,7 +230,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
       } as ProductPlan['period'],
     })),
     programs: pp.program_package_programs.map(ppp => ({
-      roles: ppp.program.program_roles.map(pr => ({
+      roles: ppp.program?.program_roles.map(pr => ({
         id: pr.id,
         name: pr.name as ProductRole['name'],
         member: { id: pr.member_id },
