@@ -220,32 +220,32 @@ export const checkUniformNumber = (input: string | number, options: BanValidatio
   return checksum % divisor === 0 || (parseInt(n.charAt(6), intRadix) === 7 && (checksum + 1) % divisor === 0)
 }
 
-export const getBackendServerError = (code: string, message: string) => {
+export const getBackendServerError = (code: string, message: string, result: string) => {
   let errorObject: Error
   switch (code) {
     case 'E_INPUT':
-      errorObject = new InputError(message)
+      errorObject = new InputError(message, result)
       break
     case 'E_SESSION':
-      errorObject = new SessionError(message)
+      errorObject = new SessionError(message, result)
       break
     case 'E_NO_MODULE':
-      errorObject = new NoModuleError(message)
+      errorObject = new NoModuleError(message, result)
       break
     case 'E_SEND_EMAIL':
-      errorObject = new SendEmailError(message)
+      errorObject = new SendEmailError(message, result)
       break
     case 'E_PASSWORD':
-      errorObject = new PasswordError(message)
+      errorObject = new PasswordError(message, result)
       break
     case 'E_NO_MEMBER':
-      errorObject = new NoMemberError(message)
+      errorObject = new NoMemberError(message, result)
       break
     case 'E_BIND_DEVICE':
-      errorObject = new BindDeviceError(message)
+      errorObject = new BindDeviceError(message, result)
       break
     case 'E_LOGIN_DEVICE':
-      errorObject = new LoginDeviceError(message)
+      errorObject = new LoginDeviceError(message, result)
       break
     default:
       errorObject = new Error(message)
