@@ -248,12 +248,14 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             }
           }),
         login: async ({ account, password, accountLinkToken }) => {
+          const fingerPrintId = await getFingerPrintId()
+          const { ip, country, countryCode } = await fetchCurrentGeolocation()
           try {
             const {
               data: { code, message, result },
             } = await Axios.post(
               `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
-              { appId, account, password },
+              { appId, account, password, fingerPrintId, geoLocation: { ip, country, countryCode } },
               { withCredentials: true },
             )
 
