@@ -126,6 +126,7 @@ export type Module =
   | 'program_label'
   | 'order_payment_link_module'
   | 'external_link'
+  | 'split_payment_mode'
 
 export type Currency = {
   id: string
