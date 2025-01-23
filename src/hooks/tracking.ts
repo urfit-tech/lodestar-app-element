@@ -1097,6 +1097,14 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         event: 'login',
       })
     },
+    register: (method: string, page: string) => {
+      ;(window as any).dataLayer = (window as any).dataLayer || []
+      ;(window as any).dataLayer.push({
+        event: 'register',
+        method,
+        page,
+      })
+    },
   }
 }
 
