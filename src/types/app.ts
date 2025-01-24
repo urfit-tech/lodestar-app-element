@@ -127,6 +127,7 @@ export type Module =
   | 'order_payment_link_module'
   | 'external_link'
   | 'split_payment_mode'
+  | 'account_receivable'
 
 export type Currency = {
   id: string
