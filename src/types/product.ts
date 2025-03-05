@@ -43,3 +43,4 @@ export type ProductType =
   | 'Token'
   | 'Estimator'
   | 'CouponPlan'
+  | 'Coin'
