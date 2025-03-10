@@ -78,6 +78,8 @@ type CwMemberShipCardDetails = {
   delivered_at: string | null
 }[]
 
+export type registrationMethod = 'standard' | 'purchase' | 'trial'
+
 const convertCwProduct: (
   resource: Resource,
   utmSource?: string,
