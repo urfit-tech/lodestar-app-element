@@ -31,7 +31,7 @@ const CouponSelectionModal: React.VFC<{
 }> = ({ memberId, orderProducts, orderDiscounts, onSelect, renderTrigger }) => {
   const { formatMessage } = useIntl()
   const { authToken } = useAuth()
-  const { coupons, loadingCoupons, refetchCoupons } = useCouponCollection(memberId)
+  const { loading: loadingCoupons, data: coupons, fetch: refetchCoupons } = useCouponCollection(memberId || '')
 
   const [code, setCode] = useState('')
   const [visible, setVisible] = useState(false)
