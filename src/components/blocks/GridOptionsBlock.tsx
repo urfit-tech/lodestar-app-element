@@ -34,7 +34,7 @@ const GridOption = styled.div<{ font: string; selected: boolean }>`
   }
 `
 
-const GridOptionsBlock: React.VFC<{ optionList?: QuestionOption[]; questionFontType?: string }> = ({
+const GridOptionsBlock: React.FC<{ optionList?: QuestionOption[]; questionFontType?: string }> = ({
   optionList,
   questionFontType = 'auto',
 }) => {

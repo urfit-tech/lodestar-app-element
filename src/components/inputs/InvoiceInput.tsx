@@ -59,7 +59,7 @@ export const validateInvoice: (invoice: InvoiceProps) => string[] = invoice => {
   return errorFields
 }
 
-const InvoiceInput: React.VFC<{
+const InvoiceInput: React.FC<{
   value?: InvoiceProps
   onChange?: (value: InvoiceProps) => void
   isValidating?: boolean

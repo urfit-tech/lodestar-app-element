@@ -26,7 +26,7 @@ type CreditCardSelectorProps = {
   value?: string | null
   onChange?: (value: string | null) => void
 }
-const CreditCardSelector: React.VFC<CreditCardSelectorProps> = ({ memberId, value, onChange }) => {
+const CreditCardSelector: React.FC<CreditCardSelectorProps> = ({ memberId, value, onChange }) => {
   const { memberCreditCards } = useMemberCreditCards(memberId)
   const { formatMessage } = useIntl()
 

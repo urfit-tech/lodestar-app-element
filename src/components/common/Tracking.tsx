@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { Resource } from '../../hooks/resource'
 import { useMemberShipCardDetails, useTracking } from '../../hooks/tracking'
 
-const View: React.VFC<{
+const View: React.FC<{
   ignore?: 'EEC' | 'CUSTOM'
 }> = React.memo(({ ignore }) => {
   const tracking = useTracking()

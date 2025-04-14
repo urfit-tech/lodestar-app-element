@@ -3,7 +3,7 @@ import ProgramPackageCard from '../components/cards/ProgramPackageCard'
 import pagesMessages from './translation'
 // import CraftProgramPackageCollection from '../components/craft/CraftProgramPackageCollection'
 
-const ProgramPackagePage: React.VFC = () => {
+const ProgramPackagePage: React.FC = () => {
   const { formatMessage } = useIntl()
   return (
     <div>

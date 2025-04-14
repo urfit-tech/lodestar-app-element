@@ -7,7 +7,7 @@ const messages = defineMessages({
   unknownType: { id: 'common.unknownType', defaultMessage: '未知' },
 })
 
-const TokenTypeLabel: React.VFC<{
+const TokenTypeLabel: React.FC<{
   tokenType: TokenType
 }> = ({ tokenType }) => {
   const { formatMessage } = useIntl()

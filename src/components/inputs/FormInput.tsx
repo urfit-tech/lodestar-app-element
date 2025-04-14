@@ -31,7 +31,7 @@ const StyledInputRightElement = styled(InputRightElement)<{ status: 'error' | 's
   }
 `
 
-const FormInput: React.VFC<
+const FormInput: React.FC<
   {
     status?: 'error' | 'validating' | 'success'
   } & InputProps

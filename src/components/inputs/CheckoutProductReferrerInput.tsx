@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { commonMessages } from '../../helpers/translation'
 import { FormInput } from './FormInput'
 
-const CheckoutProductReferrerInput: React.VFC<{
+const CheckoutProductReferrerInput: React.FC<{
   referrerStatus: 'success' | 'error' | 'validating' | undefined
   referrerId: string | null
   onEmailSet: (email: string) => void

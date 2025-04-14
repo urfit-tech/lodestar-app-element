@@ -93,7 +93,7 @@ const StyledCheckbox = styled(Checkbox)`
   }
 `
 
-const CheckoutProductItem: React.VFC<{
+const CheckoutProductItem: React.FC<{
   name: string
   price: number
   currencyId?: string
@@ -159,7 +159,7 @@ export type CheckoutProductModalProps = {
   setIsOrderCheckLoading?: (isOrderCheckLoading: boolean) => void
 }
 
-const CheckoutProductModal: React.VFC<CheckoutProductModalProps> = ({
+const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
   defaultProductId,
   warningText,
   startedAt,

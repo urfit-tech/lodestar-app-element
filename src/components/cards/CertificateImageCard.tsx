@@ -16,7 +16,7 @@ const StyledCertificateCard = styled.div<{ scale: number }>`
   transform: scale(${props => props.scale});
   transform-origin: top left;
 `
-const _Certificate: React.VFC<{
+const _Certificate: React.FC<{
   template: string
   templateVars?: any
   certificateRef: React.Ref<HTMLDivElement>

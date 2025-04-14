@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { ContactInfo } from '../../types/checkout'
 import inputMessages from './translation'
 
-const ContactInfoInput: React.VFC<{
+const ContactInfoInput: React.FC<{
   value: ContactInfo
   onChange: (value: ContactInfo) => void
   errorContactFields: string[]

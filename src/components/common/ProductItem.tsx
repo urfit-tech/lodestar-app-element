@@ -73,7 +73,7 @@ type ProductItemProps = {
   quantity?: number
   onChange?: (value: number | undefined) => void
 }
-const ProductItem: React.VFC<ProductItemProps> = ({ id, startedAt, variant, quantity, onChange }) => {
+const ProductItem: React.FC<ProductItemProps> = ({ id, startedAt, variant, quantity, onChange }) => {
   const { formatMessage } = useIntl()
 
   const { loading, target } = useSimpleProduct({ id, startedAt })

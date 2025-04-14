@@ -18,7 +18,7 @@ const StyledMembershipCard = styled.div<{ scale: number }>`
   transform-origin: top left;
 `
 
-const MembershipCard: React.VFC<{
+const MembershipCard: React.FC<{
   template: string
   templateVars?: any
 }> = ({ template, templateVars }) => {

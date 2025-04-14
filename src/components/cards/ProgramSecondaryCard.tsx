@@ -86,7 +86,7 @@ export function withReviews<P>(
   WrappedComponent: React.ComponentType<P & { reviews: string[] }>,
   options?: { limit: number },
 ) {
-  const ComponentWithReview: React.VFC<P> = props => {
+  const ComponentWithReview: React.FC<P> = props => {
     return <WrappedComponent {...props} reviews={[]}></WrappedComponent>
   }
   return ComponentWithReview

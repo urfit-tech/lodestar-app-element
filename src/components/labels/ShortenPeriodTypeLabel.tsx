@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 import { commonMessages } from '../../helpers/translation'
 import { PeriodType } from '../../types/data'
 
-const ShortenPeriodTypeLabel: React.VFC<{
+const ShortenPeriodTypeLabel: React.FC<{
   periodType: PeriodType
   withQuantifier?: boolean
 }> = ({ periodType, withQuantifier }) => {

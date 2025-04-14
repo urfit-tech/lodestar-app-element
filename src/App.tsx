@@ -36,7 +36,7 @@ const routes = [
   { name: 'AIBot', path: '/ai-bot', component: AIBotPage },
   { name: 'event', path: '/event', component: MemberEventCalendarBlock },
 ]
-const App: React.VFC = () => {
+const App: React.FC = () => {
   const [editing, setEditing] = useState(false)
   if (!process.env.REACT_APP_ID) {
     return <div>REACT_APP_ID is undefined</div>

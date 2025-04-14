@@ -11,7 +11,7 @@ const StyledInputGroup = styled(Input.Group)`
     }
   }
 `
-const QuantityInput: React.VFC<{
+const QuantityInput: React.FC<{
   value?: number
   min?: number
   max?: number

@@ -2,7 +2,7 @@ import MemberPrimaryCard from '../components/cards/MemberPrimaryCard'
 import MemberSecondaryCard from '../components/cards/MemberSecondaryCard'
 import { CraftMemberCollection } from '../components/common/CraftElement'
 
-const MemberElementPage: React.VFC = () => {
+const MemberElementPage: React.FC = () => {
   return (
     <div>
       <MemberPrimaryCard loading />

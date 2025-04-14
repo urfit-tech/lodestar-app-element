@@ -17,10 +17,10 @@ const StyledContainer = styled.div`
   cursor: pointer;
 `
 
-const MembershipCardSelectionModal: React.VFC<{
+const MembershipCardSelectionModal: React.FC<{
   memberId: string
   onSelect?: (membershipCardId: string) => void
-  render?: React.VFC<{
+  render?: React.FC<{
     setVisible: React.Dispatch<React.SetStateAction<boolean>>
     selectedMembershipCard?: { id: string; title: string }
   }>
@@ -68,7 +68,7 @@ const MembershipCardSelectionModal: React.VFC<{
   )
 }
 
-const MembershipCardItem: React.VFC<{
+const MembershipCardItem: React.FC<{
   member: MemberProps
   membershipCardId: string
   updatedAt?: Date | null

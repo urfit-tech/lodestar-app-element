@@ -46,7 +46,7 @@ const ListsOption = styled.div<{ font: string; selected: boolean }>`
   }
 `
 
-const ListsOptionsBlock: React.VFC<{ optionList?: QuestionOption[]; questionFontType?: string }> = ({
+const ListsOptionsBlock: React.FC<{ optionList?: QuestionOption[]; questionFontType?: string }> = ({
   optionList,
   questionFontType = 'auto',
 }) => {

@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { CraftAIBot, CraftSection } from '../components/common/CraftElement'
 import pagesMessages from './translation'
 
-const AIBotPage: React.VFC = () => {
+const AIBotPage: React.FC = () => {
   const { formatMessage } = useIntl()
   return (
     <Element id="Section" is={CraftSection} canvas customStyle={{ padding: 0 }}>

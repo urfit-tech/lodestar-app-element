@@ -20,7 +20,7 @@ const StyledPercent = styled.span`
   line-height: 1;
   letter-spacing: 0.4px;
 `
-const ProgressBar: React.VFC<{
+const ProgressBar: React.FC<{
   percent: number
   noPercent?: boolean
   className?: string

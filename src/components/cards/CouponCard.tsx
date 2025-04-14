@@ -20,7 +20,7 @@ const StyledCode = styled.div<{ isDisabled?: boolean }>`
   color: ${props => (props.isDisabled ? '#9b9b9b' : props.theme['@primary-color'])};
 `
 
-const CouponCard: React.VFC<
+const CouponCard: React.FC<
   BoxProps & {
     coupon: CouponProps
     isDisabled?: boolean

@@ -15,7 +15,7 @@ const StyledStarRating = styled.div<{ size?: string }>`
   font-size: ${props => props.size || '16px'};
 `
 
-const StarRating: React.VFC<{ score: number; max: number; size?: string }> = ({ score, max, size }) => {
+const StarRating: React.FC<{ score: number; max: number; size?: string }> = ({ score, max, size }) => {
   const starLists = []
   while (starLists.length < max) {
     if (starLists.length < Math.floor(score)) {

@@ -20,7 +20,7 @@ const StyledListItem = styled(ListItem)`
   color: var(--gray-darker);
 `
 
-const GroupBuyingRuleModal: React.VFC = () => {
+const GroupBuyingRuleModal: React.FC = () => {
   const { formatMessage } = useIntl()
   const { isOpen, onOpen, onClose } = useDisclosure()
   return (

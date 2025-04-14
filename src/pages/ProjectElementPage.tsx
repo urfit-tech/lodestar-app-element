@@ -2,7 +2,7 @@ import ProjectCard from '../components/cards/ProjectCard'
 import { CraftProjectCollection } from '../components/common/CraftElement'
 // import CraftProgramPackageCollection from '../components/craft/CraftProgramPackageCollection'
 
-const ProjectElementPage: React.VFC = () => {
+const ProjectElementPage: React.FC = () => {
   return (
     <div>
       <ProjectCard loading />

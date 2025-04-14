@@ -1,6 +1,6 @@
 import { CraftProgramCollection } from '../components/common/CraftElement'
 
-const ProgramElementPage: React.VFC = () => {
+const ProgramElementPage: React.FC = () => {
   return (
     <div className="container">
       <CraftProgramCollection

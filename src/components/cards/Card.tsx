@@ -75,7 +75,7 @@ const MemberName = styled.span`
   color: #9b9b9b;
 `
 
-const CardAvatar: React.VFC<{
+const CardAvatar: React.FC<{
   src?: string
   name?: string
   withName?: boolean

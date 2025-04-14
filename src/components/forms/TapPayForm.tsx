@@ -24,7 +24,7 @@ export const StyledInputTarget = styled.div<{ loading?: boolean }>`
   border: solid 1px #cdcdcd;
 `
 
-const TapPayForm: React.VFC<{
+const TapPayForm: React.FC<{
   onUpdate?: (tpCreditCard: TPCreditCard) => void
 }> = ({ onUpdate }) => {
   const { formatMessage } = useIntl()

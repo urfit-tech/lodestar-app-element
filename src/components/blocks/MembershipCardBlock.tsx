@@ -30,7 +30,7 @@ const StyledSubTitle = styled.div`
   letter-spacing: 0.18px;
 `
 
-const MembershipCardBlock: React.VFC<{
+const MembershipCardBlock: React.FC<{
   template: string
   templateVars?: any
   title: string

@@ -95,7 +95,7 @@ const StyledPostMeta = styled.div`
   `)}
 `
 
-const PostCard: React.VFC<PostElementProps> = props => {
+const PostCard: React.FC<PostElementProps> = props => {
   const { loading, errors } = props
 
   if (errors) {
@@ -122,7 +122,7 @@ const PostCard: React.VFC<PostElementProps> = props => {
   )
 }
 
-const PostPreviewCover: React.VFC<{
+const PostPreviewCover: React.FC<{
   coverUrl: string
   withVideo?: boolean
   variant?: 'featuring' | 'popular' | 'list-item'
@@ -139,7 +139,7 @@ const PostPreviewCover: React.VFC<{
   )
 }
 
-const PostPreviewMeta: React.VFC<{
+const PostPreviewMeta: React.FC<{
   author: { id: string; name: string }
   publishedAt: Date | null
 }> = ({ author, publishedAt }) => {
