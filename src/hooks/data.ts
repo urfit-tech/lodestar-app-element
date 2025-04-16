@@ -1,11 +1,14 @@
 import { gql, useQuery } from '@apollo/client'
+import axios from 'axios'
 import moment from 'moment'
 import { sum } from 'ramda'
+import { useCallback, useEffect, useState } from 'react'
 import { DeepPick } from 'ts-deep-pick/lib'
+import { useAuth } from '../contexts/AuthContext'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
 import { CouponProps } from '../types/checkout'
-import { Member, PeriodType, PodcastProgram, Program } from '../types/data'
+import { CouponFromLodestarAPI, Member, PeriodType, PodcastProgram, Program } from '../types/data'
 
 export const usePublishedProgramCollection = (options: { ids?: string[]; limit?: number }) => {
   const { loading, error, data, refetch } = useQuery<
@@ -354,85 +357,62 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
 }
 
 export const useCouponCollection = (memberId: string) => {
-  const { loading, error, data, refetch } = useQuery<
-    hasura.GET_COUPON_COLLECTION,
-    hasura.GET_COUPON_COLLECTIONVariables
-  >(
-    gql`
-      query GET_COUPON_COLLECTION($memberId: String!) {
-        coupon(where: { member_id: { _eq: $memberId }, coupon_code: { deleted_at: { _is_null: true } } }) {
-          id
-          status {
-            outdated
-            used
-          }
-          coupon_code {
-            code
-            coupon_plan {
-              id
-              title
-              amount
-              type
-              constraint
-              started_at
-              ended_at
-              description
-              scope
-              coupon_plan_products {
-                id
-                product_id
-              }
-            }
-          }
-        }
-      }
-    `,
-    { variables: { memberId } },
-  )
+  const { authToken } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<any>()
+  const [data, setData] = useState<CouponProps[]>([])
 
-  const coupons: CouponProps[] =
-    loading || error || !data
-      ? []
-      : data.coupon.map(coupon => ({
-          id: coupon.id,
-          status: {
-            used: coupon.status?.used || false,
-            outdated: coupon.status?.outdated || false,
-          },
-          couponCode: {
-            code: coupon.coupon_code.code,
-            couponPlan: {
-              id: coupon.coupon_code.coupon_plan.id,
-              startedAt: coupon.coupon_code.coupon_plan.started_at
-                ? new Date(coupon.coupon_code.coupon_plan.started_at)
-                : null,
-              endedAt: coupon.coupon_code.coupon_plan.ended_at
-                ? new Date(coupon.coupon_code.coupon_plan.ended_at)
-                : null,
-              type:
-                coupon.coupon_code.coupon_plan.type === 1
-                  ? 'cash'
-                  : coupon.coupon_code.coupon_plan.type === 2
-                  ? 'percent'
-                  : 'cash',
-              constraint: coupon.coupon_code.coupon_plan.constraint,
-              amount: coupon.coupon_code.coupon_plan.amount,
-              title: coupon.coupon_code.coupon_plan.title,
-              description: coupon.coupon_code.coupon_plan.description || '',
-              count: 0,
-              remaining: 0,
-              scope: coupon.coupon_code.coupon_plan.scope,
-              productIds: coupon.coupon_code.coupon_plan.coupon_plan_products.map(
-                couponPlanProduct => couponPlanProduct.product_id,
-              ),
+  const fetch = useCallback(async () => {
+    if (authToken) {
+      const route = '/coupons'
+      try {
+        setLoading(true)
+        const { data } = await axios.get(`${process.env.REACT_APP_LODESTAR_SERVER_ENDPOINT}${route}`, {
+          params: { memberId, includeDeleted: false },
+          headers: { authorization: `Bearer ${authToken}` },
+        })
+        setData(
+          data.map((coupon: CouponFromLodestarAPI) => ({
+            id: coupon.id,
+            status: coupon.status,
+            couponCode: {
+              code: coupon.couponCode.code,
+              couponPlan: {
+                id: coupon.couponCode.couponPlan.id,
+                startedAt: coupon.couponCode.couponPlan.startedAt
+                  ? new Date(coupon.couponCode.couponPlan.startedAt)
+                  : null,
+                endedAt: coupon.couponCode.couponPlan.endedAt ? new Date(coupon.couponCode.couponPlan.endedAt) : null,
+                type: coupon.couponCode.couponPlan.type === 1 ? 'cash' : 'percent',
+                constraint: coupon.couponCode.couponPlan.constraint,
+                amount: coupon.couponCode.couponPlan.amount,
+                title: coupon.couponCode.couponPlan.title,
+                description: coupon.couponCode.couponPlan.description || '',
+                scope: coupon.couponCode.couponPlan.scope,
+                productIds: coupon.couponCode.couponPlan.couponPlanProducts.map(
+                  couponPlanProduct => couponPlanProduct.productId,
+                ),
+              },
             },
-          },
-        }))
+          })) || [],
+        )
+      } catch (err) {
+        console.log(err)
+        setError(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+  }, [authToken, memberId])
+
+  useEffect(() => {
+    fetch()
+  }, [fetch])
 
   return {
-    loadingCoupons: loading,
-    errorCoupons: error,
-    coupons,
-    refetchCoupons: refetch,
+    loading,
+    error,
+    data,
+    fetch,
   }
 }
