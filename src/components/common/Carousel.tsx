@@ -84,6 +84,7 @@ const Carousel: ElementComponent<BaseCarouselProps> = props => {
     swipeToSlide: Boolean(props.swipeToSlide),
     swipe: props.swipe === undefined ? true : Boolean(props.swipe),
     vertical: Boolean(props.vertical),
+    lazyLoad: 'ondemand',
   }
   return (
     <StyledSlider
