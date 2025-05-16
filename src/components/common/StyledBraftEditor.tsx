@@ -216,17 +216,18 @@ const StyledBraftContent = styled.div<{ disableMouseInteractions?: boolean }>`
   }
 `
 
-export const BraftContent: React.FC<{ isEditable?: boolean; onEdit?: (content: string | null) => void }> = ({
-  isEditable,
-  onEdit,
-  children,
-}) => {
+export const BraftContent: React.FC<{
+  disableMouseInteractions?: boolean
+  isEditable?: boolean
+  onEdit?: (content: string | null) => void
+}> = ({ disableMouseInteractions, isEditable, onEdit, children }) => {
   const ref = useRef<HTMLDivElement | null>(null)
   return (
     <div className="d-flex align-items-center">
       <StyledBraftContent
         ref={ref}
         className="braft-output-content"
+        disableMouseInteractions={disableMouseInteractions}
         contentEditable={isEditable}
         spellCheck={false}
         onBlur={e => onEdit?.(e.currentTarget.textContent)}
