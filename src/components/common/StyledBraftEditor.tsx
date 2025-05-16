@@ -133,7 +133,24 @@ const OutputMixin = css`
   }
 `
 
-const StyledBraftEditor = styled(BraftEditor)`
+const StyledBraftEditor = styled(BraftEditor)<{ disableMouseInteractions?: boolean }>`
+  && {
+    ${props =>
+      props.disableMouseInteractions &&
+      css`
+        .bf-content img {
+          pointer-events: none;
+          user-drag: none;
+          -webkit-user-drag: none;
+        }
+
+        .bf-content {
+          user-select: none;
+          -webkit-user-select: none;
+          -ms-user-select: none;
+        }
+      `}
+  }
   .bf-dropdown .dropdown-content .menu-item.active {
     background-color: ${props => props.theme['@primary-color']};
     color: #fff;
@@ -178,8 +195,25 @@ const StyledBraftEditor = styled(BraftEditor)`
   }
 `
 
-const StyledBraftContent = styled.div`
+const StyledBraftContent = styled.div<{ disableMouseInteractions?: boolean }>`
   ${OutputMixin}
+  && {
+    ${props =>
+      props.disableMouseInteractions &&
+      css`
+        img {
+          pointer-events: none;
+          user-drag: none;
+          -webkit-user-drag: none;
+        }
+
+        & {
+          user-select: none;
+          -webkit-user-select: none;
+          -ms-user-select: none;
+        }
+      `}
+  }
 `
 
 export const BraftContent: React.FC<{ isEditable?: boolean; onEdit?: (content: string | null) => void }> = ({
