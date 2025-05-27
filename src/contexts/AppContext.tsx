@@ -37,7 +37,7 @@ const AppContext = createContext<AppContextProps>(defaultAppContextProps)
 export const useApp = () => useContext(AppContext)
 
 export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
-  const { authToken, refreshToken } = useAuth()
+  const { authToken, refreshToken, currentMemberId } = useAuth()
   const { data, loading, error, refetch } = useQuery<hasura.GET_APP, hasura.GET_APPVariables>(
     gql`
       query GET_APP($appId: String!) {
@@ -175,10 +175,10 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
   )
 
   useEffect(() => {
-    if (!authToken) {
+    if (!authToken && currentMemberId) {
       refreshToken?.()
     }
-  }, [appId, authToken, refreshToken])
+  }, [appId, authToken, refreshToken, currentMemberId])
 
   return <AppContext.Provider value={app}>{children}</AppContext.Provider>
 }
