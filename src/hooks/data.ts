@@ -209,7 +209,7 @@ export const usePublicMember = (memberId: string) => {
         }
       }
     `,
-    { variables: { memberId } },
+    { variables: { memberId }, skip: !memberId },
   )
 
   const member: DeepPick<Member, 'id' | 'pictureUrl' | 'name'> | null =
