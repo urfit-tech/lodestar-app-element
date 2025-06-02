@@ -19,6 +19,7 @@
     "@babel/core": "^7.14.0",
     "@babel/preset-env": "^7.14.1",
     "@babel/preset-react": "^7.13.13",
+    "@babel/preset-typescript": "^7.27.1",
     "@bobthered/tailwindcss-palette-generator": "2.0.0",
     "@chakra-ui/icons": "1.0.0",
     "@chakra-ui/react": "1.1.2",
@@ -107,8 +108,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "typegen": "graphql-codegen",
-    "trans:compile": "tsc --noEmit false --outDir src/extracted",
-    "trans:extract": "babel --config-file ./.intl.babelrc ./src/extracted > /dev/null",
+    "trans:compile": "babel src --out-dir src/extracted --extensions .ts,.tsx,.js,.jsx --config-file ./.intl.babelrc --ignore '**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,**/*.d.ts'",
+    "trans:extract": "echo 'Messages extracted during compilation'",
     "trans:manage": "node manageTranslations.js",
     "trans:clean": "rm -rf ./src/extracted",
     "trans": "npm run trans:clean && npm run trans:compile && npm run trans:extract && npm run trans:manage && npm run trans:clean"

@@ -26,6 +26,7 @@
   "checkout.form.message.name": "Tên thật",
   "checkout.label.alipay": "Alipay",
   "checkout.label.androidpay": "Google Pay",
+  "checkout.label.applepay": "Apple Pay",
   "checkout.label.approved": "Tôi đồng ý",
   "checkout.label.atome": "Atome",
   "checkout.label.bankTransfer": "Chuyển khoản ngân hàng",

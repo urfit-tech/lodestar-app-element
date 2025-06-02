@@ -26,6 +26,7 @@
   "checkout.form.message.name": "Nama Asli",
   "checkout.label.alipay": "Alipay",
   "checkout.label.androidpay": "Google Pay",
+  "checkout.label.applepay": "Apple Pay",
   "checkout.label.approved": "Saya setuju",
   "checkout.label.atome": "Atome",
   "checkout.label.bankTransfer": "Transfer Bank",

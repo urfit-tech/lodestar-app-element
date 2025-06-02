@@ -6,8 +6,8 @@
 const manageTranslations = require('react-intl-translations-manager').default
 
 manageTranslations({
-  messagesDirectory: 'build/messages/src/extracted/',
+  messagesDirectory: 'build/messages/',
   translationsDirectory: 'src/translations/locales/',
   whitelistsDirectory: 'src/translations/locales/whitelists/',
-  languages: ['en-us', 'vi', 'id', 'zh-cn', 'zh-tw', 'ja', 'ko'],
+  languages: ['zh-tw', 'zh-cn', 'en-us', 'vi', 'id', 'ja', 'ko', 'de-de'],
 })
