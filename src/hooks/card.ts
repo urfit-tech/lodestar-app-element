@@ -15,6 +15,7 @@ export const useEnrolledMembershipCardIds = (memberId: string) => {
     `,
     {
       variables: { memberId },
+      skip: !memberId,
     },
   )
 
@@ -46,6 +47,7 @@ export const useEnrolledMembershipCards = (memberId: string) => {
     `,
     {
       variables: { memberId },
+      skip: !memberId,
     },
   )
 

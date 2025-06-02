@@ -1133,6 +1133,7 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
       variables: {
         memberId: memberId ?? '',
       },
+      skip: !memberId,
     },
   )
   dayjs.extend(utc)
@@ -1154,7 +1155,7 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
     const cardIdToDatesMap = new Map()
     ;(memberShipCardDetails?.card_enrollment as CwCardEnrollment)?.forEach(cardEnrollment => {
       const cardId = cardEnrollment.card_id
-      const cardTitle = cardEnrollment.card?.title ?? ""
+      const cardTitle = cardEnrollment.card?.title ?? ''
 
       cardEnrollment.member.order_logs.forEach(orderLog => {
         orderLog.order_products.forEach(orderProduct => {

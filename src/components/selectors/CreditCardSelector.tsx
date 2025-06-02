@@ -70,7 +70,7 @@ export const useMemberCreditCards = (memberId: string) => {
         }
       }
     `,
-    { variables: { memberId } },
+    { variables: { memberId }, skip: !memberId },
   )
   const memberCreditCards = useMemo(
     () =>

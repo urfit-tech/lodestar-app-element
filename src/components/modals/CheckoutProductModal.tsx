@@ -843,6 +843,7 @@ const useMemberCoinsRemaining = (memberId: string) => {
     `,
     {
       variables: { memberId },
+      skip: !memberId,
     },
   )
   const remainingCoins = data?.coin_status.reduce((total, coin) => {
