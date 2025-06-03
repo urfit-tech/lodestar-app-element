@@ -26,6 +26,7 @@
   "checkout.form.message.name": "실명",
   "checkout.label.alipay": "Alipay",
   "checkout.label.androidpay": "Google Pay",
+  "checkout.label.applepay": "Apple Pay",
   "checkout.label.approved": "동의합니다",
   "checkout.label.atome": "Atome",
   "checkout.label.bankTransfer": "은행 이체",
