@@ -52,6 +52,7 @@ export const useSimpleProduct = ({ id, startedAt }: { id: string; startedAt?: Da
         targetId,
         startedAt,
       },
+      skip: !id,
     },
   )
 
