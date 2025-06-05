@@ -2,7 +2,7 @@ import { Skeleton, SkeletonCircle } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
 import styled from 'styled-components'
 import { DeepPick } from 'ts-deep-pick/lib'
-import { usePublicMember } from '../../hooks/data'
+import { usePublicMember, usePublicMembers } from '../../hooks/data'
 import DefaultAvatar from '../../images/icons/avatar.svg'
 import { Member } from '../../types/data'
 
@@ -86,37 +86,38 @@ export const MultiAvatar: React.FC<
   )
 > = props => {
   const { loading, memberIdList } = props
-  const memberId = memberIdList[0]
-  const { member } = usePublicMember(memberId)
+  const { members, loadingMembers, errorMembers } = usePublicMembers(memberIdList)
 
   return (
     <div className="d-flex align-items-center avatar">
-      {loading ? (
+      {loading || loadingMembers ? (
         <>
           <SkeletonCircle className="mr-3" />
           <Skeleton width={Math.random() * 100 + 50} height={4} />
         </>
       ) : (
-        <>
-          {props.renderAvatar?.(member, props.onClick) || (
-            <AvatarImage
-              className={classNames('avatar__image', { 'cursor-pointer': Boolean(props.onClick) })}
-              src={member?.pictureUrl}
-              shape={props.shape}
-              size={props.size}
-              onClick={() => props.onClick?.(memberId)}
-            />
-          )}
-          {props.renderText?.(member, props.onClick) ||
-            (props.withName && (
-              <MemberName
-                className={classNames('avatar__name', 'ml-3', { 'cursor-pointer': Boolean(props.onClick) })}
-                onClick={() => props.onClick?.(memberId)}
-              >
-                {member?.name}
-              </MemberName>
-            ))}
-        </>
+        members?.map(member => (
+          <>
+            {props.renderAvatar?.(member, props.onClick) || (
+              <AvatarImage
+                className={classNames('avatar__image', { 'cursor-pointer': Boolean(props.onClick) })}
+                src={member?.pictureUrl}
+                shape={props.shape}
+                size={props.size}
+                onClick={() => props.onClick?.(member.id)}
+              />
+            )}
+            {props.renderText?.(member, props.onClick) ||
+              (props.withName && (
+                <MemberName
+                  className={classNames('avatar__name', 'ml-3', { 'cursor-pointer': Boolean(props.onClick) })}
+                  onClick={() => props.onClick?.(member.id)}
+                >
+                  {member?.name}
+                </MemberName>
+              ))}
+          </>
+        ))
       )}
     </div>
   )

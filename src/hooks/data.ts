@@ -229,6 +229,39 @@ export const usePublicMember = (memberId: string) => {
   }
 }
 
+// ToDo
+export const usePublicMembers = (memberIds: string[]) => {
+  const { loading, data, error, refetch } = useQuery<hasura.GetPublicMembers, hasura.GetPublicMembersVariables>(
+    gql`
+      query GetPublicMembers($memberIds: [String!]!) {
+        member_public(where: { id: { _in: $memberIds } }) {
+          id
+          picture_url
+          name
+          username
+        }
+      }
+    `,
+    { variables: { memberIds }, skip: memberIds?.length === 0 },
+  )
+
+  const members: DeepPick<Member, 'id' | 'pictureUrl' | 'name'>[] | null =
+    loading || error || !data || !data.member_public[0]
+      ? null
+      : data.member_public.map(member => ({
+          id: member.id || '',
+          pictureUrl: member.picture_url || null,
+          name: member.name || member.username || '',
+        }))
+
+  return {
+    loadingMembers: loading,
+    errorMembers: error,
+    members,
+    refetchMembers: refetch,
+  }
+}
+
 export const useInstructorCollection = (appId: string, options?: { ids?: string[]; limit?: number }) => {
   const { loading, error, data } = useQuery<
     hasura.GET_INSTRUCTOR_COLLECTION,
