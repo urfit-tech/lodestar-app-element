@@ -39,8 +39,7 @@ type ProgramData = DeepPick<
   | 'coverThumbnailUrl'
   | 'totalDuration'
   | 'isEnrolledCountVisible'
-  | 'roles.[].name'
-  | 'roles.[].member.id'
+  | 'roles'
   | 'listPrice'
   | 'salePrice'
   | 'soldAt'
@@ -234,6 +233,15 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       period={primaryProgramPlan?.period || undefined}
                       isEnrolledCountVisible={program.isEnrolledCountVisible}
                       categories={program.categories}
+                      roles={program.roles.map(role => ({
+                        id: role.id,
+                        name: role.name,
+                        member: {
+                          id: role.member.id,
+                          name: role.member.name,
+                          pictureUrl: role.member.pictureUrl,
+                        },
+                      }))}
                       onClick={() => {
                         onClick?.()
                         !props.editing && history.push(`/programs/${program.id}`)
@@ -532,7 +540,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
     roles: p.program_roles.map(pr => ({
       id: pr.id,
       name: pr.name as ProductRole['name'],
-      member: { id: pr.member_id },
+      member: { id: pr.member?.id || '', name: pr.member?.name || '', pictureUrl: pr.member?.picture_url || null },
     })),
     listPrice: p.list_price || 0,
     salePrice: p.sale_price,
@@ -588,7 +596,11 @@ const programFields = gql`
     program_roles(where: { name: { _eq: "instructor" } }, order_by: { created_at: asc }) {
       id
       name
-      member_id
+      member {
+        id
+        picture_url
+        name
+      }
     }
     program_plans(where: { published_at: { _is_null: false } }, order_by: { created_at: asc }) {
       id

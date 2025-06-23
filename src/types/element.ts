@@ -29,6 +29,15 @@ export type ProgramElementProps = ElementProps<{
   }
   label: string
   labelColorType: string
+  roles: {
+    id: string
+    name: string
+    member: {
+      id: string
+      name: string
+      pictureUrl: string | null
+    }
+  }[]
 }>
 
 export type ProgramContentElementProps = ElementProps<{

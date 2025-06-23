@@ -56,18 +56,47 @@ type AvatarProps = {
 const Avatar: React.FC<
   AvatarProps & {
     memberId: string
+    member?: {
+      id: string
+      name: string
+      pictureUrl: string | null
+    }
   }
 > & {
   Image: typeof AvatarImage
-} = ({ memberId, shape, size, withName, renderAvatar, renderText, onClick }) => {
-  const { member } = usePublicMember(memberId)
+} = ({ memberId, member, shape, size, withName, renderAvatar, renderText, onClick }) => {
+  const finalMemberId = member?.id || memberId
+  const { loadingMember, member: memberData } = usePublicMember(memberId, {
+    member: {
+      id: member?.id || '',
+      name: member?.name || '',
+      pictureUrl: member?.pictureUrl || null,
+    },
+    skip: Boolean(member),
+  })
+
+  const name = member?.name || memberData?.name || ''
+  const pictureUrl = member?.pictureUrl || memberData?.pictureUrl || null
 
   return (
-    <div className="d-flex align-items-center" onClick={() => onClick?.(memberId)}>
-      {renderAvatar ? renderAvatar(member) : <AvatarImage src={member?.pictureUrl} shape={shape} size={size} />}
-      {renderText && renderText(member)}
-      {withName && <MemberName className="ml-3">{member?.name}</MemberName>}
-    </div>
+    <>
+      {loadingMember ? (
+        <div className="d-flex align-items-center">
+          <SkeletonCircle className="mr-3" />
+          <Skeleton width={Math.random() * 100 + 50} height={4} />
+        </div>
+      ) : (
+        <div className="d-flex align-items-center" onClick={() => onClick?.(finalMemberId)}>
+          {renderAvatar ? (
+            renderAvatar({ id: memberId, name, pictureUrl })
+          ) : (
+            <AvatarImage src={memberData?.pictureUrl} shape={shape} size={size} />
+          )}
+          {renderText && renderText(memberData)}
+          {withName && <MemberName className="ml-3">{member?.name}</MemberName>}
+        </div>
+      )}
+    </>
   )
 }
 
@@ -76,6 +105,11 @@ Avatar.Image = AvatarImage
 export const MultiAvatar: React.FC<
   {
     memberIdList: string[]
+    members?: {
+      id: string
+      name: string
+      pictureUrl: string | null
+    }[]
   } & (
     | {
         loading: true
@@ -85,35 +119,45 @@ export const MultiAvatar: React.FC<
       } & AvatarProps)
   )
 > = props => {
-  const { loading, memberIdList } = props
-  const memberId = memberIdList[0]
-  const { member } = usePublicMember(memberId)
+  const { loading, memberIdList, members } = props
+  const memberId = members?.[0].id || memberIdList[0]
+  const { loadingMember, member: memberData } = usePublicMember(memberId, {
+    member: {
+      id: members?.[0]?.id || '',
+      name: members?.[0]?.name || '',
+      pictureUrl: members?.[0]?.pictureUrl || null,
+    },
+    skip: Boolean(members?.length !== 0),
+  })
+
+  const name = members?.[0]?.name || memberData?.name || ''
+  const pictureUrl = members?.[0]?.pictureUrl || memberData?.pictureUrl || null
 
   return (
     <div className="d-flex align-items-center avatar">
-      {loading ? (
+      {loading || loadingMember ? (
         <>
           <SkeletonCircle className="mr-3" />
           <Skeleton width={Math.random() * 100 + 50} height={4} />
         </>
       ) : (
         <>
-          {props.renderAvatar?.(member, props.onClick) || (
+          {props.renderAvatar?.(memberData, props.onClick) || (
             <AvatarImage
               className={classNames('avatar__image', { 'cursor-pointer': Boolean(props.onClick) })}
-              src={member?.pictureUrl}
+              src={pictureUrl}
               shape={props.shape}
               size={props.size}
               onClick={() => props.onClick?.(memberId)}
             />
           )}
-          {props.renderText?.(member, props.onClick) ||
+          {props.renderText?.(memberData, props.onClick) ||
             (props.withName && (
               <MemberName
                 className={classNames('avatar__name', 'ml-3', { 'cursor-pointer': Boolean(props.onClick) })}
                 onClick={() => props.onClick?.(memberId)}
               >
-                {member?.name}
+                {name}
               </MemberName>
             ))}
         </>

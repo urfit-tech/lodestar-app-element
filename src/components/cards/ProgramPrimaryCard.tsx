@@ -40,8 +40,8 @@ const StyledExtraBlock = styled.div`
   gap: 10px;
 `
 const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
-  const { loading, errors, id: programId, label, labelColorType } = props
-  const { settings, enabledModules } = useApp()
+  const { loading, errors, id: programId, label, labelColorType, roles } = props
+  const { settings } = useApp()
   const { data: enrolledCount } = useProgramEnrollmentAggregate(props.id || '', {
     skip: !props.id || !props.isEnrolledCountVisible,
   })
@@ -69,8 +69,20 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
         {loading ? (
           <MultiAvatar loading memberIdList={[]} />
         ) : (
-          <Link to={!props.editing ? `/creators/${props.instructorIds}?tabkey=introduction` : '#!'}>
-            <MultiAvatar memberIdList={props.instructorIds || []} withName />
+          <Link to={!props.editing ? `/creators/${props.instructorIds[0]}?tabkey=introduction` : '#!'}>
+            {roles && roles?.length > 0 ? (
+              <MultiAvatar
+                memberIdList={props.instructorIds || []}
+                withName
+                members={roles.map(role => ({
+                  id: role.id,
+                  name: role.name,
+                  pictureUrl: role.member.pictureUrl,
+                }))}
+              />
+            ) : (
+              <MultiAvatar memberIdList={props.instructorIds || []} withName />
+            )}
           </Link>
         )}
       </InstructorPlaceHolder>
