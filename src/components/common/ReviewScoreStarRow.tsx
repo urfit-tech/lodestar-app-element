@@ -15,25 +15,34 @@ const StyledReviewRating = styled.div`
   flex-direction: column;
 `
 
-const ReviewScoreStarRow: FC<{ path: string; appId: string; direction?: 'row' | 'column' }> = ({
-  path,
-  appId,
-  direction = 'row',
-}) => {
+const ReviewScoreStarRow: FC<{
+  path: string
+  appId: string
+  direction?: 'row' | 'column'
+  reviewAverageScore?: number
+  reviewCount?: number
+}> = ({ path, appId, direction = 'row', reviewAverageScore, reviewCount }) => {
   const { formatMessage } = useIntl()
   const { enabledModules, settings } = useApp()
   const { currentUserRole } = useAuth()
   const { data: reviewable, loading: reviewableLoading } = useAdaptedReviewable(path, appId)
-  const { averageScore, reviewCount, loading: reviewAggregateLoading } = useReviewAggregate(path)
+  const {
+    averageScore,
+    reviewCount: reviewCountFromAggregate,
+    loading: reviewAggregateLoading,
+  } = useReviewAggregate(path, { skip: typeof reviewAverageScore === 'number' && typeof reviewCount === 'number' })
 
   if (reviewableLoading || reviewAggregateLoading) return <></>
+
+  const finalReviewCount = reviewCount || reviewCountFromAggregate || 0
+  const finalAverageScore = reviewAverageScore || averageScore || 0
 
   return enabledModules.customer_review ? (
     currentUserRole === 'app-owner' ||
     (reviewable?.is_score_viewable &&
-      reviewCount >= (settings.review_lower_bound ? Number(settings.review_lower_bound) : 3)) ? (
+      finalReviewCount >= (settings.review_lower_bound ? Number(settings.review_lower_bound) : 3)) ? (
       <StyledReviewRating className="d-flex" style={{ flexDirection: direction }}>
-        <StarRating score={Math.round((Math.round(averageScore * 10) / 10) * 2) / 2} max={5} size="20px" />
+        <StarRating score={Math.round((Math.round(finalAverageScore * 10) / 10) * 2) / 2} max={5} size="20px" />
         <span style={{ whiteSpace: 'nowrap' }}>
           ({formatMessage(commonMessages.review.reviewCount, { count: reviewCount })})
         </span>

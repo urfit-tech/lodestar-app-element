@@ -38,6 +38,8 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
     skip: (typeof reviewAverageScore === 'number' && typeof reviewCount === 'number') || !props.id,
   })
 
+  const finalReviewAverageScore = reviewAverageScore || averageScore || 0
+
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
@@ -74,8 +76,14 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
                 .map(category => category.name.split('/').pop())
                 .join('・')}
             </StyledCategories>
-            {enabledModules.customer_review && Boolean(reviewAverageScore || averageScore) && (
-              <ReviewScoreStarRow path={path} appId={appId} direction="column" />
+            {enabledModules.customer_review && Boolean(finalReviewAverageScore) && (
+              <ReviewScoreStarRow
+                path={path}
+                appId={appId}
+                direction="column"
+                reviewAverageScore={finalReviewAverageScore}
+                reviewCount={reviewCount}
+              />
             )}
           </div>
         )}
