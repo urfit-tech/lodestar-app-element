@@ -35,7 +35,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
   const path = `/programs/${props.id}`
   const loading = propsLoading
   const { loading: loadingReviewAggregate, averageScore } = useReviewAggregate(path, {
-    skip: !props.id || (typeof reviewAverageScore === 'number' && typeof reviewCount === 'number'),
+    skip: (typeof reviewAverageScore === 'number' && typeof reviewCount === 'number') || !props.id,
   })
 
   if (errors) {
