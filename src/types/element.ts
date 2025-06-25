@@ -38,6 +38,10 @@ export type ProgramElementProps = ElementProps<{
       pictureUrl: string | null
     }
   }[]
+  historicalProgramPlanBuyers?: number
+  historicalProgramPackagePlanBuyers?: number
+  reviewAverageScore?: number
+  reviewCount?: number
 }>
 
 export type ProgramContentElementProps = ElementProps<{

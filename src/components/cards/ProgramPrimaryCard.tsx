@@ -40,10 +40,23 @@ const StyledExtraBlock = styled.div`
   gap: 10px;
 `
 const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
-  const { loading, errors, id: programId, label, labelColorType, roles } = props
+  const {
+    loading,
+    errors,
+    id: programId,
+    label,
+    labelColorType,
+    roles,
+    historicalProgramPlanBuyers,
+    historicalProgramPackagePlanBuyers,
+  } = props
   const { settings } = useApp()
   const { data: enrolledCount } = useProgramEnrollmentAggregate(props.id || '', {
-    skip: !props.id || !props.isEnrolledCountVisible,
+    skip:
+      !props.id ||
+      !props.isEnrolledCountVisible ||
+      typeof historicalProgramPlanBuyers === 'number' ||
+      typeof historicalProgramPackagePlanBuyers === 'number',
   })
 
   const programAdditionalSoldHeadcountSetting = settings['program.additional.sold.headcount'] || '[]'
@@ -60,6 +73,12 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
       programAdditionalSoldHeadcountSettingValue.length > 0 &&
       programAdditionalSoldHeadcountSettingValue.find(setting => setting?.programId === programId)?.count) ||
     0
+
+  const enrolledCountAmount =
+    historicalProgramPlanBuyers && historicalProgramPackagePlanBuyers
+      ? historicalProgramPlanBuyers + historicalProgramPackagePlanBuyers + programAdditionalSoldHeadcount
+      : enrolledCount + programAdditionalSoldHeadcount
+
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
@@ -140,7 +159,7 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
                 {props.isEnrolledCountVisible && (
                   <div className="d-flex align-items-center enrolledCount">
                     <Icon className="mr-1 enrolledCount__userIcon" as={AiOutlineUser} />
-                    <span className="enrolledCount__amount">{enrolledCount + programAdditionalSoldHeadcount}</span>
+                    <span className="enrolledCount__amount">{enrolledCountAmount}</span>
                   </div>
                 )}
               </StyledExtraBlock>

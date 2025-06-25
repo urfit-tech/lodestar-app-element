@@ -47,7 +47,12 @@ type ProgramData = DeepPick<
   | 'categories'
   | 'label'
   | 'labelColorType'
->
+> & {
+  historicalProgramPlanBuyers: number
+  historicalProgramPackagePlanBuyers: number
+  reviewAverageScore: number
+  reviewCount: number
+}
 type ProgramContextCollection = ContextCollection<ProgramData>
 
 export type ProgramCollectionProps = {
@@ -569,6 +574,10 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
       name: pc.category?.name,
       position: pc.category?.position,
     })),
+    historicalProgramPlanBuyers: p.program_statistics?.program_package_plan_enrolled_count || 0,
+    historicalProgramPackagePlanBuyers: p.program_statistics?.program_package_plan_enrolled_count || 0,
+    reviewAverageScore: p.review_publics_aggregate.aggregate?.avg?.score || 0,
+    reviewCount: p.review_publics_aggregate.aggregate?.count || 0,
   }))
 
 const programFields = gql`
@@ -638,6 +647,19 @@ const programFields = gql`
             duration
           }
         }
+      }
+    }
+    program_statistics {
+      program_id
+      program_plan_enrolled_count
+      program_package_plan_enrolled_count
+    }
+    review_publics_aggregate {
+      aggregate {
+        avg {
+          score
+        }
+        count
       }
     }
   }

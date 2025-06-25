@@ -31,10 +31,12 @@ const StyledCategories = styled.div`
 
 const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
   const { id: appId, enabledModules } = useApp()
-  const { loading: propsLoading, errors, label, labelColorType } = props
+  const { loading: propsLoading, errors, label, labelColorType, reviewAverageScore, reviewCount } = props
   const path = `/programs/${props.id}`
   const loading = propsLoading
-  const { loading: loadingReviewAggregate, averageScore } = useReviewAggregate(path)
+  const { loading: loadingReviewAggregate, averageScore } = useReviewAggregate(path, {
+    skip: !props.id || (typeof reviewAverageScore === 'number' && typeof reviewCount === 'number'),
+  })
 
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
@@ -72,7 +74,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
                 .map(category => category.name.split('/').pop())
                 .join('・')}
             </StyledCategories>
-            {enabledModules.customer_review && Boolean(averageScore) && (
+            {enabledModules.customer_review && Boolean(reviewAverageScore || averageScore) && (
               <ReviewScoreStarRow path={path} appId={appId} direction="column" />
             )}
           </div>

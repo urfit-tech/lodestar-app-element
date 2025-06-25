@@ -36,7 +36,7 @@ export const useAdaptedReviewable = (path: string, appId: string) =>
     data: reviewableAdaptor,
   })(useReviewable(path, appId))
 
-export const useReviewAggregate = (path: string) => {
+export const useReviewAggregate = (path: string, options?: { skip?: boolean }) => {
   const { loading, error, data, refetch } = useQuery<hasura.GetReviewAggregate, hasura.GetReviewAggregateVariables>(
     gql`
       query GetReviewAggregate($path: String) {
@@ -54,6 +54,7 @@ export const useReviewAggregate = (path: string) => {
       variables: {
         path,
       },
+      skip: options?.skip,
     },
   )
   const averageScore = data?.review_public_aggregate.aggregate?.avg?.score || 0
