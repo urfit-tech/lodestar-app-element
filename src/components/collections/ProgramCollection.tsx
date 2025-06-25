@@ -251,6 +251,10 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                         onClick?.()
                         !props.editing && history.push(`/programs/${program.id}`)
                       }}
+                      historicalProgramPlanBuyers={program.historicalProgramPlanBuyers}
+                      historicalProgramPackagePlanBuyers={program.historicalProgramPackagePlanBuyers}
+                      reviewCount={program.reviewCount}
+                      reviewAverageScore={program.reviewAverageScore}
                     />
                   )
                 }}
