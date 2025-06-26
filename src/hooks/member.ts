@@ -27,7 +27,7 @@ export const useMember = (memberId: string) => {
         }
       }
     `,
-    { variables: { memberId } },
+    { variables: { memberId }, skip: !memberId },
   )
 
   const member: MemberProps | null =

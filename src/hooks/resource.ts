@@ -84,11 +84,17 @@ const composeResourceCollection = (
   return filteredResources
 }
 
+const validateUrn = (urn: string) => urn?.split?.(':')?.every?.(_ => _ && _ !== 'undefined')
+
+const _screenOutInvalidUrn = (urns: string[]) => urns?.filter?.(validateUrn)
+
 export const getResourceCollection = async (
   apolloClient: ApolloClient<unknown>,
   urns: string[],
   withProductType?: boolean,
 ): Promise<(Resource | null)[]> => {
+  if (_screenOutInvalidUrn(urns)?.length === 0) return []
+
   const { data } = await apolloClient.query<hasura.GET_RESOURCE_COLLECTION, hasura.GET_RESOURCE_COLLECTIONVariables>({
     query: GET_RESOURCE_COLLECTION,
     variables: { urns },
@@ -102,6 +108,7 @@ export const useResourceCollection = (urns: string[], withProducts: boolean = fa
     GET_RESOURCE_COLLECTION,
     {
       variables: { urns },
+      skip: _screenOutInvalidUrn(urns)?.length === 0,
     },
   )
   const resourceCollection: (Resource | null)[] = useMemo(

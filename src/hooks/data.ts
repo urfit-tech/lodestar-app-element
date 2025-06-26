@@ -197,7 +197,10 @@ export const usePublishedPodcastProgramCollection = (options?: { ids?: string[];
   }
 }
 
-export const usePublicMember = (memberId: string) => {
+export const usePublicMember = (
+  memberId: string,
+  options?: { member: { id: string; name: string; pictureUrl: string | null }; skip?: boolean },
+) => {
   const { loading, data, error, refetch } = useQuery<hasura.GET_PUBLIC_MEMBER, hasura.GET_PUBLIC_MEMBERVariables>(
     gql`
       query GET_PUBLIC_MEMBER($memberId: String!) {
@@ -209,7 +212,7 @@ export const usePublicMember = (memberId: string) => {
         }
       }
     `,
-    { variables: { memberId } },
+    { variables: { memberId }, skip: options?.skip || !memberId },
   )
 
   const member: DeepPick<Member, 'id' | 'pictureUrl' | 'name'> | null =
