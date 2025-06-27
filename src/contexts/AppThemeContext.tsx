@@ -31,25 +31,34 @@ export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> =
                   background: 'primary.300',
                 },
               },
-              outline: {
+              secondary: {
+                background: 'secondary.500',
+                color: '#ffffff',
+                _hover: {
+                  background: 'secondary.300',
+                },
+              },
+              outline: (props: { colorScheme: string }) => ({
                 border: 'solid 1px',
                 borderColor: 'var(--gray)',
                 color: '#585858',
                 _hover: {
                   background: 'transparent',
-                  borderColor: settings['theme.@primary-color'] || '#000000',
-                  color: settings['theme.@primary-color'] || '#000000',
+                  borderColor: props.colorScheme
+                    ? `${props.colorScheme}`
+                    : settings['theme.@primary-color'] || '#000000',
+                  color: props.colorScheme ? `${props.colorScheme}` : settings['theme.@primary-color'] || '#000000',
                 },
-              },
-              ghost: {
+              }),
+              ghost: (props: { colorScheme: string }) => ({
                 _hover: {
-                  color: 'primary.400',
+                  color: props.colorScheme ? `${props.colorScheme}.400` : 'primary.400',
                   background: 'transparent',
                 },
-              },
-              link: {
-                color: 'primary.500',
-              },
+              }),
+              link: (props: { colorScheme: string }) => ({
+                color: props.colorScheme ? `${props.colorScheme}.500` : 'primary.500',
+              }),
             },
           },
           CloseButton: {
@@ -150,6 +159,9 @@ export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> =
         },
         colors: {
           ...paletteGenerator(settings['theme.@primary-color'] || '#2d313a'),
+          secondary: {
+            ...paletteGenerator(settings['theme.@secondary-color'] || '#6b46c1').primary,
+          },
           danger: {
             ...paletteGenerator('#ff7d62').primary,
           },
@@ -179,6 +191,7 @@ export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> =
       },
       {
         '@primary-color': '#2d313a',
+        '@secondary-color': '#6b46c1',
       },
     )
 
