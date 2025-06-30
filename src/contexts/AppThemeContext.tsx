@@ -11,6 +11,13 @@ export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> =
 }) => {
   const { settings } = useApp()
 
+  console.log('=== AppThemeProvider settings ===', settings)
+
+  const primaryPalette = paletteGenerator(settings['theme.@primary-color'] || '#2d313a')
+  const secondaryPalette = paletteGenerator(settings['theme.@secondary-color'] || '#6b46c1')
+  console.log('primaryPalette:', primaryPalette)
+  console.log('secondaryPalette:', secondaryPalette)
+
   const theme = extendTheme(
     mergeDeepRight(
       {
@@ -181,6 +188,8 @@ export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> =
       extendChakraTheme,
     ),
   )
+  console.log('final Chakra theme:', theme)
+
   const themeVars = Object.keys(settings)
     .filter(key => key.split('.')[0] === 'theme')
     .map(key => key.split('.')[1])
@@ -196,9 +205,12 @@ export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> =
     )
 
   return (
-    <ChakraProvider theme={theme}>
-      <ThemeProvider theme={themeVars}>{children}</ThemeProvider>
-    </ChakraProvider>
+    <>
+      {console.log('AppThemeProvider about to render ChakraProvider')}
+      <ChakraProvider theme={theme}>
+        <ThemeProvider theme={themeVars}>{children}</ThemeProvider>
+      </ChakraProvider>
+    </>
   )
 }
 
