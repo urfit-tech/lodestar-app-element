@@ -95,7 +95,7 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
                 withName
                 members={roles.map(role => ({
                   id: role.id,
-                  name: role.name,
+                  name: role.member.name,
                   pictureUrl: role.member.pictureUrl,
                 }))}
               />
