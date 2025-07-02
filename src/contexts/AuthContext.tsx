@@ -46,7 +46,7 @@ type AuthProps = {
 }
 
 const defaultAuthContext: AuthProps = {
-  isAuthenticating: (window as any).AUTH_TOKEN ? false : true,
+  isAuthenticating: false,
   isAuthenticated: false,
   currentUserRole: 'anonymous',
   currentMemberId: null,
@@ -90,6 +90,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
   }, [payload])
 
   const refreshToken = useCallback(async () => {
+    setIsAuthenticating(true)
     const fingerPrintId = await getFingerPrintId()
     const { ip, country, countryCode } = await fetchCurrentGeolocation()
     const {
