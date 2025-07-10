@@ -578,8 +578,8 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
       name: pc.category?.name,
       position: pc.category?.position,
     })),
-    historicalProgramPlanBuyers: p?.program_statistics?.program_package_plan_enrolled_count || 0,
-    historicalProgramPackagePlanBuyers: p?.program_statistics?.program_package_plan_enrolled_count || 0,
+    historicalProgramPlanBuyers: p?.program_statistics?.program_plan_enrolled_count || null,
+    historicalProgramPackagePlanBuyers: p?.program_statistics?.program_package_plan_enrolled_count || null,
     reviewAverageScore: p?.review_publics_aggregate.aggregate?.avg?.score || 0,
     reviewCount: p?.review_publics_aggregate.aggregate?.count || 0,
   }))
