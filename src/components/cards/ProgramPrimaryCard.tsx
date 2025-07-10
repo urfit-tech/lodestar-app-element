@@ -75,8 +75,8 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
     0
 
   const enrolledCountAmount =
-    historicalProgramPlanBuyers && historicalProgramPackagePlanBuyers
-      ? historicalProgramPlanBuyers + historicalProgramPackagePlanBuyers + programAdditionalSoldHeadcount
+    historicalProgramPlanBuyers || historicalProgramPackagePlanBuyers
+      ? (historicalProgramPlanBuyers ?? 0) + (historicalProgramPackagePlanBuyers ?? 0) + programAdditionalSoldHeadcount
       : enrolledCount + programAdditionalSoldHeadcount
 
   if (errors) {
