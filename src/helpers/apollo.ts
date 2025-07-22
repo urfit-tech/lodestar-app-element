@@ -1,22 +1,81 @@
-import { ApolloClient, from, HttpLink, InMemoryCache, split } from '@apollo/client'
-import { onError } from '@apollo/client/link/error'
+import {
+  ApolloClient,
+  ApolloLink,
+  FetchResult,
+  from,
+  HttpLink,
+  InMemoryCache,
+  NextLink,
+  Observable,
+  Operation,
+  split,
+} from '@apollo/client'
+import { ErrorResponse, onError } from '@apollo/client/link/error'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { OperationTypeNode } from 'graphql'
 import { createClient } from 'graphql-ws'
 import { v4 as uuidv4 } from 'uuid'
 
-type ApolloClientOptions = {
+type ApolloGraphQLErrorRetryCallback = (
+  count: number,
+  operation: Operation,
+  error: ErrorResponse['graphQLErrors'],
+) => boolean
+
+export type ApolloClientOptions = {
   appId: string
   authToken: string | null
+  graphQLRetryCallbacks?: ApolloGraphQLErrorRetryCallback[]
 }
 
-type ApolloCallbacks = {
+type ApolloErrorCallbacks = {
   'invalid-jwt': () => void
 }
 
+// Apollo 的 RetryLink 不支援 GraphQLError 的情況，另行實作
+const createGraphQLErrorRetryLink = (
+  retryCallbacks: ApolloGraphQLErrorRetryCallback[],
+  maxRetries = 5,
+  delayMs = 300,
+) => {
+  const shouldRetry: ApolloGraphQLErrorRetryCallback = (retries, operation, errors) =>
+    retryCallbacks?.some(callback => callback(retries, operation, errors))
+
+  return new ApolloLink((operation: Operation, forward: NextLink) => {
+    return new Observable<FetchResult>(observer => {
+      let retries = 0
+
+      const tryRequest = () => {
+        const sub = forward(operation).subscribe({
+          next: result => {
+            if (result.errors?.length && shouldRetry(retries, operation, result.errors)) {
+              if (retries < maxRetries) {
+                retries++
+                console.warn(`[GraphQLErrorRetry] retrying #${retries}`, result.errors)
+                setTimeout(tryRequest, delayMs)
+              } else {
+                observer.error(result)
+              }
+            } else {
+              observer.next(result)
+              observer.complete()
+            }
+          },
+          error: networkError => {
+            observer.error(networkError)
+          },
+        })
+        return () => sub.unsubscribe()
+      }
+
+      tryRequest()
+    })
+  })
+}
+
 // create onError link
-const onErrorLink = (callbacks?: ApolloCallbacks) =>
+const onErrorLink = (callbacks?: ApolloErrorCallbacks) =>
   onError(({ graphQLErrors, networkError }) => {
     graphQLErrors &&
       graphQLErrors.forEach(({ message, locations, path, extensions }) => {
@@ -88,9 +147,13 @@ const createSplitLink = (appId: string, authToken: string | null) =>
     ),
   )
 
-export const createApolloClient = (options: ApolloClientOptions, callbacks?: ApolloCallbacks) => {
+export const createApolloClient = (options: ApolloClientOptions, errorCallbacks?: ApolloErrorCallbacks) => {
   const apolloClient = new ApolloClient({
-    link: from([onErrorLink(callbacks), createSplitLink(options.appId, options.authToken)]),
+    link: from([
+      createGraphQLErrorRetryLink(options.graphQLRetryCallbacks || []),
+      onErrorLink(errorCallbacks),
+      createSplitLink(options.appId, options.authToken),
+    ]),
     cache: new InMemoryCache(),
   })
   return apolloClient
