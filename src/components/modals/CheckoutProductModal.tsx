@@ -566,12 +566,12 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
 
   const trackCartItem = (currentQuantity: number, nextQuantity: number) => {
     if (currentQuantity < nextQuantity) {
-      resourceCollection[0] &&
+      resourceCollection?.[0] &&
         tracking.addToCart(resourceCollection[0], { direct: true, quantity: nextQuantity - currentQuantity })
     }
 
     if (currentQuantity > nextQuantity) {
-      resourceCollection[0] &&
+      resourceCollection?.[0] &&
         tracking.removeFromCart(resourceCollection[0], { quantity: currentQuantity - nextQuantity })
     }
   }
@@ -593,7 +593,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
         isFullWidth
         onClose={() => {
           onClose()
-          const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection[0]
+          const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection?.[0]
           resource && tracking.removeFromCart(resource, { quantity: quantity })
           setQuantity(1)
         }}
@@ -802,7 +802,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
             variant="outline"
             onClick={() => {
               onClose()
-              const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection[0]
+              const resource = resourceCollection.filter(notEmpty).length > 0 && resourceCollection?.[0]
               resource && tracking.removeFromCart(resource)
             }}
             className="mr-3"
