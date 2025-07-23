@@ -16,7 +16,11 @@ const FullDetailPrice = styled.div<{ isSaleAmount?: boolean }>`
     color: var(--gray-darker);
   }
 `
-const SalePrice = styled.div``
+const SalePrice = styled.div<CustomStyle>`
+  .salePrice__amount {
+    color: ${props => props?.salePrice?.amount?.color};
+  }
+`
 const ListPrice = styled.div`
   ${SalePrice} + && {
     color: var(--black-45);
@@ -39,6 +43,14 @@ const InlinePrice = styled.div`
   }
 `
 
+type CustomStyle = {
+  salePrice?: {
+    amount?: {
+      color?: string
+    }
+  }
+}
+
 type PriceLabelOptions = {
   listPrice: number
   salePrice?: number | null
@@ -60,8 +72,9 @@ const PriceLabel: React.FC<
       salePricePrefix: string | null
       salePriceSuffix: string | null
     }
+    customStyle?: CustomStyle
   }
-> = ({ variant, render, noFreeText, affix, ...options }) => {
+> = ({ variant, render, noFreeText, affix, customStyle, ...options }) => {
   const { listPrice, salePrice, saleAmount, downPrice, currencyId, coinUnit, periodAmount, periodType } = options
   const { formatMessage } = useIntl()
   const { formatCurrency } = useCurrency(currencyId, coinUnit)
