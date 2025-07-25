@@ -5,6 +5,25 @@ import { useCurrency } from '../../hooks/util'
 import { PeriodType } from '../../types/data'
 import ShortenPeriodTypeLabel from './ShortenPeriodTypeLabel'
 
+type CustomStyle = {
+  salePrice?: {
+    amount?: {
+      color?: string
+    }
+  }
+}
+
+type PriceLabelOptions = {
+  listPrice: number
+  salePrice?: number | null
+  downPrice?: number | null
+  periodAmount?: number | null
+  periodType?: PeriodType
+  currencyId?: 'LSC' | string
+  coinUnit?: string
+  saleAmount?: number | null
+}
+
 const FullDetailPrice = styled.div<{ isSaleAmount?: boolean }>`
   > div:first-child {
     color: ${props => (props.isSaleAmount ? props.theme['@primary-color'] : 'var(--gray-darker)')};
@@ -16,7 +35,11 @@ const FullDetailPrice = styled.div<{ isSaleAmount?: boolean }>`
     color: var(--gray-darker);
   }
 `
-const SalePrice = styled.div``
+const SalePrice = styled.div<{ customStyle?: CustomStyle }>`
+  .salePrice__amount {
+    color: ${props => props.customStyle?.salePrice?.amount?.color};
+  }
+`
 const ListPrice = styled.div`
   ${SalePrice} + && {
     color: var(--black-45);
@@ -39,16 +62,6 @@ const InlinePrice = styled.div`
   }
 `
 
-type PriceLabelOptions = {
-  listPrice: number
-  salePrice?: number | null
-  downPrice?: number | null
-  periodAmount?: number | null
-  periodType?: PeriodType
-  currencyId?: 'LSC' | string
-  coinUnit?: string
-  saleAmount?: number | null
-}
 const PriceLabel: React.FC<
   PriceLabelOptions & {
     variant?: 'default' | 'inline' | 'full-detail'
@@ -60,8 +73,9 @@ const PriceLabel: React.FC<
       salePricePrefix: string | null
       salePriceSuffix: string | null
     }
+    customStyle?: CustomStyle
   }
-> = ({ variant, render, noFreeText, affix, ...options }) => {
+> = ({ variant, render, noFreeText, affix, customStyle, ...options }) => {
   const { listPrice, salePrice, saleAmount, downPrice, currencyId, coinUnit, periodAmount, periodType } = options
   const { formatMessage } = useIntl()
   const { formatCurrency } = useCurrency(currencyId, coinUnit)
@@ -94,7 +108,7 @@ const PriceLabel: React.FC<
         )}
 
         {typeof salePrice === 'number' && (
-          <SalePrice className="salePrice">
+          <SalePrice className="salePrice" customStyle={customStyle}>
             <span>{affix?.salePricePrefix}</span>
             {!!downPrice && (
               <span className="salePrice__fromSecondPeriod">
@@ -154,7 +168,7 @@ const PriceLabel: React.FC<
           <span className="listPrice__periodUnit">{periodElem}</span>
         </ListPrice>
         {typeof salePrice === 'number' && (
-          <SalePrice className="salePrice">
+          <SalePrice className="salePrice" customStyle={customStyle}>
             <span className="salePrice__amount">{formatCurrency(salePrice)}</span>
             <span className="salePrice__periodUnit">{periodElem}</span>
           </SalePrice>
