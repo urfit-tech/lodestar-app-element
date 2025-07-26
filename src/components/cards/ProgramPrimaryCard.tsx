@@ -79,6 +79,8 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
       ? (historicalProgramPlanBuyers ?? 0) + (historicalProgramPackagePlanBuyers ?? 0) + programAdditionalSoldHeadcount
       : enrolledCount + programAdditionalSoldHeadcount
 
+  const programSalePriceColorSetting = settings['program_card.sale_price.color']?.trim()
+
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
@@ -144,6 +146,11 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
                   salePrice={props.salePrice}
                   periodAmount={props.period?.amount}
                   periodType={props.period?.type}
+                  customStyle={{
+                    salePrice: {
+                      amount: { color: programSalePriceColorSetting ? programSalePriceColorSetting : undefined },
+                    },
+                  }}
                 />
               ) : null}
             </div>
