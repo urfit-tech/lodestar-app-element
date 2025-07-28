@@ -2,6 +2,7 @@ import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { defineMessages, useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { useApp } from '../../contexts/AppContext'
 import { durationFormatter } from '../../helpers'
 import EmptyCover from '../../images/empty-cover.png'
 import { ProgramPackageElementProps } from '../../types/element'
@@ -25,6 +26,10 @@ const messages = defineMessages({
 const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
   const { loading, errors } = props
   const { formatMessage } = useIntl()
+  const { settings } = useApp()
+
+  const programPackagePlanSalePriceColorSetting = settings['program_package_plan_card.sale_price.color']?.trim()
+
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
   }
@@ -72,6 +77,15 @@ const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
                 salePrice={props.salePrice}
                 periodAmount={props.period?.amount}
                 periodType={props.period?.type}
+                customStyle={{
+                  salePrice: {
+                    amount: {
+                      color: programPackagePlanSalePriceColorSetting
+                        ? programPackagePlanSalePriceColorSetting
+                        : undefined,
+                    },
+                  },
+                }}
               />
             ) : (
               ''
