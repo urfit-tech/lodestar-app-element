@@ -3,7 +3,7 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import Ajv, { JSONSchemaType } from 'ajv'
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
-import { useContext, useMemo } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useApp } from '../contexts/AppContext'
 import LanguageContext from '../contexts/LanguageContext'
@@ -180,4 +180,27 @@ export const parsePayload = (authToken: string) => {
     console.error(`validate error: ${validate.errors?.join('\n')}`)
     return null
   }
+}
+
+function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = window
+  return {
+    width,
+    height,
+  }
+}
+
+export default function useWindowDimensions() {
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return windowDimensions
 }

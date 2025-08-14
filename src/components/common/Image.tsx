@@ -64,21 +64,29 @@ const Image: ElementComponent<ImageProps & { customStyle?: CSSObject }> = props 
 }
 
 type CustomRatioImageProps = {
+  className: string
   width: string
   ratio: number
-  src: string
   shape?: 'rounded' | 'circle'
   disabled?: boolean
 }
-export const CustomRatioImage = styled.div<CustomRatioImageProps>`
-  padding-top: calc(${props => props.width} * ${props => props.ratio});
-  width: ${props => props.width};
-  background-image: url(${props => props.src});
-  background-size: cover;
-  background-position: center;
+
+const CustomRatioDiv = styled.div<CustomRatioImageProps>`
   ${props =>
     props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : ''};
   opacity: ${props => props.disabled && 0.4};
 `
+
+export const CustomRatioImage: React.FC<CustomRatioImageProps & { src: string }> = props => (
+  <CustomRatioDiv {...props}>
+    <img
+      style={{
+        height: `calc(${props.width} * ${props.ratio})`,
+        width: `${props.width}`,
+      }}
+      src={props.src}
+    />
+  </CustomRatioDiv>
+)
 
 export default Image

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import useWindowDimensions from '../../hooks/util'
 import { ElementComponent } from '../../types/element'
 
 const SliderWrapper = styled.div`
@@ -17,12 +18,10 @@ const StyledCoverBackground = styled.div<{ srcDesktop: string; srcMobile: string
   bottom: 0;
   left: 0;
   overflow: hidden;
-  background-image: url(${props => props.srcMobile});
   background-size: cover;
   background-position: center;
 
   @media (min-width: 992px) {
-    background-image: url(${props => props.srcDesktop});
   }
 `
 const StyledCoverHeading = styled.h2`
@@ -75,6 +74,7 @@ const Slide: ElementComponent<{
     return null
   }
   const { srcDesktop, srcMobile, title, subtitle, buttonText, onClick } = props
+  const { width } = useWindowDimensions()
   return (
     <SliderWrapper>
       <StyledCoverBackground
@@ -83,6 +83,7 @@ const Slide: ElementComponent<{
         className={`d-flex align-items-center${buttonText ? '' : ' cursor-pointer'} cover-background`}
         onClick={onClick}
       >
+        <img src={width > 991 ? srcDesktop : srcMobile} />
         <div className="container">
           <div className="col-12 col-md-10 col-lg-6 mx-auto">
             {title && <StyledCoverHeading className="mb-3">{title}</StyledCoverHeading>}
