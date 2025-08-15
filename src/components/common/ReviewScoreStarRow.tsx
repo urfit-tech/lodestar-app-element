@@ -44,7 +44,7 @@ const ReviewScoreStarRow: FC<{
       <StyledReviewRating className="d-flex" style={{ flexDirection: direction }}>
         <StarRating score={Math.round((Math.round(finalAverageScore * 10) / 10) * 2) / 2} max={5} size="20px" />
         <span style={{ whiteSpace: 'nowrap' }}>
-          ({formatMessage(commonMessages.review.reviewCount, { count: reviewCount })})
+          ({formatMessage(commonMessages.review.reviewCount, { count: finalReviewCount })})
         </span>
       </StyledReviewRating>
     ) : (
