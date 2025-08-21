@@ -106,10 +106,75 @@ export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> =
               }),
             },
           },
+          Checkbox: {
+            baseStyle: {
+              control: {
+                borderWidth: '1px',
+                borderColor: 'var(--gray)',
+                _checked: {
+                  bg: 'primary.500',
+                  borderColor: 'primary.500',
+                  _hover: {
+                    bg: 'primary.600',
+                    borderColor: 'primary.600',
+                  },
+                },
+                _indeterminate: {
+                  bg: 'primary.500',
+                  borderColor: 'primary.500',
+                },
+                _hover: {
+                  borderColor: 'gray.600',
+                },
+                _focus: {
+                  boxShadow: 'none',
+                  borderColor: 'primary.500',
+                },
+                _disabled: {
+                  borderColor: 'gray.300',
+                  bg: 'gray.100',
+                },
+              },
+            },
+          },
           Radio: {
             baseStyle: {
-              _focus: {
-                boxShadow: 'none',
+              control: {
+                borderWidth: '1px',
+                borderColor: 'var(--gray)',
+                bg: 'white',
+                _checked: {
+                  bg: 'primary.500',
+                  borderColor: 'primary.500',
+                  _before: {
+                    content: '""',
+                    display: 'inline-block',
+                    position: 'relative',
+                    width: '50%',
+                    height: '50%',
+                    borderRadius: '50%',
+                    bg: 'white',
+                  },
+                  _hover: {
+                    bg: 'primary.600',
+                    borderColor: 'primary.600',
+                    _before: {
+                      bg: 'white',
+                    },
+                  },
+                },
+                _hover: {
+                  bg: 'white',
+                  borderColor: 'gray.600',
+                },
+                _focus: {
+                  boxShadow: 'none',
+                  borderColor: 'primary.500',
+                },
+                _disabled: {
+                  borderColor: 'gray.300',
+                  bg: 'gray.100',
+                },
               },
             },
           },
