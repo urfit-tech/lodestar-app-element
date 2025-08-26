@@ -42,7 +42,6 @@ const RichCard: ElementComponent<RichCardProps> = props => {
     borderColor: props.outlineColor,
     boxShadow: (props.variant === 'none' && 'none') || undefined,
     backgroundColor: props.backgroundType === 'solidColor' ? props.solidColor : undefined,
-    backgroundImage: props.backgroundType === 'backgroundImage' ? props.backgroundImageUrl : undefined,
     ...(props.type === 'referrer' && props.variant === 'backgroundColor' && props.backgroundType === 'solidColor'
       ? { borderBottomLeftRadius: '0', dropShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' }
       : {}),
@@ -51,21 +50,39 @@ const RichCard: ElementComponent<RichCardProps> = props => {
   return (
     <>
       <StyledCard>
-        {props.type === 'referrerReverse' && (
-          <Card.Avatar
-            direction="column"
-            src={props.avatarImageUrl}
-            name={props.avatarName}
-            withAvatarImage={props.avatarType === 'image'}
-            withName={!!props.avatarName}
+        {props.backgroundType === 'backgroundImage' && props.backgroundImageUrl ? (
+          <img
+            src={`${props.backgroundImageUrl}`}
+            alt=""
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: 'inherit',
+              zIndex: 0,
+            }}
           />
-        )}
-        {/* <Card.Image src={props.imageType === 'image' ? props.imageUrl : undefined} /> */}
-        <Card.Title>{props.title}</Card.Title>
-        <Card.Content>{props.paragraph}</Card.Content>
-        {props.type === 'referrer' && props.variant === 'backgroundColor' && props.backgroundType === 'solidColor' && (
-          <StyledTriangle />
-        )}
+        ) : null}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {props.type === 'referrerReverse' && (
+            <Card.Avatar
+              direction="column"
+              src={props.avatarImageUrl}
+              name={props.avatarName}
+              withAvatarImage={props.avatarType === 'image'}
+              withName={!!props.avatarName}
+            />
+          )}
+          {/* <Card.Image src={props.imageType === 'image' ? props.imageUrl : undefined} /> */}
+          <Card.Title>{props.title}</Card.Title>
+          <Card.Content>{props.paragraph}</Card.Content>
+          {props.type === 'referrer' &&
+            props.variant === 'backgroundColor' &&
+            props.backgroundType === 'solidColor' && <StyledTriangle />}
+        </div>
       </StyledCard>
       {props.type === 'referrer' && (
         <Card.Avatar
