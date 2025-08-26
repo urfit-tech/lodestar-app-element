@@ -3,6 +3,7 @@ import { useHistory } from 'react-router'
 import styled, { css } from 'styled-components'
 import { useAuth } from '../../contexts/AuthContext'
 import { ElementComponent } from '../../types/element'
+import { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
 
 export type SectionProps = {
   id?: string
@@ -11,6 +12,11 @@ export type SectionProps = {
   horizontal?: boolean
   darkMode?: boolean
   display?: 'normal' | 'hide' | 'appearAfterLogin' | 'disappearAfterLogin'
+  backgroundImages?: {
+    mobile?: string | null
+    tablet?: string | null
+    desktop?: string | null
+  }
 }
 
 const StyledSection = styled.section<SectionProps>`
@@ -57,6 +63,15 @@ const Section: ElementComponent<SectionProps> = props => {
   const history = useHistory()
   const { currentMemberId } = useAuth()
 
+  const getBackgroundImage = () => {
+    const width = window.innerWidth
+    const extractUrl = (bg?: string) => bg?.replace(/^url\(["']?/, '').replace(/["']?\)$/, '')
+
+    if (width >= DESKTOP_BREAK_POINT) return extractUrl(props?.backgroundImages?.desktop || '')
+    if (width >= TABLET_BREAK_POINT) return extractUrl(props?.backgroundImages?.tablet || '')
+    return extractUrl(props?.backgroundImages?.mobile || '')
+  }
+
   if (props.loading || props.errors) {
     return null
   }
@@ -86,6 +101,19 @@ const Section: ElementComponent<SectionProps> = props => {
           : history.push(props.link)
       }
     >
+      {props.backgroundImages && (
+        <img
+          src={getBackgroundImage()}
+          alt=""
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+          }}
+        />
+      )}
       {props.children}
     </StyledSection>
   )

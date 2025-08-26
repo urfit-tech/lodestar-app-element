@@ -21,6 +21,11 @@ const CraftRefBlock = styled.div<{
   hovered?: boolean
   selected?: boolean
   customStyle?: CSSObject
+  backgroundImages?: {
+    mobile?: string | null
+    tablet?: string | null
+    desktop?: string | null
+  }
 }>`
   ${props =>
     props?.editing &&
@@ -105,6 +110,11 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
             [`@media (min-width: ${DESKTOP_BREAK_POINT}px)`]: customStyleFormat(props.responsive?.desktop?.customStyle),
           }}
           editing={editor.editing}
+          backgroundImages={{
+            mobile: props.responsive?.mobile?.customStyle?.backgroundImage || '',
+            tablet: props.responsive?.tablet?.customStyle?.backgroundImage || '',
+            desktop: props.responsive?.desktop?.customStyle?.backgroundImage || '',
+          }}
         />
       </CraftRefBlock>
     )
@@ -237,8 +247,14 @@ const cloneNodeTree = (tree: NodeTree): NodeTree => {
     nodes: newNodes,
   }
 }
-const customStyleFormat = (customStyle?: CSSObject): CSSObject => ({
-  ...customStyle,
-  width: customStyle?.width?.toString().includes('%') ? '100%' : customStyle?.width,
-})
+const customStyleFormat = (customStyle?: CSSObject): CSSObject => {
+  if (!customStyle) return {}
+  const { backgroundImageUrl, backgroundImage, ...rest } = customStyle
+
+  return {
+    ...rest,
+    width: customStyle.width?.toString().includes('%') ? '100%' : customStyle.width,
+    backgroundImage: undefined,
+  }
+}
 export default Craftize
