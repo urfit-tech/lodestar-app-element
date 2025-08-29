@@ -67,9 +67,21 @@ const Section: ElementComponent<SectionProps> = props => {
     const width = window.innerWidth
     const extractUrl = (bg?: string) => bg?.replace(/^url\(["']?/, '').replace(/["']?\)$/, '')
 
-    if (width >= DESKTOP_BREAK_POINT) return extractUrl(props?.backgroundImages?.desktop || '')
-    if (width >= TABLET_BREAK_POINT) return extractUrl(props?.backgroundImages?.tablet || '')
-    return extractUrl(props?.backgroundImages?.mobile || '')
+    if (width >= DESKTOP_BREAK_POINT) {
+      return extractUrl(
+        props?.backgroundImages?.desktop || props?.backgroundImages?.tablet || props?.backgroundImages?.mobile || '',
+      )
+    }
+
+    if (width >= TABLET_BREAK_POINT && width < DESKTOP_BREAK_POINT) {
+      return extractUrl(
+        props?.backgroundImages?.tablet || props?.backgroundImages?.mobile || props?.backgroundImages?.desktop || '',
+      )
+    }
+
+    return extractUrl(
+      props?.backgroundImages?.mobile || props?.backgroundImages?.tablet || props?.backgroundImages?.desktop || '',
+    )
   }
 
   if (props.loading || props.errors) {
