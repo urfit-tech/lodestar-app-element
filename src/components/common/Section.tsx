@@ -66,7 +66,7 @@ const Section: ElementComponent<SectionProps> = props => {
   const getBackgroundImage = () => {
     const width = window.innerWidth
     const extractUrl = (bg?: string) => bg?.replace(/^url\(["']?/, '').replace(/["']?\)$/, '')
-
+    console.log('props.backgroundImages', props?.backgroundImages)
     if (width >= DESKTOP_BREAK_POINT) {
       return extractUrl(
         props?.backgroundImages?.desktop || props?.backgroundImages?.tablet || props?.backgroundImages?.mobile || '',
