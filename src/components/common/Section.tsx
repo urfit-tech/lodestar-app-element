@@ -101,7 +101,7 @@ const Section: ElementComponent<SectionProps> = props => {
           : history.push(props.link)
       }
     >
-      {props.backgroundImages && (
+      {props.backgroundImages && getBackgroundImage() && (
         <img
           src={getBackgroundImage()}
           alt=""
