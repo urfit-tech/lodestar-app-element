@@ -17,6 +17,7 @@ export type ImageProps = {
 export const extractNumber = (string?: string) => (string?.match(/\d+/g)?.[0] ? Number(string.match(/\d+/g)?.[0]) : 0)
 
 export const StyledImage = styled.div<ImageProps>`
+  position: relative;
   background-size: cover;
   background-position: center;
   ${props =>
@@ -52,6 +53,27 @@ const Image: ElementComponent<ImageProps & { customStyle?: CSSObject }> = props 
   if (props.loading || props.errors) {
     return null
   }
+  const getBackgroundImage = () => {
+    const width = window.innerWidth
+    const extractUrl = (bg?: string) => bg?.replace(/^url\(["']?/, '').replace(/["']?\)$/, '')
+    console.log('props.backgroundImages', props?.backgroundImages)
+    if (width >= DESKTOP_BREAK_POINT) {
+      return extractUrl(
+        props?.backgroundImages?.desktop || props?.backgroundImages?.tablet || props?.backgroundImages?.mobile || '',
+      )
+    }
+
+    if (width >= TABLET_BREAK_POINT && width < DESKTOP_BREAK_POINT) {
+      return extractUrl(
+        props?.backgroundImages?.tablet || props?.backgroundImages?.mobile || props?.backgroundImages?.desktop || '',
+      )
+    }
+
+    return extractUrl(
+      props?.backgroundImages?.mobile || props?.backgroundImages?.tablet || props?.backgroundImages?.desktop || '',
+    )
+  }
+
   return (
     <StyledImage
       {...props}
@@ -59,7 +81,19 @@ const Image: ElementComponent<ImageProps & { customStyle?: CSSObject }> = props 
       role={'img'}
       width={props.customStyle?.width || props.width}
       height={props.customStyle?.height || props.height}
-    />
+    >
+      <img
+        src={getBackgroundImage()}
+        alt=""
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
+      />
+    </StyledImage>
   )
 }
 
@@ -80,6 +114,7 @@ const CustomRatioDiv = styled.div<CustomRatioImageProps>`
 export const CustomRatioImage: React.FC<CustomRatioImageProps & { src: string }> = props => (
   <CustomRatioDiv {...props}>
     <img
+      alt=""
       style={{
         height: `calc(${props.width} * ${props.ratio})`,
         width: `${props.width}`,
