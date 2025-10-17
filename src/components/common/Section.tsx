@@ -112,19 +112,21 @@ const Section: ElementComponent<SectionProps> = props => {
           : history.push(props.link)
       }
     >
-      {props.backgroundImages && getBackgroundImage() && (
-        <img
-          src={getBackgroundImage()}
-          alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
-        />
-      )}
+      <div style={{ position: 'relative' }}>
+        {props.backgroundImages && getBackgroundImage() && (
+          <img
+            src={getBackgroundImage()}
+            alt=""
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        )}
+      </div>
       {props.children}
     </StyledSection>
   )
