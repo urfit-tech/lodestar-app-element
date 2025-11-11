@@ -5,7 +5,7 @@ import { isHTMLString } from '../../helpers'
 import QuotationLeft from '../../images/quotation-left.png'
 import QuotationRight from '../../images/quotation-right.png'
 
-const OutputMixin = css`
+const OutputMixin = (customizedStyle?: string) => css`
   width: 100%;
   h1 {
     padding: 4px 20px;
@@ -131,9 +131,10 @@ const OutputMixin = css`
       }
     }
   }
+  ${customizedStyle ?? ''}
 `
 
-const StyledBraftEditor = styled(BraftEditor)`
+const StyledBraftEditor = styled(BraftEditor)<{ customizedStyle?: string }>`
   .bf-dropdown .dropdown-content .menu-item.active {
     background-color: ${props => props.theme['@primary-color']};
     color: #fff;
@@ -174,19 +175,19 @@ const StyledBraftEditor = styled(BraftEditor)`
   }
 
   .public-DraftEditor-content {
-    ${OutputMixin}
+    ${props => OutputMixin(props?.customizedStyle)}
   }
 `
 
-const StyledBraftContent = styled.div`
-  ${OutputMixin}
+const StyledBraftContent = styled.div<{ customizedStyle?: string }>`
+  ${props => OutputMixin(props?.customizedStyle)}
 `
 
-export const BraftContent: React.FC<{ isEditable?: boolean; onEdit?: (content: string | null) => void }> = ({
-  isEditable,
-  onEdit,
-  children,
-}) => {
+export const BraftContent: React.FC<{
+  isEditable?: boolean
+  onEdit?: (content: string | null) => void
+  customizedStyle?: string
+}> = ({ isEditable, onEdit, children, customizedStyle }) => {
   const ref = useRef<HTMLDivElement | null>(null)
   return (
     <div className="d-flex align-items-center">
@@ -208,6 +209,7 @@ export const BraftContent: React.FC<{ isEditable?: boolean; onEdit?: (content: s
               ? children
               : BraftEditor.createEditorState(children).toHTML(),
         }}
+        customizedStyle={customizedStyle}
       />
     </div>
   )
