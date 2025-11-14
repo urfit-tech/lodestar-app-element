@@ -4755,6 +4755,20 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/codemirror@^0.0.88":
+  version "0.0.88"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.88.tgz#429e3462ce22865dc40cc1cb27862edaeda0bbab"
+  integrity sha512-FI9BvlO+SIEmKoIdrS9uphasiHJ/JbeUsAbVTdklBOcmnr/bQpJ6QaCw540FY98LGdDNl1Nyn7erGxo0eD2gOg==
+  dependencies:
+    "@types/tern" "*"
+
+"@types/codemirror@^5.60.10":
+  version "5.60.17"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-5.60.17.tgz#754649d285e0e775fe912ad2f5e757f22a70e1cf"
+  integrity sha512-AZq2FIsUHVMlp7VSe2hTfl5w4pcUkoFkM3zVsRKsn1ca8CXRDYvnin04+HP2REkwsxemuHqvDofdlhUWNpbwfw==
+  dependencies:
+    "@types/tern" "*"
+
 "@types/eslint@^7.2.6":
   version "7.28.0"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.28.0.tgz#7e41f2481d301c68e14f483fe10b017753ce8d5a"
@@ -4880,6 +4894,16 @@
   version "4.14.175"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.175.tgz#b78dfa959192b01fae0ad90e166478769b215f45"
   integrity sha512-XmdEOrKQ8a1Y/yxQFOMbC47G/V2VDO1GvMRnl4O75M4GW/abC5tnfzadQYkqEveqRM1dEJGFFegfPNA2vvx2iw==
+
+"@types/marked@^0.7.4":
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@types/marked/-/marked-0.7.4.tgz#607685669bb1bbde2300bc58ba43486cbbee1f0a"
+  integrity sha512-fdg0NO4qpuHWtZk6dASgsrBggY+8N4dWthl1bAQG9ceKUNKFjqpHaDKCAhRUI6y8vavG7hLSJ4YBwJtZyZEXqw==
+
+"@types/marked@^4.0.7":
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/@types/marked/-/marked-4.3.2.tgz#e2e0ad02ebf5626bd215c5bae2aff6aff0ce9eac"
+  integrity sha512-a79Yc3TOk6dGdituy8hmTTJXjOkZ7zsFYV10L337ttq/rec8lRMDBpV7fL3uLx6TgbFCa5DU/h8FmIBQPSbU0w==
 
 "@types/minimatch@*", "@types/minimatch@^3.0.3":
   version "3.0.5"
@@ -5060,6 +5084,13 @@
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.8.tgz#b94a4391c85666c7b73299fd3ad79d4faa435310"
   integrity sha512-ipixuVrh2OdNmauvtT51o3d8z12p6LtFW9in7U79der/kwejjdNchQC5UMn5u/KxNoM7VHHOs/l8KS8uHxhODQ==
+
+"@types/tern@*":
+  version "0.23.9"
+  resolved "https://registry.yarnpkg.com/@types/tern/-/tern-0.23.9.tgz#6f6093a4a9af3e6bb8dde528e024924d196b367c"
+  integrity sha512-ypzHFE/wBzh+BlH6rrBgS5I/Z7RD21pGhZ2rltb/+ZrVM1awdZwjx7hE5XfuYgHWk9uvV5HLZN3SloevCAp3Bw==
+  dependencies:
+    "@types/estree" "*"
 
 "@types/tinycolor2@1.4.2":
   version "1.4.2"
@@ -7050,6 +7081,18 @@ code-block-writer@^10.0.0:
   resolved "https://registry.yarnpkg.com/code-block-writer/-/code-block-writer-10.1.1.tgz#ad5684ed4bfb2b0783c8b131281ae84ee640a42f"
   integrity sha512-67ueh2IRGst/51p0n6FvPrnRjAGHY5F8xdjkgrYE7DDzpJe6qA07RYQ9VcoUeo5ATOjSOiWpSL3SWBRRbempMw==
 
+codemirror-spell-checker@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/codemirror-spell-checker/-/codemirror-spell-checker-1.1.2.tgz#1c660f9089483ccb5113b9ba9ca19c3f4993371e"
+  integrity sha512-2Tl6n0v+GJRsC9K3MLCdLaMOmvWL0uukajNJseorZJsslaxZyZMgENocPU8R0DyoTAiKsyqiemSOZo7kjGV0LQ==
+  dependencies:
+    typo-js "*"
+
+codemirror@^5.65.15:
+  version "5.65.20"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.65.20.tgz#8aa77c2dbfeb2df9b0828bf8e7d64fdd566eeff0"
+  integrity sha512-i5dLDDxwkFCbhjvL2pNjShsojoL3XHyDwsGv1jqETUoW+lzpBKKqNTUWgQwVAOa0tUm4BwekT455ujafi8payA==
+
 collect-v8-coverage@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/collect-v8-coverage/-/collect-v8-coverage-1.0.1.tgz#cc2c8e94fc18bbdffe64d6534570c8a673b27f59"
@@ -8230,6 +8273,17 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
+
+easymde@^2.10.1:
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/easymde/-/easymde-2.20.0.tgz#88b3161feab6e1900afa9c4dab3f1da352b0a26e"
+  integrity sha512-V1Z5f92TfR42Na852OWnIZMbM7zotWQYTddNaLYZFVKj7APBbyZ3FYJ27gBw2grMW3R6Qdv9J8n5Ij7XRSIgXQ==
+  dependencies:
+    "@types/codemirror" "^5.60.10"
+    "@types/marked" "^4.0.7"
+    codemirror "^5.65.15"
+    codemirror-spell-checker "1.1.2"
+    marked "^4.1.0"
 
 ecdsa-sig-formatter@1.0.11:
   version "1.0.11"
@@ -11792,6 +11846,11 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+marked@4.3.0, marked@^4.1.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-4.3.0.tgz#796362821b019f734054582038b116481b456cf3"
+  integrity sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==
+
 matchmediaquery@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/matchmediaquery/-/matchmediaquery-0.3.1.tgz#8247edc47e499ebb7c58f62a9ff9ccf5b815c6d7"
@@ -14766,6 +14825,15 @@ react-scripts@4.0.3:
   optionalDependencies:
     fsevents "^2.1.3"
 
+react-simplemde-editor@4.1.3:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/react-simplemde-editor/-/react-simplemde-editor-4.1.3.tgz#e3f5eba988817035c5aa1cae8f1a9d5dfec6081a"
+  integrity sha512-MJ3SDYfYsNnEcmLzQCqPERDaarllwbxR06oyOQ+jJn0517HYIcQCfFoOIT4uewRY14g05n/Ux1Nka88Bocrdcg==
+  dependencies:
+    "@types/codemirror" "^0.0.88"
+    "@types/marked" "^0.7.4"
+    easymde "^2.10.1"
+
 react-slick@0.28.1:
   version "0.28.1"
   resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.28.1.tgz#12c18d991b59432df9c3757ba540a227b3fb85b9"
@@ -16761,6 +16829,11 @@ typescript@~3.7.2:
   version "3.7.7"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.7.tgz#c931733e2ec10dda56b855b379cc488a72a81199"
   integrity sha512-MmQdgo/XenfZPvVLtKZOq9jQQvzaUAUpcKW8Z43x9B2fOm4S5g//tPtMweZUIP+SoBqrVPEIm+dJeQ9dfO0QdA==
+
+typo-js@*:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/typo-js/-/typo-js-1.3.1.tgz#c80f8c7b292caaa17a507226bf74c1cddf6a29e6"
+  integrity sha512-elJkpCL6Z77Ghw0Lv0lGnhBAjSTOQ5FhiVOCfOuxhaoTT2xtLVbqikYItK5HHchzPbHEUFAcjOH669T2ZzeCbg==
 
 ua-parser-js@^0.7.30:
   version "0.7.30"

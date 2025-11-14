@@ -5,7 +5,7 @@ import { isHTMLString } from '../../helpers'
 import QuotationLeft from '../../images/quotation-left.png'
 import QuotationRight from '../../images/quotation-right.png'
 
-const OutputMixin = (customizedStyle?: string) => css`
+export const OutputMixin = (customizedStyle?: string) => css`
   width: 100%;
   h1 {
     padding: 4px 20px;
