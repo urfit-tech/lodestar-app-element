@@ -95,6 +95,26 @@ export const findCheapestPlan = (plans: Partial<ProductPlan>[]) =>
       null as Partial<ProductPlan> | null,
     )
 
+export const findPrimaryPlan = (plans: Partial<ProductPlan>[]) => {
+  // 1. 優先找有優惠的方案（salePrice 有值且 soldAt 未過期）
+  const salePlan = plans.find(
+    plan => typeof plan.salePrice === 'number' && plan.soldAt && moment() < moment(plan.soldAt),
+  )
+
+  // 2. 如果沒有優惠方案，用 position 選取（position 越小越優先）
+  // 3. 如果 position 都是 0，則使用第一個發布的方案（按 publishedAt 排序）
+  const sortedPlans = [...plans].sort((a, b) => {
+    if ((a.position ?? 0) !== 0 || (b.position ?? 0) !== 0) {
+      return (a.position ?? 0) - (b.position ?? 0)
+    }
+    const aTime = a.publishedAt ? new Date(a.publishedAt as Date).getTime() : 0
+    const bTime = b.publishedAt ? new Date(b.publishedAt as Date).getTime() : 0
+    return aTime - bTime
+  })
+
+  return salePlan || sortedPlans[0] || null
+}
+
 export const desktopViewMixin = (children: FlattenSimpleInterpolation) => css`
   @media (min-width: ${BREAK_POINT}px) {
     ${children}

@@ -10,7 +10,7 @@ import { useQueryParam } from 'use-query-params'
 import { useAuth } from '../../contexts/AuthContext'
 import { getProgramCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { convertPathName, notEmpty } from '../../helpers'
+import { convertPathName, findPrimaryPlan, notEmpty } from '../../helpers'
 import { Category, PeriodType, ProductRole, Program } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import {
@@ -215,7 +215,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                 carouselProps={props.carousel}
                 data={ctx.data?.filter(programFilter) || []}
                 renderElement={({ data: program, ElementComponent: ProgramElement, onClick }) => {
-                  const primaryProgramPlan = program.plans[0] || null
+                  const primaryProgramPlan = findPrimaryPlan(program.plans as any)
                   return (
                     <ProgramElement
                       editing={props.editing}
@@ -230,7 +230,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                       salePrice={
                         typeof primaryProgramPlan?.salePrice === 'number' &&
                         primaryProgramPlan?.soldAt &&
-                        moment() < moment(primaryProgramPlan.soldAt)
+                        moment() < moment(primaryProgramPlan.soldAt as Date)
                           ? primaryProgramPlan.salePrice
                           : undefined
                       }
@@ -561,7 +561,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
         id: pp.id,
         listPrice: pp.list_price,
         salePrice: pp.sale_price,
-        soldAt: pp.sold_at && new Date(pp.sold_at),
+        soldAt: pp.sold_at ? new Date(pp.sold_at) : null,
         publishedAt: pp.published_at && new Date(pp.published_at),
         autoRenewed: pp.auto_renewed || false,
         period:
@@ -572,6 +572,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramData
               }
             : null,
         isPrimary: pp.is_primary,
+        position: (pp as any).position ?? 0,
       })),
     categories: p.program_categories.map(pc => ({
       id: pc.category?.id,
@@ -640,6 +641,7 @@ const programFields = gql`
       auto_renewed
       is_primary
       published_at
+      position
     }
     program_content_sections {
       program_contents {

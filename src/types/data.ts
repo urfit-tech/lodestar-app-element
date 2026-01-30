@@ -26,6 +26,7 @@ export type ProductPlan = {
   autoRenewed: boolean
   isPrimary: boolean
   publishedAt: Date | null
+  position: number
 }
 
 export type MemberProvider = 'google' | 'facebook' | 'line' | 'cw' | 'parenting' | 'commonhealth'
