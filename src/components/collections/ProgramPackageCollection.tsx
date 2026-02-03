@@ -270,7 +270,10 @@ const programPackageFields = gql`
         }
       }
     }
-    program_package_plans(order_by: [{ position: asc }, { created_at: asc }]) {
+    program_package_plans(
+      where: { published_at: { _is_null: false } }
+      order_by: [{ position: asc }, { created_at: asc }]
+    ) {
       list_price
       sale_price
       sold_at
