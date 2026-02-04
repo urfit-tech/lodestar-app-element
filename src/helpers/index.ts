@@ -95,6 +95,11 @@ export const findCheapestPlan = (plans: Partial<ProductPlan>[]) =>
       null as Partial<ProductPlan> | null,
     )
 
+export const findPrimaryPlan = (plans: Partial<ProductPlan>[]) => {
+  // 取第一個方案（和admin一致，在 DB 層按 position → created_at 排序）
+  return plans[0] || null
+}
+
 export const desktopViewMixin = (children: FlattenSimpleInterpolation) => css`
   @media (min-width: ${BREAK_POINT}px) {
     ${children}

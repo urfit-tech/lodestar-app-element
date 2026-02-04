@@ -41,13 +41,19 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
               name
             }
           }
-          program_plans(order_by: { created_at: asc }, limit: 1) {
+          program_plans(
+            where: { published_at: { _is_null: false } }
+            order_by: [{ position: asc }, { created_at: asc }]
+            limit: 1
+          ) {
             id
             list_price
             sale_price
             sold_at
             period_amount
             period_type
+            published_at
+            position
           }
           program_content_sections {
             id

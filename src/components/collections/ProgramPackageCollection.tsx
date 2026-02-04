@@ -7,7 +7,7 @@ import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getProgramPackageCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
-import { convertPathName, findCheapestPlan, notEmpty } from '../../helpers'
+import { convertPathName, findPrimaryPlan, notEmpty } from '../../helpers'
 import { Category, ProductPlan, ProductRole, ProgramPackage } from '../../types/data'
 import { ElementComponent } from '../../types/element'
 import { ProductCustomSource, ProductPublishedAtSource } from '../../types/options'
@@ -29,6 +29,7 @@ type ProgramPackageData = DeepPick<
   | 'plans.[].soldAt'
   | 'plans.[].period'
   | 'plans.[].publishedAt'
+  | 'plans.[].position'
   | 'programs.[].roles.[].name'
   | 'programs.[].roles.[].member.id'
   | 'programs.[].totalDuration'
@@ -108,7 +109,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                 carouselProps={props.carousel}
                 data={ctx.data?.filter(filter) || []}
                 renderElement={({ data: programPackage, ElementComponent: ProgramPackageElement, onClick }) => {
-                  const cheapestPlan = findCheapestPlan(programPackage.plans)
+                  const primaryPlan = findPrimaryPlan(programPackage.plans as any)
                   return (
                     <ProgramPackageElement
                       editing={props.editing}
@@ -118,11 +119,13 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                       totalPrograms={programPackage.programs.length}
                       totalDuration={sum(programPackage.programs.map(program => program.totalDuration))}
                       salePrice={
-                        cheapestPlan?.soldAt && moment() < moment(cheapestPlan.soldAt)
-                          ? cheapestPlan?.salePrice
+                        typeof primaryPlan?.salePrice === 'number' &&
+                        primaryPlan?.soldAt &&
+                        moment() < moment(primaryPlan.soldAt as Date)
+                          ? primaryPlan.salePrice
                           : undefined
                       }
-                      listPrice={cheapestPlan?.listPrice}
+                      listPrice={primaryPlan?.listPrice}
                       onClick={() => {
                         onClick?.()
                         !props.editing && history.push(`/program-packages/${programPackage.id}`)
@@ -222,12 +225,13 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): Pro
     plans: pp.program_package_plans.map(ppp => ({
       listPrice: ppp.list_price,
       salePrice: ppp.sale_price,
-      soldAt: ppp.sold_at && new Date(ppp.sold_at),
-      publishedAt: ppp.published_at && new Date(ppp.published_at),
+      soldAt: ppp.sold_at ? new Date(ppp.sold_at) : null,
+      publishedAt: ppp.published_at ? new Date(ppp.published_at) : null,
       period: {
         amount: ppp.period_amount,
         type: ppp.period_type,
       } as ProductPlan['period'],
+      position: (ppp as any).position ?? 0,
     })),
     programs: pp.program_package_programs.map(ppp => ({
       roles: ppp.program?.program_roles.map(pr => ({
@@ -266,13 +270,17 @@ const programPackageFields = gql`
         }
       }
     }
-    program_package_plans {
+    program_package_plans(
+      where: { published_at: { _is_null: false } }
+      order_by: [{ position: asc }, { created_at: asc }]
+    ) {
       list_price
       sale_price
       sold_at
       period_amount
       period_type
       published_at
+      position
     }
     program_package_categories {
       category {
