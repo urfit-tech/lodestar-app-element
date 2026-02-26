@@ -53,7 +53,7 @@ const StyledSection = styled.section<SectionProps>`
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(256, 256, 256, 0.4);
+            background-color: rgba(255, 255, 255, 0.4);
             z-index: -1;
           }
         `};
@@ -65,27 +65,25 @@ const Section: ElementComponent<SectionProps> = props => {
 
   const getBackgroundImage = () => {
     const width = window.innerWidth
-    const extractUrl = (bg?: string) => bg?.replace(/^url\(["']?/, '').replace(/["']?\)$/, '')
     if (width >= DESKTOP_BREAK_POINT) {
-      return extractUrl(
-        props?.backgroundImages?.desktop || props?.backgroundImages?.tablet || props?.backgroundImages?.mobile || '',
+      return (
+        props.backgroundImages?.desktop || props.backgroundImages?.tablet || props.backgroundImages?.mobile || undefined
       )
     }
 
-    if (width >= TABLET_BREAK_POINT && width < DESKTOP_BREAK_POINT) {
-      return extractUrl(
-        props?.backgroundImages?.tablet || props?.backgroundImages?.mobile || props?.backgroundImages?.desktop || '',
+    if (width >= TABLET_BREAK_POINT) {
+      return (
+        props.backgroundImages?.tablet || props.backgroundImages?.mobile || props.backgroundImages?.desktop || undefined
       )
     }
 
-    return extractUrl(
-      props?.backgroundImages?.mobile || props?.backgroundImages?.tablet || props?.backgroundImages?.desktop || '',
-    )
+    return props.backgroundImages?.mobile || props.backgroundImages?.tablet || props.backgroundImages?.desktop || undefined
   }
 
   if (props.loading || props.errors) {
     return null
   }
+
   return (
     <StyledSection
       {...props}
@@ -98,6 +96,7 @@ const Section: ElementComponent<SectionProps> = props => {
             : props.display === 'disappearAfterLogin' && currentMemberId
             ? 'none'
             : 'flex',
+        backgroundImage: getBackgroundImage(),
       }}
       className={classNames(props.className, { 'cursor-pointer': props.link })}
       onClick={e =>
@@ -112,21 +111,7 @@ const Section: ElementComponent<SectionProps> = props => {
           : history.push(props.link)
       }
     >
-      {props.backgroundImages && getBackgroundImage() && (
-        <img
-          src={getBackgroundImage()}
-          alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            zIndex: 0,
-          }}
-        />
-      )}
-      <div style={{ zIndex: 1 }}>{props.children}</div>
+      {props.children}
     </StyledSection>
   )
 }
