@@ -104,10 +104,12 @@ const getPaymentOptions = () => {
     ({ methodCount, paymentOptions }, currentValue) => {
       const method = currentValue.method?.name || ''
       const gateway = currentValue.app_payment_gateway?.gateway?.name || ''
+      const methodLabel = checkoutMessages.label[method as PaymentMethodType]
+      const gatewayLabel = checkoutMessages.label[gateway as PaymentGatewayType]
       const name =
-        formatMessage(checkoutMessages.label[method as PaymentMethodType]) +
+        (methodLabel ? formatMessage(methodLabel) : method) +
         (methodCount[method] || gateway === 'paypal'
-          ? ` ( ${formatMessage(checkoutMessages.label[gateway as PaymentGatewayType])} )`
+          ? ` ( ${gatewayLabel ? formatMessage(gatewayLabel) : gateway} )`
           : '')
       methodCount[method] = methodCount[method] ? methodCount[method] + 1 : 1
 

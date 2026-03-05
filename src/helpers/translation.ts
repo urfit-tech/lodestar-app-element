@@ -325,6 +325,7 @@ export const checkoutMessages = {
     spgateway2: { id: 'checkout.label.spgateway2', defaultMessage: '藍新' },
     tappay: { id: 'checkout.label.tappay', defaultMessage: 'tappay' },
     paypal: { id: 'checkout.label.paypal', defaultMessage: 'PayPal - 限非台灣地區' },
+    ecpay: { id: 'checkout.label.ecpay', defaultMessage: '綠界' },
     parenting: { id: 'checkout.label.parenting', defaultMessage: '親子天下' },
     commonhealth: { id: 'checkout.label.commonhealth', defaultMessage: '康健' },
     cw_commonhealth: { id: 'checkout.label.cw_commonhealth', defaultMessage: '康健' },

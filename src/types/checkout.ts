@@ -80,6 +80,7 @@ export type PaymentMethodType =
   | 'physicalCredit'
   | 'physicalRemoteCredit'
   | 'applepay'
+  | 'ecpay'
 
 export type PaymentGatewayType =
   | 'spgateway'
@@ -90,6 +91,7 @@ export type PaymentGatewayType =
   | 'atome'
   | 'spgateway2'
   | 'physical'
+  | 'ecpay'
 
 export type ShippingProps = {
   name?: string
