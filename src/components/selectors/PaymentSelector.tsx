@@ -5,6 +5,7 @@ import { Form } from 'antd'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
+import { useApp } from '../../contexts/AppContext'
 import * as hasura from '../../hasura'
 import { checkoutMessages } from '../../helpers/translation'
 import { PaymentGatewayType, PaymentMethodType, PaymentProps } from '../../types/checkout'
@@ -73,11 +74,20 @@ const PaymentSelector: React.FC<{
 }
 
 const getPaymentOptions = () => {
+  const {
+    settings: { AVAILABLE_PAYMENT_GATEWAYS },
+  } = useApp()
+  const availablePaymentGateways = JSON.parse(AVAILABLE_PAYMENT_GATEWAYS)
   const { formatMessage } = useIntl()
   const { data, loading, error } = useQuery<hasura.getPaymentGatewayMethod>(
     gql`
-      query getPaymentGatewayMethod {
-        app_payment_gateway_method(where: { status: { _eq: "enabled" } }) {
+      query getPaymentGatewayMethod($availablePaymentGateways: [String!]!) {
+        app_payment_gateway_method(
+          where: {
+            status: { _eq: "enabled" }
+            app_payment_gateway: { app_id: { _eq: "tli1956" }, gateway: { name: { _in: $availablePaymentGateways } } }
+          }
+        ) {
           method {
             name
           }
@@ -89,6 +99,7 @@ const getPaymentOptions = () => {
         }
       }
     `,
+    { variables: { availablePaymentGateways } },
   )
 
   const paymentOptions = data?.app_payment_gateway_method.reduce<{
