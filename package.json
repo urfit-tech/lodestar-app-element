@@ -2,9 +2,15 @@
   "name": "lodestar",
   "private": true,
   "scripts": {
-    "typecheck": "moon run :typecheck"
+    "typecheck": "moon run :typecheck",
+    "lint": "oxlint packages/ apps/",
+    "lint:fix": "oxlint --fix packages/ apps/",
+    "format": "oxfmt --write packages/ apps/",
+    "format:check": "oxfmt --check packages/ apps/"
   },
   "devDependencies": {
+    "oxfmt": "^0.40.0",
+    "oxlint": "^1.55.0",
     "typescript": "^5.0.0"
   },
   "pnpm": {

@@ -37,5 +37,5 @@
 
 - [ ] UI 與資料層解耦（@lodestar/ui 不應直接依賴 @lodestar/graphql）
 - [ ] CI/CD 建置
-- [ ] 解決 barrel export 名稱衝突（types/index.ts, ui/index.ts 中的重複 export）
-- [ ] oxfmt 完整設定
+- [x] 解決 barrel export 名稱衝突（types/index.ts, ui/index.ts 中的重複 export）
+- [x] oxfmt + oxlint 完整設定
