@@ -1,0 +1,3 @@
+creation_rules:
+  - path_regex: \.env\.encrypted$
+    age: '<your-age-public-key>'
