@@ -14,17 +14,19 @@
 
 ## 第二階段：拆分 packages
 
-- [ ] @lodestar/types
-- [ ] @lodestar/helpers
-- [ ] @lodestar/graphql
-- [ ] @lodestar/contexts
-- [ ] @lodestar/hooks
-- [ ] @lodestar/ui
+- [x] @lodestar/types
+- [x] @lodestar/helpers
+- [x] @lodestar/graphql
+- [x] @lodestar/contexts
+- [x] @lodestar/hooks
+- [x] @lodestar/ui
+- [x] 更新所有跨 package import paths
 
 ## 第三階段：建立 demo app
 
-- [ ] apps/element-demo (Vite + React)
+- [x] apps/element-demo (Vite + React)
 - [ ] 驗證所有元件正常運作
+- [x] 清理 src/ 殘留檔案
 
 ## 第四階段：整合其他 repo（之後處理）
 
@@ -35,3 +37,5 @@
 
 - [ ] UI 與資料層解耦（@lodestar/ui 不應直接依賴 @lodestar/graphql）
 - [ ] CI/CD 建置
+- [ ] 解決 barrel export 名稱衝突（types/index.ts, ui/index.ts 中的重複 export）
+- [ ] oxfmt 完整設定
