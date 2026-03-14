@@ -1,2 +1,6 @@
 [tools]
+direnv = "latest"
 node = "22"
+pnpm = "10"
+sops = "latest"
+"npm:@moonrepo/cli" = "latest"
