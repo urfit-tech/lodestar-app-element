@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "noEmit": true
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../types" },
+    { "path": "../helpers" },
+    { "path": "../graphql" }
+  ]
+}

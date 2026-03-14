@@ -4,6 +4,7 @@
     { "path": "packages/types" },
     { "path": "packages/helpers" },
     { "path": "packages/graphql" },
-    { "path": "packages/contexts" }
+    { "path": "packages/contexts" },
+    { "path": "packages/hooks" }
   ]
 }
