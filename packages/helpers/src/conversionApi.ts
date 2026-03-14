@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
-import { ConversionApiContent, ConversionApiData, ConversionApiEvent, ConversionApiEventName, ConversionApiUserData } from '../types/conversionApi'
-import { MemberProps } from '../types/member'
+import { ConversionApiContent, ConversionApiData, ConversionApiEvent, ConversionApiEventName, ConversionApiUserData } from '@lodestar/types/conversionApi'
+import { MemberProps } from '@lodestar/types/member'
 import axios, { AxiosResponse } from 'axios'
 
 

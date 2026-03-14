@@ -1,4 +1,4 @@
-import { ElementComponent, TextElementProps } from '../../types/element'
+import { ElementComponent, TextElementProps } from '@lodestar/types/element'
 
 const Text: ElementComponent<TextElementProps> = props => {
   const { loading, errors } = props

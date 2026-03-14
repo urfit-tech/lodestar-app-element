@@ -3,10 +3,10 @@ import { Skeleton } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
-import { desktopViewMixin } from '../../helpers'
+import { desktopViewMixin } from '@lodestar/helpers'
 import { CalendarAltOIcon, PlayCircleIcon, UserOIcon } from '../../images'
 import EmptyCover from '../../images/empty-cover.png'
-import { PostElementProps } from '../../types/element'
+import { PostElementProps } from '@lodestar/types/element'
 import { CustomRatioImage } from '../common/Image'
 
 const StyledCover = styled.div`

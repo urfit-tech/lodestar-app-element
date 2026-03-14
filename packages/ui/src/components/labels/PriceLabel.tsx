@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { commonMessages, productMessages } from '../../helpers/translation'
-import { useCurrency } from '../../hooks/util'
-import { PeriodType } from '../../types/data'
+import { commonMessages, productMessages } from '@lodestar/helpers/translation'
+import { useCurrency } from '@lodestar/hooks/util'
+import { PeriodType } from '@lodestar/types/data'
 import ShortenPeriodTypeLabel from './ShortenPeriodTypeLabel'
 
 type CustomStyle = {

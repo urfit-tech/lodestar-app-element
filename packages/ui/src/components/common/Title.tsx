@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 
 const StyledTitle = styled.h3`
   line-height: 1;

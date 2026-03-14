@@ -1,10 +1,10 @@
 import { equals } from 'ramda'
 import React, { useEffect } from 'react'
 import { StringParam, useQueryParam } from 'use-query-params'
-import { useApp } from '../../contexts/AppContext'
-import { useAuth } from '../../contexts/AuthContext'
-import { Resource } from '../../hooks/resource'
-import { useMemberShipCardDetails, useTracking } from '../../hooks/tracking'
+import { useApp } from '@lodestar/contexts/AppContext'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import { Resource } from '@lodestar/hooks/resource'
+import { useMemberShipCardDetails, useTracking } from '@lodestar/hooks/tracking'
 
 const View: React.FC<{
   ignore?: 'EEC' | 'CUSTOM'

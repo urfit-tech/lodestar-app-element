@@ -1,9 +1,9 @@
 import { repeat } from 'ramda'
 import { useIntl } from 'react-intl'
-import { useApp } from '../../contexts/AppContext'
-import { ResourceType, useResourceCollection } from '../../hooks/resource'
-import { useTracking } from '../../hooks/tracking'
-import { ElementComponent, ElementProps } from '../../types/element'
+import { useApp } from '@lodestar/contexts/AppContext'
+import { ResourceType, useResourceCollection } from '@lodestar/hooks/resource'
+import { useTracking } from '@lodestar/hooks/tracking'
+import { ElementComponent, ElementProps } from '@lodestar/types/element'
 import Tracking from '../common/Tracking'
 import collectionsMessages from './translation'
 

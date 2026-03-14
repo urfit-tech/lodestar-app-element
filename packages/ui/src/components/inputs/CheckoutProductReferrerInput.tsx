@@ -1,8 +1,8 @@
 import { FormControl, FormErrorMessage } from '@chakra-ui/react'
 import React from 'react'
 import { useIntl } from 'react-intl'
-import { useAuth } from '../../contexts/AuthContext'
-import { commonMessages } from '../../helpers/translation'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import { commonMessages } from '@lodestar/helpers/translation'
 import { FormInput } from './FormInput'
 
 const CheckoutProductReferrerInput: React.FC<{

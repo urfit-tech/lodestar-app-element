@@ -2,7 +2,7 @@ import { Skeleton } from '@chakra-ui/react'
 import { Link, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/default-avatar.svg'
-import { ElementComponent, MemberElementProps } from '../../types/element'
+import { ElementComponent, MemberElementProps } from '@lodestar/types/element'
 
 const StyledInstructorBlock = styled.div`
   padding: 1rem;

@@ -1,6 +1,6 @@
 import styled, { CSSObject } from 'styled-components'
 import { PropsWithCraft } from '../../components/common/Craftize'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 import { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
 
 export type ImageProps = {

@@ -2,9 +2,9 @@ import { Box, BoxProps } from '@chakra-ui/react'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { dateFormatter } from '../../helpers'
-import { checkoutMessages } from '../../helpers/translation'
-import { CouponProps } from '../../types/checkout'
+import { dateFormatter } from '@lodestar/helpers'
+import { checkoutMessages } from '@lodestar/helpers/translation'
+import { CouponProps } from '@lodestar/types/checkout'
 import PriceLabel from '../labels/PriceLabel'
 
 const BoxWrapper = styled(Box)`

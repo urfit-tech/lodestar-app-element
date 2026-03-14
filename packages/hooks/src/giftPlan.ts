@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
-import hasura from '../hasura'
+import hasura from '@lodestar/graphql/hasura'
 
 export const useGiftPlanMutation = () => {
   const [upsertProductGiftPlan] = useMutation<

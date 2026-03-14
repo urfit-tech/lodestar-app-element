@@ -2,8 +2,8 @@ import { EventInput } from '@fullcalendar/core'
 import moment from 'moment'
 import { map, pipe, project } from 'ramda'
 import { rrulestr } from 'rrule'
-import { adaptValue, inertTransform, renameKey } from '../../helpers/adaptObject'
-import { FetchedResourceEvent } from '../../types/event'
+import { adaptValue, inertTransform, renameKey } from '@lodestar/helpers/adaptObject'
+import { FetchedResourceEvent } from '@lodestar/types/event'
 
 const eventKeysMap = {
   id: 'event_id',

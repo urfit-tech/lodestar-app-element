@@ -1,12 +1,12 @@
 import { gql, useApolloClient, useQuery } from '@apollo/client'
 import { useIntl } from 'react-intl'
-import { useApp } from '../contexts/AppContext'
-import { useAuth } from '../contexts/AuthContext'
-import hasura from '../hasura'
-import { notEmpty } from '../helpers'
-import { commonMessages } from '../helpers/translation'
-import { PeriodType } from '../types/data'
-import { Target } from '../types/product'
+import { useApp } from '@lodestar/contexts/AppContext'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import hasura from '@lodestar/graphql/hasura'
+import { notEmpty } from '@lodestar/helpers'
+import { commonMessages } from '@lodestar/helpers/translation'
+import { PeriodType } from '@lodestar/types/data'
+import { Target } from '@lodestar/types/product'
 
 export const useMemberValidation = (email: string) => {
   const { currentMemberId } = useAuth()

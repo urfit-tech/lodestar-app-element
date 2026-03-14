@@ -1,8 +1,8 @@
 import { Button } from '@chakra-ui/react'
 import { useIntl } from 'react-intl'
-import { commonMessages } from '../../helpers/translation'
-import { Category } from '../../types/data'
-import { ElementComponent } from '../../types/element'
+import { commonMessages } from '@lodestar/helpers/translation'
+import { Category } from '@lodestar/types/data'
+import { ElementComponent } from '@lodestar/types/element'
 
 type CategorySelectorProps = {
   categories: Category[]

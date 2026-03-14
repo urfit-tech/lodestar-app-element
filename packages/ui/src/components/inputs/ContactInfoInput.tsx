@@ -1,7 +1,7 @@
 import { Box, SimpleGrid } from '@chakra-ui/react'
 import { Form, Input } from 'antd'
 import { useIntl } from 'react-intl'
-import { ContactInfo } from '../../types/checkout'
+import { ContactInfo } from '@lodestar/types/checkout'
 import inputMessages from './translation'
 
 const ContactInfoInput: React.FC<{

@@ -1,8 +1,8 @@
 import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
 import axios from 'axios'
 import { useState } from 'react'
-import { useAuth } from '../../contexts/AuthContext'
-import { ElementComponent } from '../../types/element'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import { ElementComponent } from '@lodestar/types/element'
 
 export type AIBotProps = {
   system: string

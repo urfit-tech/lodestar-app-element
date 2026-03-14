@@ -1,7 +1,7 @@
 import BraftEditor from 'braft-editor'
 import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
-import { isHTMLString } from '../../helpers'
+import { isHTMLString } from '@lodestar/helpers'
 import QuotationLeft from '../../images/quotation-left.png'
 import QuotationRight from '../../images/quotation-right.png'
 

@@ -1,5 +1,5 @@
 import { Box, useRadio, UseRadioProps } from '@chakra-ui/react'
-import { useAppTheme } from '../../contexts/AppThemeContext'
+import { useAppTheme } from '@lodestar/contexts/AppThemeContext'
 
 const RadioCard: React.FC<
   {

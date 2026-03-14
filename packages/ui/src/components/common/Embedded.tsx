@@ -1,7 +1,7 @@
 import InnerHTML from 'dangerously-set-html-content'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 import commonMessages from './translation'
 
 const StyledDiv = styled.div<EmbeddedProps>`

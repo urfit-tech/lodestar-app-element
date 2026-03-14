@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
 import { createContext, useContext, useEffect, useMemo } from 'react'
-import hasura from '../hasura'
-import { AppProps, NavProps } from '../types/app'
+import hasura from '@lodestar/graphql/hasura'
+import { AppProps, NavProps } from '@lodestar/types/app'
 import { useAuth } from './AuthContext'
 
 type AppContextProps = AppProps & {

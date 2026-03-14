@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/icons/avatar.svg'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 import { MultiLineTruncationMixin } from '../common'
 import { StyledImage } from '../common/Image'
 

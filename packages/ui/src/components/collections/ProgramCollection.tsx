@@ -7,18 +7,18 @@ import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { useAuth } from '../../contexts/AuthContext'
-import { getProgramCollectionQuery } from '../../graphql/queries'
-import * as hasura from '../../hasura'
-import { convertPathName, findPrimaryPlan, notEmpty } from '../../helpers'
-import { Category, PeriodType, ProductRole, Program } from '../../types/data'
-import { ElementComponent } from '../../types/element'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import { getProgramCollectionQuery } from '@lodestar/graphql/queries'
+import * as hasura from '@lodestar/graphql/hasura'
+import { convertPathName, findPrimaryPlan, notEmpty } from '@lodestar/helpers'
+import { Category, PeriodType, ProductRole, Program } from '@lodestar/types/data'
+import { ElementComponent } from '@lodestar/types/element'
 import {
   ProductCurrentPriceSource,
   ProductCustomSource,
   ProductPublishedAtSource,
   ProductRecentWatchedSource,
-} from '../../types/options'
+} from '@lodestar/types/options'
 import ProgramPrimaryCard from '../cards/ProgramPrimaryCard'
 import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
 import Collection, { CollectionLayout, ContextCollection } from '../collections/Collection'

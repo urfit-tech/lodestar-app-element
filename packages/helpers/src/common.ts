@@ -3,9 +3,9 @@ import Cookies from 'js-cookie'
 import moment from 'moment'
 import queryString from 'query-string'
 import { css, FlattenSimpleInterpolation } from 'styled-components'
-import { BREAK_POINT } from '../components/common/Responsive'
-import { ContactInfo } from '../types/checkout'
-import { ProductPlan } from '../types/data'
+const BREAK_POINT = 992
+import { ContactInfo } from '@lodestar/types/checkout'
+import { ProductPlan } from '@lodestar/types/data'
 import {
   BindDeviceError,
   InputError,

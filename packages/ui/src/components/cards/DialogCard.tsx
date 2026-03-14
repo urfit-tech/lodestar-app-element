@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 import Paragraph from '../common/Paragraph'
 import cardsMessages from './translation'
 

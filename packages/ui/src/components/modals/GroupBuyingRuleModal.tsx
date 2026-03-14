@@ -4,7 +4,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import CommonModal from '../../components/modals/CommonModal'
-import { checkoutMessages } from '../../helpers/translation'
+import { checkoutMessages } from '@lodestar/helpers/translation'
 
 const StyledLink = styled(Button)`
   && {

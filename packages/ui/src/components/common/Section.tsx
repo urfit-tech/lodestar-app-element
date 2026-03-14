@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 import { useHistory } from 'react-router'
 import styled, { css } from 'styled-components'
-import { useAuth } from '../../contexts/AuthContext'
-import { ElementComponent } from '../../types/element'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import { ElementComponent } from '@lodestar/types/element'
 import { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
 
 export type SectionProps = {

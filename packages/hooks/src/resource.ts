@@ -1,7 +1,7 @@
 import { ApolloClient, gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
-import hasura from '../hasura'
-import { Member } from '../types/data'
+import hasura from '@lodestar/graphql/hasura'
+import { Member } from '@lodestar/types/data'
 
 export type ResourceType =
   | 'program_package'

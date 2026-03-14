@@ -16,7 +16,7 @@ import {
   GeneralModalDefaultEventForEditMode,
   ModalDefaultEventForBasicMode,
   ResourceType,
-} from '../../types/event'
+} from '@lodestar/types/event'
 import { adaptEventsToCalendar, adaptEventToModal } from './eventAdaptor'
 import MemberEventAdminModal from './MemberEventAdminModal'
 

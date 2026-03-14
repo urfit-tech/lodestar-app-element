@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
-import { commonMessages } from '../../helpers/translation'
-import { PeriodType } from '../../types/data'
+import { commonMessages } from '@lodestar/helpers/translation'
+import { PeriodType } from '@lodestar/types/data'
 
 const ShortenPeriodTypeLabel: React.FC<{
   periodType: PeriodType

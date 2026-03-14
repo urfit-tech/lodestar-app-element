@@ -2,9 +2,9 @@ import Axios from 'axios'
 import { prop, sum } from 'ramda'
 import { useCallback, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
-import { useApp } from '../contexts/AppContext'
-import { useAuth } from '../contexts/AuthContext'
-import { getTrackingCookie } from '../helpers'
+import { useApp } from '@lodestar/contexts/AppContext'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import { getTrackingCookie } from '@lodestar/helpers'
 import {
   CheckProps,
   InvoiceProps,
@@ -13,7 +13,7 @@ import {
   PaymentProps,
   ShippingOptionProps,
   ShippingProps,
-} from '../types/checkout'
+} from '@lodestar/types/checkout'
 
 export const useCheck = ({
   productIds,

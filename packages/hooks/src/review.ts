@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 import { defaultTo, evolve, head, mergeRight, pipe, prop } from 'ramda'
-import hasura from '../hasura'
+import hasura from '@lodestar/graphql/hasura'
 
 export const useReviewable = (path: string, appId: string) =>
   useQuery<hasura.GetReviewable, hasura.GetReviewableVariables>(

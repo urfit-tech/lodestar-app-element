@@ -1,9 +1,9 @@
 import { FC } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { useApp } from '../../contexts/AppContext'
-import { useAuth } from '../../contexts/AuthContext'
-import { useAdaptedReviewable, useReviewAggregate } from '../../hooks/review'
+import { useApp } from '@lodestar/contexts/AppContext'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import { useAdaptedReviewable, useReviewAggregate } from '@lodestar/hooks/review'
 import StarRating from './StarRating'
 import commonMessages from './translation'
 

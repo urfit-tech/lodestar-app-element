@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/icons/avatar.svg'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 
 const StyledInstructorBlock = styled.div`
   padding: 1rem;

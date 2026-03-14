@@ -1,8 +1,8 @@
 import { repeat } from 'ramda'
-import { useApp } from '../../contexts/AppContext'
-import { ResourceType, useResourceCollection } from '../../hooks/resource'
-import { useTracking } from '../../hooks/tracking'
-import { ElementComponent, ElementProps } from '../../types/element'
+import { useApp } from '@lodestar/contexts/AppContext'
+import { ResourceType, useResourceCollection } from '@lodestar/hooks/resource'
+import { useTracking } from '@lodestar/hooks/tracking'
+import { ElementComponent, ElementProps } from '@lodestar/types/element'
 import BaseCarousel, { BaseCarouselProps } from '../common/BaseCarousel'
 import Tracking from '../common/Tracking'
 

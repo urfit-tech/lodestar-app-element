@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 
 const StyledParagraph = styled.p`
   white-space: pre-line;

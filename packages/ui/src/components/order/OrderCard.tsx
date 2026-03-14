@@ -1,8 +1,8 @@
 import React from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { currencyFormatter } from '../../helpers'
-import { OrderDiscount, OrderProduct } from '../../types/order'
+import { currencyFormatter } from '@lodestar/helpers'
+import { OrderDiscount, OrderProduct } from '@lodestar/types/order'
 import OrderStatusTag from './OrderStatusTag'
 import orderMessages from './translation'
 

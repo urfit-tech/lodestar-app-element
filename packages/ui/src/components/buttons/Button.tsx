@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 import styled, { css } from 'styled-components'
-import { ElementComponent } from '../../types/element'
-import { ProductOpenLinkSource, ProductPurchaseProductSource } from '../../types/options'
+import { ElementComponent } from '@lodestar/types/element'
+import { ProductOpenLinkSource, ProductPurchaseProductSource } from '@lodestar/types/options'
 import CheckoutProductModal from '../modals/CheckoutProductModal'
 import buttonsMessages from './translation'
 

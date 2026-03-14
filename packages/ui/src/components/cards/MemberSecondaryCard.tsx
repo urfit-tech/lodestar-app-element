@@ -2,7 +2,7 @@ import { Skeleton, SkeletonText } from '@chakra-ui/skeleton'
 import { Link, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import DefaultAvatar from '../../images/default-avatar.svg'
-import { ElementComponent, MemberElementProps } from '../../types/element'
+import { ElementComponent, MemberElementProps } from '@lodestar/types/element'
 
 const StyledCreatorAvatar = styled.div<{ url: string }>`
   width: 100%;

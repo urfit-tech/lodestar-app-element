@@ -4,7 +4,7 @@ import { RadioChangeEvent } from 'antd/lib/radio'
 import React, { useEffect, useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import hasura from '../../hasura'
+import hasura from '@lodestar/graphql/hasura'
 import selectorsMessages from './translation'
 
 const StyledRadio = styled(Radio)`

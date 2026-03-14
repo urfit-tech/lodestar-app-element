@@ -1,8 +1,8 @@
 import moment from 'moment'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { certificateMessages } from '../../helpers/translation'
-import { MemberCertificate } from '../../types/certificate'
+import { certificateMessages } from '@lodestar/helpers/translation'
+import { MemberCertificate } from '@lodestar/types/certificate'
 import { BraftContent } from '../common/StyledBraftEditor'
 
 const StyledContentBlock = styled.div`

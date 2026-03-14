@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import hasura from '../hasura'
+import hasura from '@lodestar/graphql/hasura'
 
 export const useEnrolledMembershipCardIds = (memberId: string) => {
   const { loading, error, data, refetch } = useQuery<

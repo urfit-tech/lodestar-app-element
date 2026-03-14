@@ -24,7 +24,7 @@ import { useIntl } from 'react-intl'
 import { Frequency, Options, RRule, Weekday, WeekdayStr } from 'rrule'
 import useSWRMutation from 'swr/mutation'
 import { FetchButton } from '../../components/buttons/FetchButton'
-import { commonMessages } from '../../helpers/translation'
+import { commonMessages } from '@lodestar/helpers/translation'
 import {
   EventRequest,
   GeneralModalDefaultEventForEditMode,
@@ -35,7 +35,7 @@ import {
   ModalDefaultEventForBasicModeWithSource,
   ModalDefaultEventForEditMode,
   Resource,
-} from '../../types/event'
+} from '@lodestar/types/event'
 
 const MemberEventAdminModal: React.FC<{
   memberId: string

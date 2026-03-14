@@ -2,8 +2,8 @@ import { Form } from 'antd'
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { checkoutMessages } from '../../helpers/translation'
-import { useTappay } from '../../hooks/util'
+import { checkoutMessages } from '@lodestar/helpers/translation'
+import { useTappay } from '@lodestar/hooks/util'
 
 export type TPCreditCard = {
   cardType: 'mastercard' | 'visa' | 'jcb' | 'amex' | 'unionpay' | 'unknown'

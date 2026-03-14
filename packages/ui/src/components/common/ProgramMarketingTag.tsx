@@ -1,6 +1,6 @@
 import { Box, Text } from '@chakra-ui/layout'
 import { FC } from 'react'
-import { useApp } from '../../contexts/AppContext'
+import { useApp } from '@lodestar/contexts/AppContext'
 
 type LabelConfig = { id: number; backgroundColor: string; textColor: string }
 

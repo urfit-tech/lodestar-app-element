@@ -13,7 +13,7 @@ import { clone, mergeDeepRight } from 'ramda'
 import { useMediaQuery } from 'react-responsive'
 import { stringify as stringifyStyle } from 'react-style-editor'
 import styled, { css, CSSObject } from 'styled-components'
-import { ElementBaseProps, ElementComponent, ElementProps } from '../../types/element'
+import { ElementBaseProps, ElementComponent, ElementProps } from '@lodestar/types/element'
 import { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
 
 const CraftRefBlock = styled.div<{

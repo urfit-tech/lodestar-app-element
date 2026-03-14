@@ -1,6 +1,6 @@
 import { gql, QueryHookOptions, useQuery } from '@apollo/client'
 import { sum } from 'ramda'
-import hasura from '../hasura'
+import hasura from '@lodestar/graphql/hasura'
 
 export const useProgramEnrollmentAggregate = (programId: string, options?: Pick<QueryHookOptions, 'skip'>) => {
   const { loading, error, data, refetch } = useQuery<

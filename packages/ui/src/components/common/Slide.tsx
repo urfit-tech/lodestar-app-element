@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import useWindowDimensions from '../../hooks/util'
-import { ElementComponent } from '../../types/element'
+import useWindowDimensions from '@lodestar/hooks/util'
+import { ElementComponent } from '@lodestar/types/element'
 
 const SliderWrapper = styled.div`
   position: relative;

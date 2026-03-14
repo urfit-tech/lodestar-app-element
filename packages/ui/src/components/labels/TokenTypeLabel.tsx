@@ -1,6 +1,6 @@
 import React from 'react'
 import { defineMessages, useIntl } from 'react-intl'
-import { TokenType } from '../../types/token'
+import { TokenType } from '@lodestar/types/token'
 
 const messages = defineMessages({
   giftPlan: { id: 'common.giftPlan', defaultMessage: '贈品' },

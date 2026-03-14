@@ -4,7 +4,7 @@ import utc from 'dayjs/plugin/utc'
 import React from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { OrderLog, PaymentLog } from '../../types/order'
+import { OrderLog, PaymentLog } from '@lodestar/types/order'
 import orderMessages from './translation'
 
 dayjs.extend(timezone)

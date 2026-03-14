@@ -4,7 +4,7 @@ import React from 'react'
 import { AiOutlineCalendar } from 'react-icons/ai'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { commonMessages } from '../../helpers/translation'
+import { commonMessages } from '@lodestar/helpers/translation'
 import MembershipCard from '../cards/MembershipCard'
 import { BraftContent } from '../common/StyledBraftEditor'
 

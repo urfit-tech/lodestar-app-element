@@ -2,7 +2,7 @@ import { Children, useEffect, useRef } from 'react'
 import { isFragment } from 'react-is'
 import Slider, { Settings } from 'react-slick'
 import styled from 'styled-components'
-import { ElementComponent, ElementProps } from '../../types/element'
+import { ElementComponent, ElementProps } from '@lodestar/types/element'
 import { BaseCarouselProps } from './BaseCarousel'
 
 const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`

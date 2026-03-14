@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
-import hasura from '../hasura'
-import { MemberProps, UserRole } from '../types/member'
+import hasura from '@lodestar/graphql/hasura'
+import { MemberProps, UserRole } from '@lodestar/types/member'
 
 export const useMember = (memberId: string) => {
   const { loading, data, error, refetch } = useQuery<hasura.GET_MEMBER, hasura.GET_MEMBERVariables>(

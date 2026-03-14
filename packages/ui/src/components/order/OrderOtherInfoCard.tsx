@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import xss from 'xss'
-import { useApp } from '../../contexts/AppContext'
+import { useApp } from '@lodestar/contexts/AppContext'
 import orderMessages from './translation'
 
 const StyledContainer = styled.div`

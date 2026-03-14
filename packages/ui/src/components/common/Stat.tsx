@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 import { StyledImage } from './Image'
 import Paragraph from './Paragraph'
 

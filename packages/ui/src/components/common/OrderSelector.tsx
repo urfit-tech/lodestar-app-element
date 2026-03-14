@@ -1,12 +1,12 @@
-import { ElementComponent } from '../../types/element'
+import { ElementComponent } from '@lodestar/types/element'
 import { useIntl } from 'react-intl'
 import {
   ProductCustomSource,
   ProductPublishedAtSource,
   ProductCurrentPriceSource,
   ProductRecentWatchedSource,
-} from '../../types/options'
-import { craftPageMessages } from '../../helpers/translation'
+} from '@lodestar/types/options'
+import { craftPageMessages } from '@lodestar/helpers/translation'
 import { Select, Spinner } from '@chakra-ui/react'
 
 type OrderSelectorProps = {

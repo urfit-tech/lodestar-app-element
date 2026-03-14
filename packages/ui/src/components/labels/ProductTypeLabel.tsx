@@ -1,6 +1,6 @@
 import React from 'react'
 import { defineMessages, useIntl } from 'react-intl'
-import { ProductType } from '../../types/product'
+import { ProductType } from '@lodestar/types/product'
 
 const messages = defineMessages({
   program: { id: 'common.program', defaultMessage: '單次課程' },
