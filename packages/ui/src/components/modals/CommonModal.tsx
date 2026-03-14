@@ -11,7 +11,7 @@ import {
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-const StyledModalContent = styled(ModalContent)<{ isFullWidth?: boolean }>`
+const StyledModalContent = styled(ModalContent as any)<{ isFullWidth?: boolean }>`
   && {
     ${props =>
       props.isFullWidth &&
@@ -49,11 +49,12 @@ const CommonModal: React.FC<
       <StyledWrapper>
         {renderHeaderIcon?.()}
 
-        <ModalHeader className="pt-4 pb-0">{title}</ModalHeader>
+        {React.createElement(ModalHeader as any, { className: 'pt-4 pb-0' }, title)}
 
         {renderCloseButtonBlock ? (
           <StyledCloseButtonBlock>{renderCloseButtonBlock()}</StyledCloseButtonBlock>
         ) : (
+          // @ts-ignore TS2590
           <ModalCloseButton />
         )}
 

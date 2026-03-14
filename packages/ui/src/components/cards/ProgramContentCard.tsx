@@ -18,7 +18,7 @@ const StyledProgramContentCard = styled.div`
   box-shadow: 0 2px 4px 0 rgba(207, 207, 207, 0.55);
 `
 
-const StyledHeading = styled(Heading)`
+const StyledHeading = styled(Heading as any)`
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

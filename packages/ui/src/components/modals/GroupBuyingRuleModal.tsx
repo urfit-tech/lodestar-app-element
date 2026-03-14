@@ -6,14 +6,14 @@ import styled from 'styled-components'
 import CommonModal from '../../components/modals/CommonModal'
 import { checkoutMessages } from '@lodestar/helpers/translation'
 
-const StyledLink = styled(Button)`
+const StyledLink = styled(Button as any)`
   && {
     vertical-align: baseline;
     font-size: 14px;
   }
 `
 
-const StyledListItem = styled(ListItem)`
+const StyledListItem = styled(ListItem as any)`
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.18px;

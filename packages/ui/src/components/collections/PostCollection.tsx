@@ -123,7 +123,7 @@ const PostCollection: ElementComponent<PostCollectionProps> = props => {
                       videoUrl={post.videoUrl || ''}
                       categories={post.categories}
                       author={post.author}
-                      publishedAt={post.publishedAt}
+                      publishedAt={post.publishedAt as any}
                       onClick={() => {
                         onClick?.()
                         !props.editing && history.push(`/posts/${post.codeName || post.id}`)

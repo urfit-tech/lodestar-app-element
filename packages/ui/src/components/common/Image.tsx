@@ -98,7 +98,7 @@ const Image: ElementComponent<ImageProps & { customStyle?: CSSObject }> = props 
 }
 
 type CustomRatioImageProps = {
-  className: string
+  className?: string
   width: string
   ratio: number
   shape?: 'rounded' | 'circle'

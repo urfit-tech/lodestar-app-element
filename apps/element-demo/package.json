@@ -14,11 +14,22 @@
     "@lodestar/graphql": "workspace:*",
     "@lodestar/contexts": "workspace:*",
     "@lodestar/hooks": "workspace:*",
+    "@chakra-ui/react": "1.8.9",
+    "@chakra-ui/button": "1.5.10",
+    "@chakra-ui/input": "1.4.6",
+    "@craftjs/core": "0.1.0-beta.20",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router-dom": "^5.2.0"
+    "react-intl": "5.20.9",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "5.1.1",
+    "use-query-params": "1.2.3"
   },
   "devDependencies": {
+    "@types/react": "17.0.0",
+    "@types/react-dom": "17.0.0",
+    "@types/react-router-dom": "5.1.5",
+    "@types/styled-components": "5.1.14",
     "@vitejs/plugin-react": "^4.0.0",
     "vite": "^6.0.0",
     "sass": "^1.66.1"

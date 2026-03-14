@@ -11,7 +11,7 @@ import { CheckProps } from '@lodestar/types/checkout'
 import CouponSelectionModal from '../modals/CouponSelectionModal'
 import MembershipCardSelectionModal from '../modals/MembershipCardSelectionModal'
 
-const StyledRadio = styled(Radio)`
+const StyledRadio = styled(Radio as any)`
   &&:focus {
     box-shadow: 0 0 0 3px ${props => rgba(props.theme['@primary-color'], 0.6)};
   }

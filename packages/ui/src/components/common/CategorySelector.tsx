@@ -18,7 +18,7 @@ const CategorySelector: ElementComponent<CategorySelectorProps> = props => {
   return (
     <div className="category__button__group">
       {loading ? (
-        <Button loading className="category__button" />
+        <Button _loading={{}} className="category__button" />
       ) : (
         <Button
           h="2.75rem"

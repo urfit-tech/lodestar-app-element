@@ -24,7 +24,7 @@ export const FetchButton: React.FC<
     }
   }
   return (
-    <Button isLoading={isLoading} onClick={handleClick} {...props}>
+    <Button isLoading={isLoading} onClick={handleClick} {...(props as any)}>
       {props.children}
     </Button>
   )

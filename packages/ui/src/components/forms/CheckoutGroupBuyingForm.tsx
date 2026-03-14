@@ -12,7 +12,7 @@ import { FormInput } from '../inputs/FormInput'
 export const StyledBlockTitle = styled.h2`
   ${CommonTitleMixin}
 `
-export const StyledListItem = styled(ListItem)`
+export const StyledListItem = styled(ListItem as any)`
   && {
     ${CommonTextMixin}
   }
@@ -21,7 +21,7 @@ const StyledPlanTitle = styled.h3`
   ${CommonLargeTextMixin}
   line-height: 1.5;
 `
-const StyledFormLabel = styled(FormLabel)`
+const StyledFormLabel = styled(FormLabel as any)`
   && {
     color: var(--gray-darker);
     font-size: 14px;

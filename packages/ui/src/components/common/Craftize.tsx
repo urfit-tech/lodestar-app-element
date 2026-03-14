@@ -66,7 +66,7 @@ export type CraftTemplate = { rootNodeId: NodeId; serializedNodes: SerializedNod
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
   const StyledCraftElement = styled(WrappedComponent)(
     (props: PropsWithCraft<P>) => props.customStyle,
-  ) as ElementComponent<P>
+  ) as unknown as ElementComponent<P>
   const Component: UserComponent<PropsWithCraft<P>> = props => {
     const node = useNode(node => node)
     const editor = useEditor(state => ({

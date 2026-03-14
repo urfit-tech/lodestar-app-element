@@ -124,7 +124,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
                     type={project.type}
                     targetAmount={project.target.amount}
                     targetUnit={project.target.unit}
-                    expiredAt={project.expiredAt}
+                    expiredAt={project.expiredAt as any}
                     isParticipantsVisible={project.isParticipantsVisible}
                     isCountdownTimerVisible={project.isCountdownTimerVisible}
                     totalSales={project.totalSales}

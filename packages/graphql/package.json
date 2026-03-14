@@ -6,7 +6,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts"
+    "./*": "./src/*.ts",
+    "./hasura": "./src/hasura.d.ts"
   },
   "scripts": {
     "typegen": "graphql-codegen --config codegen.ts"

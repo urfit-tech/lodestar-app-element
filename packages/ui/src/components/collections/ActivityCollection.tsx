@@ -113,8 +113,8 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
                     coverUrl={activity.coverUrl}
                     title={activity.title}
                     isParticipantsVisible={activity.isParticipantVisible}
-                    startedAt={moment.min(activity.sessions.map(session => moment(session.startedAt))).toDate()}
-                    endedAt={moment.max(activity.sessions.map(session => moment(session.endedAt))).toDate()}
+                    startedAt={moment.min(activity.sessions.map(session => moment(session.startedAt as any))).toDate()}
+                    endedAt={moment.max(activity.sessions.map(session => moment(session.endedAt as any))).toDate()}
                     participantCount={activity.totalParticipants}
                     totalSeats={sum(activity.tickets.map(ticket => ticket.limit))}
                     categories={activity.categories}

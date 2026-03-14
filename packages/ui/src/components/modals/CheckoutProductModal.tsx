@@ -87,7 +87,7 @@ const StyledLabel = styled.span`
   font-weight: bold;
 `
 
-const StyledCheckbox = styled(Checkbox)`
+const StyledCheckbox = styled(Checkbox as any)`
   .chakra-checkbox__control {
     border: 1px solid #cdcece;
   }

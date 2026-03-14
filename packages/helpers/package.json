@@ -6,9 +6,28 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts"
+    "./*": "./src/*.ts",
+    "./adaptObject": "./src/adaptObject.tsx"
   },
   "dependencies": {
-    "@lodestar/types": "workspace:*"
+    "@lodestar/types": "workspace:*",
+    "@apollo/client": "^3.7.11",
+    "axios": "0.21.4",
+    "graphql": "^16.6.0",
+    "graphql-ws": "^5.12.1",
+    "js-cookie": "^3.0.5",
+    "moment": "^2.29.1",
+    "query-string": "7.0.1",
+    "ramda": "^0.30.1",
+    "react-intl": "5.20.9",
+    "styled-components": "5.1.1",
+    "uuid": "8.3.2"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.3",
+    "@types/node": "^18.0.0",
+    "@types/ramda": "^0.30.1",
+    "@types/styled-components": "5.1.14",
+    "@types/uuid": "8.3.1"
   }
 }

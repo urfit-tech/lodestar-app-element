@@ -1,7 +1,9 @@
-import { Button } from '@chakra-ui/button'
-import { Input } from '@chakra-ui/input'
-import React, { useState } from 'react'
+import { Button, Input } from '@chakra-ui/react'
+import { useState } from 'react'
 import { useAuth } from '@lodestar/contexts/AuthContext'
+
+const AnyButton = Button as any
+const AnyInput = Input as any
 
 const AuthPage = () => {
   const { currentMember, login, logout } = useAuth()
@@ -9,21 +11,21 @@ const AuthPage = () => {
   return (
     <div>
       {currentMember ? (
-        <Button onClick={() => logout?.()}>Logout</Button>
+        <AnyButton onClick={() => logout?.()}>Logout</AnyButton>
       ) : (
         <div>
-          <Input
+          <AnyInput
             placeholder="Account"
             value={loginData.account}
-            onChange={e => setLoginData({ ...loginData, account: e.target.value })}
+            onChange={(e: any) => setLoginData({ ...loginData, account: e.target.value })}
           />
-          <Input
+          <AnyInput
             placeholder="Password"
             type="password"
             value={loginData.password}
-            onChange={e => setLoginData({ ...loginData, password: e.target.value })}
+            onChange={(e: any) => setLoginData({ ...loginData, password: e.target.value })}
           />
-          <Button onClick={() => login?.(loginData)}>Login</Button>
+          <AnyButton onClick={() => login?.(loginData)}>Login</AnyButton>
         </div>
       )}
     </div>
