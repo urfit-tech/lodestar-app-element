@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
-import ProgramPackageCard from '../components/cards/ProgramPackageCard'
+import ProgramPackageCard from '@lodestar/ui/components/cards/ProgramPackageCard'
 import pagesMessages from './translation'
-// import CraftProgramPackageCollection from '../components/craft/CraftProgramPackageCollection'
+// import CraftProgramPackageCollection from '@lodestar/ui/components/craft/CraftProgramPackageCollection'
 
 const ProgramPackagePage: React.FC = () => {
   const { formatMessage } = useIntl()

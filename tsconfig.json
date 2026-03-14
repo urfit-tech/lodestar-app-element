@@ -6,6 +6,7 @@
     { "path": "packages/graphql" },
     { "path": "packages/contexts" },
     { "path": "packages/hooks" },
-    { "path": "packages/ui" }
+    { "path": "packages/ui" },
+    { "path": "apps/element-demo" }
   ]
 }

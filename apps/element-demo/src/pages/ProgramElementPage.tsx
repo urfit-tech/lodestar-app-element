@@ -1,4 +1,4 @@
-import { CraftProgramCollection } from '../components/common/CraftElement'
+import { CraftProgramCollection } from '@lodestar/ui/components/common/CraftElement'
 
 const ProgramElementPage: React.FC = () => {
   return (

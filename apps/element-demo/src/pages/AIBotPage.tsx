@@ -1,6 +1,6 @@
 import { Element } from '@craftjs/core'
 import { useIntl } from 'react-intl'
-import { CraftAIBot, CraftSection } from '../components/common/CraftElement'
+import { CraftAIBot, CraftSection } from '@lodestar/ui/components/common/CraftElement'
 import pagesMessages from './translation'
 
 const AIBotPage: React.FC = () => {

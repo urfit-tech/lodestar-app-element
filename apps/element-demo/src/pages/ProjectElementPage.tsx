@@ -1,6 +1,6 @@
-import ProjectCard from '../components/cards/ProjectCard'
-import { CraftProjectCollection } from '../components/common/CraftElement'
-// import CraftProgramPackageCollection from '../components/craft/CraftProgramPackageCollection'
+import ProjectCard from '@lodestar/ui/components/cards/ProjectCard'
+import { CraftProjectCollection } from '@lodestar/ui/components/common/CraftElement'
+// import CraftProgramPackageCollection from '@lodestar/ui/components/craft/CraftProgramPackageCollection'
 
 const ProjectElementPage: React.FC = () => {
   return (

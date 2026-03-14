@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/button'
 import React from 'react'
 import { useIntl } from 'react-intl'
-import CheckoutProductModal from '../components/modals/CheckoutProductModal'
+import CheckoutProductModal from '@lodestar/ui/components/modals/CheckoutProductModal'
 import pagesMessages from './translation'
 
 const CheckoutPage = () => {

@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/button'
 import { Input } from '@chakra-ui/input'
 import React, { useState } from 'react'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '@lodestar/contexts/AuthContext'
 
 const AuthPage = () => {
   const { currentMember, login, logout } = useAuth()

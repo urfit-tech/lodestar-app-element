@@ -1,4 +1,4 @@
-import { CraftText } from '../components/common/CraftElement'
+import { CraftText } from '@lodestar/ui/components/common/CraftElement'
 
 const TextPage = () => {
   return (

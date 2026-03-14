@@ -1,0 +1,18 @@
+tasks:
+  dev:
+    command: 'pnpm dev'
+    local: true
+  build:
+    command: 'pnpm build'
+    inputs:
+      - 'src/**/*'
+      - 'index.html'
+      - 'vite.config.ts'
+    deps:
+      - 'ui:typecheck'
+  typecheck:
+    command: 'tsc --noEmit'
+    inputs:
+      - 'src/**/*'
+    deps:
+      - 'ui:typecheck'

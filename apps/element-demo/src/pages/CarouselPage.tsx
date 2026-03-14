@@ -1,6 +1,6 @@
 import { Element, useEditor } from '@craftjs/core'
 import { useState } from 'react'
-import { CraftButton, CraftCarousel, CraftSection } from '../components/common/CraftElement'
+import { CraftButton, CraftCarousel, CraftSection } from '@lodestar/ui/components/common/CraftElement'
 
 const CarouselPage = () => {
   const { currentNode, actions } = useEditor(state => ({

@@ -1,4 +1,4 @@
-// import CraftProgramContentCollection from '../components/craft/CraftProgramContentCollection'
+// import CraftProgramContentCollection from '@lodestar/ui/components/craft/CraftProgramContentCollection'
 
 const ProgramContentCollectionPage: React.FC = () => {
   return (

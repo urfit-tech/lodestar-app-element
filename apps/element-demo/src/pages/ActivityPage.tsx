@@ -1,4 +1,4 @@
-import { CraftActivityCollection } from '../components/common/CraftElement'
+import { CraftActivityCollection } from '@lodestar/ui/components/common/CraftElement'
 
 const ActivityPage: React.FC = () => {
   return (

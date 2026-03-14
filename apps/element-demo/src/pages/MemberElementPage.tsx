@@ -1,6 +1,6 @@
-import MemberPrimaryCard from '../components/cards/MemberPrimaryCard'
-import MemberSecondaryCard from '../components/cards/MemberSecondaryCard'
-import { CraftMemberCollection } from '../components/common/CraftElement'
+import MemberPrimaryCard from '@lodestar/ui/components/cards/MemberPrimaryCard'
+import MemberSecondaryCard from '@lodestar/ui/components/cards/MemberSecondaryCard'
+import { CraftMemberCollection } from '@lodestar/ui/components/common/CraftElement'
 
 const MemberElementPage: React.FC = () => {
   return (

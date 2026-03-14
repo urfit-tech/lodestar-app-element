@@ -2,9 +2,9 @@ import { Editor, Frame } from '@craftjs/core'
 import { useState } from 'react'
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 import { QueryParamProvider } from 'use-query-params'
-import * as CraftResolvers from './components/common/CraftElement'
-import MemberEventCalendarBlock from './components/event/MemberEventCalendarBlock'
-import { LodestarAppProvider } from './contexts/LodestarAppContext'
+import * as CraftResolvers from '@lodestar/ui/components/common/CraftElement'
+import MemberEventCalendarBlock from '@lodestar/ui/components/event/MemberEventCalendarBlock'
+import { LodestarAppProvider } from '@lodestar/contexts/LodestarAppContext'
 import ActivityPage from './pages/ActivityPage'
 import AIBotPage from './pages/AIBotPage'
 import AuthPage from './pages/AuthPage'
@@ -38,11 +38,11 @@ const routes = [
 ]
 const App: React.FC = () => {
   const [editing, setEditing] = useState(false)
-  if (!process.env.REACT_APP_ID) {
+  if (!import.meta.env.VITE_APP_ID) {
     return <div>REACT_APP_ID is undefined</div>
   }
   return (
-    <LodestarAppProvider appId={process.env.REACT_APP_ID}>
+    <LodestarAppProvider appId={import.meta.env.VITE_APP_ID}>
       <Editor enabled={editing} resolver={CraftResolvers}>
         <Frame>
           <BrowserRouter>
