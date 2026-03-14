@@ -1,0 +1,7 @@
+tasks:
+  typecheck:
+    command: 'tsc --noEmit'
+    inputs:
+      - 'src/**/*'
+    deps:
+      - 'types:typecheck'
