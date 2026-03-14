@@ -1,0 +1,11 @@
+tasks:
+  typecheck:
+    command: 'tsc --noEmit'
+    inputs:
+      - 'src/**/*'
+    deps:
+      - 'types:typecheck'
+  typegen:
+    command: 'pnpm typegen'
+    inputs:
+      - 'codegen.ts'

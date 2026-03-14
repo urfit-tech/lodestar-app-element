@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "packages/types" },
-    { "path": "packages/helpers" }
+    { "path": "packages/helpers" },
+    { "path": "packages/graphql" }
   ]
 }
