@@ -74,10 +74,11 @@ const PaymentSelector: React.FC<{
 }
 
 const getPaymentOptions = () => {
-  const {
-    settings: { AVAILABLE_PAYMENT_GATEWAYS },
-  } = useApp()
-  const availablePaymentGateways = JSON.parse(AVAILABLE_PAYMENT_GATEWAYS)
+  const { settings } = useApp()
+  const availablePaymentGateways = JSON.parse(settings['AVAILABLE_PAYMENT_GATEWAYS'] || '[]')
+  const maskedGateways: string[] = settings['payment.payment_gateway_mask']
+    ? JSON.parse(settings['payment.payment_gateway_mask'])
+    : []
   const { formatMessage } = useIntl()
   const { data, loading, error } = useQuery<hasura.getPaymentGatewayMethod>(
     gql`
@@ -138,7 +139,7 @@ const getPaymentOptions = () => {
     { methodCount: {}, paymentOptions: [] },
   ).paymentOptions
 
-  return paymentOptions
+  return paymentOptions?.filter(option => !maskedGateways.includes(option.payment.gateway))
 }
 
 export default PaymentSelector
