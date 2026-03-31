@@ -91,27 +91,33 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
 
   const refreshToken = useCallback(async () => {
     setIsAuthenticating(true)
-    const fingerPrintId = await getFingerPrintId()
-    const { ip, country, countryCode } = await fetchCurrentGeolocation()
-    const {
-      data: { code, result },
-    } = await Axios.post(
-      `${process.env.REACT_APP_API_BASE_ROOT}/auth/refresh-token`,
-      { appId, fingerPrintId, geoLocation: { ip, country, countryCode } },
-      {
-        method: 'POST',
-        withCredentials: true,
-      },
-    )
-    if (code === 'SUCCESS') {
-      setAuthToken(result.authToken)
-    } else if (code === 'E_NO_DEVICE') {
+    try {
+      const fingerPrintId = await getFingerPrintId()
+      const { ip, country, countryCode } = await fetchCurrentGeolocation()
+      const {
+        data: { code, result },
+      } = await Axios.post(
+        `${process.env.REACT_APP_API_BASE_ROOT}/auth/refresh-token`,
+        { appId, fingerPrintId, geoLocation: { ip, country, countryCode } },
+        {
+          method: 'POST',
+          withCredentials: true,
+        },
+      )
+      if (code === 'SUCCESS') {
+        setAuthToken(result.authToken)
+      } else if (code === 'E_NO_DEVICE') {
+        setAuthToken(null)
+        alert('您已被登出，目前有其他裝置登入這組帳號')
+      } else {
+        setAuthToken(null)
+      }
+    } catch (error) {
+      process.env.NODE_ENV === 'development' && console.error('refresh token failed:', error)
       setAuthToken(null)
-      alert('您已被登出，目前有其他裝置登入這組帳號')
-    } else {
-      setAuthToken(null)
+    } finally {
+      setIsAuthenticating(false)
     }
-    setIsAuthenticating(false)
   }, [appId])
 
   const currentMember = payload && {
