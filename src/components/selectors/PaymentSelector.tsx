@@ -5,6 +5,7 @@ import { Form } from 'antd'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
+import { useApp } from '../../contexts/AppContext'
 import * as hasura from '../../hasura'
 import { checkoutMessages } from '../../helpers/translation'
 import { PaymentGatewayType, PaymentMethodType, PaymentProps } from '../../types/checkout'
@@ -53,9 +54,9 @@ const PaymentSelector: React.FC<{
       <Select
         value={
           selectedPaymentMethod &&
-          paymentOptions.some(
-            paymentOption => JSON.stringify(paymentOption.payment) === JSON.stringify(selectedPaymentMethod),
-          )
+            paymentOptions.some(
+              paymentOption => JSON.stringify(paymentOption.payment) === JSON.stringify(selectedPaymentMethod),
+            )
             ? JSON.stringify(selectedPaymentMethod)
             : undefined
         }
@@ -73,11 +74,21 @@ const PaymentSelector: React.FC<{
 }
 
 const getPaymentOptions = () => {
+  const { settings } = useApp()
+  const availablePaymentGateways = JSON.parse(settings['AVAILABLE_PAYMENT_GATEWAYS'] || '[]')
+  const maskedGateways: string[] = settings['payment.payment_gateway_mask']
+    ? JSON.parse(settings['payment.payment_gateway_mask'])
+    : []
   const { formatMessage } = useIntl()
   const { data, loading, error } = useQuery<hasura.getPaymentGatewayMethod>(
     gql`
-      query getPaymentGatewayMethod {
-        app_payment_gateway_method(where: { status: { _eq: "enabled" } }) {
+      query getPaymentGatewayMethod($availablePaymentGateways: [String!]!) {
+        app_payment_gateway_method(
+          where: {
+            status: { _eq: "enabled" }
+            app_payment_gateway: { gateway: { name: { _in: $availablePaymentGateways } } }
+          }
+        ) {
           method {
             name
           }
@@ -89,6 +100,7 @@ const getPaymentOptions = () => {
         }
       }
     `,
+    { variables: { availablePaymentGateways } },
   )
 
   const paymentOptions = data?.app_payment_gateway_method.reduce<{
@@ -127,7 +139,7 @@ const getPaymentOptions = () => {
     { methodCount: {}, paymentOptions: [] },
   ).paymentOptions
 
-  return paymentOptions
+  return paymentOptions?.filter(option => !maskedGateways.includes(option.payment.gateway))
 }
 
 export default PaymentSelector
