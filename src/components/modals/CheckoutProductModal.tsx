@@ -141,6 +141,7 @@ export type CheckoutProductModalProps = {
   shippingMethods?: ShippingMethodProps[]
   productQuantity?: number
   isModalDisable?: boolean
+  onAuthRequired?: () => void
   isFieldsValidate?: (fieldsValue: { invoice: InvoiceProps; shipping: ShippingProps }) => {
     isValidInvoice: boolean
     isValidShipping: boolean
@@ -170,6 +171,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
   renderTrigger,
   renderProductSelector,
   renderTerms,
+  onAuthRequired,
   setIsModalDisable,
   setIsOrderCheckLoading,
 }) => {
@@ -187,10 +189,15 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
 
   useEffect(() => {
     if (!checkoutOpened.current && checkoutProductId === defaultProductId) {
+      if (isAuthenticating) return
       checkoutOpened.current = true
-      onOpen()
+      if (!currentMemberId && onAuthRequired) {
+        onAuthRequired()
+      } else {
+        onOpen()
+      }
     }
-  }, [checkoutProductId])
+  }, [checkoutProductId, isAuthenticating, currentMemberId])
 
   useEffect(() => {
     if (productQuantity !== undefined) {
