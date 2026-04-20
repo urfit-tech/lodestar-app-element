@@ -1,6 +1,6 @@
 import { ApolloProvider } from '@apollo/client'
-import { ApolloClientOptions, createApolloClient } from '@lodestar/data-hasura/apollo'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@lodestar/contexts/AuthContext'
+import { ApolloClientOptions, createApolloClient } from '../apollo'
 
 export const ApiProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
   const { authToken } = useAuth()

@@ -1,4 +1,3 @@
-export * from './ApiContext'
 export * from './AppContext'
 export * from './AppThemeContext'
 export * from './AuthContext'
