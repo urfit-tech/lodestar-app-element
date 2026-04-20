@@ -363,6 +363,9 @@ importers:
       '@lodestar/helpers':
         specifier: workspace:*
         version: link:../helpers
+      '@lodestar/hooks':
+        specifier: workspace:*
+        version: link:../hooks
       '@lodestar/types':
         specifier: workspace:*
         version: link:../types
