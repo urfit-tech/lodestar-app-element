@@ -2,7 +2,6 @@ import { useToast } from '@chakra-ui/react'
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import Ajv, { JSONSchemaType } from 'ajv'
 import axios from 'axios'
-import jwt from 'jsonwebtoken'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useApp } from '@lodestar/contexts/AppContext'
@@ -148,8 +147,40 @@ export type AuthTokenPayload = {
   loggedInMembers?: Member[]
 }
 
+const decodeBase64Url = (value: string) => {
+  try {
+    const base64 = value.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
+    const binary = window.atob(padded)
+    const encoded = Array.from(binary)
+      .map(character => `%${character.charCodeAt(0).toString(16).padStart(2, '0')}`)
+      .join('')
+    return decodeURIComponent(encoded)
+  } catch {
+    return null
+  }
+}
+
+const decodeJwtPayload = (authToken: string) => {
+  const [, payload] = authToken.split('.')
+  if (!payload) {
+    return null
+  }
+
+  const decodedPayload = decodeBase64Url(payload)
+  if (!decodedPayload) {
+    return null
+  }
+
+  try {
+    return JSON.parse(decodedPayload)
+  } catch {
+    return null
+  }
+}
+
 export const parsePayload = (authToken: string) => {
-  const payload = jwt.decode(authToken)
+  const payload = decodeJwtPayload(authToken)
 
   const schema: JSONSchemaType<AuthTokenPayload> = {
     type: 'object',

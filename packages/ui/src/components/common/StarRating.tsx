@@ -1,9 +1,9 @@
 import { Icon } from '@chakra-ui/react'
 import React from 'react'
 import styled from 'styled-components'
-import { ReactComponent as StarGrayIcon } from '../../images/star-gray.svg'
-import { ReactComponent as StarHalfIcon } from '../../images/star-half.svg'
-import { ReactComponent as StarIcon } from '../../images/star.svg'
+import StarGrayIcon from '../../images/star-gray.svg?react'
+import StarHalfIcon from '../../images/star-half.svg?react'
+import StarIcon from '../../images/star.svg?react'
 
 const StyledStarRating = styled.div<{ size?: string }>`
   && svg {

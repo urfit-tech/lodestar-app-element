@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import styled, { css } from 'styled-components'
-import { ReactComponent as AngleRightIcon } from '../../images/icons/angle-right.svg'
+import AngleRightIcon from '../../images/icons/angle-right.svg?react'
 import { ElementComponent } from '@lodestar/types/element'
 import Paragraph from '../common/Paragraph'
 

@@ -1,8 +1,22 @@
 import moment from 'moment'
 import 'moment/locale/zh-tw'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useMemo, useState } from 'react'
 import { IntlProvider } from 'react-intl'
 import { useApp } from './AppContext'
+
+const localeModules = import.meta.glob<{ default: Record<string, string> }>(
+  '../../../ui/src/translations/locales/*.json',
+  { eager: true },
+)
+
+function loadMessages(language: string): Record<string, string> {
+  for (const [path, mod] of Object.entries(localeModules)) {
+    if (path.endsWith(`/${language}.json`)) {
+      return mod.default ?? mod as any
+    }
+  }
+  return {}
+}
 
 const supportedLanguages = ['zh-tw', 'zh-cn', 'en-us', 'vi', 'acsi']
 
@@ -51,12 +65,12 @@ export const LanguageProvider: React.FC = ({ children }) => {
     }
   }, [currentLanguage])
 
-  let messages: any = {}
-  try {
+  const messages = useMemo(() => {
     if (enabledModules.locale) {
-      messages = require(`../translations/locales/${currentLanguage}.json`)
+      return loadMessages(currentLanguage)
     }
-  } catch {}
+    return {}
+  }, [enabledModules.locale, currentLanguage])
 
   return (
     <LanguageContext.Provider

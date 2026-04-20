@@ -2,7 +2,6 @@ import { gql, useQuery } from '@apollo/client'
 import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import { camelCase } from 'lodash'
-import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import ReactPixel from 'react-facebook-pixel'
 import ReactGA from 'react-ga'
@@ -584,8 +583,8 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
         isLoading: isAuthenticating,
         isSubscription: productTarget.isSubscription,
         disable:
-          (productTarget.endedAt ? new Date(productTarget.endedAt) < new Date(now()) : false) ||
-          (productTarget.expiredAt ? new Date(productTarget.expiredAt) < new Date(now()) : false),
+          (productTarget.endedAt ? new Date(productTarget.endedAt) < new Date(Date.now()) : false) ||
+          (productTarget.expiredAt ? new Date(productTarget.expiredAt) < new Date(Date.now()) : false),
       })}
       <CommonModal
         title={<StyledTitle className="mb-4">{formatMessage(checkoutMessages.title.cart)}</StyledTitle>}

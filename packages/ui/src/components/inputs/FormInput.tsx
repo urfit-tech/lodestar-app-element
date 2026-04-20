@@ -2,8 +2,8 @@ import { Icon } from '@chakra-ui/icons'
 import { Input as ChakraInput, InputGroup, InputProps, InputRightElement } from '@chakra-ui/react'
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { ReactComponent as CheckCircleIcon } from '../../images/checked-circle.svg'
-import { ReactComponent as ExclamationCircleIcon } from '../../images/exclamation-circle.svg'
+import CheckCircleIcon from '../../images/checked-circle.svg?react'
+import ExclamationCircleIcon from '../../images/exclamation-circle.svg?react'
 
 const StyledInput = styled(ChakraInput as any)<{ isSuccess: true }>`
   && {

@@ -1,5 +1,4 @@
 import Axios, { AxiosError } from 'axios'
-import jwt from 'jsonwebtoken'
 import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
@@ -162,7 +161,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 setAuthToken(result.authToken)
               }
               try {
-                const currentMemberId = jwt.decode(result.authToken)?.sub
+                const currentMemberId = parsePayload(result.authToken)?.sub
                 const phone = sessionStorage.getItem('phone')
                 if (phone) {
                   process.env.REACT_APP_GRAPHQL_PH_ENDPOINT &&

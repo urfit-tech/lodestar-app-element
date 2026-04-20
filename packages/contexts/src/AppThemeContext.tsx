@@ -2,7 +2,7 @@ import paletteGenerator from '@bobthered/tailwindcss-palette-generator'
 import { ChakraProvider, extendTheme, ThemeOverride, useTheme } from '@chakra-ui/react'
 import { mergeDeepRight } from 'ramda'
 import { ThemeProvider } from 'styled-components'
-import '../styles.scss'
+import '../../ui/src/styles.scss'
 import { useApp } from './AppContext'
 
 export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> = ({
