@@ -9,7 +9,7 @@ import { convertPathName, notEmpty } from '@lodestar/helpers'
 import { Member } from '@lodestar/types/data'
 import { EcItem } from '@lodestar/types/general'
 import { getResourceCollection, Resource, ResourceType } from './resource'
-import { getCookie } from './util'
+import { getCookie } from '@lodestar/hooks/util'
 
 const convertProductType: (originalType: ResourceType, toMetaProduct: boolean) => ResourceType = (
   originalType: ResourceType,
