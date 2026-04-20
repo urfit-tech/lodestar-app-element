@@ -9,7 +9,7 @@ import LanguageContext from '@lodestar/contexts/LanguageContext'
 import { codeMessages } from '@lodestar/helpers/translation'
 import { Member } from '@lodestar/types/data'
 import { IpApiResponseFail, IpApiResponseSuccess } from '@lodestar/types/general'
-import { ResourceType } from './resource'
+import { ResourceType } from '@lodestar/types/resource'
 const ajv = new Ajv()
 
 // TODO: should be context

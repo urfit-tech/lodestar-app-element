@@ -2,26 +2,8 @@ import { ApolloClient, gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
 import hasura from '@lodestar/graphql/hasura'
 import { Member } from '@lodestar/types/data'
-
-export type ResourceType =
-  | 'program_package'
-  | 'program_package_plan'
-  | 'program'
-  | 'program_content'
-  | 'program_plan'
-  | 'activity'
-  | 'activity_ticket'
-  | 'podcast_album'
-  | 'podcast_plan'
-  | 'podcast_program'
-  | 'member_shop'
-  | 'merchandise'
-  | 'merchandise_spec'
-  | 'project'
-  | 'project_plan'
-  | 'post'
-  | 'member'
-  | 'unknown'
+import type { ResourceType } from '@lodestar/types/resource'
+export type { ResourceType }
 
 export type Resource = {
   id: string
