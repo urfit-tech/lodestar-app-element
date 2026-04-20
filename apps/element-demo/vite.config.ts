@@ -19,6 +19,7 @@ export default defineConfig({
     ...reactAppEnv,
   },
   optimizeDeps: {
+    include: ['moment', 'moment/locale/zh-tw', 'moment/locale/zh-cn'],
     esbuildOptions: {
       define: {
         global: 'globalThis',
@@ -26,7 +27,10 @@ export default defineConfig({
     },
   },
   resolve: {
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', 'moment'],
+    alias: [
+      { find: /^moment$/, replacement: 'moment/moment.js' },
+    ],
   },
   server: {
     port: 3000,

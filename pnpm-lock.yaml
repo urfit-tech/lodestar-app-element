@@ -54,6 +54,9 @@ importers:
       '@lodestar/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      moment:
+        specifier: ^2.29.1
+        version: 2.30.1
       react:
         specifier: ^17.0.2
         version: 17.0.2
