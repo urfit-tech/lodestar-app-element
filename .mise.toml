@@ -1,4 +1,5 @@
 [tools]
+age = "latest"
 direnv = "latest"
 node = "22"
 pnpm = "10"

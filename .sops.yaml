@@ -1,3 +1,7 @@
 creation_rules:
-  - path_regex: \.env\.encrypted$
-    age: '<your-age-public-key>'
+  - path_regex: \.env\.production\.encrypted$
+    age: 'age1798ljhun9zep2a6lygee00yr2sfpskv5crldm40h4zg7cxe9r3nqp36xs6'
+  - path_regex: \.env\.staging\.encrypted$
+    age: 'age1798ljhun9zep2a6lygee00yr2sfpskv5crldm40h4zg7cxe9r3nqp36xs6'
+  - path_regex: \.env\..*\.encrypted$
+    age: 'age1798ljhun9zep2a6lygee00yr2sfpskv5crldm40h4zg7cxe9r3nqp36xs6'
