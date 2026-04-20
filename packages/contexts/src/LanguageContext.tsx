@@ -5,7 +5,7 @@ import { IntlProvider } from 'react-intl'
 import { useApp } from './AppContext'
 
 const localeModules = import.meta.glob<{ default: Record<string, string> }>(
-  '../../../ui/src/translations/locales/*.json',
+  '../../ui/src/translations/locales/*.json',
   { eager: true },
 )
 
