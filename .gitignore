@@ -21,6 +21,13 @@ apps/*/dist/
 # misc
 .DS_Store
 
+# local tool state (user-specific, per-developer)
+.claude/
+.serena/
+
+# tech stack sandbox (untracked by design; see MIGRATION_PROGRESS.md)
+apps/playground/
+
 # env - plaintext env files (encrypted versions are committed)
 .env
 .env.*
