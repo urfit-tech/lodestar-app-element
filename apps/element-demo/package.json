@@ -8,16 +8,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@lodestar/ui": "workspace:*",
-    "@lodestar/types": "workspace:*",
-    "@lodestar/helpers": "workspace:*",
-    "@lodestar/graphql": "workspace:*",
-    "@lodestar/contexts": "workspace:*",
-    "@lodestar/hooks": "workspace:*",
-    "@chakra-ui/react": "1.8.9",
     "@chakra-ui/button": "1.5.10",
     "@chakra-ui/input": "1.4.6",
+    "@chakra-ui/react": "1.8.9",
     "@craftjs/core": "0.1.0-beta.20",
+    "@lodestar/contexts": "workspace:*",
+    "@lodestar/graphql": "workspace:*",
+    "@lodestar/helpers": "workspace:*",
+    "@lodestar/hooks": "workspace:*",
+    "@lodestar/types": "workspace:*",
+    "@lodestar/ui": "workspace:*",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-intl": "5.20.9",
@@ -31,7 +31,8 @@
     "@types/react-router-dom": "5.1.5",
     "@types/styled-components": "5.1.14",
     "@vitejs/plugin-react": "^4.0.0",
+    "sass": "^1.66.1",
     "vite": "^6.0.0",
-    "sass": "^1.66.1"
+    "vite-plugin-svgr": "^4.5.0"
   }
 }

@@ -19,6 +19,8 @@ import ProgramPackagePage from './pages/ProgramPackagePage'
 import ProjectElementPage from './pages/ProjectElementPage'
 import TextPage from './pages/TextPage'
 
+const craftResolvers = { ...CraftResolvers }
+
 const routes = [
   { name: 'Home', path: '/', render: () => null },
   { name: 'Auth', path: '/auth', component: AuthPage },
@@ -43,7 +45,7 @@ const App: React.FC = () => {
   }
   return (
     <LodestarAppProvider appId={import.meta.env.VITE_APP_ID}>
-      <Editor enabled={editing} resolver={CraftResolvers}>
+      <Editor enabled={editing} resolver={craftResolvers}>
         <Frame>
           <BrowserRouter>
             <QueryParamProvider ReactRouterRoute={Route}>

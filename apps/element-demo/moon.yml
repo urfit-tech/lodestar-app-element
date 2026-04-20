@@ -1,7 +1,9 @@
 tasks:
   dev:
     command: 'pnpm dev'
-    local: true
+    options:
+      persistent: true
+      cache: false
   build:
     command: 'pnpm build'
     inputs:
