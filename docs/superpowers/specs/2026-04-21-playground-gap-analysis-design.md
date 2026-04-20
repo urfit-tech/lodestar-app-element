@@ -1,5 +1,12 @@
 # Playground Gap Analysis — 視覺化遷移剩餘工作量
 
+> **⚠️ 事後修正（2026-04-21）：** 本 spec 與其產出的報告基於一個**錯誤前提** — 誤把 `apps/playground` 當成 monorepo 遷移的終點。實際上：
+> - `apps/playground` 是**獨立的 tech stack 沙盒**（未 commit、不在遷移計畫、不 import `@lodestar/*`）
+> - 真正的遷移終點是 `apps/element-demo`（1:1 對應 master 的 15 條路由）
+> - 本次產出仍保留作為「此誤解的存證」與「playground 目前狀態」的快照。後續若要做視覺一致性驗證，對比對象應為 `master ↔ apps/element-demo`。
+>
+> 參見 `MIGRATION_PROGRESS.md` 第三階段註記。
+
 **日期：** 2026-04-21
 **分支：** refactor/v1
 **相關文件：**

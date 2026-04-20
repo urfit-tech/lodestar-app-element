@@ -25,8 +25,10 @@
 ## 第三階段：建立 demo app
 
 - [x] apps/element-demo (Vite + React)
-- [ ] 驗證所有元件正常運作
+- [ ] 驗證所有元件正常運作（對照基準：`origin/master`，使用 `apps/element-demo` 逐一比對 15 條路由視覺一致）
 - [x] 清理 src/ 殘留檔案
+
+> **關於 `apps/playground`：** 這是一個獨立的 tech stack 沙盒（React 19 + Tailwind + TanStack Start + Apollo v4），**不是本遷移的目標**，也不屬於任何階段的產物。內容是 Haute Pâtisserie 會議 demo，用途是驗證未來可能採用的新技術棧可行性，與 master 的元件庫無關聯。詳見 `docs/superpowers/specs/2026-04-21-playground-gap-analysis.md`（該報告初始前提誤把 playground 視為遷移目標，結論保留作為此誤解的存證）。
 
 ## 第四階段：整合其他 repo（之後處理）
 
