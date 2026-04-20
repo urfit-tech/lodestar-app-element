@@ -1,4 +1,12 @@
 {
-  "files": [],
-  "references": []
+  "references": [
+    { "path": "packages/types" },
+    { "path": "packages/helpers" },
+    { "path": "packages/graphql" },
+    { "path": "packages/contexts" },
+    { "path": "packages/hooks" },
+    { "path": "packages/ui" },
+    { "path": "apps/element-demo" },
+    { "path": "apps/playground" }
+  ]
 }
