@@ -38,6 +38,10 @@
 ## 待辦（遷移後）
 
 - [ ] UI 與資料層解耦（@lodestar/ui 不應直接依賴 @lodestar/graphql）
+  - 設計：`docs/superpowers/specs/2026-04-21-ui-data-decoupling-design.md`
+  - [x] Phase A: 建立 `@lodestar/data-hasura`，搬 9 個 hook 檔 + ApiProvider/AppProvider + apollo helper（見 `docs/superpowers/plans/2026-04-21-data-hasura-phase-a.md`；element-demo 15/15 路由仍一致）
+  - [ ] Phase B: `@lodestar/ui` 改 props-only
+  - [ ] Phase C: 清洗 package.json 依賴
 - [ ] CI/CD 建置
 - [x] 解決 barrel export 名稱衝突（types/index.ts, ui/index.ts 中的重複 export）
 - [x] oxfmt + oxlint 完整設定
