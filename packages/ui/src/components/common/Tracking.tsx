@@ -3,8 +3,8 @@ import React, { useEffect } from 'react'
 import { StringParam, useQueryParam } from 'use-query-params'
 import { useApp } from '@lodestar/contexts/AppContext'
 import { useAuth } from '@lodestar/contexts/AuthContext'
-import { Resource } from '@lodestar/hooks/resource'
-import { useMemberShipCardDetails, useTracking } from '@lodestar/hooks/tracking'
+import { Resource } from '@lodestar/data-hasura/hooks/resource'
+import { useMemberShipCardDetails, useTracking } from '@lodestar/data-hasura/hooks/tracking'
 
 const View: React.FC<{
   ignore?: 'EEC' | 'CUSTOM'

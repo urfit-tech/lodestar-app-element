@@ -2,7 +2,7 @@ import { Skeleton, SkeletonCircle } from '@chakra-ui/skeleton'
 import classNames from 'classnames'
 import styled from 'styled-components'
 import { DeepPick } from 'ts-deep-pick/lib'
-import { usePublicMember } from '@lodestar/hooks/data'
+import { usePublicMember } from '@lodestar/data-hasura/hooks/data'
 import DefaultAvatar from '../../images/icons/avatar.svg'
 import { Member } from '@lodestar/types/data'
 

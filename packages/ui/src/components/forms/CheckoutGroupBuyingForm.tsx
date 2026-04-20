@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { useAuth } from '@lodestar/contexts/AuthContext'
 import { checkoutMessages, commonMessages } from '@lodestar/helpers/translation'
-import { useSearchMembers, useSimpleProduct } from '@lodestar/hooks/common'
+import { useSearchMembers, useSimpleProduct } from '@lodestar/data-hasura/hooks/common'
 import { CommonLargeTextMixin, CommonTextMixin, CommonTitleMixin } from '../common/index'
 import { FormInput } from '../inputs/FormInput'
 
