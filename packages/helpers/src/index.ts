@@ -1,5 +1,4 @@
 export * from './adaptObject'
-export * from './apollo'
 export * from './common'
 export * from './conversionApi'
 export * from './error'
