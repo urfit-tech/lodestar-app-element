@@ -1,10 +1,7 @@
 import { ThemeOverride } from '@chakra-ui/react'
-import { ApiProvider } from '@lodestar/data-hasura/contexts/ApiProvider'
-import { AppProvider } from '@lodestar/data-hasura/contexts/AppProvider'
 import { createContext } from 'react'
-import { AppThemeProvider } from './AppThemeContext'
-import { AuthProvider } from './AuthContext'
-import { LanguageProvider } from './LanguageContext'
+import { AppThemeProvider, AuthProvider, LanguageProvider } from '@lodestar/contexts'
+import { ApiProvider, AppProvider } from '@lodestar/data-hasura'
 
 export const LodestarAppProvider: React.FC<{ appId: string; extend?: { chakraTheme?: ThemeOverride } }> = ({
   appId,

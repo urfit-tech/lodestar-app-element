@@ -39,6 +39,9 @@ importers:
       '@lodestar/contexts':
         specifier: workspace:*
         version: link:../../packages/contexts
+      '@lodestar/data-hasura':
+        specifier: workspace:*
+        version: link:../../packages/data-hasura
       '@lodestar/graphql':
         specifier: workspace:*
         version: link:../../packages/graphql
