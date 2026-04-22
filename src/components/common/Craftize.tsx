@@ -51,9 +51,6 @@ export const CraftSelectedMixin = css`
   border: 2px solid cornflowerblue;
 `
 
-// FIXME: why cannot use <P extends {editing?:boolean}> directly?
-// FIXME: only accept for FC and CC, not VFC
-
 export type PropsWithCraft<P> = ElementBaseProps<P> & {
   responsive?: {
     mobile?: P & { customStyle?: CSSObject }
@@ -247,14 +244,17 @@ const cloneNodeTree = (tree: NodeTree): NodeTree => {
     nodes: newNodes,
   }
 }
+
 const customStyleFormat = (customStyle?: CSSObject): CSSObject => {
   if (!customStyle) return {}
-  const { backgroundImageUrl, backgroundImage, ...rest } = customStyle
+  const { backgroundImageUrl, ...rest } = customStyle
 
   return {
     ...rest,
     width: customStyle.width?.toString().includes('%') ? '100%' : customStyle.width,
-    backgroundImage: undefined,
+    backgroundImage:
+      customStyle.backgroundImage || (backgroundImageUrl ? `url(${String(backgroundImageUrl).replace(/['"]/g, '')})` : undefined),
   }
 }
+
 export default Craftize
