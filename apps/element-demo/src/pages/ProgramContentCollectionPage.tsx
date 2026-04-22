@@ -1,15 +1,15 @@
-// import CraftProgramContentCollection from '@lodestar/ui/components/craft/CraftProgramContentCollection'
+import { CraftProgramContentCollection } from '../craft/CraftProgramContentCollection'
 
 const ProgramContentCollectionPage: React.FC = () => {
   return (
     <div className="container">
-      {/* <CraftProgramContentCollection
+      <CraftProgramContentCollection
         variant="card"
         source={{
           from: 'recentWatched',
           limit: 3,
         }}
-      /> */}
+      />
     </div>
   )
 }
