@@ -1,18 +1,40 @@
-import { curry, mapObjIndexed, mergeRight, omit, pipe, values } from 'ramda'
+import { mapObjIndexed, mergeRight, omit, pipe, values } from 'ramda'
 
-export const renameKey = curry((keysMap: { [key: string]: string }, obj: { [key: string]: any }) =>
-  pipe(
-    (obj: { [key: string]: any }) => mapObjIndexed((oldKey: keyof typeof obj) => obj[oldKey])(keysMap),
-    mergeRight(obj),
-    omit(values(keysMap)),
-  )(obj),
-)
+// Manual currying instead of ramda.curry — ramda's ts-toolbelt-based Curry
+// type leaks a `.pnpm/…` path into declaration emit (TS2742), which breaks
+// composite builds.
+type Dict = { [key: string]: unknown }
 
-export const adaptValue = curry((valuesMap: { [key: string]: Function }, obj: { [key: string]: any }) =>
-  pipe(
-    (obj: { [key: string]: any }) => mapObjIndexed((value: Function, key: string) => value(obj[key]))(valuesMap),
-    mergeRight(obj),
-  )(obj),
-)
+// Keys rename and per-value transform both produce an object whose precise
+// shape depends on the runtime map argument. TypeScript can't model that
+// transformation without heavy mapped types, so we expose the output as a
+// type parameter the caller pins at the declaration site.
+export const renameKey =
+  <TOut extends Dict = Dict>(keysMap: { [key: string]: string }) =>
+  (obj: Dict): TOut =>
+    pipe(
+      (o: Dict) => mapObjIndexed((oldKey: keyof typeof o) => o[oldKey as keyof Dict])(keysMap),
+      mergeRight(obj),
+      omit(values(keysMap)),
+    )(obj) as TOut
 
-export const inertTransform = curry((fn: Function, arg: any) => (arg ? fn(arg) : arg))
+type UnknownTransform = (val: unknown) => unknown
+
+export const adaptValue =
+  <TIn extends Dict, TOut extends Dict = TIn>(valuesMap: { [K in keyof TIn]?: (val: TIn[K]) => unknown }) =>
+  (obj: TIn): TOut => {
+    const transforms = valuesMap as { [key: string]: UnknownTransform }
+    const transformed = mapObjIndexed(
+      (fn: UnknownTransform, key: string) => fn((obj as Dict)[key]),
+      transforms,
+    )
+    return mergeRight(obj as Dict, transformed) as TOut
+  }
+
+export const inertTransform =
+  <TIn, TOut>(fn: (arg: TIn) => TOut) =>
+  (arg: TIn | null | undefined): TOut | null | undefined => {
+    if (arg === null) return null
+    if (arg === undefined) return undefined
+    return fn(arg)
+  }
