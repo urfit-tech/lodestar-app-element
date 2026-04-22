@@ -98,17 +98,28 @@ Expected: PASS。
 **Files:**
 - Create: `packages/data-hasura/src/hooks/activity.ts`
 
+**設計決策：** 不拆成 `usePublishedActivities` + `useCustomActivities` 兩個 hook。兩種 variant 打的都是同一個 `GET_ACTIVITY_COLLECTION` document，只差 `whereClause` 與後處理。統一成 `useActivityCollection(source)`，hook 內用 `useMemo` 算變數，消費者單次呼叫即可 —— 避免 Connected wrapper 要用「兩個 hook + skip」去繞 React rules-of-hooks。
+
 - [ ] **Step 1: 建立檔案**
 
-從 `packages/ui/src/components/collections/ActivityCollection.tsx` 把 `collectPublishedAtCollection`、`collectCustomCollection`、`composeCollectionData`、`activityFields` 四塊搬過來，改寫成兩個 React hook。
+從 `packages/ui/src/components/collections/ActivityCollection.tsx` 把 `collectPublishedAtCollection`、`collectCustomCollection`、`composeCollectionData`、`activityFields` 四塊搬過來，合併成一個 hook。
 
 ```ts
 import { gql, useQuery } from '@apollo/client'
+import { useMemo } from 'react'
 import { notEmpty } from '@lodestar/helpers'
 import * as hasura from '@lodestar/graphql/hasura'
 import { getActivityCollectionQuery } from '@lodestar/graphql/queries'
 import { ActivityCollectionItem } from '@lodestar/types/activity'
 import { ProductCustomSource, ProductPublishedAtSource } from '@lodestar/types/options'
+
+export type ActivityCollectionSource = ProductPublishedAtSource | ProductCustomSource
+
+export type UseActivityCollectionResult = {
+  data: ActivityCollectionItem[]
+  loading: boolean
+  error?: Error
+}
 
 const activityFields = gql`
   fragment activityFields on activity {
@@ -141,7 +152,7 @@ const activityFields = gql`
 `
 
 const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityCollectionItem[] =>
-  data?.activity.map(a => ({
+  data.activity.map(a => ({
     id: a.id,
     title: a.title,
     coverUrl: a.cover_url || null,
@@ -160,74 +171,67 @@ const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityCo
       name: ac.category.name,
     })),
     totalParticipants: 0, // TODO: wire activity_enrollments_aggregate once ui needs it
-  })) || []
+  }))
 
-export type UseActivityCollectionResult = {
-  data: ActivityCollectionItem[]
-  loading: boolean
-  error?: Error
-}
-
-export const usePublishedActivities = (options: ProductPublishedAtSource): UseActivityCollectionResult => {
-  const { data, loading, error } = useQuery<hasura.GET_ACTIVITY_COLLECTION, hasura.GET_ACTIVITY_COLLECTIONVariables>(
-    getActivityCollectionQuery(activityFields),
-    {
-      variables: {
-        whereClause: {
-          activity_categories: options.defaultCategoryIds?.length
-            ? { category_id: { _in: options.defaultCategoryIds } }
-            : undefined,
-          activity_tags: options.defaultTagNames?.length
-            ? { tag_name: { _in: options.defaultTagNames } }
-            : undefined,
-          published_at: { _lt: 'now()' },
-          is_private: { _eq: false },
-        },
-        orderByClause: [{ published_at: (options.asc ? 'asc' : 'desc') as hasura.order_by }],
-        limit: options.limit,
-      },
-    },
-  )
-  return {
-    data: data ? composeCollectionData(data) : [],
-    loading,
-    error: error && new Error(error.message),
-  }
-}
-
-export const useCustomActivities = (options: ProductCustomSource): UseActivityCollectionResult => {
-  const { data: rawData, loading, error } = useQuery<
-    hasura.GET_ACTIVITY_COLLECTION,
-    hasura.GET_ACTIVITY_COLLECTIONVariables
-  >(getActivityCollectionQuery(activityFields), {
-    variables: {
+const buildVariables = (source: ActivityCollectionSource): hasura.GET_ACTIVITY_COLLECTIONVariables => {
+  if (source.from === 'custom') {
+    return {
       limit: undefined,
       orderByClause: [],
       whereClause: {
-        id: { _in: options.idList || [] },
+        id: { _in: source.idList || [] },
         published_at: { _lt: 'now()' },
         is_private: { _eq: false },
       },
-    },
-  })
-
-  // Preserve the `idList` order explicitly (matches the original collectCustomCollection behaviour)
-  const ordered: hasura.GET_ACTIVITY_COLLECTION | undefined = rawData && {
-    ...rawData,
-    activity: (options.idList || [])
-      .map(id => rawData.activity.find(p => p.id === id))
-      .filter(notEmpty),
+    }
   }
+  return {
+    whereClause: {
+      activity_categories: source.defaultCategoryIds?.length
+        ? { category_id: { _in: source.defaultCategoryIds } }
+        : undefined,
+      activity_tags: source.defaultTagNames?.length
+        ? { tag_name: { _in: source.defaultTagNames } }
+        : undefined,
+      published_at: { _lt: 'now()' },
+      is_private: { _eq: false },
+    },
+    orderByClause: [{ published_at: (source.asc ? 'asc' : 'desc') as hasura.order_by }],
+    limit: source.limit,
+  }
+}
+
+export const useActivityCollection = (source: ActivityCollectionSource): UseActivityCollectionResult => {
+  const variables = useMemo(() => buildVariables(source), [source])
+  const { data: rawData, loading, error } = useQuery<
+    hasura.GET_ACTIVITY_COLLECTION,
+    hasura.GET_ACTIVITY_COLLECTIONVariables
+  >(getActivityCollectionQuery(activityFields), { variables })
+
+  const composed = useMemo(() => {
+    if (!rawData) return []
+    // `custom` source: preserve the caller-supplied idList order (matches
+    // the original collectCustomCollection behaviour — the query itself
+    // returns rows in arbitrary order).
+    if (source.from === 'custom') {
+      const ordered: hasura.GET_ACTIVITY_COLLECTION = {
+        ...rawData,
+        activity: (source.idList || [])
+          .map(id => rawData.activity.find(a => a.id === id))
+          .filter(notEmpty),
+      }
+      return composeCollectionData(ordered)
+    }
+    return composeCollectionData(rawData)
+  }, [rawData, source])
 
   return {
-    data: ordered ? composeCollectionData(ordered) : [],
+    data: composed,
     loading,
     error: error && new Error(error.message),
   }
 }
 ```
-
-**注意：** `useActivityCollection` 先不做統一 wrapper（`source.from === 'custom' ? useCustomActivities : usePublishedActivities`）—— React hooks 不能條件呼叫。wrapper 在 Connected component 裡寫（Task 6），不是 hook 層。
 
 - [ ] **Step 2: Typecheck**
 
@@ -267,6 +271,13 @@ Expected: PASS（barrel 內無名稱衝突）。
 
 - [ ] **Step 1: 重寫整個檔案**
 
+**Prop 命名設計：** 為避免撞到 `ElementComponent<P>` 自帶的 `loading?: boolean` / `errors?: Error[]`（parent-driven 的「不要 render」語意），query 狀態改用明確命名：
+- `activities: ActivityCollectionItem[]` — 查詢結果
+- `isFetching: boolean` — query loading
+- `fetchError?: Error` — query error
+
+`ElementComponent` 的 `loading` / `errors` 保留原語意（parent 要求 hide），不動。
+
 檔案改為：
 
 ```tsx
@@ -286,9 +297,9 @@ import CollectionCarousel from './CollectionCarousel'
 
 export type ActivityCollectionProps = {
   name?: string
-  data?: ActivityCollectionItem[]
-  loading?: boolean
-  error?: Error
+  activities?: ActivityCollectionItem[]
+  isFetching?: boolean
+  fetchError?: Error
   defaultCategoryIds?: string[]
   variant?: 'card' | 'tile'
   layout?: CollectionLayout
@@ -302,16 +313,16 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const {
-    data = [],
-    loading,
-    error,
+    activities = [],
+    isFetching,
+    fetchError,
     defaultCategoryIds,
     children,
-    errors: externalErrors,
-    loading: externalLoading,
+    loading: parentLoading,
+    errors: parentErrors,
   } = props
 
-  if (externalLoading || externalErrors) {
+  if (parentLoading || parentErrors) {
     return null
   }
 
@@ -322,17 +333,17 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
       ? CollectionCarousel(collectionName, 'activity', EntityElement)
       : Collection(collectionName, 'activity', EntityElement)
 
-  const categories: ActivityCollectionCategory[] = loading || error
+  const categories: ActivityCollectionCategory[] = isFetching || fetchError
     ? []
     : uniqBy(
         (category: ActivityCollectionCategory) => category.id,
       )(
-        data
+        activities
           .flatMap(d => d.categories)
           .filter(category => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
       )
 
-  const filter = (d: ActivityCollectionItem) =>
+  const filterByActiveCategory = (d: ActivityCollectionItem) =>
     !props.withSelector ||
     !activeCategoryId ||
     d.categories.map(category => category.id).includes(activeCategoryId)
@@ -347,15 +358,15 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
         />
       )}
       {children}
-      {loading ? (
+      {isFetching ? (
         <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
-      ) : error ? (
-        <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={[error]} />
+      ) : fetchError ? (
+        <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={[fetchError]} />
       ) : (
         <ElementCollection
           layout={props.layout}
           carouselProps={props.carousel}
-          data={data.filter(filter)}
+          data={activities.filter(filterByActiveCategory)}
           renderElement={({ data: activity, ElementComponent: ActivityElement, onClick }) => (
             <ActivityElement
               editing={props.editing}
@@ -386,8 +397,9 @@ export default ActivityCollection
 **重點差異：**
 - 移除 `import { gql, useQuery } from '@apollo/client'`、`import * as hasura`、`import { getActivityCollectionQuery }`、`import { DeepPick }`、`import { notEmpty }`、`import ContextCollection`
 - 移除 `collectPublishedAtCollection` / `collectCustomCollection` / `composeCollectionData` / `activityFields`（已搬去 Task 2）
-- 新 props: `data`, `loading`, `error`, `defaultCategoryIds`（取代原本從 source 裡讀的部分）
+- 新 props: `activities`, `isFetching`, `fetchError`, `defaultCategoryIds`（取代原本從 source 裡讀的部分）
 - `source` 整個刪掉 —— 資料源決策留給 Connected wrapper
+- `loading` / `errors` 保留（來自 `ElementComponent` 基底，parent-driven「hide」語意）
 
 - [ ] **Step 2: 驗證 ui 不再引用 apollo**
 
@@ -441,30 +453,27 @@ Expected: PASS（`ActivityCollection` 檔案本身仍在 ui，純被消費者用
 import React from 'react'
 import ActivityCollection, { ActivityCollectionProps } from '@lodestar/ui/components/collections/ActivityCollection'
 import Craftize from '@lodestar/ui/components/common/Craftize'
-import { usePublishedActivities, useCustomActivities } from '@lodestar/data-hasura/hooks/activity'
-import { ProductCustomSource, ProductPublishedAtSource } from '@lodestar/types/options'
+import { ActivityCollectionSource, useActivityCollection } from '@lodestar/data-hasura/hooks/activity'
 
-type ActivityCollectionSource = ProductPublishedAtSource | ProductCustomSource
-
-export type CraftActivityCollectionProps = Omit<ActivityCollectionProps, 'data' | 'loading' | 'error'> & {
+export type CraftActivityCollectionProps = Omit<
+  ActivityCollectionProps,
+  'activities' | 'isFetching' | 'fetchError' | 'defaultCategoryIds'
+> & {
   source?: ActivityCollectionSource
 }
 
 const ConnectedActivityCollection: React.FC<CraftActivityCollectionProps> = ({ source, ...rest }) => {
   const resolvedSource: ActivityCollectionSource = source ?? { from: 'publishedAt' }
-  const isCustom = resolvedSource.from === 'custom'
-  const published = usePublishedActivities(isCustom ? { from: 'publishedAt' } : resolvedSource as ProductPublishedAtSource)
-  const custom = useCustomActivities(isCustom ? (resolvedSource as ProductCustomSource) : { from: 'custom', idList: [] })
-  const active = isCustom ? custom : published
-
-  const defaultCategoryIds = !isCustom ? (resolvedSource as ProductPublishedAtSource).defaultCategoryIds : undefined
+  const { data, loading, error } = useActivityCollection(resolvedSource)
+  const defaultCategoryIds =
+    resolvedSource.from === 'publishedAt' ? resolvedSource.defaultCategoryIds : undefined
 
   return (
     <ActivityCollection
       {...rest}
-      data={active.data}
-      loading={active.loading}
-      error={active.error}
+      activities={data}
+      isFetching={loading}
+      fetchError={error}
       defaultCategoryIds={defaultCategoryIds}
     />
   )
@@ -473,84 +482,15 @@ const ConnectedActivityCollection: React.FC<CraftActivityCollectionProps> = ({ s
 export const CraftActivityCollection = Craftize(ConnectedActivityCollection)
 ```
 
-**重要：** 兩個 hook 都呼叫（用 `from: 'custom' / idList: []` 當 no-op placeholder），這樣 React hook 規則不會被條件呼叫打破。`usePublishedActivities({ from: 'publishedAt' })` 跟 `useCustomActivities({ from: 'custom', idList: [] })` 任一個當下沒用也會打到網路 —— 為了不送冗餘 query，下方調整：
+**單一 hook 呼叫：** Task 2 已把兩種 source 合併成 `useActivityCollection(source)`，Connected wrapper 不用處理 React rules-of-hooks 的條件呼叫問題，也不需要 `skip` flag。
 
-改寫為：
-
-```tsx
-const ConnectedActivityCollection: React.FC<CraftActivityCollectionProps> = ({ source, ...rest }) => {
-  const resolvedSource: ActivityCollectionSource = source ?? { from: 'publishedAt' }
-  const isCustom = resolvedSource.from === 'custom'
-
-  // Always call both hooks to satisfy React's rules, but skip the inactive
-  // request via Apollo's `skip` option so we never fire the placeholder query.
-  // (Implementation detail: pass `skip` through to the hooks in Task 2 if not
-  // already supported — decide during execution.)
-  ...
-}
-```
-
-> **Execution note:** Task 2 的 hook 未支援 `skip`。做 Task 6 時，回頭擴充 Task 2 的 hook 加 `skip?: boolean` 參數（預設 false），對應 `useQuery(..., { skip })`。這樣 Connected wrapper 可以只啟用一個 hook 的 query。**這是 Task 6 內可合理觸發的 Task 2 擴充，不另外拆 task。**
-
-完整 Connected wrapper 改為：
-
-```tsx
-const ConnectedActivityCollection: React.FC<CraftActivityCollectionProps> = ({ source, ...rest }) => {
-  const resolvedSource: ActivityCollectionSource = source ?? { from: 'publishedAt' }
-  const isCustom = resolvedSource.from === 'custom'
-
-  const published = usePublishedActivities(
-    isCustom ? { from: 'publishedAt' } : (resolvedSource as ProductPublishedAtSource),
-    { skip: isCustom },
-  )
-  const custom = useCustomActivities(
-    isCustom ? (resolvedSource as ProductCustomSource) : { from: 'custom', idList: [] },
-    { skip: !isCustom },
-  )
-  const active = isCustom ? custom : published
-  const defaultCategoryIds = !isCustom ? (resolvedSource as ProductPublishedAtSource).defaultCategoryIds : undefined
-
-  return (
-    <ActivityCollection
-      {...rest}
-      data={active.data}
-      loading={active.loading}
-      error={active.error}
-      defaultCategoryIds={defaultCategoryIds}
-    />
-  )
-}
-```
-
-- [ ] **Step 2: 回頭擴充 Task 2 的 hook**
-
-改 `packages/data-hasura/src/hooks/activity.ts` 的 `usePublishedActivities` / `useCustomActivities` signature 為：
-
-```ts
-export const usePublishedActivities = (
-  options: ProductPublishedAtSource,
-  config?: { skip?: boolean },
-): UseActivityCollectionResult => {
-  const { data, loading, error } = useQuery<...>(
-    getActivityCollectionQuery(activityFields),
-    {
-      skip: config?.skip,
-      variables: { ... },
-    },
-  )
-  ...
-}
-```
-
-同樣改 `useCustomActivities`。
-
-- [ ] **Step 3: 建立 `apps/element-demo/src/craft/index.ts`**
+- [ ] **Step 2: 建立 `apps/element-demo/src/craft/index.ts`**
 
 ```ts
 export * from './CraftActivityCollection'
 ```
 
-- [ ] **Step 4: Typecheck element-demo**
+- [ ] **Step 3: Typecheck element-demo**
 
 Run: `pnpm --filter @lodestar/element-demo exec tsc --noEmit 2>&1 | tail -20`
 
@@ -679,24 +619,26 @@ Run: `lsof -iTCP:3002 -sTCP:LISTEN -t 2>/dev/null | xargs kill 2>/dev/null`
 
 Run: `git status`
 
-- [ ] **Step 2: 分 commit（建議）**
+- [ ] **Step 2: 分 2 commit**
+
+拆 2 個而非 4 個：中間狀態也保持 typecheck 綠，`git bisect` 友善（為了 open-source 的歷史品質）。
 
 ```bash
-# (1) types
-git add packages/types/src/activity.ts packages/types/src/index.ts
-git commit -m "feat(types): add ActivityCollectionItem view model"
+# (1) 純加：types + data-hasura hook — 雙方獨立 typecheck 綠
+git add packages/types/src/activity.ts packages/types/src/index.ts \
+        packages/data-hasura/src/hooks/activity.ts packages/data-hasura/src/index.ts
+git commit -m "feat(data-hasura): add useActivityCollection hook and ActivityCollectionItem type"
 
-# (2) data-hasura hook
-git add packages/data-hasura/src/hooks/activity.ts packages/data-hasura/src/index.ts
-git commit -m "feat(data-hasura): add usePublishedActivities and useCustomActivities hooks"
-
-# (3) ui props-only + CraftElement 清理
-git add packages/ui/src/components/collections/ActivityCollection.tsx packages/ui/src/components/common/CraftElement.tsx
-git commit -m "refactor(ui): make ActivityCollection props-only, move Craftize wiring out"
-
-# (4) element-demo connected wrapper + resolver + page
-git add apps/element-demo/src/craft/ apps/element-demo/src/App.tsx apps/element-demo/src/pages/ActivityPage.tsx
-git commit -m "feat(element-demo): assemble CraftActivityCollection from ui + data-hasura"
+# (2) 切換：ui props-only + CraftElement 清理 + element-demo 接線
+#     這組改動互相耦合（ActivityCollection.tsx 換 props 後，同次改 CraftElement 移除
+#     舊 Craftize、element-demo 新增 Connected+Craftize、page 重新 import、App resolver
+#     合併兩邊 craft 來源），一起進才不會有中間 typecheck 紅的 commit。
+git add packages/ui/src/components/collections/ActivityCollection.tsx \
+        packages/ui/src/components/common/CraftElement.tsx \
+        apps/element-demo/src/craft/ \
+        apps/element-demo/src/App.tsx \
+        apps/element-demo/src/pages/ActivityPage.tsx
+git commit -m "refactor(ui,element-demo): make ActivityCollection props-only and wire it up from element-demo"
 ```
 
 ---
@@ -704,12 +646,13 @@ git commit -m "feat(element-demo): assemble CraftActivityCollection from ui + da
 ## Acceptance Criteria (B-0 完工標準)
 
 1. `packages/ui/src/components/collections/ActivityCollection.tsx` 不含任何 `@apollo/client` / `@lodestar/graphql` / `gql` / `useQuery` 參照
-2. `packages/data-hasura/src/hooks/activity.ts` 匯出 `usePublishedActivities`、`useCustomActivities`，都支援 `{ skip?: boolean }` 參數
+2. `packages/data-hasura/src/hooks/activity.ts` 匯出單一 `useActivityCollection(source)` hook 與 `ActivityCollectionSource`、`ActivityCollectionItem`（後者透過 `@lodestar/types/activity` re-export 亦可）
 3. `apps/element-demo/src/craft/CraftActivityCollection.tsx` 組 Connected wrapper + Craftize
 4. `apps/element-demo/src/App.tsx` 的 Craft.js resolver map 同時來自 ui + local craft/
 5. `pnpm -r exec tsc --noEmit` 全 PASS
-6. element-demo `/activity` 路由 view + editor 兩種模式與 master 一致
+6. element-demo `/activity` 路由 view + editor 兩種模式與 master 一致；editor 模式能透過 `CraftActivityCollection` 的 toolbar 設定 `source`（`source` 是 Craftize wrap 對外暴露的 prop，會存入 Craft.js node data）
 7. `{ from: 'publishedAt' }` 與 `{ from: 'custom' }` 兩 variant 都可正常渲染
+8. 兩 commit 均可單獨 typecheck 綠（`git bisect` 友善）
 
 ## 尚未處理（留給 B-1 / B-2 / B-3）
 
