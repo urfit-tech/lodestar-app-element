@@ -139,4 +139,34 @@ Record outcome inline (`[ ]` → `[x]` for pass; append notes for anything surpr
 - The `defaultCategoryIds` filter in the UI is now gated purely by the presence of a non-empty `defaultCategoryIds` prop rather than `source.from === 'custom'`: `ProjectCollection` no longer knows the source shape, so the Craft wrapper forwards `defaultCategoryIds` only when `source.from === 'publishedAt'` or `source.from === 'popular'` (matching master, where `custom` branches did not expose `defaultCategoryIds`). Behaviour is equivalent.
 - `ProjectCollectionSource` is a type alias for `ProductPublishedAtSource | ProductPublishedAtSource<'popular'> | ProductCustomSource`. The popular branch discriminates purely on `from: 'popular'` (no additional required fields beyond the shared `ProductPublishedAtSource` shape), so its manual-verification JSX is the typed literal `{ from: 'popular', limit: 6 }` above — no `as any` cast needed. If a future follow-up introduces popular-only required fields, update that verification line to include them.
 
+## B-1e — PostCollection (commits `895ac56`, `7988802`)
+
+### No demo page — mechanical checks only
+
+- `apps/element-demo/src/pages/` has no `PostPage.tsx` / `PostCollectionPage.tsx` — no route renders `CraftPostCollection`. Master did not ship a demo page either (`CraftPostCollection` was previously exported from `@lodestar/ui/.../CraftElement.tsx` but never referenced by any `element-demo` page). Visual parity against master therefore cannot be checked at this sub-task; the refactor is verified only against the shared mechanical bar below.
+- `CraftPostCollection` is still registered via `apps/element-demo/src/craft/index.ts` into the `craftResolvers` merge in `App.tsx` (`{ ...UiCraftResolvers, ...LocalCraftResolvers }`). The resolver map is load-bearing only when an element of that type is actually instantiated inside a `<Frame>` — since no route does, the entry is inert but safe, and it is in place for the follow-up below.
+
+### Mechanical checks (auto-verified)
+- [x] `pnpm --filter @lodestar/ui exec tsc --noEmit` passes
+- [x] `pnpm --filter @lodestar/element-demo exec tsc --noEmit` passes
+- [x] `pnpm -r exec tsc --noEmit` passes after `.tsbuildinfo` wipe
+- [x] `grep -rn "@apollo/client\|@lodestar/graphql\|\bgql\b\|\buseQuery\b" packages/ui/src/components/collections/PostCollection.tsx` is empty
+- [x] Commit `895ac56` (types + hook only) typechecks clean standalone before commit `7988802` layers on top.
+
+### Follow-up — add a demo page (TODO)
+
+- Add `apps/element-demo/src/pages/PostPage.tsx` (one route registration in `App.tsx`) plus a `<CraftPostCollection source={{ from: 'publishedAt', limit: 3 }} />` default render. Choosing a test app's post content is out of scope for B-1e and requires picking a `VITE_APP_ID` that actually has published posts — defer to whoever owns the demo env.
+- Once that page exists, add the usual view / editor / variant parity checks (analogous to B-1d):
+  - [ ] `/post` view mode — `<CraftPostCollection source={{ from: 'publishedAt', limit: 3 }} />` renders identical post cards to master (count, titles, cover images, code names, author names, `publishedAt` formatting).
+  - [ ] `/post` editor mode — Craft.js toolbar + drag-and-drop + device switch behave identically to master.
+  - [ ] **Popular variant:** `<CraftPostCollection source={{ from: 'popular', limit: 6 }} />` orders posts by `views desc` falling back to `published_at desc`.
+  - [ ] **Custom variant:** `<CraftPostCollection source={{ from: 'custom', idList: ['<real-post-uuid-a>', '<real-post-uuid-b>'] }} />` renders only those posts in `idList` order.
+  - [ ] **`withSelector`:** adding `withSelector` renders a `CategorySelector` chip row driven by the collection's aggregated categories, and selecting a chip filters the rendered posts.
+- Land this before the Phase B-4 parity sweep so PostCollection is not a blind spot in the final check.
+
+### Known deviations from master
+- The `post.publishedAt as any` cast that master threaded into `<PostElement publishedAt={…} />` is dropped. `PostElementProps.publishedAt` is already typed `Date | null` and the hook normalises the raw Hasura string through `new Date(...)` (or `null`), so the `any` was a vestigial escape hatch rather than real type divergence.
+- `PostCollectionSource` is a type alias for `ProductPublishedAtSource | ProductPublishedAtSource<'popular'> | ProductCustomSource`. The popular branch discriminates purely on `from: 'popular'` (no additional required fields beyond the shared `ProductPublishedAtSource` shape). No `type` side-channel was carried through the original `collect*Collection` calls (unlike `ProjectCollection`), so `usePostCollection` has a single-parameter signature with no `UsePostCollectionOptions`.
+- `defaultCategoryIds` is now a first-class UI prop gated purely by its own emptiness rather than by `source.from !== 'custom'`. The Craft wrapper forwards it only when `source.from === 'publishedAt'` or `source.from === 'popular'` (matching master, where `custom` branches did not expose it). Behaviour is equivalent.
+
 <!-- B-1 / B-2 / B-3 append their items below as sub-tasks land -->
