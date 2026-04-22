@@ -27,3 +27,28 @@ export type Post = {
   categories: Category[]
   author: Pick<PostRole, 'id' | 'memberId' | 'name'>
 }
+
+export type PostCollectionCategory = {
+  id: string
+  name: string
+  position: number
+}
+
+export type PostCollectionAuthor = {
+  id: string
+  memberId: string
+  name: string
+}
+
+export type PostCollectionItem = {
+  id: string
+  title: string
+  codeName: string | null
+  coverUrl: string | null
+  videoUrl: string | null
+  publishedAt: Date | null
+  views: number
+  pinnedAt: Date | null
+  author: PostCollectionAuthor
+  categories: PostCollectionCategory[]
+}
