@@ -450,7 +450,7 @@ Expected: PASS（`ActivityCollection` 檔案本身仍在 ui，純被消費者用
 - [ ] **Step 1: 建立 `apps/element-demo/src/craft/CraftActivityCollection.tsx`**
 
 ```tsx
-import React from 'react'
+import React, { useMemo } from 'react'
 import ActivityCollection, { ActivityCollectionProps } from '@lodestar/ui/components/collections/ActivityCollection'
 import Craftize from '@lodestar/ui/components/common/Craftize'
 import { ActivityCollectionSource, useActivityCollection } from '@lodestar/data-hasura/hooks/activity'
@@ -462,8 +462,17 @@ export type CraftActivityCollectionProps = Omit<
   source?: ActivityCollectionSource
 }
 
+const DEFAULT_SOURCE: ActivityCollectionSource = { from: 'publishedAt' }
+
 const ConnectedActivityCollection: React.FC<CraftActivityCollectionProps> = ({ source, ...rest }) => {
-  const resolvedSource: ActivityCollectionSource = source ?? { from: 'publishedAt' }
+  // Memoize the resolved source so that `useActivityCollection` doesn't see a
+  // fresh object on every render (which would thrash its `useMemo` deps and
+  // churn the composed result). `source` from Craft.js is stable per node;
+  // when it is undefined we lock onto the module-level default.
+  const resolvedSource = useMemo<ActivityCollectionSource>(
+    () => source ?? DEFAULT_SOURCE,
+    [source],
+  )
   const { data, loading, error } = useActivityCollection(resolvedSource)
   const defaultCategoryIds =
     resolvedSource.from === 'publishedAt' ? resolvedSource.defaultCategoryIds : undefined
@@ -483,6 +492,8 @@ export const CraftActivityCollection = Craftize(ConnectedActivityCollection)
 ```
 
 **單一 hook 呼叫：** Task 2 已把兩種 source 合併成 `useActivityCollection(source)`，Connected wrapper 不用處理 React rules-of-hooks 的條件呼叫問題，也不需要 `skip` flag。
+
+**memoize 必要性：** `useActivityCollection` 內部用 `[source]` 當 `useMemo` dep key。若 wrapper 每次 render 都 `source ?? { from: 'publishedAt' }` 產生新物件，hook 內 `useMemo` 永遠命不中（recompute `variables` 跟 `composed` 每次 render 都跑）。memoize `resolvedSource` 後，從 Craft.js 過來的 stable prop 就維持穩定的 ref，default 固定指向 module-level constant。
 
 - [ ] **Step 2: 建立 `apps/element-demo/src/craft/index.ts`**
 
