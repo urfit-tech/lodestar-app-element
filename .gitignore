@@ -22,7 +22,10 @@ apps/*/dist/
 .DS_Store
 
 # local tool state (user-specific, per-developer)
-.claude/
+# .claude/ is mostly per-developer, but .claude/skills/ holds
+# project-shared skill symlinks that must be tracked.
+.claude/*
+!.claude/skills
 .serena/
 
 # tech stack sandbox (untracked by design; see MIGRATION_PROGRESS.md)
