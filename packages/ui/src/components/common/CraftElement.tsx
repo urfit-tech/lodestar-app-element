@@ -2,7 +2,6 @@ import Button from '../buttons/Button'
 import Card from '../cards/Card'
 import RichCard from '../cards/RichCard'
 import Collapse from '../collapses/Collapse'
-import ProgramCollection from '../collections/ProgramCollection'
 import AIBot from './AIBot'
 import Carousel from './Carousel'
 import Craftize from './Craftize'
@@ -28,6 +27,3 @@ export const CraftCarousel = Craftize(Carousel)
 export const CraftCollapse = Craftize(Collapse)
 export const CraftEmbedded = Craftize(Embedded)
 export const CraftAIBot = Craftize(AIBot)
-
-// product catalog
-export const CraftProgramCollection = Craftize(ProgramCollection)

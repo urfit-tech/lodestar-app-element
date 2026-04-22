@@ -1,6 +1,7 @@
 export * from './CraftActivityCollection'
 export * from './CraftMemberCollection'
 export * from './CraftPostCollection'
+export * from './CraftProgramCollection'
 export * from './CraftProgramContentCollection'
 export * from './CraftProgramPackageCollection'
 export * from './CraftProjectCollection'
