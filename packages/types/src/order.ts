@@ -60,3 +60,26 @@ export type PaymentLog = {
   invoice_options?: InvoiceProps
   options?: any
 }
+
+export type OrderExecutor = {
+  id: string
+  ratio: number
+  name: string
+}
+
+export type SharingCodes = {
+  sharingCode: string
+  sharingNote: string
+}
+
+export type OrderDetailView = {
+  orderLog: Pick<
+    OrderLog,
+    'id' | 'status' | 'createdAt' | 'name' | 'email' | 'shipping' | 'options' | 'invoiceOptions' | 'invoiceIssuedAt'
+  >
+  orderProducts: Pick<OrderProduct, 'id' | 'name' | 'price' | 'options'>[]
+  orderDiscounts: Pick<OrderDiscount, 'id' | 'price' | 'name'>[]
+  orderExecutors: OrderExecutor[]
+  paymentLogs: Pick<PaymentLog, 'no' | 'status' | 'price' | 'gateway' | 'paidAt' | 'options'>[]
+  totalPrice: number
+}
