@@ -140,3 +140,18 @@ export type PaymentProps =
     }
 
 export type ContactInfo = { name: string; phone: string; email: string }
+
+export type MemberCreditCard = {
+  id: string
+  cardInfo: { [key: string]: any }
+  cardIdentifier: string
+  cardHolder: { [key: string]: any } | null
+}
+
+export type PaymentOption = {
+  payment: {
+    gateway: string
+    method: string
+  }
+  name: string
+}
