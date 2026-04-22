@@ -82,4 +82,32 @@ Record outcome inline (`[ ]` → `[x]` for pass; append notes for anything surpr
 - `ProgramContentCollectionItem.duration` is typed as `number` (defaulting null/undefined Hasura values to `0`) rather than the raw `number | null | undefined` the original component passed through; `ProgramContentCard`'s `duration` prop is a required `number`, so coercing at the hook boundary avoids a widening leak into consumers while matching the behaviour `durationFormatter(null/undefined)` would have rendered as `---` in the previous card skeleton path.
 - The hook issues both `useQuery` calls unconditionally (one per `source.from` branch) and `skip`s the inactive one. React's rules-of-hooks require a stable call order, and the two branches hit different Hasura queries (`GET_PROGRAM_CONTENT_COLLECTION` vs the inline `GET_RECENT_PROGRAM_PROGRESS`) — this mirrors the original component's branching without breaking hook order when `source.from` is toggled at runtime.
 
+## B-1c — ProgramPackageCollection (commits `141ee16`, `177872a`)
+
+### Required checks
+
+- [ ] `/program-package` view mode — `<CraftProgramPackageCollection variant="card" source={{ from: 'publishedAt' }} />` renders identical program-package cards to master (count, titles, cover images, total duration, total programs count, list/sale price handling).
+- [ ] `/program-package` view mode — the pre-existing `<ProgramPackageCard loading />` skeleton card and the static demo `<ProgramPackageCard title={…} …/>` rendered above the collection are **unrelated** (not driven by the collection hook) and are intentionally untouched by this refactor; they should match master exactly.
+- [ ] `/program-package` editor mode — hovering the `CraftProgramPackageCollection` node shows the Craft.js toolbar (drag handle, edit, copy, delete).
+- [ ] `/program-package` editor mode — drag-and-drop on the `CraftProgramPackageCollection` node works.
+- [ ] `/program-package` editor mode — device switch (mobile / tablet / desktop) behaves identically to master.
+- [ ] **Custom variant:** temporarily edit `apps/element-demo/src/pages/ProgramPackagePage.tsx` to `<CraftProgramPackageCollection variant="card" source={{ from: 'custom', idList: ['<real-program-package-uuid-a>', '<real-program-package-uuid-b>'] }} />` — rendered route shows exactly those program packages in the supplied `idList` order. Revert when done.
+
+### Mechanical checks (auto-verified, kept for reference)
+- [x] `pnpm --filter @lodestar/ui exec tsc --noEmit` passes
+- [x] `pnpm --filter @lodestar/element-demo exec tsc --noEmit` passes
+- [x] `pnpm -r exec tsc --noEmit` passes after `.tsbuildinfo` wipe
+- [x] `grep -rn "@apollo/client\|@lodestar/graphql\|\bgql\b\|\buseQuery\b" packages/ui/src/components/collections/ProgramPackageCollection.tsx` is empty
+- [x] Commit `141ee16` (types + hook only) typechecks clean standalone before commit `177872a` layers on top.
+
+### Source-key typo fix (pre-existing)
+- The master JSX in `ProgramPackagePage.tsx` was fully commented out and carried `source={{ source: 'publishedAt' }}` — the inner key was wrong (should be `from:` per `ProductPublishedAtSource`). When this refactor uncommented the JSX it corrected the key to `source={{ from: 'publishedAt' }}`, matching the `ProgramPackageCollectionSource` union. Manual verification should confirm the collection actually renders (not an empty grid) after the refactor.
+- The stale `// import CraftProgramPackageCollection from '@lodestar/ui/components/craft/CraftProgramPackageCollection'` comment at the top of the page was removed; the new import is from `../craft/CraftProgramPackageCollection`.
+- A similar commented-out `<CraftProgramPackageCollection variant="card" source={{ source: 'publishedAt' }} />` line still lives in `apps/element-demo/src/pages/ProjectElementPage.tsx`. It is out of scope for B-1c (that file is B-1d's concern) and is intentionally left untouched; if future work revives it, the same `source:` → `from:` fix should be applied.
+
+### Known deviations from master
+- Previous UI code read `position` via `(ppp as any).position ?? 0` because the generated `GET_PROGRAM_PACKAGE_COLLECTION` hasura type does not include `position` on `program_package_plans` (the fragment selects it, but codegen dropped it). The new hook replaces the `any` cast with a local structural widening (`ProgramPackagePlanNode & { position?: number | null }`) so no fresh `any` is introduced. Runtime behaviour is unchanged — still defaults to `0` when absent.
+- `ProgramPackageCollectionItem.plans[i].period` is normalised at the hook boundary: it is `null` when either `period_amount` or `period_type` is null/undefined (previously the UI produced an object with `undefined` fields cast to `ProductPlan['period']`). `findPrimaryPlan` + `ProgramPackageCard` only read `salePrice` / `soldAt` / `listPrice`, so this normalisation has no user-visible effect.
+- Unlike B-1a / B-1b, ProgramPackageCollection's `CategorySelector` + `useQueryParam('active', …)` path was actively rendered (not dead code) and is **preserved** — `defaultCategoryIds` is now surfaced as a first-class prop on the UI, and `CraftProgramPackageCollection` forwards `source.defaultCategoryIds` when `source.from === 'publishedAt'`.
+
 <!-- B-1 / B-2 / B-3 append their items below as sub-tasks land -->
