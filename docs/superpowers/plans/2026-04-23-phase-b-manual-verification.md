@@ -110,4 +110,33 @@ Record outcome inline (`[ ]` → `[x]` for pass; append notes for anything surpr
 - `ProgramPackageCollectionItem.plans[i].period` is normalised at the hook boundary: it is `null` when either `period_amount` or `period_type` is null/undefined (previously the UI produced an object with `undefined` fields cast to `ProductPlan['period']`). `findPrimaryPlan` + `ProgramPackageCard` only read `salePrice` / `soldAt` / `listPrice`, so this normalisation has no user-visible effect.
 - Unlike B-1a / B-1b, ProgramPackageCollection's `CategorySelector` + `useQueryParam('active', …)` path was actively rendered (not dead code) and is **preserved** — `defaultCategoryIds` is now surfaced as a first-class prop on the UI, and `CraftProgramPackageCollection` forwards `source.defaultCategoryIds` when `source.from === 'publishedAt'`.
 
+## B-1d — ProjectCollection (commits `36195bc`, `00c1b97`)
+
+### Required checks
+
+- [ ] `/project` view mode — `<CraftProjectCollection />` (no props, falls through to `DEFAULT_SOURCE = { from: 'publishedAt' }`) renders identical project cards to master: count, titles, cover images, abstracts, `type` badge (`on-sale` / `pre-order` / `funding` / `portfolio`), target progress circle, enrolment / total-sales counts, and countdown timer (when `isCountdownTimerVisible` and `expiredAt` are set).
+- [ ] `/project` view mode — the standalone `<ProjectCard loading />` skeleton above the collection is **unrelated** (not collection-driven, intentionally untouched). It should match master pixel-for-pixel.
+- [ ] `/project` editor mode — hovering the `CraftProjectCollection` node shows the Craft.js toolbar (drag handle, edit, copy, delete).
+- [ ] `/project` editor mode — drag-and-drop on the `CraftProjectCollection` node works.
+- [ ] `/project` editor mode — device switch (mobile / tablet / desktop) behaves identically to master.
+- [ ] **Popular variant:** temporarily edit `apps/element-demo/src/pages/ProjectElementPage.tsx` to `<CraftProjectCollection source={{ from: 'popular', limit: 6 }} />` — rendered route orders project cards by `views desc`, falling back to `published_at desc` for ties. `ProductPublishedAtSource<'popular'>` accepts the same `{ limit, asc, defaultCategoryIds, defaultTagNames }` shape as the default `publishedAt` branch, so `limit` / `asc` / `defaultCategoryIds` can be added to exercise those paths. Revert when done.
+- [ ] **Custom variant:** temporarily edit `apps/element-demo/src/pages/ProjectElementPage.tsx` to `<CraftProjectCollection source={{ from: 'custom', idList: ['<real-project-uuid-a>', '<real-project-uuid-b>'] }} />` — rendered route shows exactly those projects in the supplied `idList` order. Revert when done.
+- [ ] **Type filter:** temporarily edit the page to `<CraftProjectCollection type="funding" />` (or another valid `Project['type']`) — rendered route restricts the collection to projects with matching `project.type`. Verifies the hook option threading for all three source branches (`publishedAt` default, or combined with the popular / custom swaps above). Revert when done.
+
+### Mechanical checks (auto-verified, kept for reference)
+- [x] `pnpm --filter @lodestar/ui exec tsc --noEmit` passes
+- [x] `pnpm --filter @lodestar/element-demo exec tsc --noEmit` passes
+- [x] `pnpm -r exec tsc --noEmit` passes after `.tsbuildinfo` wipe
+- [x] `grep -rn "@apollo/client\|@lodestar/graphql\|\bgql\b\|\buseQuery\b" packages/ui/src/components/collections/ProjectCollection.tsx` is empty
+- [x] Commit `36195bc` (types + hook only) typechecks clean standalone before commit `00c1b97` layers on top.
+
+### Page cleanup (pre-existing)
+- `ProjectElementPage.tsx` previously carried a commented-out `// import CraftProgramPackageCollection from '@lodestar/ui/components/craft/CraftProgramPackageCollection'` and a commented-out `<CraftProgramPackageCollection variant="card" source={{ source: 'publishedAt' }} />` block. Both were leftover noise from a prior iteration: ProgramPackage already has its own `ProgramPackagePage.tsx` fully wired up by B-1c, and the commented `source:` key was the same mistyped discriminant B-1c flagged. This refactor removes both dead lines. The `source:` → `from:` mis-key flagged in the B-1c log section is now resolved (no other copies remain in element-demo pages).
+
+### Known deviations from master
+- `type` is relocated out of `ProjectCollectionProps` entirely. In master it lived as a top-level component prop threaded into every `collect*Collection({ ...source, type: props.type })` call; in the refactor it is an option on `useProjectCollection(source, { type })` and a separate prop on `CraftProjectCollection` (outside the `source` discriminated union). The UI layer never reads `type` itself — it only rendered `project.type` from the hook data — so dropping it from the UI prop shape is behaviour-preserving. Callers that previously set `<CraftProjectCollection type="funding" />` continue to compile and run identically because `CraftProjectCollection` still exposes `type` at the wrapper level.
+- `ProjectCollectionItem.expiredAt` is normalised to `Date | null` at the hook boundary (master's original `collectPublishedAtCollection` passed through the raw string with an `as any` cast into `ProjectElementProps`). `ProjectCard` reads `expiredAt` via `moment(props.expiredAt)` which accepts both forms, so user-visible behaviour is unchanged — the normalisation just removes the `as any` escape hatch.
+- The `defaultCategoryIds` filter in the UI is now gated purely by the presence of a non-empty `defaultCategoryIds` prop rather than `source.from === 'custom'`: `ProjectCollection` no longer knows the source shape, so the Craft wrapper forwards `defaultCategoryIds` only when `source.from === 'publishedAt'` or `source.from === 'popular'` (matching master, where `custom` branches did not expose `defaultCategoryIds`). Behaviour is equivalent.
+- `ProjectCollectionSource` is a type alias for `ProductPublishedAtSource | ProductPublishedAtSource<'popular'> | ProductCustomSource`. The popular branch discriminates purely on `from: 'popular'` (no additional required fields beyond the shared `ProductPublishedAtSource` shape), so its manual-verification JSX is the typed literal `{ from: 'popular', limit: 6 }` above — no `as any` cast needed. If a future follow-up introduces popular-only required fields, update that verification line to include them.
+
 <!-- B-1 / B-2 / B-3 append their items below as sub-tasks land -->
