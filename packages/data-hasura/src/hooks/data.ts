@@ -361,7 +361,3 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
   }
 }
 
-// useCouponCollection moved to ./coupon.ts so its consumers aren't forced
-// to pull the large @lodestar/graphql/hasura types into their compilation
-// unit (which pushed chakra-heavy files over the TS2590 complexity limit).
-export { useCouponCollection } from './coupon'
