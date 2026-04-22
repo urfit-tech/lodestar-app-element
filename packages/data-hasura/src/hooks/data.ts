@@ -1,14 +1,10 @@
 import { gql, useQuery } from '@apollo/client'
-import axios from 'axios'
 import moment from 'moment'
 import { sum } from 'ramda'
-import { useCallback, useEffect, useState } from 'react'
 import { DeepPick } from 'ts-deep-pick/lib'
-import { useAuth } from '@lodestar/contexts/AuthContext'
 import hasura from '@lodestar/graphql/hasura'
 import { notEmpty } from '@lodestar/helpers'
-import { CouponProps } from '@lodestar/types/checkout'
-import { CouponFromLodestarAPI, Member, PeriodType, PodcastProgram, Program } from '@lodestar/types/data'
+import { Member, PeriodType, PodcastProgram, Program } from '@lodestar/types/data'
 
 export const usePublishedProgramCollection = (options: { ids?: string[]; limit?: number }) => {
   const { loading, error, data, refetch } = useQuery<
@@ -365,63 +361,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
   }
 }
 
-export const useCouponCollection = (memberId: string) => {
-  const { authToken } = useAuth()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<any>()
-  const [data, setData] = useState<CouponProps[]>([])
-
-  const fetch = useCallback(async () => {
-    if (authToken) {
-      const route = '/coupons'
-      try {
-        setLoading(true)
-        const { data } = await axios.get(`${process.env.REACT_APP_LODESTAR_SERVER_ENDPOINT}${route}`, {
-          params: { memberId, includeDeleted: false },
-          headers: { authorization: `Bearer ${authToken}` },
-        })
-        setData(
-          data.map((coupon: CouponFromLodestarAPI) => ({
-            id: coupon.id,
-            status: coupon.status,
-            couponCode: {
-              code: coupon.couponCode.code,
-              couponPlan: {
-                id: coupon.couponCode.couponPlan.id,
-                startedAt: coupon.couponCode.couponPlan.startedAt
-                  ? new Date(coupon.couponCode.couponPlan.startedAt)
-                  : null,
-                endedAt: coupon.couponCode.couponPlan.endedAt ? new Date(coupon.couponCode.couponPlan.endedAt) : null,
-                type: coupon.couponCode.couponPlan.type === 1 ? 'cash' : 'percent',
-                constraint: coupon.couponCode.couponPlan.constraint,
-                amount: coupon.couponCode.couponPlan.amount,
-                title: coupon.couponCode.couponPlan.title,
-                description: coupon.couponCode.couponPlan.description || '',
-                scope: coupon.couponCode.couponPlan.scope,
-                productIds: coupon.couponCode.couponPlan.couponPlanProducts.map(
-                  couponPlanProduct => couponPlanProduct.productId,
-                ),
-              },
-            },
-          })) || [],
-        )
-      } catch (err) {
-        console.log(err)
-        setError(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-  }, [authToken, memberId])
-
-  useEffect(() => {
-    fetch()
-  }, [fetch])
-
-  return {
-    loading,
-    error,
-    data,
-    fetch,
-  }
-}
+// useCouponCollection moved to ./coupon.ts so its consumers aren't forced
+// to pull the large @lodestar/graphql/hasura types into their compilation
+// unit (which pushed chakra-heavy files over the TS2590 complexity limit).
+export { useCouponCollection } from './coupon'

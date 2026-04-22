@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { useAuth } from '@lodestar/contexts/AuthContext'
 import { handleError } from '@lodestar/helpers'
 import { checkoutMessages, commonMessages } from '@lodestar/helpers/translation'
-import { useCouponCollection } from '@lodestar/data-hasura/hooks/data'
+import { useCouponCollection } from '@lodestar/data-hasura/hooks/coupon'
 import { useToastMessage } from '@lodestar/hooks/util'
 import { CouponProps, OrderDiscountProps, OrderProductProps } from '@lodestar/types/checkout'
 import CouponCard from '../cards/CouponCard'
@@ -21,6 +21,29 @@ const StyledInputWrapper = styled.div`
     }
   }
 `
+
+// Chakra v1 components expose a polymorphic style-prop union that exceeds
+// TypeScript's representation limit (TS2590) when combined with the other
+// heavy types this file pulls in. Re-bind the components with narrower
+// props so call sites don't trigger the union blow-up.
+const LoadingSpinner: React.ComponentType = Spinner
+type SubmitButtonProps = {
+  colorScheme?: string
+  isFullWidth?: boolean
+  style?: React.CSSProperties
+  isLoading?: boolean
+  onClick?: () => void
+  children?: React.ReactNode
+}
+const SubmitButton: React.ComponentType<SubmitButtonProps> = Button
+type TextInputProps = {
+  variant?: string
+  style?: React.CSSProperties
+  placeholder?: string
+  value?: string
+  onChange?: React.ChangeEventHandler<HTMLInputElement>
+}
+const TextInput: React.ComponentType<TextInputProps> = Input
 
 const CouponSelectionModal: React.FC<{
   memberId: string
@@ -65,6 +88,46 @@ const CouponSelectionModal: React.FC<{
       .finally(() => setInserting(false))
   }
 
+  const couponList: React.ReactNode = coupons
+    .filter(coupon => !coupon.status.outdated && !coupon.status.used)
+    .map(coupon => {
+      const couponPlanScope = coupon.couponCode.couponPlan.scope
+      const couponPlanProductIds = coupon.couponCode.couponPlan.productIds || []
+      const isInCouponScope = (productId: string) => {
+        const [productType] = productId.split('_')
+        return (
+          couponPlanScope === null ||
+          couponPlanScope.includes(productType) ||
+          couponPlanProductIds.includes(productId)
+        )
+      }
+
+      const filteredOrderProducts = orderProducts.filter(orderProduct =>
+        isInCouponScope(orderProduct.productId),
+      )
+      const filteredOrderDiscounts = orderDiscounts.filter(orderDiscount => orderDiscount.type === 'DownPrice')
+      const price =
+        sum(filteredOrderProducts.map(orderProduct => orderProduct.price)) -
+        sum(filteredOrderDiscounts.map(orderDiscount => orderDiscount.price))
+
+      const isDisabled = filteredOrderProducts.length === 0 || coupon.couponCode.couponPlan.constraint > price
+      return (
+        <CouponCard
+          key={coupon.id}
+          coupon={coupon}
+          onClick={() => {
+            if (isDisabled) {
+              return
+            }
+            onSelect && onSelect(coupon)
+            setSelectedCoupon(coupon)
+            setVisible(false)
+          }}
+          isDisabled={isDisabled}
+        />
+      )
+    })
+
   return (
     <>
       {renderTrigger({ onOpen: () => setVisible(true), selectedCoupon })}
@@ -73,55 +136,14 @@ const CouponSelectionModal: React.FC<{
         onClose={() => setVisible(false)}
         isOpen={visible}
       >
-        {loadingCoupons ? (
-          <Spinner />
-        ) : (
-          coupons
-            .filter(coupon => !coupon.status.outdated && !coupon.status.used)
-            .map(coupon => {
-              const couponPlanScope = coupon.couponCode.couponPlan.scope
-              const couponPlanProductIds = coupon.couponCode.couponPlan.productIds || []
-              const isInCouponScope = (productId: string) => {
-                const [productType] = productId.split('_')
-                return (
-                  couponPlanScope === null ||
-                  couponPlanScope.includes(productType) ||
-                  couponPlanProductIds.includes(productId)
-                )
-              }
-
-              const filteredOrderProducts = orderProducts.filter(orderProduct =>
-                isInCouponScope(orderProduct.productId),
-              )
-              const filteredOrderDiscounts = orderDiscounts.filter(orderDiscount => orderDiscount.type === 'DownPrice')
-              const price =
-                sum(filteredOrderProducts.map(orderProduct => orderProduct.price)) -
-                sum(filteredOrderDiscounts.map(orderDiscount => orderDiscount.price))
-
-              const isDisabled = filteredOrderProducts.length === 0 || coupon.couponCode.couponPlan.constraint > price
-              return (
-                <CouponCard
-                  key={coupon.id}
-                  coupon={coupon}
-                  onClick={() => {
-                    if (isDisabled) {
-                      return
-                    }
-                    onSelect && onSelect(coupon)
-                    setSelectedCoupon(coupon)
-                    setVisible(false)
-                  }}
-                  isDisabled={isDisabled}
-                />
-              )
-            })
-        )}
+        {loadingCoupons && <LoadingSpinner />}
+        {!loadingCoupons && couponList}
 
         <Divider>{formatMessage(commonMessages.label.or)}</Divider>
 
         <div className="d-flex">
           <StyledInputWrapper className="flex-grow-1">
-            <Input
+            <TextInput
               variant="outline"
               style={{ borderRadius: '4px 0px 0px 4px' }}
               placeholder={formatMessage(checkoutMessages.placeholder.enterCouponCode)}
@@ -129,7 +151,7 @@ const CouponSelectionModal: React.FC<{
               onChange={e => setCode(e.target.value)}
             />
           </StyledInputWrapper>
-          <Button
+          <SubmitButton
             colorScheme="primary"
             isFullWidth
             style={{ width: '72px', borderRadius: '0px 4px 4px 0px' }}
@@ -137,7 +159,7 @@ const CouponSelectionModal: React.FC<{
             onClick={handleCouponInsert}
           >
             {formatMessage(commonMessages.button.add)}
-          </Button>
+          </SubmitButton>
         </div>
       </CommonModal>
     </>
