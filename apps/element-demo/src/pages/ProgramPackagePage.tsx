@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 import ProgramPackageCard from '@lodestar/ui/components/cards/ProgramPackageCard'
+import { CraftProgramPackageCollection } from '../craft/CraftProgramPackageCollection'
 import pagesMessages from './translation'
-// import CraftProgramPackageCollection from '@lodestar/ui/components/craft/CraftProgramPackageCollection'
 
 const ProgramPackagePage: React.FC = () => {
   const { formatMessage } = useIntl()
@@ -15,7 +15,7 @@ const ProgramPackagePage: React.FC = () => {
         totalPrograms={3}
         salePrice={19800}
       />
-      {/* <CraftProgramPackageCollection variant="card" source={{ source: 'publishedAt' }} /> */}
+      <CraftProgramPackageCollection variant="card" source={{ from: 'publishedAt' }} />
     </div>
   )
 }
