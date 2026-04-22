@@ -4,7 +4,17 @@ import { createContext, useEffect, useMemo, useState } from 'react'
 import { IntlProvider } from 'react-intl'
 import { useApp } from './AppContext'
 
-const localeModules = import.meta.glob<{ default: Record<string, string> }>(
+// `import.meta.glob` is a Vite build-time extension of ImportMeta that the
+// TypeScript standard lib doesn't know about. Typed and cast locally so this
+// module doesn't force vite/client on every consumer's tsc compilation. The
+// `as unknown as` bridge is intentional: it's a runtime-boundary assertion
+// against a bundler-provided API, not a blanket type escape.
+type LocaleGlob = (
+  pattern: string,
+  options: { eager: true },
+) => Record<string, { default: Record<string, string> }>
+
+const localeModules = (import.meta as unknown as { glob: LocaleGlob }).glob(
   '../../ui/src/translations/locales/*.json',
   { eager: true },
 )
