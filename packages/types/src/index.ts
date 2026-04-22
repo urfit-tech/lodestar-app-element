@@ -12,7 +12,7 @@ export * from './general'
 // export * from './invoice'
 export * from './lodestar.window'
 // member.ts re-exports UserRole which conflicts with data.ts
-export { type MemberProps } from './member'
+export { type MemberCollectionItem, type MemberProps } from './member'
 export * from './merchandise'
 export * from './metaProduct'
 export * from './options'

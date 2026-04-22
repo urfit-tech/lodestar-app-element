@@ -20,3 +20,12 @@ export type MemberProps = {
   youtubeChannelIds: string[] | null
   phone?: string
 }
+
+export type MemberCollectionItem = {
+  id: string
+  name: string
+  title: string | null
+  abstract: string | null
+  pictureUrl: string | null
+  description: string | null
+}
