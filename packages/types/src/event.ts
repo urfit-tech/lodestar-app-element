@@ -89,6 +89,8 @@ export type GeneralModalDefaultEventForEditMode = (
 ) &
   ({} | ModalDefaultEventForBasicModeWithSource)
 
+export type ModalDefaultEvent = ModalDefaultEventForBasicMode | GeneralModalDefaultEventForEditMode
+
 export const isModalDefaultEventForBasicModeWithSource = (
   event: ModalDefaultEventForBasicMode,
 ): event is ModalDefaultEventForBasicModeWithSource => {

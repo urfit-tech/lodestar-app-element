@@ -3,7 +3,7 @@ import moment from 'moment'
 import { map, pipe, project } from 'ramda'
 import { rrulestr } from 'rrule'
 import { adaptValue, inertTransform, renameKey } from '@lodestar/helpers/adaptObject'
-import { FetchedResourceEvent } from '@lodestar/types/event'
+import { FetchedResourceEvent, ModalDefaultEvent } from '@lodestar/types/event'
 
 const eventKeysMap = {
   id: 'event_id',
@@ -17,9 +17,10 @@ const eventKeysMapForRecurring = {
   endRecur: 'until',
 }
 
-const keysMapSelector = (event: { [key: string]: any }) => (event?.rrule ? eventKeysMapForRecurring : eventKeysMap)
+const keysMapSelector = (event: FetchedResourceEvent) =>
+  event?.rrule ? eventKeysMapForRecurring : eventKeysMap
 
-const fetchedEventValuesAdaptorMap: { [K in keyof FetchedResourceEvent]?: Function } = {
+const fetchedEventValuesAdaptorMap: { [K in keyof FetchedResourceEvent]?: (val: FetchedResourceEvent[K]) => unknown } = {
   started_at: inertTransform(moment),
   ended_at: inertTransform(moment),
   published_at: inertTransform(moment),
@@ -29,8 +30,13 @@ const fetchedEventValuesAdaptorMap: { [K in keyof FetchedResourceEvent]?: Functi
 }
 
 export const adaptEventsToCalendar: (events: Array<FetchedResourceEvent>) => Array<EventInput> = pipe(
-  map((event: { [key: string]: any }) => (event ? renameKey(keysMapSelector(event))(event) : undefined)),
+  map((event: FetchedResourceEvent) =>
+    event ? renameKey<EventInput>(keysMapSelector(event))(event) : undefined,
+  ),
   project(['id', 'title', 'start', 'end', 'rrule', 'duration']),
 )
 
-export const adaptEventToModal = adaptValue(fetchedEventValuesAdaptorMap)
+export const adaptEventToModal: (event: FetchedResourceEvent) => ModalDefaultEvent = adaptValue<
+  FetchedResourceEvent,
+  ModalDefaultEvent
+>(fetchedEventValuesAdaptorMap)
