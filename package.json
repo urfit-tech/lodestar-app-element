@@ -17,7 +17,12 @@
     "overrides": {
       "@craftjs/utils": "0.1.0-beta.20",
       "@types/react": "17.0.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "core-js",
+      "esbuild"
+    ]
   },
   "packageManager": "pnpm@10.12.1"
 }
