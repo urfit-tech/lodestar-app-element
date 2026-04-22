@@ -37,4 +37,25 @@ Record outcome inline (`[ ]` → `[x]` for pass; append notes for anything surpr
 
 ---
 
+## B-1a — MemberCollection (commits `9da87ed`, `ac5b30f`)
+
+### Required checks
+
+- [ ] `/member` view mode — `<CraftMemberCollection source={{ from: 'role', limit: 10 }} />` renders identical member cards to master (count, names, titles, avatars, abstracts). Variant defaults to `primary`.
+- [ ] `/member` view mode — `<CraftMemberCollection variant="secondary" source={{ from: 'role', role: 'app-owner' }} />` renders only `app-owner` members using the secondary card style.
+- [ ] `/member` view mode — `<CraftMemberCollection source={{ from: 'role', role: 'content-creator' }} />` renders only `content-creator` members (primary card style).
+- [ ] `/member` editor mode — hovering each of the three `CraftMemberCollection` nodes shows the Craft.js toolbar (drag handle, edit, copy, delete).
+- [ ] `/member` editor mode — drag-and-drop on a `CraftMemberCollection` node works.
+- [ ] `/member` editor mode — device switch (mobile / tablet / desktop) behaves identically to master.
+- [ ] **Custom variant:** temporarily edit `apps/element-demo/src/pages/MemberElementPage.tsx` to swap one instance for `<CraftMemberCollection source={{ from: 'custom', idList: ['<real-member-uuid-a>', '<real-member-uuid-b>'] }} />` — rendered route shows exactly those members in the supplied `idList` order. Revert when done.
+
+### Mechanical checks (auto-verified, kept for reference)
+- [x] `pnpm --filter @lodestar/ui exec tsc --noEmit` passes
+- [x] `pnpm --filter @lodestar/element-demo exec tsc --noEmit` passes
+- [x] `pnpm -r exec tsc --noEmit` passes after `.tsbuildinfo` wipe
+- [x] `grep -rn "@apollo/client\|@lodestar/graphql\|\bgql\b\|\buseQuery\b" packages/ui/src/components/collections/MemberCollection.tsx` is empty
+
+### Known deviations from master
+- Original `MemberCollection` declared `useQueryParam('active', ...)` and a `withSelector` prop but neither a `CategorySelector` nor the `activeCategoryId` value was ever rendered/consumed in the component body (dead code inherited from earlier iterations). The props-only rewrite drops the unused `useQueryParam` hook call while preserving the `withSelector?: boolean` prop in `MemberCollectionProps` for API shape compatibility. No visible behaviour change expected.
+
 <!-- B-1 / B-2 / B-3 append their items below as sub-tasks land -->
