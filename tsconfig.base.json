@@ -4,7 +4,6 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "skipLibCheck": true,
-    "types": ["vite/client"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
     "strict": true,
