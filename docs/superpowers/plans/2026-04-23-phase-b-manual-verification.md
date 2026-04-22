@@ -58,4 +58,28 @@ Record outcome inline (`[ ]` → `[x]` for pass; append notes for anything surpr
 ### Known deviations from master
 - Original `MemberCollection` declared `useQueryParam('active', ...)` and a `withSelector` prop but neither a `CategorySelector` nor the `activeCategoryId` value was ever rendered/consumed in the component body (dead code inherited from earlier iterations). The props-only rewrite drops the unused `useQueryParam` hook call while preserving the `withSelector?: boolean` prop in `MemberCollectionProps` for API shape compatibility. No visible behaviour change expected.
 
+---
+
+## B-1b — ProgramContentCollection (commits `12d6209`, `4e951cb`)
+
+### Required checks
+
+- [ ] `/program-contents` view mode — `<CraftProgramContentCollection variant="card" source={{ from: 'recentWatched', limit: 3 }} />` renders three program-content cards matching master (titles, cover images, duration formatting, `video`/`text` icon). **Caveat:** `recentWatched` reads `program_content_progress` for the current viewer; if the demo account has no watch history both master and refactor render empty — the check only exercises parity when the logged-in account actually has recently watched items. Sign in to a demo account with prior progress before capturing the result.
+- [ ] `/program-contents` editor mode — hovering the `CraftProgramContentCollection` node shows the Craft.js toolbar (drag handle, edit, copy, delete).
+- [ ] `/program-contents` editor mode — drag-and-drop on the node works.
+- [ ] `/program-contents` editor mode — device switch (mobile / tablet / desktop) behaves identically to master.
+- [ ] **Custom variant:** temporarily edit `apps/element-demo/src/pages/ProgramContentCollectionPage.tsx` to `<CraftProgramContentCollection variant="card" source={{ from: 'custom', idList: ['<real-program-content-uuid>'] }} />` — rendered route shows exactly the requested program contents in `idList` order. Revert when done.
+
+### Mechanical checks (auto-verified, kept for reference)
+- [x] `pnpm --filter @lodestar/ui exec tsc --noEmit` passes
+- [x] `pnpm --filter @lodestar/element-demo exec tsc --noEmit` passes
+- [x] `pnpm -r exec tsc --noEmit` passes after `.tsbuildinfo` wipe
+- [x] `grep -rn "@apollo/client\|@lodestar/graphql\|\bgql\b\|\buseQuery\b" packages/ui/src/components/collections/ProgramContentCollection.tsx` is empty
+- [x] Commit `12d6209` (types + hook only) typechecks clean standalone before commit `4e951cb` layers on top.
+
+### Known deviations from master
+- Original `ProgramContentCollection` declared `useQueryParam('active', ...)` plus a `withSelector` prop, neither of which was rendered or consumed anywhere in the component body (no `CategorySelector`, no category filtering — same dead-code pattern as `MemberCollection` before B-1a). The props-only rewrite drops the unused `useQueryParam` hook call while preserving `withSelector?: boolean` and now adding `defaultCategoryIds?: string[]` to `ProgramContentCollectionProps` for API shape compatibility; neither is consumed by the body. `CraftProgramContentCollection` still forwards `source.defaultCategoryIds` when `source.from === 'recentWatched'` so that plumbing is ready when the UI later grows a selector.
+- `ProgramContentCollectionItem.duration` is typed as `number` (defaulting null/undefined Hasura values to `0`) rather than the raw `number | null | undefined` the original component passed through; `ProgramContentCard`'s `duration` prop is a required `number`, so coercing at the hook boundary avoids a widening leak into consumers while matching the behaviour `durationFormatter(null/undefined)` would have rendered as `---` in the previous card skeleton path.
+- The hook issues both `useQuery` calls unconditionally (one per `source.from` branch) and `skip`s the inactive one. React's rules-of-hooks require a stable call order, and the two branches hit different Hasura queries (`GET_PROGRAM_CONTENT_COLLECTION` vs the inline `GET_RECENT_PROGRAM_PROGRESS`) — this mirrors the original component's branching without breaking hook order when `source.from` is toggled at runtime.
+
 <!-- B-1 / B-2 / B-3 append their items below as sub-tasks land -->
