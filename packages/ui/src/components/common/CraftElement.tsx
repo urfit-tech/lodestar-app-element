@@ -4,7 +4,6 @@ import RichCard from '../cards/RichCard'
 import Collapse from '../collapses/Collapse'
 import PostCollection from '../collections/PostCollection'
 import ProgramCollection from '../collections/ProgramCollection'
-import ProjectCollection from '../collections/ProjectCollection'
 import AIBot from './AIBot'
 import Carousel from './Carousel'
 import Craftize from './Craftize'
@@ -33,5 +32,4 @@ export const CraftAIBot = Craftize(AIBot)
 
 // product catalog
 export const CraftProgramCollection = Craftize(ProgramCollection)
-export const CraftProjectCollection = Craftize(ProjectCollection)
 export const CraftPostCollection = Craftize(PostCollection)

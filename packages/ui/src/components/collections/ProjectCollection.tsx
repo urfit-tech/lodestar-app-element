@@ -1,57 +1,45 @@
-import { gql, useQuery } from '@apollo/client'
-import { sum, uniqBy } from 'ramda'
+import { uniqBy } from 'ramda'
 import { StringParam } from 'serialize-query-params'
-import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
-import { getProjectCollectionQuery } from '@lodestar/graphql/queries'
-import * as hasura from '@lodestar/graphql/hasura'
-import { convertPathName, notEmpty } from '@lodestar/helpers'
-import { Category, Project } from '@lodestar/types/data'
+import { convertPathName } from '@lodestar/helpers'
 import { ElementComponent } from '@lodestar/types/element'
-import { ProductCustomSource, ProductPublishedAtSource } from '@lodestar/types/options'
+import {
+  ProjectCollectionCategory,
+  ProjectCollectionItem,
+} from '@lodestar/types/project'
 import ProjectCard from '../cards/ProjectCard'
 import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
-import Collection, { CollectionLayout, ContextCollection } from './Collection'
+import Collection, { CollectionLayout } from './Collection'
 import CollectionCarousel from './CollectionCarousel'
-
-type ProjectData = DeepPick<
-  Project,
-  | 'id'
-  | 'title'
-  | 'abstract'
-  | 'coverUrl'
-  | 'coverType'
-  | 'previewUrl'
-  | 'type'
-  | 'target'
-  | 'expiredAt'
-  | 'isParticipantsVisible'
-  | 'isCountdownTimerVisible'
-  | 'totalSales'
-  | 'enrollmentCount'
-  | 'categories'
-  | 'creatorId'
-  | 'authorId'
->
-
-type ProjectContextCollection = ContextCollection<ProjectData>
 
 export type ProjectCollectionProps = {
   name?: string
-  source?: ProductCustomSource | ProductPublishedAtSource | ProductPublishedAtSource<'popular'>
+  projects?: ProjectCollectionItem[]
+  isFetching?: boolean
+  fetchError?: Error
+  defaultCategoryIds?: string[]
   variant?: 'card' | 'tile'
-  type?: Project['type']
   layout?: CollectionLayout
   withSelector?: boolean
   collectionVariant?: 'grid' | 'carousel'
   carousel?: BaseCarouselProps
 }
+
 const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
-  const { loading, errors, children, source = { from: 'publishedAt' } } = props
-  if (loading || errors) {
+  const {
+    projects = [],
+    isFetching,
+    fetchError,
+    defaultCategoryIds,
+    children,
+    loading: parentLoading,
+    errors: parentErrors,
+  } = props
+
+  if (parentLoading || parentErrors) {
     return null
   }
 
@@ -62,246 +50,64 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
       ? CollectionCarousel(collectionName, 'project', EntityElement)
       : Collection(collectionName, 'project', EntityElement)
 
-  let ContextCollection: ProjectContextCollection
-  switch (source.from) {
-    case 'publishedAt':
-      ContextCollection = collectPublishedAtCollection({ ...source, type: props.type })
-      break
-    case 'popular':
-      ContextCollection = collectPopularCollection({ ...source, type: props.type })
-      break
-    case 'custom':
-      ContextCollection = collectCustomCollection({ ...source, type: props.type })
-      break
-    default:
-      ContextCollection = collectPublishedAtCollection(Object.assign({ type: props.type }, source))
-  }
+  const categories =
+    isFetching || fetchError
+      ? []
+      : uniqBy((category: ProjectCollectionCategory) => category.id)(
+          projects
+            .flatMap(d => d.categories)
+            .filter(category => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
+        )
+
+  const filterByActiveCategory = (d: ProjectCollectionItem) =>
+    !props.withSelector ||
+    !activeCategoryId ||
+    d.categories.map(category => category.id).includes(activeCategoryId)
 
   return (
-    <ContextCollection>
-      {ctx => {
-        const categories =
-          ctx.loading || ctx.errors
-            ? []
-            : uniqBy((category: Category) => category.id)(
-                ctx.data
-                  ?.flatMap(d => d.categories)
-                  .filter(category => source.from === 'custom' || !source.defaultCategoryIds?.includes(category.id)) ||
-                  [],
-              )
-        const filter = (d: ProjectData) =>
-          !props.withSelector ||
-          !activeCategoryId ||
-          d.categories.map(category => category.id).includes(activeCategoryId)
-        return (
-          <div className={props.className}>
-            {props.withSelector && (
-              <CategorySelector
-                categories={categories}
-                activeCategoryId={activeCategoryId || null}
-                onActive={categoryId => setActive(categoryId)}
-              />
-            )}
-            {children}
-            {ctx.loading ? (
-              <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
-            ) : ctx.errors ? (
-              <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={ctx.errors} />
-            ) : (
-              <ElementCollection
-                layout={props.layout}
-                carouselProps={props.carousel}
-                data={ctx.data?.filter(filter) || []}
-                renderElement={({ data: project, ElementComponent: ProjectElement }) => (
-                  <ProjectElement
-                    editing={props.editing}
-                    id={project.id}
-                    title={project.title}
-                    abstract={project.abstract}
-                    coverUrl={project.coverUrl}
-                    coverType={project.coverType}
-                    previewUrl={project.previewUrl}
-                    type={project.type}
-                    targetAmount={project.target.amount}
-                    targetUnit={project.target.unit}
-                    expiredAt={project.expiredAt as any}
-                    isParticipantsVisible={project.isParticipantsVisible}
-                    isCountdownTimerVisible={project.isCountdownTimerVisible}
-                    totalSales={project.totalSales}
-                    enrollmentCount={project.enrollmentCount}
-                    creatorId={project.creatorId}
-                    authorId={project.authorId}
-                  />
-                )}
-              />
-            )}
-          </div>
-        )
-      }}
-    </ContextCollection>
+    <div className={props.className}>
+      {props.withSelector && (
+        <CategorySelector
+          categories={categories}
+          activeCategoryId={activeCategoryId || null}
+          onActive={categoryId => setActive(categoryId)}
+        />
+      )}
+      {children}
+      {isFetching ? (
+        <ElementCollection layout={props.layout} carouselProps={props.carousel} loading />
+      ) : fetchError ? (
+        <ElementCollection layout={props.layout} carouselProps={props.carousel} errors={[fetchError]} />
+      ) : (
+        <ElementCollection
+          layout={props.layout}
+          carouselProps={props.carousel}
+          data={projects.filter(filterByActiveCategory)}
+          renderElement={({ data: project, ElementComponent: ProjectElement }) => (
+            <ProjectElement
+              editing={props.editing}
+              id={project.id}
+              title={project.title}
+              abstract={project.abstract}
+              coverUrl={project.coverUrl}
+              coverType={project.coverType}
+              previewUrl={project.previewUrl}
+              type={project.type}
+              targetAmount={project.target.amount}
+              targetUnit={project.target.unit}
+              expiredAt={project.expiredAt}
+              isParticipantsVisible={project.isParticipantsVisible}
+              isCountdownTimerVisible={project.isCountdownTimerVisible}
+              totalSales={project.totalSales}
+              enrollmentCount={project.enrollmentCount}
+              creatorId={project.creatorId}
+              authorId={project.authorId}
+            />
+          )}
+        />
+      )}
+    </div>
   )
 }
-
-type CollectCollectionProps<T> = T & { type: ProjectCollectionProps['type'] }
-
-const collectCustomCollection = (options: CollectCollectionProps<ProductCustomSource>) => {
-  const ProjectElementCollection: ProjectContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(
-      getProjectCollectionQuery(projectFields),
-      {
-        variables: {
-          limit: undefined,
-          orderByClause: [],
-          whereClause: {
-            id: { _in: options.idList || [] },
-            type: { _eq: options.type },
-            published_at: { _lt: 'now()' },
-          },
-        },
-      },
-    )
-    const orderedData = {
-      ...data,
-      project: (options.idList || [])
-        .filter(projectId => data?.project.find(p => p.id === projectId))
-        .map(projectId => data?.project.find(p => p.id === projectId))
-        .filter(notEmpty),
-    }
-    return children({
-      loading,
-      errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(orderedData),
-    })
-  }
-  return ProjectElementCollection
-}
-
-const collectPublishedAtCollection = (options: CollectCollectionProps<ProductPublishedAtSource>) => {
-  const ProjectElementCollection: ProjectContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(
-      getProjectCollectionQuery(projectFields),
-      {
-        variables: {
-          limit: options.limit,
-          orderByClause: [{ published_at: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
-          whereClause: {
-            type: { _eq: options.type },
-            published_at: { _lt: 'now()' },
-            project_categories: options.defaultCategoryIds?.length
-              ? {
-                  category_id: {
-                    _in: options.defaultCategoryIds,
-                  },
-                }
-              : undefined,
-          },
-        },
-      },
-    )
-    return children({
-      loading,
-      errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
-    })
-  }
-  return ProjectElementCollection
-}
-
-const collectPopularCollection = (options: CollectCollectionProps<ProductPublishedAtSource<'popular'>>) => {
-  const ProjectElementCollection: ProjectContextCollection = ({ children }) => {
-    const { data, loading, error } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(
-      getProjectCollectionQuery(projectFields),
-      {
-        variables: {
-          limit: options.limit,
-          orderByClause: [
-            { views: (options.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
-            { published_at: 'desc_nulls_last' as hasura.order_by },
-          ],
-          whereClause: {
-            type: { _eq: options.type },
-            published_at: { _lt: 'now()' },
-            project_categories: options.defaultCategoryIds?.length
-              ? {
-                  category_id: {
-                    _in: options.defaultCategoryIds,
-                  },
-                }
-              : undefined,
-          },
-        },
-      },
-    )
-    return children({
-      loading,
-      errors: error && [new Error(error.message)],
-      data: data && composeCollectionData(data),
-    })
-  }
-  return ProjectElementCollection
-}
-
-const composeCollectionData = (data: hasura.GET_PROJECT_COLLECTION): ProjectData[] =>
-  data.project.map(p => ({
-    id: p.id,
-    title: p.title,
-    abstract: p.abstract || '',
-    coverUrl: p.cover_url || null,
-    coverType: (p.cover_type as ProjectData['coverType']) ?? 'image',
-    previewUrl: p.preview_url || null,
-    type: p.type as ProjectData['type'],
-    target: {
-      amount: p.target_amount,
-      unit: p.target_unit,
-    } as ProjectData['target'],
-    expiredAt: p.expired_at,
-    isParticipantsVisible: p.is_participants_visible,
-    isCountdownTimerVisible: p.is_countdown_timer_visible,
-    totalSales: p.project_sales?.total_sales || 0,
-    enrollmentCount: sum(p.project_plans.map(pp => pp.project_plan_enrollments_aggregate.aggregate?.count || 0)),
-    categories: p.project_categories.map(pc => pc.category),
-    creatorId: p.creator_id || null,
-    authorId: p.author[0]?.member?.id,
-  }))
-
-const projectFields = gql`
-  fragment projectFields on project {
-    id
-    title
-    abstract
-    cover_url
-    cover_type
-    preview_url
-    type
-    target_amount
-    target_unit
-    expired_at
-    is_participants_visible
-    is_countdown_timer_visible
-    creator_id
-    author: project_roles(where: { identity: { name: { _eq: "author" } } }) {
-      id
-      member {
-        id
-      }
-    }
-    project_sales {
-      total_sales
-    }
-    project_plans {
-      project_plan_enrollments_aggregate {
-        aggregate {
-          count
-        }
-      }
-    }
-    project_categories {
-      category {
-        id
-        name
-      }
-    }
-  }
-`
 
 export default ProjectCollection
