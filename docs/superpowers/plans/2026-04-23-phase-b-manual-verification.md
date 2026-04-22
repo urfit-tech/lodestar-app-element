@@ -204,4 +204,46 @@ Record outcome inline (`[ ]` → `[x]` for pass; append notes for anything surpr
 - `findPrimaryPlan(program.plans as any)` was replaced with `program.plans[0]`. `findPrimaryPlan` is literally `plans[0] || null` — the `as any` in master was only needed because the old inline `ProgramData` shape didn't structurally match `Partial<ProductPlan>[]`. Reading index 0 directly is equivalent and removes one `as any` without behavioural change.
 - `historicalProgramPlanBuyers` / `historicalProgramPackagePlanBuyers` now use `??` rather than `||` inside `composeCollectionData`, preserving a genuine `0` count instead of rewriting it to `null`. Matches how master's original aggregation treated these fields in the card layer (cards already display `0` fine).
 
+## B-2a — OrderDetailDrawer (commits `a909694`, `d91ecb2`)
+
+### No visible parity check possible
+
+`OrderDetailDrawer` is barrel-exported from `packages/ui/src/index.ts` but has no active non-barrel caller and no element-demo route renders it. Only mechanical checks are possible at this sub-task; visual parity against master must wait for the follow-up below.
+
+### Mechanical checks (auto-verified)
+- [x] `pnpm --filter @lodestar/ui exec tsc --noEmit` passes
+- [x] `pnpm --filter @lodestar/element-demo exec tsc --noEmit` passes
+- [x] `pnpm -r exec tsc --noEmit` passes after `.tsbuildinfo` wipe
+- [x] `grep -rn "@apollo/client\|@lodestar/graphql\|\bgql\b\|\buseQuery\b\|\buseMutation\b" packages/ui/src/components/order/OrderDetailDrawer.tsx` is empty
+- [x] Commit `a909694` (types + hooks only) typechecks clean standalone before commit `d91ecb2` layers on top.
+
+### Follow-up — add a demo page (TODO)
+
+- Add `apps/element-demo/src/pages/OrderPage.tsx` (one route registration in `App.tsx`) with a seed `orderId` from a real test app, plus the wiring below, so `OrderDetailDrawer` has an exercisable route before the Phase B-4 parity sweep:
+
+```tsx
+// apps/element-demo/src/pages/OrderPage.tsx (sketch)
+const { data: orderDetail, loading: loadingOrderDetail } = useOrderDetail(orderLogId)
+const paths = orderDetail.orderProducts.map(p => p.options?.from).filter((p): p is string => !!p)
+const { data: sharingCodes, loading: loadingSharingCode } = useSharingCodes(paths)
+<OrderDetailDrawer
+  orderLogId={orderLogId}
+  onClose={onClose}
+  orderDetail={orderDetail}
+  sharingCodes={sharingCodes}
+  loadingOrderDetail={loadingOrderDetail}
+  loadingSharingCode={loadingSharingCode}
+/>
+```
+
+- Once that page exists, add the view-mode parity checks (drawer opens, order info / other info / invoice info / payment info sections render identical to master; sharing code / executor / installment display paths exercised). Since `OrderDetailDrawer` is not Craftize'd, the usual editor-mode / toolbar / drag-and-drop checks do not apply.
+
+### Known deviations from master
+
+- The `useOrderDetail` internal composer (originally defined at the bottom of `OrderDetailDrawer.tsx`) was promoted into `@lodestar/data-hasura/hooks/orderDetail.ts` and split into two named exports: `useOrderDetail(orderLogId)` (returns the composed `OrderDetailView`) and `useSharingCodes(paths)` (returns the joined `sharingCode` / `sharingNote` strings). Master fused both queries into one internal hook; the refactor separates them so callers can skip the sharing-codes query independently if desired.
+- The props-only UI now takes both `orderDetail: OrderDetailView` and `sharingCodes: SharingCodes` — empty-state shapes are returned by the hooks before data arrives, so the component never receives `undefined` and its existing `orderLog.shipping?.xxx` optional-chaining paths are unchanged. `loadingOrderDetail` / `loadingSharingCode` are optional with `false` defaults to keep ad-hoc usage frictionless.
+- `totalPrice` is computed inside the data hook (same formula as master: `max(productPrice - discountPrice + shippingFee)`); the UI just formats it. No user-visible change.
+- The unused `errorOrderDetail` / `errorSharingCode` fields that master's internal hook returned (but the UI never consumed) are dropped; the new hooks still surface `error?: Error` in the standard `{ data, loading, error? }` shape so a future caller can wire error UI if needed.
+- `packages/types/src/order.ts` gains three additions: `OrderExecutor`, `SharingCodes`, and `OrderDetailView` (the aggregate the hook emits). These are view shapes the UI already consumed inline — no raw hasura shape is re-exported.
+
 <!-- B-1 / B-2 / B-3 append their items below as sub-tasks land -->
