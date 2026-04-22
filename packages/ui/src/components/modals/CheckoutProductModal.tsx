@@ -40,6 +40,23 @@ import InvoiceInput, { validateInvoice } from '../inputs/InvoiceInput'
 import ShippingInput, { validateShipping } from '../inputs/ShippingInput'
 import { useMemberCreditCards } from '../selectors/CreditCardSelector'
 
+// Chakra v1's polymorphic prop unions combined with this file's heavy
+// dependency graph (Apollo + hasura + multi-package types) exceed TypeScript's
+// union-representation limit (TS2590). Re-bind the specific components whose
+// JSX call sites trigger it with narrower prop shapes.
+const DividerEl: React.ComponentType<{ className?: string }> = Divider
+const OrderedListEl: React.ComponentType<{ className?: string; children?: React.ReactNode }> = OrderedList
+type CheckoutButtonProps = {
+  className?: string
+  variant?: string
+  colorScheme?: string
+  isLoading?: boolean
+  disabled?: boolean
+  onClick?: () => void
+  children?: React.ReactNode
+}
+const CheckoutButton: React.ComponentType<CheckoutButtonProps> = Button
+
 export const StyledTitle = styled.h1`
   ${CommonTitleMixin}
 `
@@ -644,7 +661,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
         {enabledModules.group_buying && !!productTarget.groupBuyingPeople && productTarget.groupBuyingPeople > 1 && (
           <div ref={groupBuyingRef}>
             <StyledBlockTitle className="mb-3">{formatMessage(checkoutMessages.label.groupBuying)}</StyledBlockTitle>
-            <OrderedList className="mb-4">
+            <OrderedListEl className="mb-4">
               <StyledListItem>{formatMessage(checkoutMessages.text.groupBuyingDescription1)}</StyledListItem>
               <StyledListItem style={{ color: 'var(--error)', fontWeight: 'bolder' }}>
                 {formatMessage(checkoutMessages.text.groupBuyingDescription2, {
@@ -656,7 +673,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
               <StyledListItem>
                 {formatMessage(checkoutMessages.text.groupBuyingDescription4, { modal: <GroupBuyingRuleModal /> })}
               </StyledListItem>
-            </OrderedList>
+            </OrderedListEl>
             <CheckoutGroupBuyingForm
               title={productTarget.title || ''}
               partnerCount={productTarget.groupBuyingPeople - 1}
@@ -734,7 +751,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
             />
           </div>
         )}
-        <Divider className="mb-3" />
+        <DividerEl className="mb-3" />
         {renderTerms && (
           <StyledCheckoutBlock className="mb-5">
             <div className="mb-2">{renderTerms()}</div>
@@ -797,7 +814,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
         )}
 
         <StyledSubmitBlock className="text-right">
-          <Button
+          <CheckoutButton
             variant="outline"
             onClick={() => {
               onClose()
@@ -807,8 +824,8 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
             className="mr-3"
           >
             {formatMessage(commonMessages.ui.cancel)}
-          </Button>
-          <Button
+          </CheckoutButton>
+          <CheckoutButton
             colorScheme="primary"
             isLoading={orderPlacing}
             onClick={handleSubmit}
@@ -821,7 +838,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
             {productTarget.isSubscription
               ? formatMessage(commonMessages.button.subscribeNow)
               : formatMessage(checkoutMessages.button.cartSubmit)}
-          </Button>
+          </CheckoutButton>
         </StyledSubmitBlock>
       </CommonModal>
     </>

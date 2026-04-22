@@ -11,7 +11,31 @@ import { CheckProps } from '@lodestar/types/checkout'
 import CouponSelectionModal from '../modals/CouponSelectionModal'
 import MembershipCardSelectionModal from '../modals/MembershipCardSelectionModal'
 
-const StyledRadio = styled(Radio as any)`
+// Chakra v1's polymorphic component prop unions exceed TypeScript's
+// representation limit (TS2590) inside the larger element-demo compilation
+// unit. Re-bind the components with narrower prop shapes so call sites
+// don't trigger the union blow-up.
+type RadioGroupElProps = {
+  value?: string
+  onChange?: (value: string) => void
+  style?: React.CSSProperties
+  children: React.ReactNode
+}
+const RadioGroupEl: React.ComponentType<RadioGroupElProps> = RadioGroup
+const StackEl: React.ComponentType<{ children: React.ReactNode }> = Stack
+type DiscountButtonProps = {
+  variant?: string
+  onClick?: () => void
+  children?: React.ReactNode
+}
+const DiscountButton: React.ComponentType<DiscountButtonProps> = Button
+
+const StyledRadio = styled(Radio as React.ComponentType<{
+  height?: string
+  colorScheme?: string
+  value?: string
+  children?: React.ReactNode
+}>)`
   &&:focus {
     box-shadow: 0 0 0 3px ${props => rgba(props.theme['@primary-color'], 0.6)};
   }
@@ -29,12 +53,12 @@ const DiscountSelectionCard: React.FC<{
 
   const [discountType, discountTarget] = discountId?.split('_') || [null, null]
   return (
-    <RadioGroup
+    <RadioGroupEl
       value={discountType || 'None'}
       onChange={value => onChange?.(value === 'None' ? '' : `${value}`)}
       style={{ width: '100%' }}
     >
-      <Stack>
+      <StackEl>
         <StyledRadio height="3rem" colorScheme="primary" value="None">
           {formatMessage(checkoutMessages.label.noDiscount)}
         </StyledRadio>
@@ -54,19 +78,19 @@ const DiscountSelectionCard: React.FC<{
                   }}
                   renderTrigger={({ onOpen, selectedCoupon }) => (
                     <>
-                      <Button variant="outline" onClick={onOpen}>
+                      <DiscountButton variant="outline" onClick={onOpen}>
                         {discountTarget
                           ? formatMessage(checkoutMessages.button.reselectCoupon)
                           : formatMessage(checkoutMessages.button.chooseCoupon)}
-                      </Button>
+                      </DiscountButton>
                       {selectedCoupon && <span className="ml-3">{selectedCoupon.couponCode.couponPlan.title}</span>}
                     </>
                   )}
                 />
               ) : (
-                <Button onClick={() => setAuthModalVisible && setAuthModalVisible(true)}>
+                <DiscountButton onClick={() => setAuthModalVisible && setAuthModalVisible(true)}>
                   {formatMessage(checkoutMessages.button.chooseCoupon)}
-                </Button>
+                </DiscountButton>
               )}
             </span>
           )}
@@ -82,11 +106,11 @@ const DiscountSelectionCard: React.FC<{
                     onSelect={membershipCardId => onChange?.(`Card_${membershipCardId}`)}
                     render={({ setVisible, selectedMembershipCard }: any) => (
                       <>
-                        <Button variant="outline" onClick={() => setVisible(true)}>
+                        <DiscountButton variant="outline" onClick={() => setVisible(true)}>
                           {discountTarget
                             ? formatMessage(checkoutMessages.button.reselectCoupon)
                             : formatMessage(checkoutMessages.title.chooseMemberCard)}
-                        </Button>
+                        </DiscountButton>
                         {selectedMembershipCard && <span className="ml-3">{selectedMembershipCard.title}</span>}
                       </>
                     )}
@@ -96,8 +120,8 @@ const DiscountSelectionCard: React.FC<{
             )}
           </StyledRadio>
         )}
-      </Stack>
-    </RadioGroup>
+      </StackEl>
+    </RadioGroupEl>
   )
 }
 
