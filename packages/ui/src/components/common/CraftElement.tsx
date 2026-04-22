@@ -2,7 +2,6 @@ import Button from '../buttons/Button'
 import Card from '../cards/Card'
 import RichCard from '../cards/RichCard'
 import Collapse from '../collapses/Collapse'
-import ActivityCollection from '../collections/ActivityCollection'
 import MemberCollection from '../collections/MemberCollection'
 import PostCollection from '../collections/PostCollection'
 import ProgramCollection from '../collections/ProgramCollection'
@@ -40,6 +39,5 @@ export const CraftMemberCollection = Craftize(MemberCollection)
 export const CraftProgramCollection = Craftize(ProgramCollection)
 export const CraftProgramContentCollection = Craftize(ProgramContentCollection)
 export const CraftProgramPackageCollection = Craftize(ProgramPackageCollection)
-export const CraftActivityCollection = Craftize(ActivityCollection)
 export const CraftProjectCollection = Craftize(ProjectCollection)
 export const CraftPostCollection = Craftize(PostCollection)

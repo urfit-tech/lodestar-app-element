@@ -2,8 +2,9 @@ import { Editor, Frame } from '@craftjs/core'
 import { useState } from 'react'
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 import { QueryParamProvider } from 'use-query-params'
-import * as CraftResolvers from '@lodestar/ui/components/common/CraftElement'
+import * as UiCraftResolvers from '@lodestar/ui/components/common/CraftElement'
 import MemberEventCalendarBlock from '@lodestar/ui/components/event/MemberEventCalendarBlock'
+import * as LocalCraftResolvers from './craft'
 import { LodestarAppProvider } from './LodestarAppProvider'
 import ActivityPage from './pages/ActivityPage'
 import AIBotPage from './pages/AIBotPage'
@@ -19,7 +20,7 @@ import ProgramPackagePage from './pages/ProgramPackagePage'
 import ProjectElementPage from './pages/ProjectElementPage'
 import TextPage from './pages/TextPage'
 
-const craftResolvers = { ...CraftResolvers }
+const craftResolvers = { ...UiCraftResolvers, ...LocalCraftResolvers }
 
 const routes = [
   { name: 'Home', path: '/', render: () => null },
