@@ -1,6 +1,7 @@
 export * from './apollo'
 export * from './contexts/ApiProvider'
 export * from './contexts/AppProvider'
+export * from './hooks/activity'
 export * from './hooks/card'
 export * from './hooks/common'
 export * from './hooks/coupon'
