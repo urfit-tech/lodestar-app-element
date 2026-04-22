@@ -450,9 +450,10 @@ Expected: PASS（`ActivityCollection` 檔案本身仍在 ui，純被消費者用
 - [ ] **Step 1: 建立 `apps/element-demo/src/craft/CraftActivityCollection.tsx`**
 
 ```tsx
+import { UserComponent } from '@craftjs/core'
 import React, { useMemo } from 'react'
 import ActivityCollection, { ActivityCollectionProps } from '@lodestar/ui/components/collections/ActivityCollection'
-import Craftize from '@lodestar/ui/components/common/Craftize'
+import Craftize, { PropsWithCraft } from '@lodestar/ui/components/common/Craftize'
 import { ActivityCollectionSource, useActivityCollection } from '@lodestar/data-hasura/hooks/activity'
 
 export type CraftActivityCollectionProps = Omit<
@@ -488,7 +489,13 @@ const ConnectedActivityCollection: React.FC<CraftActivityCollectionProps> = ({ s
   )
 }
 
-export const CraftActivityCollection = Craftize(ConnectedActivityCollection)
+// Explicit `UserComponent<PropsWithCraft<...>>` annotation anchors the type
+// locally. Without it, TypeScript tries to name Craftize's inferred return
+// type via `../../../../packages/ui/node_modules/@craftjs/core/lib`, which is
+// non-portable across workspace boundaries (TS2742).
+export const CraftActivityCollection: UserComponent<PropsWithCraft<CraftActivityCollectionProps>> = Craftize(
+  ConnectedActivityCollection,
+)
 ```
 
 **單一 hook 呼叫：** Task 2 已把兩種 source 合併成 `useActivityCollection(source)`，Connected wrapper 不用處理 React rules-of-hooks 的條件呼叫問題，也不需要 `skip` flag。
