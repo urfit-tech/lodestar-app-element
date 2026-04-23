@@ -12,5 +12,42 @@
     "no-debugger": "error",
     "no-floating-promises": "off"
   },
-  "ignorePatterns": ["node_modules", "dist", "**/dist", "public"]
+  "ignorePatterns": ["node_modules", "dist", "**/dist", "public"],
+  "overrides": [
+    {
+      "files": [
+        "packages/ui/src/**",
+        "packages/contexts/src/**",
+        "packages/hooks/src/**",
+        "packages/helpers/src/**"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@apollo/client",
+                "message": "Phase B/C decoupling: Apollo client belongs in @lodestar/data-hasura. These packages must stay data-layer-agnostic."
+              },
+              {
+                "name": "graphql",
+                "message": "Phase B/C decoupling: raw GraphQL types belong in @lodestar/data-hasura / @lodestar/graphql only."
+              },
+              {
+                "name": "graphql-ws",
+                "message": "Phase B/C decoupling: websocket subscriptions belong in @lodestar/data-hasura only."
+              }
+            ],
+            "patterns": [
+              {
+                "group": ["@lodestar/graphql", "@lodestar/graphql/*"],
+                "message": "Phase B/C decoupling: @lodestar/graphql is an implementation detail of @lodestar/data-hasura. Import the concrete hook from @lodestar/data-hasura instead, or push the data concern up to the consumer app."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

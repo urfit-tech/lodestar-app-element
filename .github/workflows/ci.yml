@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  ci:
+    name: typecheck + decoupling lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Stale `.tsbuildinfo` from a prior composite build has caused flaky
+      # TS2590 reports in this repo. Always start from a clean slate in CI.
+      - name: Wipe incremental typecheck cache
+        run: find packages apps -name '*.tsbuildinfo' -delete
+
+      - name: Workspace-wide typecheck
+        run: pnpm -r exec tsc --noEmit
+
+      # Phase B/C decoupling guard. This step only enforces the
+      # `no-restricted-imports` overrides in .oxlintrc.json — that is, it makes
+      # sure @lodestar/{ui,contexts,hooks,helpers} never grow new imports of
+      # @apollo/client / graphql / graphql-ws / @lodestar/graphql. Other lint
+      # rules in the config are still reported but not gated on here, because
+      # the repo currently carries a pile of pre-existing warnings/errors that
+      # are orthogonal to the decoupling.
+      - name: Decoupling-guard lint (no-restricted-imports only)
+        run: |
+          set -e
+          # Run oxlint on the guarded packages. If any of the configured
+          # no-restricted-imports violations are hit, `oxlint` exits non-zero.
+          # We filter out the pre-existing noise and fail only when the
+          # decoupling rule fires.
+          output="$(pnpm -s oxlint packages/ui/src packages/contexts/src packages/hooks/src packages/helpers/src 2>&1 || true)"
+          echo "$output"
+          if echo "$output" | grep -q 'no-restricted-imports'; then
+            echo
+            echo '::error::Decoupling regression: a guarded package imported @apollo/client / graphql / graphql-ws / @lodestar/graphql. See .oxlintrc.json overrides for the policy.'
+            exit 1
+          fi
