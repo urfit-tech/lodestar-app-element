@@ -18,6 +18,8 @@ import ProgramContentCollectionPage from './pages/ProgramContentCollectionPage'
 import ProgramElementPage from './pages/ProgramElementPage'
 import ProgramPackagePage from './pages/ProgramPackagePage'
 import ProjectElementPage from './pages/ProjectElementPage'
+import OrderPage from './pages/OrderPage'
+import PostPage from './pages/PostPage'
 import TextPage from './pages/TextPage'
 
 const craftResolvers = { ...UiCraftResolvers, ...LocalCraftResolvers }
@@ -31,6 +33,8 @@ const routes = [
   { name: 'Program package', path: '/program-package', component: ProgramPackagePage },
   { name: 'Project', path: '/project', component: ProjectElementPage },
   { name: 'Activity', path: '/activity', component: ActivityPage },
+  { name: 'Post', path: '/post', component: PostPage },
+  { name: 'Order', path: '/order', component: OrderPage },
   { name: 'Layout', path: '/layout', component: LayoutPage },
   { name: 'Text', path: '/text', component: TextPage },
   { name: 'Carousel', path: '/carousel', component: CarouselPage },
