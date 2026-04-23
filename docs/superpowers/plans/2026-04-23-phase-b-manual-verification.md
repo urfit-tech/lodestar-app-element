@@ -246,4 +246,31 @@ const { data: sharingCodes, loading: loadingSharingCode } = useSharingCodes(path
 - The unused `errorOrderDetail` / `errorSharingCode` fields that master's internal hook returned (but the UI never consumed) are dropped; the new hooks still surface `error?: Error` in the standard `{ data, loading, error? }` shape so a future caller can wire error UI if needed.
 - `packages/types/src/order.ts` gains three additions: `OrderExecutor`, `SharingCodes`, and `OrderDetailView` (the aggregate the hook emits). These are view shapes the UI already consumed inline — no raw hasura shape is re-exported.
 
+## B-2b — Checkout cluster (commits `d16bdef`, `584df34`)
+
+### Required checks
+
+- [ ] `/checkout` view mode — all four `<ConnectedCheckoutProductModal …/>` instances in `CheckoutPage.tsx` open their respective modals (ProgramPlan / ProjectPlan / ProgramPlan / ProgramPlan product ids) with identical contents to master. Verify: product item, quantity controls, discount card, coupon modal, shipping form (when applicable), invoice form, payment selector, credit card selector (including add-new-card flow via TapPay).
+- [ ] `/checkout` view mode — Button (if an appId with a Button element exists) triggers `<ConnectedCheckoutProductModal …/>` via `packages/ui/src/components/buttons/Button.tsx`.
+- [ ] Coupon insertion — type a real coupon code in the coupon-selection modal; after successful insert the list refreshes.
+- [ ] Credit card — selecting an existing card updates state; adding a new card via TapPay goes through (DESTRUCTIVE: only on throwaway appId/account).
+- [ ] Payment method — selecting each offered method changes the payment summary accordingly.
+- [ ] Submit flow — click the submit button; an order is created, the page navigates to the order page as in master (DESTRUCTIVE: only on throwaway appId/account).
+- [ ] Coin deduction — if the app enables coin module, `remainingCoins` is read and the checkout UI reflects the coin balance identically to master.
+
+### Mechanical checks (auto-verified)
+
+- [x] `pnpm --filter @lodestar/ui exec tsc --noEmit` passes
+- [x] `pnpm --filter @lodestar/element-demo exec tsc --noEmit` passes
+- [x] `pnpm -r exec tsc --noEmit` passes after `.tsbuildinfo` wipe
+- [x] `grep` for `@apollo/client | gql | useQuery | useMutation | @lodestar/graphql` in `CheckoutProductModal.tsx` / `PaymentSelector.tsx` / `CreditCardSelector.tsx` is empty
+- [x] Commit `d16bdef` (hooks only) typechecks clean standalone before commit `584df34` layers on top.
+
+### Known deviations / Phase-C follow-ups
+
+- `@lodestar/ui` still imports `@lodestar/data-hasura` inside `ConnectedCheckoutProductModal.tsx`, `PaymentSelector.tsx` chain (via the Connected wrapper), and transitively through the modal's non-Apollo hooks (`useMember`, `useSimpleProduct`, `useCheck`, `useResourceCollection`, `useTracking`, `useUpdateMemberMetadata`). These remain as the B-2 "pragmatic scope" carve-out; Phase C evaluates whether to pull each of them one layer further up (into Connected wrappers / consumer pages).
+- `@lodestar/ui/package.json` still declares `@lodestar/data-hasura` / `@apollo/client` / `graphql` / `graphql-ws` deps — unchanged in Phase B. Phase C strips these once all call sites are converted.
+- The original `useMemberCreditCards` export in `CreditCardSelector.tsx` was an inline internal hook; moving it to `@lodestar/data-hasura/hooks/checkoutFlow.ts` means any external import path like `import { useMemberCreditCards } from '@lodestar/ui/components/selectors/CreditCardSelector'` needs to be redirected to the data-hasura path. Grep in the current workspace is clean; external consumers (lodestar-app / lodestar-app-admin) will need the same fix once they integrate into the monorepo.
+- `CheckoutProductModal`'s pre-existing `styled(Checkbox as any)` at `CheckoutProductModal.tsx:111` is inherited from master and was left alone; untangling it is a chakra-typing task orthogonal to B-2. No new `any` was introduced.
+
 <!-- B-1 / B-2 / B-3 append their items below as sub-tasks land -->
