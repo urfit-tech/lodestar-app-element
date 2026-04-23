@@ -8,7 +8,7 @@ const OrderPage: React.FC = () => {
 
   const { data: orderDetail, loading: loadingOrderDetail } = useOrderDetail(orderLogId)
   const paths = orderDetail.orderProducts
-    .map(p => (p.options as { from?: string } | undefined)?.from)
+    .map((p) => (p.options as { from?: string } | undefined)?.from)
     .filter((p): p is string => Boolean(p))
   const { data: sharingCodes, loading: loadingSharingCode } = useSharingCodes(paths)
 
@@ -23,7 +23,7 @@ const OrderPage: React.FC = () => {
         <input
           type="text"
           value={draftOrderLogId}
-          onChange={e => setDraftOrderLogId(e.target.value)}
+          onChange={(e) => setDraftOrderLogId(e.target.value)}
           placeholder="order_log.id"
           style={{ flex: 1, padding: '0.4rem 0.6rem' }}
         />

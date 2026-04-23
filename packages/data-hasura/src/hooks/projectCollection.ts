@@ -88,10 +88,8 @@ const composeProjectItem = (p: ProjectNode): ProjectCollectionItem => ({
   isParticipantsVisible: p.is_participants_visible,
   isCountdownTimerVisible: p.is_countdown_timer_visible,
   totalSales: p.project_sales?.total_sales || 0,
-  enrollmentCount: sum(
-    p.project_plans.map(pp => pp.project_plan_enrollments_aggregate.aggregate?.count || 0),
-  ),
-  categories: p.project_categories.map(pc => ({
+  enrollmentCount: sum(p.project_plans.map((pp) => pp.project_plan_enrollments_aggregate.aggregate?.count || 0)),
+  categories: p.project_categories.map((pc) => ({
     id: pc.category.id,
     name: pc.category.name,
   })),
@@ -135,9 +133,7 @@ const buildVariables = (
   }
   return {
     limit: source.limit,
-    orderByClause: [
-      { published_at: (source.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
-    ],
+    orderByClause: [{ published_at: (source.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
     whereClause: {
       type: { _eq: type },
       published_at: { _lt: 'now()' },
@@ -154,10 +150,13 @@ export const useProjectCollection = (
 ): UseProjectCollectionResult => {
   const type = options?.type
   const variables = useMemo(() => buildVariables(source, type), [source, type])
-  const { data: rawData, loading, error } = useQuery<
-    hasura.GET_PROJECT_COLLECTION,
-    hasura.GET_PROJECT_COLLECTIONVariables
-  >(PROJECT_COLLECTION_QUERY, { variables })
+  const {
+    data: rawData,
+    loading,
+    error,
+  } = useQuery<hasura.GET_PROJECT_COLLECTION, hasura.GET_PROJECT_COLLECTIONVariables>(PROJECT_COLLECTION_QUERY, {
+    variables,
+  })
 
   const composed = useMemo(() => {
     if (!rawData) return []
@@ -167,9 +166,7 @@ export const useProjectCollection = (
     if (source.from === 'custom') {
       const ordered: hasura.GET_PROJECT_COLLECTION = {
         ...rawData,
-        project: (source.idList || [])
-          .map(id => rawData.project.find(p => p.id === id))
-          .filter(notEmpty),
+        project: (source.idList || []).map((id) => rawData.project.find((p) => p.id === id)).filter(notEmpty),
       }
       return composeCollectionData(ordered)
     }

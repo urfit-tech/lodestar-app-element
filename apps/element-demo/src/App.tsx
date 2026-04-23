@@ -60,12 +60,12 @@ const App: React.FC = () => {
                     className="mr-1"
                     type="checkbox"
                     checked={editing}
-                    onChange={e => setEditing(Boolean(e.target.checked))}
+                    onChange={(e) => setEditing(Boolean(e.target.checked))}
                   />
                   <span>Editing</span>
                 </label>
                 <ul className="pl-3">
-                  {routes.map(route => (
+                  {routes.map((route) => (
                     <Link key={route.path} to={route.path}>
                       <li>{route.name}</li>
                     </Link>
@@ -73,7 +73,7 @@ const App: React.FC = () => {
                 </ul>
               </div>
 
-              {routes.map(route => (
+              {routes.map((route) => (
                 <Route key={route.path} path={route.path} render={route.render} component={route.component} />
               ))}
               <br />

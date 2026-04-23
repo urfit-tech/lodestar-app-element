@@ -1,8 +1,13 @@
 import Cookies from 'js-cookie'
-import { ConversionApiContent, ConversionApiData, ConversionApiEvent, ConversionApiEventName, ConversionApiUserData } from '@lodestar/types/conversionApi'
+import {
+  ConversionApiContent,
+  ConversionApiData,
+  ConversionApiEvent,
+  ConversionApiEventName,
+  ConversionApiUserData,
+} from '@lodestar/types/conversionApi'
 import { MemberProps } from '@lodestar/types/member'
 import axios, { AxiosResponse } from 'axios'
-
 
 /* TODO:
 * conversionApi: 
@@ -10,7 +15,7 @@ import axios, { AxiosResponse } from 'axios'
 * this will be deprecated when we can add cart product and payment info via backend api instead of using Hasura mutation.
 ----------------------------------------------------------------
 * conversionApiData: convert data structure
-*/ 
+*/
 export const getConversionApiData: (
   member: MemberProps | null,
   data: {

@@ -32,7 +32,7 @@ const StyledCard = styled(Card)({
   overflow: 'hidden',
 })
 
-const ActivityCard: React.FC<ActivityElementProps> = props => {
+const ActivityCard: React.FC<ActivityElementProps> = (props) => {
   const { loading, errors } = props
   const { formatMessage } = useIntl()
 

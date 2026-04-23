@@ -37,7 +37,7 @@ const ProgramMarketingTag: FC<{ label: string | undefined; labelColorType: strin
 
   const programLabelColorConfig = getLabelColorConfig(settings)
 
-  const programLabelColor = programLabelColorConfig?.find(config => config.id === Number(labelColorType)) || {
+  const programLabelColor = programLabelColorConfig?.find((config) => config.id === Number(labelColorType)) || {
     backgroundColor: '#ececec',
     textColor: '#585858',
   }

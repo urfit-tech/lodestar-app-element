@@ -9,7 +9,7 @@ type CategorySelectorProps = {
   activeCategoryId: string | null
   onActive?: (categoryId: string | null) => void
 }
-const CategorySelector: ElementComponent<CategorySelectorProps> = props => {
+const CategorySelector: ElementComponent<CategorySelectorProps> = (props) => {
   const { loading, errors, editing } = props
   const { formatMessage } = useIntl()
   if (errors) {
@@ -28,13 +28,13 @@ const CategorySelector: ElementComponent<CategorySelectorProps> = props => {
           colorScheme="primary"
           variant={!props.activeCategoryId ? 'solid' : 'outline'}
           className="mb-2 category__button"
-          onClick={e => (editing ? e.preventDefault() : props.onActive?.(null))}
+          onClick={(e) => (editing ? e.preventDefault() : props.onActive?.(null))}
         >
           {formatMessage(commonMessages.button.allCategory)}
         </Button>
       )}
       {!loading &&
-        props.categories.map(category => (
+        props.categories.map((category) => (
           <Button
             h="2.75rem"
             borderRadius="2rem"
@@ -44,7 +44,7 @@ const CategorySelector: ElementComponent<CategorySelectorProps> = props => {
             colorScheme="primary"
             variant={props.activeCategoryId === category.id ? 'solid' : 'outline'}
             className="ml-2 mb-2 category__button"
-            onClick={e => (editing ? e.preventDefault() : props.onActive?.(category.id))}
+            onClick={(e) => (editing ? e.preventDefault() : props.onActive?.(category.id))}
           >
             {category.name}
           </Button>

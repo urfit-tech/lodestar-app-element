@@ -145,7 +145,7 @@ type ProgramPlanNode = ProgramNode['program_plans'][number]
 type ProgramPlanWithPosition = ProgramPlanNode & { position?: number | null }
 
 const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramCollectionItem[] =>
-  data.program.map(p => ({
+  data.program.map((p) => ({
     id: p.id,
     title: p.title,
     abstract: p.abstract || '',
@@ -153,11 +153,11 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramColl
     coverMobileUrl: p.cover_mobile_url || null,
     coverThumbnailUrl: p.cover_thumbnail_url || null,
     totalDuration: sum(
-      p.program_content_sections.map(pcs => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0),
+      p.program_content_sections.map((pcs) => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0),
     ),
     label: p.label || '',
     labelColorType: p.label_color_type || '',
-    roles: p.program_roles.map(pr => ({
+    roles: p.program_roles.map((pr) => ({
       id: pr.id,
       name: pr.name as ProductRole['name'],
       member: {
@@ -171,8 +171,8 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramColl
     soldAt: p.sold_at ? new Date(p.sold_at) : null,
     isEnrolledCountVisible: p.is_enrolled_count_visible,
     plans: p.program_plans
-      .filter(pp => pp.published_at)
-      .map(pp => {
+      .filter((pp) => pp.published_at)
+      .map((pp) => {
         const planWithPosition = pp as ProgramPlanWithPosition
         return {
           id: pp.id,
@@ -192,7 +192,7 @@ const composeCollectionData = (data: hasura.GET_PROGRAM_COLLECTION): ProgramColl
           position: planWithPosition.position ?? 0,
         }
       }),
-    categories: p.program_categories.map(pc => ({
+    categories: p.program_categories.map((pc) => ({
       id: pc.category.id,
       name: pc.category.name,
       position: pc.category.position,
@@ -213,7 +213,7 @@ const buildVariables = (
         limit: undefined,
         orderByClause: [],
         whereClause: {
-          id: { _in: (source.idList || []).filter(id => id !== '') },
+          id: { _in: (source.idList || []).filter((id) => id !== '') },
           is_private: { _eq: false },
           published_at: { _lt: 'now()' },
         },
@@ -232,9 +232,7 @@ const buildVariables = (
           program_categories: source.defaultCategoryIds?.length
             ? { category_id: { _in: source.defaultCategoryIds } }
             : undefined,
-          program_tags: source.defaultTagNames?.length
-            ? { tag_name: { _in: source.defaultTagNames } }
-            : undefined,
+          program_tags: source.defaultTagNames?.length ? { tag_name: { _in: source.defaultTagNames } } : undefined,
         },
       }
     }
@@ -251,9 +249,7 @@ const buildVariables = (
           program_categories: source.defaultCategoryIds?.length
             ? { category_id: { _in: source.defaultCategoryIds } }
             : undefined,
-          program_tags: source.defaultTagNames?.length
-            ? { tag_name: { _in: source.defaultTagNames } }
-            : undefined,
+          program_tags: source.defaultTagNames?.length ? { tag_name: { _in: source.defaultTagNames } } : undefined,
           _or: [
             {
               _and: [
@@ -262,10 +258,7 @@ const buildVariables = (
               ],
             },
             {
-              _and: [
-                { sold_at: { _gt: 'now()' } },
-                { sale_price: { _gte: source.min, _lte: source.max } },
-              ],
+              _and: [{ sold_at: { _gt: 'now()' } }, { sale_price: { _gte: source.min, _lte: source.max } }],
             },
           ],
         },
@@ -291,9 +284,7 @@ const buildVariables = (
           program_categories: source.defaultCategoryIds?.length
             ? { category_id: { _in: source.defaultCategoryIds } }
             : undefined,
-          program_tags: source.defaultTagNames?.length
-            ? { tag_name: { _in: source.defaultTagNames } }
-            : undefined,
+          program_tags: source.defaultTagNames?.length ? { tag_name: { _in: source.defaultTagNames } } : undefined,
         },
       }
     }
@@ -301,18 +292,14 @@ const buildVariables = (
     default: {
       return {
         limit: source.limit,
-        orderByClause: [
-          { published_at: (source.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
-        ],
+        orderByClause: [{ published_at: (source.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
         whereClause: {
           is_private: { _eq: false },
           published_at: { _lt: 'now()' },
           program_categories: source.defaultCategoryIds?.length
             ? { category_id: { _in: source.defaultCategoryIds } }
             : undefined,
-          program_tags: source.defaultTagNames?.length
-            ? { tag_name: { _in: source.defaultTagNames } }
-            : undefined,
+          program_tags: source.defaultTagNames?.length ? { tag_name: { _in: source.defaultTagNames } } : undefined,
         },
       }
     }
@@ -324,10 +311,13 @@ export const useProgramCollection = (
   context: ProgramCollectionContext = {},
 ): UseProgramCollectionResult => {
   const variables = useMemo(() => buildVariables(source, context), [source, context])
-  const { data: rawData, loading, error } = useQuery<
-    hasura.GET_PROGRAM_COLLECTION,
-    hasura.GET_PROGRAM_COLLECTIONVariables
-  >(PROGRAM_COLLECTION_QUERY, { variables })
+  const {
+    data: rawData,
+    loading,
+    error,
+  } = useQuery<hasura.GET_PROGRAM_COLLECTION, hasura.GET_PROGRAM_COLLECTIONVariables>(PROGRAM_COLLECTION_QUERY, {
+    variables,
+  })
 
   const composed = useMemo(() => {
     if (!rawData) return []
@@ -337,9 +327,7 @@ export const useProgramCollection = (
     if (source.from === 'custom') {
       const ordered: hasura.GET_PROGRAM_COLLECTION = {
         ...rawData,
-        program: (source.idList || [])
-          .map(id => rawData.program.find(p => p.id === id))
-          .filter(notEmpty),
+        program: (source.idList || []).map((id) => rawData.program.find((p) => p.id === id)).filter(notEmpty),
       }
       return composeCollectionData(ordered)
     }
@@ -378,9 +366,9 @@ export const useEnrolledProgramIds = (
       loading || error || !data
         ? []
         : uniq([
-            ...data.program_enrollment.map(e => e.program_id),
-            ...data.program_plan_enrollment.map(e => e.program_plan?.program_id || ''),
-            ...data.program_content_enrollment.map(e => e.program_id),
+            ...data.program_enrollment.map((e) => e.program_id),
+            ...data.program_plan_enrollment.map((e) => e.program_plan?.program_id || ''),
+            ...data.program_content_enrollment.map((e) => e.program_id),
           ]),
     [data, loading, error],
   )

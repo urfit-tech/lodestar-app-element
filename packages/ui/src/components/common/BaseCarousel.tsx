@@ -31,7 +31,7 @@ export type BaseCarouselProps = BaseSliderProps & { variant?: 'cover'; currentSl
 const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`
   .slick-arrow {
     z-index: 1;
-    pointer-events: ${props => props.editing && 'none'};
+    pointer-events: ${(props) => props.editing && 'none'};
   }
   .slick-prev {
     left: 4px;
@@ -46,12 +46,12 @@ const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`
   }
   .slick-next:before,
   .slick-prev:before {
-    color: ${props => props.theme['@primary-color']};
+    color: ${(props) => props.theme['@primary-color']};
   }
   .slick-dots {
     z-index: 1;
     bottom: 8px;
-    pointer-events: ${props => props.editing && 'none'};
+    pointer-events: ${(props) => props.editing && 'none'};
     button::before {
       content: '';
       width: 12px;
@@ -60,12 +60,12 @@ const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`
       background-color: #cdcdcd;
     }
     .slick-active button::before {
-      background-color: ${props => props.theme['@primary-color']};
+      background-color: ${(props) => props.theme['@primary-color']};
     }
   }
 `
 
-const BaseCarousel: ElementComponent<BaseCarouselProps> = props => {
+const BaseCarousel: ElementComponent<BaseCarouselProps> = (props) => {
   const sliderRef = useRef<Slider>(null)
   useEffect(() => {
     sliderRef.current?.slickGoTo(props.currentSlide || 0)

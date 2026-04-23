@@ -247,8 +247,8 @@ export const AppThemeProvider: React.FC<{ extendChakraTheme?: ThemeOverride }> =
     ),
   )
   const themeVars = Object.keys(settings)
-    .filter(key => key.split('.')[0] === 'theme')
-    .map(key => key.split('.')[1])
+    .filter((key) => key.split('.')[0] === 'theme')
+    .map((key) => key.split('.')[1])
     .reduce(
       (vars: { [key: string]: string }, themeKey: string) => {
         vars[themeKey] = settings[`theme.${themeKey}`]

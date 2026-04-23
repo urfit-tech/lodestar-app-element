@@ -13,8 +13,8 @@
     "typegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
-    "@lodestar/types": "workspace:*",
     "@apollo/client": "^3.7.11",
+    "@lodestar/types": "workspace:*",
     "graphql": "^16.6.0"
   },
   "devDependencies": {

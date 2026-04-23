@@ -27,7 +27,7 @@ type OrderSelectorProps = {
   ) => void
 }
 
-const OrderSelector: ElementComponent<OrderSelectorProps> = props => {
+const OrderSelector: ElementComponent<OrderSelectorProps> = (props) => {
   const { loading, errors, sourceFrom, withOrderSelector, onChange } = props
   const { formatMessage } = useIntl()
   if (errors) {
@@ -39,7 +39,7 @@ const OrderSelector: ElementComponent<OrderSelectorProps> = props => {
     <Select
       className="order__selector"
       value={sourceFrom}
-      onChange={e => {
+      onChange={(e) => {
         onChange?.(
           e.target.value as
             | ProductCustomSource['from']

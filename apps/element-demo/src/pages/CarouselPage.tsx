@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { CraftButton, CraftCarousel, CraftSection } from '@lodestar/ui/components/common/CraftPureElements'
 
 const CarouselPage = () => {
-  const { currentNode, actions } = useEditor(state => ({
+  const { currentNode, actions } = useEditor((state) => ({
     currentNode: state.events.selected ? state.nodes[state.events.selected] : null,
   }))
   const [slide, setSlide] = useState(0)
@@ -12,9 +12,9 @@ const CarouselPage = () => {
       <input
         type="number"
         value={Number(slide).toString()}
-        onChange={e => {
+        onChange={(e) => {
           currentNode &&
-            actions.setProp(currentNode.id, props => {
+            actions.setProp(currentNode.id, (props) => {
               props.currentSlide = Number(e.target.value)
             })
           setSlide(Number(e.target.value))

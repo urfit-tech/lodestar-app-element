@@ -7,11 +7,11 @@ import { OutputMixin } from './StyledBraftEditor'
 
 const StyledSimpleMdeReact = styled(SimpleMdeReact)<
   Partial<SimpleMDEEditorProps> & { customizedStyle?: string | undefined }
->(props => OutputMixin(props.customizedStyle))
+>((props) => OutputMixin(props.customizedStyle))
 
 const StyledMarkdownDiv = styled.div<
   Partial<HTMLAttributes<HTMLDivElement>> & { customizedStyle?: string | undefined }
->(props => OutputMixin(props.customizedStyle))
+>((props) => OutputMixin(props.customizedStyle))
 
 const MarkdownEditor: React.FC<
   Partial<SimpleMDEEditorProps> & {
@@ -33,7 +33,7 @@ const MarkdownEditor: React.FC<
         status: false,
         ...options,
       }}
-      getMdeInstance={instance => {
+      getMdeInstance={(instance) => {
         editorRef.current = instance
       }}
     />

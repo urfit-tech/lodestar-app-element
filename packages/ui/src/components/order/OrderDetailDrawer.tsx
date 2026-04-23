@@ -97,7 +97,7 @@ const OrderDetailDrawer: React.FC<OrderDetailDrawerProps> = ({
                 referrer={orderLog.invoiceOptions?.referrerEmail || ''}
                 sharingCode={sharingCodes.sharingCode}
                 sharingNote={sharingCodes.sharingNote}
-                orderLogExecutor={orderExecutors.map(v => `${v.name} - ${v.ratio}`).join('\\') || ''}
+                orderLogExecutor={orderExecutors.map((v) => `${v.name} - ${v.ratio}`).join('\\') || ''}
                 giftPlan={orderProducts.reduce(
                   (accu, orderProduct) => (orderProduct.options?.type === 'gift' ? accu + orderProduct.name : accu),
                   '',
@@ -134,16 +134,16 @@ const OrderDetailDrawer: React.FC<OrderDetailDrawerProps> = ({
                   orderLog.invoiceOptions?.donationCode
                     ? formatMessage(orderMessages.OrderDetailDrawer.donation)
                     : orderLog.invoiceOptions?.uniformNumber
-                    ? formatMessage(orderMessages.OrderDetailDrawer.company)
-                    : formatMessage(orderMessages.OrderDetailDrawer.personal)
+                      ? formatMessage(orderMessages.OrderDetailDrawer.company)
+                      : formatMessage(orderMessages.OrderDetailDrawer.personal)
                 }
                 donationCode={orderLog.invoiceOptions?.donationCode || ''}
                 invoiceCarrier={
                   orderLog.invoiceOptions?.phoneBarCode
                     ? formatMessage(orderMessages.OrderDetailDrawer.phone)
                     : orderLog.invoiceOptions?.citizenCode
-                    ? formatMessage(orderMessages.OrderDetailDrawer.citizenCertificate)
-                    : ''
+                      ? formatMessage(orderMessages.OrderDetailDrawer.citizenCertificate)
+                      : ''
                 }
                 uniformNumber={orderLog.invoiceOptions?.uniformNumber || ''}
                 uniformTitle={orderLog.invoiceOptions?.uniformTitle || ''}

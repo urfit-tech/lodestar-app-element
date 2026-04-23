@@ -10,7 +10,7 @@ const StyledCreatorAvatar = styled.div<{ url: string }>`
   background-size: cover;
   background-position: center;
   border-radius: 4px;
-  background-image: ${props => props?.url && `url(${props.url})`};
+  background-image: ${(props) => props?.url && `url(${props.url})`};
 `
 const StyledCreatorName = styled.div`
   font-size: 20px;
@@ -28,7 +28,7 @@ const StyledCreatorAbstract = styled.div`
   letter-spacing: 0.4px;
   font-weight: 500;
 `
-const MemberSecondaryCard: ElementComponent<MemberElementProps> = props => {
+const MemberSecondaryCard: ElementComponent<MemberElementProps> = (props) => {
   const history = useHistory()
   const { loading, errors, editing } = props
   return (

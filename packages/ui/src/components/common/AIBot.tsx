@@ -10,19 +10,19 @@ export type AIBotProps = {
   submitText: string
   temperature: number
 }
-const AIBot: ElementComponent<AIBotProps> = props => {
+const AIBot: ElementComponent<AIBotProps> = (props) => {
   const { authToken } = useAuth()
   const [result, setResult] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [isInvalid, setIsInvalid] = useState(props.assistants?.map(assistant => false) || [])
-  const [userMessages, setUserMessages] = useState(props.assistants?.map(assistant => '') || [])
+  const [isInvalid, setIsInvalid] = useState(props.assistants?.map((assistant) => false) || [])
+  const [userMessages, setUserMessages] = useState(props.assistants?.map((assistant) => '') || [])
   if (props.loading || props.errors) {
     return null
   }
   const invalids = props.assistants.map((assistant, idx) => assistant.required === true && userMessages[idx] === '')
-  const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = e => {
+  const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setIsInvalid(invalids)
-    if (!invalids.some(v => v)) {
+    if (!invalids.some((v) => v)) {
       const messages = [{ role: 'system', content: props.system }]
       for (let index = 0; index < props.assistants.length; index++) {
         messages.push({ role: 'assistant', content: props.assistants[index].content })
@@ -70,7 +70,7 @@ const AIBot: ElementComponent<AIBotProps> = props => {
           <Input
             placeholder={assistant.placeholder}
             value={userMessages[idx]}
-            onChange={e =>
+            onChange={(e) =>
               setUserMessages([...userMessages.slice(0, idx), e.target.value, ...userMessages.slice(idx + 1)])
             }
           />
@@ -83,7 +83,7 @@ const AIBot: ElementComponent<AIBotProps> = props => {
         width="100%"
         isLoading={isLoading}
         onClick={handleSubmit}
-        disabled={props.editing || isLoading || invalids.some(v => v)}
+        disabled={props.editing || isLoading || invalids.some((v) => v)}
       >
         {props.submitText}
       </Button>

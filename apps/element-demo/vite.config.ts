@@ -9,10 +9,7 @@ const reactAppEnv = Object.fromEntries(
 )
 
 export default defineConfig({
-  plugins: [
-    react(),
-    svgr(),
-  ],
+  plugins: [react(), svgr()],
   define: {
     global: 'globalThis',
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
@@ -28,9 +25,7 @@ export default defineConfig({
   },
   resolve: {
     dedupe: ['react', 'react-dom', 'moment'],
-    alias: [
-      { find: /^moment$/, replacement: 'moment/moment.js' },
-    ],
+    alias: [{ find: /^moment$/, replacement: 'moment/moment.js' }],
   },
   server: {
     port: 3000,

@@ -22,25 +22,25 @@ const StyledVideoIconBlock = styled.div<{ variant?: 'featuring' | 'popular' | 'l
   font-size: 1.5rem;
   line-height: 1;
 
-  ${props =>
+  ${(props) =>
     props.variant === 'featuring'
       ? css`
           padding: 0.75rem;
         `
       : props.variant === 'popular'
-      ? css`
-          font-size: 1rem;
-        `
-      : ''}
+        ? css`
+            font-size: 1rem;
+          `
+        : ''}
 `
 const StyledPostTitle = styled.div<{ rows?: number }>`
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${props => props.rows || 1};
+  -webkit-line-clamp: ${(props) => props.rows || 1};
   margin-bottom: 4px;
   overflow: hidden;
   width: 100%;
-  height: calc(${props => props.rows || 1} * 1.5em);
+  height: calc(${(props) => props.rows || 1} * 1.5em);
   color: var(--gray-darker);
   font-size: 16px;
   letter-spacing: 0.2px;
@@ -95,7 +95,7 @@ const StyledPostMeta = styled.div`
   `)}
 `
 
-const PostCard: React.FC<PostElementProps> = props => {
+const PostCard: React.FC<PostElementProps> = (props) => {
   const { loading, errors } = props
 
   if (errors) {

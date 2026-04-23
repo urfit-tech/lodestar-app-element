@@ -23,7 +23,7 @@ const messages = defineMessages({
   totalCourses: { id: 'programPackage.card.totalCourses', defaultMessage: '{count} 堂課' },
 })
 
-const ProgramPackageCard: React.FC<ProgramPackageElementProps> = props => {
+const ProgramPackageCard: React.FC<ProgramPackageElementProps> = (props) => {
   const { loading, errors } = props
   const { formatMessage } = useIntl()
   const { settings } = useApp()

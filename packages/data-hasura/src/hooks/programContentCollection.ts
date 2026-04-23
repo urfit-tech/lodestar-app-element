@@ -58,8 +58,8 @@ const composeProgramContentItem = (pc: ProgramContentNode): ProgramContentCollec
   id: pc.id,
   title: pc.title,
   duration: pc.duration ?? 0,
-  progress: sum(pc.program_content_progress.map(pcp => pcp.progress)),
-  lastProgress: sum(pc.program_content_progress.map(pcp => pcp.last_progress)),
+  progress: sum(pc.program_content_progress.map((pcp) => pcp.progress)),
+  lastProgress: sum(pc.program_content_progress.map((pcp) => pcp.last_progress)),
   contentSection: {
     program: {
       id: pc.program_content_section.program.id,
@@ -68,21 +68,16 @@ const composeProgramContentItem = (pc: ProgramContentNode): ProgramContentCollec
       coverThumbnailUrl: pc.program_content_section.program.cover_thumbnail_url || null,
     },
   },
-  videos: pc.program_content_videos.map(pcv => ({ id: pcv.attachment_id })),
+  videos: pc.program_content_videos.map((pcv) => ({ id: pcv.attachment_id })),
 })
 
-const composeCustomCollectionData = (
-  data: hasura.GET_PROGRAM_CONTENT_COLLECTION,
-): ProgramContentCollectionItem[] => data.program_content.map(composeProgramContentItem)
+const composeCustomCollectionData = (data: hasura.GET_PROGRAM_CONTENT_COLLECTION): ProgramContentCollectionItem[] =>
+  data.program_content.map(composeProgramContentItem)
 
-const composeRecentWatchedCollectionData = (
-  data: hasura.GET_RECENT_PROGRAM_PROGRESS,
-): ProgramContentCollectionItem[] =>
-  data.program_content_progress.map(pcp => composeProgramContentItem(pcp.program_content))
+const composeRecentWatchedCollectionData = (data: hasura.GET_RECENT_PROGRAM_PROGRESS): ProgramContentCollectionItem[] =>
+  data.program_content_progress.map((pcp) => composeProgramContentItem(pcp.program_content))
 
-const buildCustomVariables = (
-  source: ProductCustomSource,
-): hasura.GET_PROGRAM_CONTENT_COLLECTIONVariables => ({
+const buildCustomVariables = (source: ProductCustomSource): hasura.GET_PROGRAM_CONTENT_COLLECTIONVariables => ({
   limit: undefined,
   orderByClause: [],
   whereClause: {
@@ -100,10 +95,7 @@ export const useProgramContentCollection = (
   // stable, then `skip` whichever one does not match the active `source.from`.
   const isCustom = source.from === 'custom'
 
-  const customVariables = useMemo(
-    () => (isCustom ? buildCustomVariables(source) : undefined),
-    [isCustom, source],
-  )
+  const customVariables = useMemo(() => (isCustom ? buildCustomVariables(source) : undefined), [isCustom, source])
   const {
     data: customRawData,
     loading: customLoading,
@@ -135,7 +127,7 @@ export const useProgramContentCollection = (
       const ordered: hasura.GET_PROGRAM_CONTENT_COLLECTION = {
         ...customRawData,
         program_content: (source.from === 'custom' ? source.idList || [] : [])
-          .map(id => customRawData.program_content.find(pc => pc.id === id))
+          .map((id) => customRawData.program_content.find((pc) => pc.id === id))
           .filter(notEmpty),
       }
       return composeCustomCollectionData(ordered)

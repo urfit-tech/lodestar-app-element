@@ -20,7 +20,7 @@ export const useEnrolledMembershipCardIds = (memberId: string) => {
   )
 
   const enrolledMembershipCardIds: string[] =
-    loading || error || !data ? [] : data.card_enrollment.map(card => card.card_id)
+    loading || error || !data ? [] : data.card_enrollment.map((card) => card.card_id)
 
   return {
     loadingMembershipCardIds: loading,
@@ -62,7 +62,7 @@ export const useEnrolledMembershipCards = (memberId: string) => {
   }[] =
     loading || error || !data
       ? []
-      : data.card_enrollment.map(cardEnrollment => ({
+      : data.card_enrollment.map((cardEnrollment) => ({
           card: {
             id: cardEnrollment.card?.id || '',
             title: cardEnrollment.card?.title || '',

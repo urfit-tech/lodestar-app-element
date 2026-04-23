@@ -17,22 +17,20 @@ const eventKeysMapForRecurring = {
   endRecur: 'until',
 }
 
-const keysMapSelector = (event: FetchedResourceEvent) =>
-  event?.rrule ? eventKeysMapForRecurring : eventKeysMap
+const keysMapSelector = (event: FetchedResourceEvent) => (event?.rrule ? eventKeysMapForRecurring : eventKeysMap)
 
-const fetchedEventValuesAdaptorMap: { [K in keyof FetchedResourceEvent]?: (val: FetchedResourceEvent[K]) => unknown } = {
-  started_at: inertTransform(moment),
-  ended_at: inertTransform(moment),
-  published_at: inertTransform(moment),
-  event_deleted_at: inertTransform(moment),
-  rrule: inertTransform(rrulestr),
-  until: inertTransform((string: string) => new Date(string)),
-}
+const fetchedEventValuesAdaptorMap: { [K in keyof FetchedResourceEvent]?: (val: FetchedResourceEvent[K]) => unknown } =
+  {
+    started_at: inertTransform(moment),
+    ended_at: inertTransform(moment),
+    published_at: inertTransform(moment),
+    event_deleted_at: inertTransform(moment),
+    rrule: inertTransform(rrulestr),
+    until: inertTransform((string: string) => new Date(string)),
+  }
 
 export const adaptEventsToCalendar: (events: Array<FetchedResourceEvent>) => Array<EventInput> = pipe(
-  map((event: FetchedResourceEvent) =>
-    event ? renameKey<EventInput>(keysMapSelector(event))(event) : undefined,
-  ),
+  map((event: FetchedResourceEvent) => (event ? renameKey<EventInput>(keysMapSelector(event))(event) : undefined)),
   project(['id', 'title', 'start', 'end', 'rrule', 'duration']),
 )
 

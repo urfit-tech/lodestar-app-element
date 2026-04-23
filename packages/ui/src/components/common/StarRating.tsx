@@ -12,7 +12,7 @@ const StyledStarRating = styled.div<{ size?: string }>`
   svg:last-child {
     margin-right: 4px;
   }
-  font-size: ${props => props.size || '16px'};
+  font-size: ${(props) => props.size || '16px'};
 `
 
 const StarRating: React.FC<{ score: number; max: number; size?: string }> = ({ score, max, size }) => {

@@ -12,14 +12,14 @@
     "./hooks/*": "./src/hooks/*.ts"
   },
   "dependencies": {
-    "@lodestar/types": "workspace:*",
-    "@lodestar/helpers": "workspace:*",
-    "@lodestar/graphql": "workspace:*",
-    "@lodestar/contexts": "workspace:*",
-    "@lodestar/hooks": "workspace:*",
     "@apollo/client": "^3.7.11",
     "@chakra-ui/react": "1.8.9",
     "@fingerprintjs/fingerprintjs": "^3.3.6",
+    "@lodestar/contexts": "workspace:*",
+    "@lodestar/graphql": "workspace:*",
+    "@lodestar/helpers": "workspace:*",
+    "@lodestar/hooks": "workspace:*",
+    "@lodestar/types": "workspace:*",
     "ajv": "^8.11.2",
     "axios": "0.21.4",
     "dayjs": "^1.11.7",
@@ -44,8 +44,8 @@
     "@types/uuid": "8.3.1"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
     "@emotion/react": "^11.0.0",
-    "@emotion/styled": "^11.0.0"
+    "@emotion/styled": "^11.0.0",
+    "react": "^17.0.0 || ^18.0.0"
   }
 }

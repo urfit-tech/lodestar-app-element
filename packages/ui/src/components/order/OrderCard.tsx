@@ -67,7 +67,7 @@ const OrderCard: React.FC<{
 
       <div className="container mb-2">
         <StyledInfoTitle className="row">{formatMessage(orderMessages.OrderCard.orderProductItem)}</StyledInfoTitle>
-        {orderProducts.map(orderProduct => (
+        {orderProducts.map((orderProduct) => (
           <div className="row justify-content-between" key={orderProduct.id}>
             <StyledInfoContent className="column">{orderProduct.name}</StyledInfoContent>
             <StyledInfoContent className="column">{currencyFormatter(orderProduct.price) || ''}</StyledInfoContent>
@@ -76,7 +76,7 @@ const OrderCard: React.FC<{
       </div>
       <div className="container mb-2">
         <StyledInfoTitle className="row">{formatMessage(orderMessages.OrderCard.orderDiscountItem)}</StyledInfoTitle>
-        {orderDiscounts.map(orderDiscount => (
+        {orderDiscounts.map((orderDiscount) => (
           <div className="row justify-content-between" key={orderDiscount.id}>
             <StyledInfoContent className="column">{orderDiscount.name}</StyledInfoContent>
             <StyledInfoContent className="column">{currencyFormatter(orderDiscount.price) || ''}</StyledInfoContent>

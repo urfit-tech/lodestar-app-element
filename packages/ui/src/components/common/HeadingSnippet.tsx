@@ -22,7 +22,7 @@ const StyledContent = styled.p`
 const StyledSnippet = styled.div<{ row: boolean }>`
   margin-bottom: 40px;
 
-  ${props =>
+  ${(props) =>
     props.row &&
     css`
       @media (min-width: 768px) {

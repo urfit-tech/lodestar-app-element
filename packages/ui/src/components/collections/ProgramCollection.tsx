@@ -11,10 +11,7 @@ import {
   ProductPublishedAtSource,
   ProductRecentWatchedSource,
 } from '@lodestar/types/options'
-import {
-  ProgramCollectionCategory,
-  ProgramCollectionItem,
-} from '@lodestar/types/program'
+import { ProgramCollectionCategory, ProgramCollectionItem } from '@lodestar/types/program'
 import ProgramPrimaryCard from '../cards/ProgramPrimaryCard'
 import ProgramSecondaryCard from '../cards/ProgramSecondaryCard'
 import { BaseCarouselProps } from '../common/BaseCarousel'
@@ -52,7 +49,7 @@ export type ProgramCollectionProps = {
   emptyText?: string
 }
 
-const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
+const ProgramCollection: ElementComponent<ProgramCollectionProps> = (props) => {
   const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
   const {
@@ -77,8 +74,8 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
     props.variant === 'primary'
       ? ProgramPrimaryCard
       : props.variant === 'secondary'
-      ? ProgramSecondaryCard
-      : ProgramPrimaryCard
+        ? ProgramSecondaryCard
+        : ProgramPrimaryCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
       ? CollectionCarousel(collectionName, 'program', EntityElement)
@@ -90,16 +87,10 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
       : pipe(
           uniqBy((category: ProgramCollectionCategory) => category.id),
           sortBy(prop('position')),
-        )(
-          programs
-            .flatMap(d => d.categories)
-            .filter(category => !defaultCategoryIds?.includes(category.id)),
-        )
+        )(programs.flatMap((d) => d.categories).filter((category) => !defaultCategoryIds?.includes(category.id)))
 
   const programFilter = (d: ProgramCollectionItem) =>
-    !props.withSelector ||
-    !activeCategoryId ||
-    d.categories.map(category => category.id).includes(activeCategoryId)
+    !props.withSelector || !activeCategoryId || d.categories.map((category) => category.id).includes(activeCategoryId)
 
   return (
     <div className={props.className}>
@@ -109,7 +100,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
             <CategorySelector
               categories={categories}
               activeCategoryId={activeCategoryId || null}
-              onActive={categoryId => setActive(categoryId)}
+              onActive={(categoryId) => setActive(categoryId)}
             />
           )}
         </div>
@@ -118,7 +109,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
             <OrderSelector
               sourceFrom={sourceFrom ?? 'publishedAt'}
               withOrderSelector={props.withOrderSelector}
-              onChange={next => onSourceFromChange?.(next)}
+              onChange={(next) => onSourceFromChange?.(next)}
             />
           )}
         </div>
@@ -145,7 +136,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                 coverUrl={program.coverThumbnailUrl || program.coverMobileUrl || program.coverUrl}
                 label={program.label}
                 labelColorType={program.labelColorType}
-                instructorIds={program.roles.map(programRole => programRole.member.id)}
+                instructorIds={program.roles.map((programRole) => programRole.member.id)}
                 salePrice={
                   typeof primaryProgramPlan?.salePrice === 'number' &&
                   primaryProgramPlan?.soldAt &&
@@ -157,7 +148,7 @@ const ProgramCollection: ElementComponent<ProgramCollectionProps> = props => {
                 period={primaryProgramPlan?.period || undefined}
                 isEnrolledCountVisible={program.isEnrolledCountVisible}
                 categories={program.categories}
-                roles={program.roles.map(role => ({
+                roles={program.roles.map((role) => ({
                   id: role.id,
                   name: role.name,
                   member: {

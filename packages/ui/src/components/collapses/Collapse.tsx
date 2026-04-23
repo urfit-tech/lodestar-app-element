@@ -6,7 +6,7 @@ import Paragraph from '../common/Paragraph'
 
 const StyledAction = styled.div<{ isActive: boolean }>`
   font-size: 20px;
-  ${props =>
+  ${(props) =>
     props.isActive &&
     css`
       transform: rotate(90deg);
@@ -21,7 +21,7 @@ const StyledTitle = styled.h3`
 
 const StyledParagraph = styled(Paragraph)<{ isActive: boolean }>`
   margin-top: 1.25rem;
-  display: ${props => (props.isActive ? 'block' : `none`)};
+  display: ${(props) => (props.isActive ? 'block' : `none`)};
 `
 
 const StyledCollapseHeader = styled.header`
@@ -49,7 +49,7 @@ export type CollapseProps = {
   }[]
   accordion?: boolean
 }
-const Collapse: ElementComponent<CollapseProps> = props => {
+const Collapse: ElementComponent<CollapseProps> = (props) => {
   const [activeIndex, setActiveIndex] = useState(0)
   if (props.loading || props.errors) {
     return null

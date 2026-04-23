@@ -50,8 +50,8 @@ export const uploadFile = async (key: string, file: Blob, authToken: string | nu
         headers: { authorization: `Bearer ${authToken}` },
       },
     )
-    .then(res => res.data.result)
-    .then(url => {
+    .then((res) => res.data.result)
+    .then((url) => {
       const { query } = queryString.parseUrl(url)
       return axios.put<{ status: number; data: string }>(url, file, {
         ...config,
@@ -89,7 +89,7 @@ export const getCurrentPrice = (plan: Partial<ProductPlan>) =>
 
 export const findCheapestPlan = (plans: Partial<ProductPlan>[]) =>
   plans
-    .filter(plan => plan.publishedAt !== null)
+    .filter((plan) => plan.publishedAt !== null)
     .reduce(
       (accum, plan) => (accum === null ? plan : getCurrentPrice(plan) < getCurrentPrice(accum) ? plan : accum),
       null as Partial<ProductPlan> | null,
@@ -115,7 +115,7 @@ export const validationRegExp: { [fieldId: string]: RegExp } = {
   citizenCode: /^[A-Z]{2}[0-9]{14}$/,
 }
 
-export const validateContactInfo: (contactInfo: ContactInfo) => string[] = contactInfo => {
+export const validateContactInfo: (contactInfo: ContactInfo) => string[] = (contactInfo) => {
   const errorFields: string[] = []
   contactInfo.name.length === 0 && errorFields.push('name')
   ;(contactInfo.phone.length === 0 || !validationRegExp['phone']?.test(contactInfo.phone)) && errorFields.push('phone')
@@ -124,7 +124,7 @@ export const validateContactInfo: (contactInfo: ContactInfo) => string[] = conta
 }
 
 export const convertPathName = (pathName: string) => {
-  const pathList = pathName.split('/').filter(p => p !== '')
+  const pathList = pathName.split('/').filter((p) => p !== '')
   return pathList.join('_') || '_'
 }
 
@@ -207,10 +207,10 @@ export const checkUniformNumber = (input: string | number, options: BanValidatio
   const intRadix = 10
   const checksum = zipWith(
     BAN_COEFFICIENTS,
-    n.split('').map(c => parseInt(c, intRadix)),
+    n.split('').map((c) => parseInt(c, intRadix)),
     multiply,
   )
-    .map(n => (n % 10) + Math.floor(n / 10))
+    .map((n) => (n % 10) + Math.floor(n / 10))
     .reduce(add, 0)
 
   /**

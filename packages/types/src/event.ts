@@ -94,19 +94,19 @@ export type ModalDefaultEvent = ModalDefaultEventForBasicMode | GeneralModalDefa
 export const isModalDefaultEventForBasicModeWithSource = (
   event: ModalDefaultEventForBasicMode,
 ): event is ModalDefaultEventForBasicModeWithSource => {
-  return ['source_type', 'source_target'].every(key => key in event)
+  return ['source_type', 'source_target'].every((key) => key in event)
 }
 
 export const isModalDefaultEventForEditMode = (
   event: ModalDefaultEventForBasicMode | ModalDefaultEventForEditMode,
 ): event is ModalDefaultEventForEditMode => {
-  return ['event_id', 'temporally_exclusive_resource_id'].every(key => key in event)
+  return ['event_id', 'temporally_exclusive_resource_id'].every((key) => key in event)
 }
 
 export const isModalDefaultEventForEditModeAndRecurring = (
   event: ModalDefaultEventForBasicMode | ModalDefaultEventForEditMode,
 ): event is ModalDefaultEventForEditModeAndRecurring => {
-  return ['rrule', 'until'].every(key => key in event)
+  return ['rrule', 'until'].every((key) => key in event)
 }
 
 export type FetchedResourceEvent = {

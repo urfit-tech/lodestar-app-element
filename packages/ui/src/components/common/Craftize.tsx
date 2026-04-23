@@ -27,7 +27,7 @@ const CraftRefBlock = styled.div<{
     desktop?: string | null
   }
 }>`
-  ${props =>
+  ${(props) =>
     props?.editing &&
     css`
       position: relative;
@@ -35,7 +35,7 @@ const CraftRefBlock = styled.div<{
       ${props?.hovered && CraftHoveredMixin}
       ${props?.selected && CraftSelectedMixin}
     `}
-  ${props =>
+  ${(props) =>
     props.customStyle?.width?.toString().includes('%') &&
     css`
       width: ${props.customStyle?.width};
@@ -67,9 +67,9 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
   const StyledCraftElement = styled(WrappedComponent)(
     (props: PropsWithCraft<P>) => props.customStyle,
   ) as unknown as ElementComponent<P>
-  const Component: UserComponent<PropsWithCraft<P>> = props => {
-    const node = useNode(node => node)
-    const editor = useEditor(state => ({
+  const Component: UserComponent<PropsWithCraft<P>> = (props) => {
+    const node = useNode((node) => node)
+    const editor = useEditor((state) => ({
       editing: state.options.enabled,
     }))
     const isTablet = useMediaQuery({
@@ -80,10 +80,10 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
     const device = editor.editing
       ? node.data.custom?.device || 'desktop'
       : isDesktop
-      ? 'desktop'
-      : isTablet
-      ? 'tablet'
-      : 'mobile'
+        ? 'desktop'
+        : isTablet
+          ? 'tablet'
+          : 'mobile'
     const responsiveProps = mergeDeepRight(
       props,
       props.responsive?.[device as keyof typeof props.responsive] || {},
@@ -91,7 +91,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
 
     return (
       <CraftRefBlock
-        ref={ref => ref && editor.editing && node.connectors.connect(ref)}
+        ref={(ref) => ref && editor.editing && node.connectors.connect(ref)}
         editing={editor.editing}
         hovered={node.events.hovered}
         selected={node.events.selected}
@@ -138,13 +138,13 @@ const StyledControllerItem = styled.button`
   background-color: rgba(0, 0, 0, 0.2);
 `
 const CraftController: React.FC = () => {
-  const editor = useEditor(state => ({ nodes: state.nodes }))
-  const node = useNode(node => node)
+  const editor = useEditor((state) => ({ nodes: state.nodes }))
+  const node = useNode((node) => node)
 
   return (
     <StyledController>
       {editor.query.node(node.id).isDraggable() && (
-        <StyledControllerItem ref={ref => ref && node.connectors.drag(ref)}>
+        <StyledControllerItem ref={(ref) => ref && node.connectors.drag(ref)}>
           <DragHandleIcon />
         </StyledControllerItem>
       )}
@@ -177,7 +177,7 @@ const CraftController: React.FC = () => {
       <StyledControllerItem
         onClick={() => {
           for (const nodeId in editor.nodes) {
-            editor.actions.setCustom(nodeId, custom => {
+            editor.actions.setCustom(nodeId, (custom) => {
               custom.editing = nodeId === node.id
             })
           }
@@ -226,7 +226,7 @@ const cloneNodeTree = (tree: NodeTree): NodeTree => {
     const clonedNode = clone(rootNode)
     clonedNode.id = getRandomId()
     clonedNode.data.parent = newParentId || clonedNode.data.parent
-    clonedNode.data.nodes = clonedNode.data.nodes.map(childId => changeNodeId(tree.nodes[childId], clonedNode.id))
+    clonedNode.data.nodes = clonedNode.data.nodes.map((childId) => changeNodeId(tree.nodes[childId], clonedNode.id))
     clonedNode.data.linkedNodes = Object.keys(clonedNode.data.linkedNodes).reduce((accum, id) => {
       const newLinkedNodeId = changeNodeId(tree.nodes[clonedNode.data.linkedNodes[id]], clonedNode.id)
       return {

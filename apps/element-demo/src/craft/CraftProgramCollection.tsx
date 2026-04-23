@@ -7,9 +7,7 @@ import {
   useEnrolledProgramIds,
   useProgramCollection,
 } from '@lodestar/data-hasura/hooks/programCollection'
-import ProgramCollection, {
-  ProgramCollectionProps,
-} from '@lodestar/ui/components/collections/ProgramCollection'
+import ProgramCollection, { ProgramCollectionProps } from '@lodestar/ui/components/collections/ProgramCollection'
 import Craftize, { PropsWithCraft } from '@lodestar/ui/components/common/Craftize'
 
 // `collectionsMessages` lives at
@@ -29,13 +27,7 @@ const craftProgramCollectionMessages = defineMessages({
 
 export type CraftProgramCollectionProps = Omit<
   ProgramCollectionProps,
-  | 'programs'
-  | 'isFetching'
-  | 'fetchError'
-  | 'defaultCategoryIds'
-  | 'sourceFrom'
-  | 'onSourceFromChange'
-  | 'emptyText'
+  'programs' | 'isFetching' | 'fetchError' | 'defaultCategoryIds' | 'sourceFrom' | 'onSourceFromChange' | 'emptyText'
 > & {
   source?: ProgramCollectionSource
 }
@@ -47,10 +39,7 @@ const ConnectedProgramCollection: React.FC<CraftProgramCollectionProps> = ({ sou
   // object on every render (which would thrash their `useMemo` deps and
   // churn the composed result). `source` from Craft.js is stable per node;
   // when it is undefined we lock onto the module-level default.
-  const resolvedSource = useMemo<ProgramCollectionSource>(
-    () => source ?? DEFAULT_SOURCE,
-    [source],
-  )
+  const resolvedSource = useMemo<ProgramCollectionSource>(() => source ?? DEFAULT_SOURCE, [source])
 
   const [sourceFrom, setSourceFrom] = useState(resolvedSource.from)
   useEffect(() => {
@@ -91,12 +80,9 @@ const ConnectedProgramCollection: React.FC<CraftProgramCollectionProps> = ({ sou
 
   const { formatMessage } = useIntl()
   const emptyText =
-    sourceFrom === 'recentWatched'
-      ? formatMessage(craftProgramCollectionMessages.recentWatchedEmpty)
-      : ''
+    sourceFrom === 'recentWatched' ? formatMessage(craftProgramCollectionMessages.recentWatchedEmpty) : ''
 
-  const defaultCategoryIds =
-    'defaultCategoryIds' in effectiveSource ? effectiveSource.defaultCategoryIds : undefined
+  const defaultCategoryIds = 'defaultCategoryIds' in effectiveSource ? effectiveSource.defaultCategoryIds : undefined
 
   return (
     <ProgramCollection
@@ -116,6 +102,5 @@ const ConnectedProgramCollection: React.FC<CraftProgramCollectionProps> = ({ sou
 // locally. Without it, TypeScript tries to name Craftize's inferred return
 // type via `../../../../packages/ui/node_modules/@craftjs/core/lib`, which is
 // non-portable across workspace boundaries (TS2742).
-export const CraftProgramCollection: UserComponent<
-  PropsWithCraft<CraftProgramCollectionProps>
-> = Craftize(ConnectedProgramCollection)
+export const CraftProgramCollection: UserComponent<PropsWithCraft<CraftProgramCollectionProps>> =
+  Craftize(ConnectedProgramCollection)

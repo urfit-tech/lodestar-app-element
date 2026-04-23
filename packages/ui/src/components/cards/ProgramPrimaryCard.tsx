@@ -39,7 +39,7 @@ const StyledExtraBlock = styled.div`
   align-items: center;
   gap: 10px;
 `
-const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
+const ProgramPrimaryCard: React.FC<ProgramElementProps> = (props) => {
   const {
     loading,
     errors,
@@ -71,7 +71,7 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
   const programAdditionalSoldHeadcount =
     (Array.isArray(programAdditionalSoldHeadcountSettingValue) &&
       programAdditionalSoldHeadcountSettingValue.length > 0 &&
-      programAdditionalSoldHeadcountSettingValue.find(setting => setting?.programId === programId)?.count) ||
+      programAdditionalSoldHeadcountSettingValue.find((setting) => setting?.programId === programId)?.count) ||
     0
 
   const enrolledCountAmount =
@@ -95,7 +95,7 @@ const ProgramPrimaryCard: React.FC<ProgramElementProps> = props => {
               <MultiAvatar
                 memberIdList={props.instructorIds || []}
                 withName
-                members={roles.map(role => ({
+                members={roles.map((role) => ({
                   id: role.id,
                   name: role.member.name,
                   pictureUrl: role.member.pictureUrl,
@@ -182,7 +182,7 @@ export function withReviews<P>(
   WrappedComponent: React.ComponentType<P & { reviews: string[] }>,
   options?: { limit: number },
 ) {
-  const ComponentWithReview: React.FC<P> = props => {
+  const ComponentWithReview: React.FC<P> = (props) => {
     return <WrappedComponent {...props} reviews={[]}></WrappedComponent>
   }
   return ComponentWithReview

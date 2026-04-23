@@ -18,7 +18,7 @@ const CardTitle = styled.h3<CardProps>`
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.2px;
-  color: ${props => (props.darkMode ? 'white' : 'var(--gray-darker)')};
+  color: ${(props) => (props.darkMode ? 'white' : 'var(--gray-darker)')};
 `
 const CardContent = styled.div`
   width: 100%;
@@ -48,9 +48,9 @@ const StyledCard = styled.div<CardProps>`
   user-select: none;
   align-items: center;
   justify-content: center;
-  flex-direction: ${props => (props.horizontal ? 'row' : 'column')};
-  border: ${props => props.variant === 'outline' && '1px solid white'};
-  filter: ${props => props.shadowed && 'drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1))'};
+  flex-direction: ${(props) => (props.horizontal ? 'row' : 'column')};
+  border: ${(props) => props.variant === 'outline' && '1px solid white'};
+  filter: ${(props) => props.shadowed && 'drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1))'};
 `
 
 const StyledAvatarBlock = styled.div<{ direction?: 'row' | 'column' }>`
@@ -59,13 +59,13 @@ const StyledAvatarBlock = styled.div<{ direction?: 'row' | 'column' }>`
   align-items: center;
   color: #585858;
   font-size: 14px;
-  ${props => props.direction === 'column' && 'flex-direction: column;'}
+  ${(props) => props.direction === 'column' && 'flex-direction: column;'}
 `
 const AvatarImage = styled.div<{ src?: string }>`
   width: 2.5rem;
   height: 2.5rem;
   background-color: #ccc;
-  background-image: url(${props => props.src || DefaultAvatar});
+  background-image: url(${(props) => props.src || DefaultAvatar});
   background-size: cover;
   background-position: center;
   border-radius: 50%;
@@ -97,7 +97,7 @@ const Card: ElementComponent<CardProps> & {
   Description: typeof CardDescription
   MetaBlock: typeof CardMetaBlock
   Avatar: typeof CardAvatar
-} = props => {
+} = (props) => {
   return (
     <StyledCard className={classNames('card', props.className)} {...props}>
       {props.children}

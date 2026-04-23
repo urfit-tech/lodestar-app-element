@@ -217,10 +217,10 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
         position: number
       }[]
     >((prev, curr, index) => {
-      const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
+      const flattenedResources = curr?.products?.filter((r) => r?.type !== 'program_content') ?? [curr]
       const products =
         flattenedResources
-          ?.map(product =>
+          ?.map((product) =>
             product
               ? {
                   id: product.sku || product.id,
@@ -228,7 +228,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                   price: product.price || 0,
                   brand,
                   category: product.categories?.join(trackingOptions.separator),
-                  variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
+                  variant: uniq(product.owners?.map((member) => member.name)).join(trackingOptions.separator),
                   quantity: 1, // TODO: use the inventory
                   list: options?.collection || convertPathName(window.location.pathname),
                   position: index + 1,
@@ -244,8 +244,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
         event: 'productImpression',
-        label: impressionsWithProducts.map(impression => impression.name).join('|'),
-        value: sum(impressionsWithProducts.map(impression => impression.price || 0)),
+        label: impressionsWithProducts.map((impression) => impression.name).join('|'),
+        value: sum(impressionsWithProducts.map((impression) => impression.price || 0)),
         ecommerce: {
           type: 'ua',
           currencyCode: appCurrencyId,
@@ -262,7 +262,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       utmSource?: string
     },
   ) => {
-    const cwProducts = resources.map(r => (r ? convertCwProduct(r, options?.utmSource) : null)).filter(notEmpty)
+    const cwProducts = resources.map((r) => (r ? convertCwProduct(r, options?.utmSource) : null)).filter(notEmpty)
     if (cwProducts.length > 0) {
       ;(window as any).dataLayer = (window as any).dataLayer || []
       ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
@@ -284,9 +284,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       ignore?: 'EEC' | 'CUSTOM'
     },
   ) => {
-    const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
+    const resourceOrProducts = resource.products?.filter((r) => r?.type !== 'program_content') ?? [resource]
     const products = resourceOrProducts
-      .map(resource =>
+      .map((resource) =>
         resource
           ? {
               id: resource.sku || resource.id,
@@ -294,7 +294,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               price: resource.price,
               brand,
               category: resource.categories?.join(trackingOptions.separator),
-              variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+              variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
               position: options?.position,
             }
           : null,
@@ -325,9 +325,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     },
   ) => {
     if (options?.ignore !== 'EEC') {
-      const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
+      const resourceOrProducts = resource.products?.filter((r) => r?.type !== 'program_content') ?? [resource]
       const products = resourceOrProducts
-        .map(resource =>
+        .map((resource) =>
           resource
             ? {
                 id: resource.sku || resource.id,
@@ -335,7 +335,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 price: resource.price,
                 brand: settings['name'] || document.title,
                 category: resource.categories?.join(trackingOptions.separator),
-                variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+                variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
               }
             : null,
         )
@@ -366,13 +366,13 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     },
   ) => {
     const isProgramContent = resource.type === 'program_content'
-    let products = resource.products?.filter(r => r?.type !== 'program_content')
+    let products = resource.products?.filter((r) => r?.type !== 'program_content')
     if (isProgramContent && resource.metaId) {
       const metaProducts = await getResourceCollection(apolloClient, [resource.metaId], true)
-      products = metaProducts[0]?.products?.filter(p => p?.type === 'program_plan')
+      products = metaProducts[0]?.products?.filter((p) => p?.type === 'program_plan')
     }
     const targetResource = resource && convertCwProduct(resource, options?.utmSource)
-    const subResources = products && products.filter(notEmpty).map(p => convertCwProduct(p, options?.utmSource))
+    const subResources = products && products.filter(notEmpty).map((p) => convertCwProduct(p, options?.utmSource))
 
     ;(window as any).dataLayer = (window as any).dataLayer || []
     ;(window as any).dataLayer.push({ itemData: { products: null, program: null, article: null } })
@@ -381,7 +381,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       ;(window as any).dataLayer.push({
         event: 'cwData',
         itemData: {
-          products: subResources.map(r => ({ ...targetResource, ...r })),
+          products: subResources.map((r) => ({ ...targetResource, ...r })),
           program: { ...targetResource, ...subResources[0] },
           article: { ...targetResource, ...subResources[0] },
         },
@@ -423,7 +423,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               price: resource.price,
               brand,
               category: resource.categories?.join(trackingOptions.separator),
-              variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+              variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
               quantity: options?.quantity || 1, // TODO: use the inventory
             },
           ],
@@ -454,7 +454,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               price: resource.price,
               brand: settings['name'] || document.title,
               category: resource.categories?.join(trackingOptions.separator),
-              variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+              variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
               quantity: options?.quantity || 1, // TODO: use the inventory
             },
           ],
@@ -471,7 +471,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     },
   ) => {
     const ecProducts = resources
-      .map(resource =>
+      .map((resource) =>
         resource
           ? {
               id: resource.sku || resource.id,
@@ -479,7 +479,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
               price: resource.price,
               brand,
               category: resource.categories?.join(trackingOptions.separator),
-              variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+              variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
               quantity: resource.options?.quantity || 1, // TODO: use the cart product
             }
           : null,
@@ -490,8 +490,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
         event: 'checkout',
-        label: resources.map(resource => resource.title).join('|'),
-        value: sum(resources.map(resource => resource.price || 0)),
+        label: resources.map((resource) => resource.title).join('|'),
+        value: sum(resources.map((resource) => resource.price || 0)),
         ecommerce: {
           type: 'ua',
           currencyCode: appCurrencyId,
@@ -512,7 +512,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     },
   ) => {
     const cwProducts = resources
-      .map(resource => (resource ? convertCwProduct(resource, options?.utmSource) : null))
+      .map((resource) => (resource ? convertCwProduct(resource, options?.utmSource) : null))
       .filter(notEmpty)
     if (cwProducts.length > 0) {
       ;(window as any).dataLayer = (window as any).dataLayer || []
@@ -557,13 +557,13 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     },
   ) => {
     const ecProducts =
-      orderProducts.map(product => ({
+      orderProducts.map((product) => ({
         id: product.sku || product.id,
         name: product.title,
         price: product.price,
         brand,
         category: product.categories?.join(trackingOptions.separator),
-        variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
+        variant: uniq(product.owners?.map((member) => member.name)).join(trackingOptions.separator),
         quantity: product.quantity,
       })) || []
     if (ecProducts.length > 0) {
@@ -571,8 +571,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
       ;(window as any).dataLayer.push({
         event: 'purchase',
-        label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
-        value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
+        label: orderProducts.map((orderProduct) => orderProduct.title).join('|'),
+        value: sum(orderProducts.map((orderProduct) => orderProduct.price || 0)),
         ecommerce: {
           type: 'ua',
           currencyCode: appCurrencyId,
@@ -580,8 +580,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             actionField: {
               id: orderId,
               affiliation: settings['name'] || document.title,
-              revenue: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
-              coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
+              revenue: sum(orderProducts.map((v) => v.price || 0)) - sum(orderDiscounts.map((v) => v.price)),
+              coupon: orderDiscounts.map((v) => v.name).join(trackingOptions.separator),
             },
             products: ecProducts,
           },
@@ -600,7 +600,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     },
   ) => {
     const cwProducts =
-      orderProducts.map(product => {
+      orderProducts.map((product) => {
         return {
           ...convertCwProduct(product, options?.utmSource),
           order_number: orderId,
@@ -645,10 +645,10 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       if (options?.ignore !== 'EEC') {
         if (enabledGA4) {
           const items: EcItem[] = resources.reduce<EcItem[]>((prev, curr, index) => {
-            const flattenedResources = curr?.products?.filter(r => r?.type !== 'program_content') ?? [curr]
+            const flattenedResources = curr?.products?.filter((r) => r?.type !== 'program_content') ?? [curr]
             const products =
               flattenedResources
-                ?.map(product => {
+                ?.map((product) => {
                   const itemId = product?.sku || product?.id || ''
                   const cachedItem =
                     dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
@@ -667,7 +667,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                         index: index + 1,
                         item_list_id: options?.collection || convertPathName(window.location.pathname),
                         item_list_name: options?.collection || convertPathName(window.location.pathname),
-                        item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
+                        item_variant: uniq(product.owners?.map((member) => member.name)).join(
+                          trackingOptions.separator,
+                        ),
                       }
                     : null
                   // update localStorage cache
@@ -687,8 +689,8 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             ;(window as any).dataLayer.push({ ecommerce: null })
             ;(window as any).dataLayer.push({
               event: 'view_item_list',
-              label: items.map(item => item.item_name).join('|'),
-              value: sum(items.map(item => item.price || 0)),
+              label: items.map((item) => item.item_name).join('|'),
+              value: sum(items.map((item) => item.price || 0)),
               ecommerce: {
                 type: 'ga4',
                 items,
@@ -708,9 +710,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
     ) => {
       if (options?.ignore !== 'EEC') {
         if (enabledGA4) {
-          const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
+          const resourceOrProducts = resource.products?.filter((r) => r?.type !== 'program_content') ?? [resource]
           const items: EcItem[] = resourceOrProducts
-            .map(resource => {
+            .map((resource) => {
               const itemId = resource?.sku || resource?.id || ''
               const cachedItem =
                 dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
@@ -727,7 +729,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                     item_brand: brand,
                     item_category: resource.categories?.join(trackingOptions.separator),
                     index: options?.position,
-                    item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+                    item_variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
                   }
                 : null
               // update localStorage cache
@@ -764,9 +766,9 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       if (enabledCW && options?.ignore !== 'CUSTOM') CustomDetail(resource, options)
       if (options?.ignore !== 'EEC') {
         if (enabledGA4) {
-          const resourceOrProducts = resource.products?.filter(r => r?.type !== 'program_content') ?? [resource]
+          const resourceOrProducts = resource.products?.filter((r) => r?.type !== 'program_content') ?? [resource]
           const items: EcItem[] = resourceOrProducts
-            .map(resource => {
+            .map((resource) => {
               const itemId = resource?.sku || resource?.id || ''
               const cachedItem =
                 dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
@@ -782,7 +784,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                     price: resource.price,
                     item_brand: brand,
                     item_category: resource.categories?.join(trackingOptions.separator),
-                    item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+                    item_variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
                   }
                 : null
               // update localStorage cache
@@ -901,7 +903,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       if (options?.ignore !== 'EEC') {
         if (enabledGA4) {
           const items: EcItem[] = resources
-            .map(resource => {
+            .map((resource) => {
               const itemId = resource.sku || resource.id
               const cachedItem =
                 dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
@@ -917,7 +919,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                     quantity: resource.options?.quantity || 1, // TODO: use the cart product
                     item_brand: brand,
                     item_category: resource.categories?.join(trackingOptions.separator),
-                    item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+                    item_variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
                   }
                 : null
               // update localStorage cache
@@ -932,12 +934,12 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
             ;(window as any).dataLayer.push({
               event: 'view_cart',
-              label: resources.map(resource => resource.title).join('|'),
-              value: sum(resources.map(resource => resource.price || 0)),
+              label: resources.map((resource) => resource.title).join('|'),
+              value: sum(resources.map((resource) => resource.price || 0)),
               ecommerce: {
                 type: 'ga4',
                 currency: appCurrencyId,
-                value: sum(resources.map(resource => resource.price || 0)),
+                value: sum(resources.map((resource) => resource.price || 0)),
                 items,
               },
             })
@@ -958,7 +960,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       if (options?.ignore !== 'EEC') {
         if (enabledGA4) {
           const items: EcItem[] = resources
-            .map(resource => {
+            .map((resource) => {
               const itemId = resource.sku || resource.id
               const cachedItem =
                 dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
@@ -974,7 +976,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                     quantity: resource.options?.quantity || 1, // TODO: use the cart product
                     item_brand: brand,
                     item_category: resource.categories?.join(trackingOptions.separator),
-                    item_variant: uniq(resource.owners?.map(member => member.name)).join(trackingOptions.separator),
+                    item_variant: uniq(resource.owners?.map((member) => member.name)).join(trackingOptions.separator),
                   }
                 : null
               // update localStorage cache
@@ -989,12 +991,12 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
             ;(window as any).dataLayer.push({
               event: 'begin_checkout',
-              label: resources.map(resource => resource.title).join('|'),
-              value: sum(resources.map(resource => resource.price || 0)),
+              label: resources.map((resource) => resource.title).join('|'),
+              value: sum(resources.map((resource) => resource.price || 0)),
               ecommerce: {
                 type: 'ga4',
                 currency: appCurrencyId,
-                value: sum(resources.map(resource => resource.price || 0)),
+                value: sum(resources.map((resource) => resource.price || 0)),
                 coupon: coupon?.title || null,
                 items,
               },
@@ -1048,7 +1050,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
       if (options?.ignore !== 'EEC') {
         if (enabledGA4) {
           const items: EcItem[] =
-            orderProducts.map(product => {
+            orderProducts.map((product) => {
               const itemId = product.sku || product.id
               const cachedItem =
                 dayjs() < dayjs(localStorage.getItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}.expired_at`))
@@ -1063,7 +1065,7 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
                 quantity: product.quantity,
                 item_brand: brand,
                 item_category: product.categories?.join(trackingOptions.separator),
-                item_variant: uniq(product.owners?.map(member => member.name)).join(trackingOptions.separator),
+                item_variant: uniq(product.owners?.map((member) => member.name)).join(trackingOptions.separator),
               }
               // update localStorage cache
               localStorage.setItem(`${EC_ITEM_MAP_KEY_PREFIX}.${itemId}`, JSON.stringify(item))
@@ -1076,14 +1078,14 @@ export const useTracking = (trackingOptions = { separator: '|' }) => {
             ;(window as any).dataLayer.push({ ecommerce: null }) // Clear the previous ecommerce object.
             ;(window as any).dataLayer.push({
               event: 'purchase',
-              label: orderProducts.map(orderProduct => orderProduct.title).join('|'),
-              value: sum(orderProducts.map(orderProduct => orderProduct.price || 0)),
+              label: orderProducts.map((orderProduct) => orderProduct.title).join('|'),
+              value: sum(orderProducts.map((orderProduct) => orderProduct.price || 0)),
               ecommerce: {
                 type: 'ga4',
                 currency: appCurrencyId,
-                value: sum(orderProducts.map(v => v.price || 0)) - sum(orderDiscounts.map(v => v.price)),
+                value: sum(orderProducts.map((v) => v.price || 0)) - sum(orderDiscounts.map((v) => v.price)),
                 transaction_id: orderId,
-                coupon: orderDiscounts.map(v => v.name).join(trackingOptions.separator),
+                coupon: orderDiscounts.map((v) => v.name).join(trackingOptions.separator),
                 items,
               },
             })
@@ -1153,12 +1155,12 @@ export const useMemberShipCardDetails = (memberId: string | undefined) => {
 
     const filteredAndUniqueData: CwMemberShipCardDetails = []
     const cardIdToDatesMap = new Map()
-    ;(memberShipCardDetails?.card_enrollment as CwCardEnrollment)?.forEach(cardEnrollment => {
+    ;(memberShipCardDetails?.card_enrollment as CwCardEnrollment)?.forEach((cardEnrollment) => {
       const cardId = cardEnrollment.card_id
       const cardTitle = cardEnrollment.card?.title ?? ''
 
-      cardEnrollment.member.order_logs.forEach(orderLog => {
-        orderLog.order_products.forEach(orderProduct => {
+      cardEnrollment.member.order_logs.forEach((orderLog) => {
+        orderLog.order_products.forEach((orderProduct) => {
           if (!orderProduct.product_id.endsWith(cardId)) return
           const { ended_at, delivered_at } = orderProduct
 

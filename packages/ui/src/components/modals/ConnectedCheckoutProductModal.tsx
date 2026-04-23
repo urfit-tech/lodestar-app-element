@@ -12,7 +12,7 @@ export type ConnectedCheckoutProductModalProps = Omit<
   'memberCreditCards' | 'remainingCoins' | 'paymentOptions'
 >
 
-const ConnectedCheckoutProductModal: React.FC<ConnectedCheckoutProductModalProps> = props => {
+const ConnectedCheckoutProductModal: React.FC<ConnectedCheckoutProductModalProps> = (props) => {
   const { currentMemberId } = useAuth()
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
   const { remainingCoins } = useMemberCoinsRemaining(currentMemberId || '')

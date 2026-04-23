@@ -9,7 +9,7 @@ export type TitleProps = {
   iconUrl?: string | null
   subtitle?: string | null
 }
-const Title: ElementComponent<TitleProps> = props => {
+const Title: ElementComponent<TitleProps> = (props) => {
   const { loading, errors, children } = props
   return loading || errors ? (
     <div>---</div>

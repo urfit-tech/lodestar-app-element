@@ -18,13 +18,9 @@ const ConnectedActivityCollection: React.FC<CraftActivityCollectionProps> = ({ s
   // fresh object on every render (which would thrash its `useMemo` deps and
   // churn the composed result). `source` from Craft.js is stable per node;
   // when it is undefined we lock onto the module-level default.
-  const resolvedSource = useMemo<ActivityCollectionSource>(
-    () => source ?? DEFAULT_SOURCE,
-    [source],
-  )
+  const resolvedSource = useMemo<ActivityCollectionSource>(() => source ?? DEFAULT_SOURCE, [source])
   const { data, loading, error } = useActivityCollection(resolvedSource)
-  const defaultCategoryIds =
-    resolvedSource.from === 'publishedAt' ? resolvedSource.defaultCategoryIds : undefined
+  const defaultCategoryIds = resolvedSource.from === 'publishedAt' ? resolvedSource.defaultCategoryIds : undefined
 
   return (
     <ActivityCollection
@@ -41,6 +37,5 @@ const ConnectedActivityCollection: React.FC<CraftActivityCollectionProps> = ({ s
 // locally. Without it, TypeScript tries to name Craftize's inferred return
 // type via `../../../../packages/ui/node_modules/@craftjs/core/lib`, which is
 // non-portable across workspace boundaries (TS2742).
-export const CraftActivityCollection: UserComponent<PropsWithCraft<CraftActivityCollectionProps>> = Craftize(
-  ConnectedActivityCollection,
-)
+export const CraftActivityCollection: UserComponent<PropsWithCraft<CraftActivityCollectionProps>> =
+  Craftize(ConnectedActivityCollection)

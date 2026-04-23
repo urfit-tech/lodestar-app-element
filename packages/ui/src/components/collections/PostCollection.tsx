@@ -24,7 +24,7 @@ export type PostCollectionProps = {
   carousel?: BaseCarouselProps
 }
 
-const PostCollection: ElementComponent<PostCollectionProps> = props => {
+const PostCollection: ElementComponent<PostCollectionProps> = (props) => {
   const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
@@ -59,14 +59,12 @@ const PostCollection: ElementComponent<PostCollectionProps> = props => {
           sortBy(prop('position')),
         )(
           posts
-            .flatMap(d => d.categories)
-            .filter(category => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
+            .flatMap((d) => d.categories)
+            .filter((category) => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
         )
 
   const postFilter = (d: PostCollectionItem) =>
-    !props.withSelector ||
-    !activeCategoryId ||
-    d.categories.map(category => category.id).includes(activeCategoryId)
+    !props.withSelector || !activeCategoryId || d.categories.map((category) => category.id).includes(activeCategoryId)
 
   return (
     <div className={props.className}>
@@ -76,7 +74,7 @@ const PostCollection: ElementComponent<PostCollectionProps> = props => {
             <CategorySelector
               categories={categories}
               activeCategoryId={activeCategoryId || null}
-              onActive={categoryId => setActive(categoryId)}
+              onActive={(categoryId) => setActive(categoryId)}
             />
           )}
         </div>

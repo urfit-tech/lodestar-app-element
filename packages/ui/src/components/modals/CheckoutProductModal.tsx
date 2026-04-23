@@ -91,7 +91,7 @@ export const StyledCheckoutBlock = styled.div`
   }
 `
 export const StyledCheckoutPrice = styled.div`
-  color: ${props => props.theme['@primary-color']};
+  color: ${(props) => props.theme['@primary-color']};
   font-size: 24px;
   font-weight: bold;
   letter-spacing: 0.2px;
@@ -310,7 +310,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
 
   useEffect(() => {
     if (currentMember) {
-      setInvoice(prev => ({ ...prev, ...cachedCartInfo.invoice }))
+      setInvoice((prev) => ({ ...prev, ...cachedCartInfo.invoice }))
     }
   }, [cachedCartInfo.invoice])
 
@@ -365,8 +365,8 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
     shipping: productTarget?.isPhysical
       ? shipping
       : productId.startsWith('MerchandiseSpec_')
-      ? { address: currentMember?.email }
-      : null,
+        ? { address: currentMember?.email }
+        : null,
     options: {
       [productId]: {
         startedAt,
@@ -445,8 +445,8 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
       isValidInvoice = Number(settings['feature.invoice.disable'])
         ? true
         : Number(settings['feature.invoice_member_info_input.disable'])
-        ? validateInvoice(invoice).filter(v => !['name', 'phone', 'email'].includes(v)).length === 0
-        : validateInvoice(invoice).length === 0
+          ? validateInvoice(invoice).filter((v) => !['name', 'phone', 'email'].includes(v)).length === 0
+          : validateInvoice(invoice).length === 0
     }
 
     if (totalPrice > 0 && payment === null) {
@@ -516,7 +516,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
         },
       }
       const { conversionApi } = getConversionApiData(currentMember, { contents, event })
-      await conversionApi(authToken || '', 'AddToCart').catch(error => console.log(error))
+      await conversionApi(authToken || '', 'AddToCart').catch((error) => console.log(error))
     }
 
     if (settings['tracking.ga_id']) {
@@ -606,7 +606,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
     <>
       {renderTrigger({
         onOpen,
-        onProductChange: productId => setProductId(productId),
+        onProductChange: (productId) => setProductId(productId),
         isLoading: isAuthenticating,
         isSubscription: productTarget.isSubscription,
         disable:
@@ -634,7 +634,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
                 : 'checkout'
             }
             quantity={quantity}
-            onChange={value => {
+            onChange={(value) => {
               if (typeof value === 'number') {
                 trackCartItem(quantity, value)
                 setQuantity(value)
@@ -645,13 +645,13 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
 
         {settings['feature.contact_info.enabled'] === '1' && totalPrice === 0 && (
           <Box ref={contactInfoRef} mb="3">
-            <ContactInfoInput value={invoice} onChange={v => setInvoice(v)} errorContactFields={errorContactFields} />
+            <ContactInfoInput value={invoice} onChange={(v) => setInvoice(v)} errorContactFields={errorContactFields} />
           </Box>
         )}
 
         {renderProductSelector && (
           <div className="mb-5">
-            {renderProductSelector({ productId, onProductChange: productId => setProductId(productId) })}
+            {renderProductSelector({ productId, onProductChange: (productId) => setProductId(productId) })}
           </div>
         )}
 
@@ -661,7 +661,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
           <div ref={shippingRef}>
             <ShippingInput
               value={shipping}
-              onChange={value => setShipping(value)}
+              onChange={(value) => setShipping(value)}
               shippingMethods={shippingMethods}
               isValidating={isValidating}
             />
@@ -687,7 +687,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
             <CheckoutGroupBuyingForm
               title={productTarget.title || ''}
               partnerCount={productTarget.groupBuyingPeople - 1}
-              onChange={value => setGroupBuying(value)}
+              onChange={(value) => setGroupBuying(value)}
             />
           </div>
         )}
@@ -696,7 +696,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
           <div className="mb-5" ref={paymentMethodRef}>
             <PaymentSelector
               value={payment}
-              onChange={v => setPayment(v)}
+              onChange={(v) => setPayment(v)}
               paymentOptions={paymentOptions}
               isValidating={isValidating}
             />
@@ -724,7 +724,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
                 (settings['feature.invoice.disable'] !== '1' && (
                   <InvoiceInput
                     value={invoice}
-                    onChange={value => setInvoice(value)}
+                    onChange={(value) => setInvoice(value)}
                     isValidating={isValidating}
                     shouldSameToShippingCheckboxDisplay={productTarget.isPhysical}
                   />
@@ -745,7 +745,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
               <CheckoutProductReferrerInput
                 referrerId={referrerId}
                 referrerStatus={referrerStatus}
-                onEmailSet={email => setReferrerEmail(email)}
+                onEmailSet={(email) => setReferrerEmail(email)}
               />
             </div>
           </div>
@@ -757,7 +757,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
               size="lg"
               colorScheme="primary"
               isChecked={isApproved}
-              onChange={() => setIsApproved(prev => !prev)}
+              onChange={() => setIsApproved((prev) => !prev)}
             />
             <StyledLabel>{formatMessage(checkoutMessages.label.approved)}</StyledLabel>
             <StyledApprovementBox
@@ -778,7 +778,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
         ) : (
           <>
             <StyledCheckoutBlock className="mb-5">
-              {check.orderProducts.map(orderProduct => (
+              {check.orderProducts.map((orderProduct) => (
                 <CheckoutProductItem
                   key={orderProduct.name}
                   name={orderProduct.name}

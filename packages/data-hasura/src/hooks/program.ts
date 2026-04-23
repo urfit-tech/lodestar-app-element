@@ -24,7 +24,7 @@ export const useProgramEnrollmentAggregate = (programId: string, options?: Pick<
   )
   const enrolledCount =
     sum(
-      data?.program_statistics.map(v => v.program_plan_enrolled_count + v.program_package_plan_enrolled_count) || [],
+      data?.program_statistics.map((v) => v.program_plan_enrolled_count + v.program_package_plan_enrolled_count) || [],
     ) || 0
 
   return {

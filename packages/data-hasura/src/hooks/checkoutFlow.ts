@@ -72,7 +72,7 @@ export const useMemberCreditCards = (memberId: string) => {
   )
   const memberCreditCards = useMemo<MemberCreditCard[]>(
     () =>
-      data?.member_card.map<MemberCreditCard>(memberCreditCard => ({
+      data?.member_card.map<MemberCreditCard>((memberCreditCard) => ({
         id: memberCreditCard.id,
         cardInfo: memberCreditCard.card_info,
         cardIdentifier: memberCreditCard.card_identifier,

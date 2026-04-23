@@ -16,7 +16,7 @@ import PriceLabel from '../labels/PriceLabel'
 import Card from './Card'
 
 const StyledLabel = styled.div`
-  color: ${props => props.theme['@primary-color']};
+  color: ${(props) => props.theme['@primary-color']};
 `
 const StyledCircleWrapper = styled.div`
   position: relative;
@@ -45,7 +45,7 @@ const StyledCover = styled.div`
   position: relative;
 `
 
-const ProjectCard: React.FC<ProjectElementProps> = props => {
+const ProjectCard: React.FC<ProjectElementProps> = (props) => {
   const history = useHistory()
   const { loading, errors } = props
   const { formatMessage } = useIntl()
@@ -76,7 +76,7 @@ const ProjectCard: React.FC<ProjectElementProps> = props => {
 
   return (
     <div
-      onClick={e => {
+      onClick={(e) => {
         !loading ? (props.editing ? e.preventDefault() : history.push(`/projects/${props.id}`)) : history.push(`#!`)
       }}
     >

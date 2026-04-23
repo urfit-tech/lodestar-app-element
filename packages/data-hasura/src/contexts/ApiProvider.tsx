@@ -10,7 +10,7 @@ export const ApiProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     (count, operation, errors) =>
       operation.operationName === 'GET_PROGRAM_COLLECTION' &&
       count < 3 &&
-      (errors || []).some(error => error.extensions?.code === 'validation-failed'),
+      (errors || []).some((error) => error.extensions?.code === 'validation-failed'),
   ]
 
   const apolloClient = createApolloClient(

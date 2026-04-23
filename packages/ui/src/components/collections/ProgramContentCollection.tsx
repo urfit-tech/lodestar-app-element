@@ -18,14 +18,8 @@ export type ProgramContentCollectionProps = {
   carousel?: BaseCarouselProps
 }
 
-const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> = props => {
-  const {
-    programContents = [],
-    isFetching,
-    fetchError,
-    loading: parentLoading,
-    errors: parentErrors,
-  } = props
+const ProgramContentCollection: ElementComponent<ProgramContentCollectionProps> = (props) => {
+  const { programContents = [], isFetching, fetchError, loading: parentLoading, errors: parentErrors } = props
 
   if (parentLoading || parentErrors) {
     return null

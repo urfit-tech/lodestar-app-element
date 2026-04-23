@@ -11,7 +11,7 @@ const StyledDiv = styled.div<EmbeddedProps>`
 `
 
 export type EmbeddedProps = { iframe: string }
-const Embedded: ElementComponent<EmbeddedProps> = props => {
+const Embedded: ElementComponent<EmbeddedProps> = (props) => {
   const { formatMessage } = useIntl()
   if (props.loading || props.errors) {
     return null

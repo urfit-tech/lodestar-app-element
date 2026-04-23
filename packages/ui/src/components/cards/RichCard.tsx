@@ -32,7 +32,7 @@ export type RichCardProps = {
   flexDirection?: 'row' | 'column'
 }
 
-const RichCard: ElementComponent<RichCardProps> = props => {
+const RichCard: ElementComponent<RichCardProps> = (props) => {
   if (props.loading || props.errors) {
     return null
   }

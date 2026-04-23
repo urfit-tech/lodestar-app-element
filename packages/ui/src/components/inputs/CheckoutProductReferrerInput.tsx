@@ -19,7 +19,7 @@ const CheckoutProductReferrerInput: React.FC<{
         type="email"
         status={referrerStatus}
         placeholder={formatMessage(commonMessages.label.referrerEmail)}
-        onBlur={e => onEmailSet(e.target.value)}
+        onBlur={(e) => onEmailSet(e.target.value)}
       />
       <FormErrorMessage>
         {referrerStatus === 'error'

@@ -30,14 +30,16 @@ type DiscountButtonProps = {
 }
 const DiscountButton: React.ComponentType<DiscountButtonProps> = Button
 
-const StyledRadio = styled(Radio as React.ComponentType<{
-  height?: string
-  colorScheme?: string
-  value?: string
-  children?: React.ReactNode
-}>)`
+const StyledRadio = styled(
+  Radio as React.ComponentType<{
+    height?: string
+    colorScheme?: string
+    value?: string
+    children?: React.ReactNode
+  }>,
+)`
   &&:focus {
-    box-shadow: 0 0 0 3px ${props => rgba(props.theme['@primary-color'], 0.6)};
+    box-shadow: 0 0 0 3px ${(props) => rgba(props.theme['@primary-color'], 0.6)};
   }
 `
 
@@ -55,7 +57,7 @@ const DiscountSelectionCard: React.FC<{
   return (
     <RadioGroupEl
       value={discountType || 'None'}
-      onChange={value => onChange?.(value === 'None' ? '' : `${value}`)}
+      onChange={(value) => onChange?.(value === 'None' ? '' : `${value}`)}
       style={{ width: '100%' }}
     >
       <StackEl>
@@ -73,7 +75,7 @@ const DiscountSelectionCard: React.FC<{
                   memberId={currentMemberId}
                   orderProducts={check?.orderProducts || []}
                   orderDiscounts={check?.orderDiscounts || []}
-                  onSelect={coupon => {
+                  onSelect={(coupon) => {
                     onChange?.(`Coupon_${coupon.id}`)
                   }}
                   renderTrigger={({ onOpen, selectedCoupon }) => (
@@ -103,7 +105,7 @@ const DiscountSelectionCard: React.FC<{
                 {currentMemberId ? (
                   <MembershipCardSelectionModal
                     memberId={currentMemberId}
-                    onSelect={membershipCardId => onChange?.(`Card_${membershipCardId}`)}
+                    onSelect={(membershipCardId) => onChange?.(`Card_${membershipCardId}`)}
                     render={({ setVisible, selectedMembershipCard }: any) => (
                       <>
                         <DiscountButton variant="outline" onClick={() => setVisible(true)}>

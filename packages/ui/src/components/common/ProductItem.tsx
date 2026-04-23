@@ -46,7 +46,7 @@ const StyledMeta = styled.span`
   `)}
 `
 const StyledHighlight = styled.div`
-  color: ${props => props.theme['@primary-color']};
+  color: ${(props) => props.theme['@primary-color']};
   font-size: 14px;
   letter-spacing: 0.18px;
   margin-top: 8px;
@@ -198,7 +198,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ id, startedAt, variant, quant
               <QuantityInput
                 value={quantity}
                 min={1}
-                onChange={value => typeof value === 'number' && onChange && onChange(value)}
+                onChange={(value) => typeof value === 'number' && onChange && onChange(value)}
               />
             </div>
           )}
@@ -210,12 +210,12 @@ const ProductItem: React.FC<ProductItemProps> = ({ id, startedAt, variant, quant
                   periodType === 'D'
                     ? formatMessage(commonMessages.unit.day)
                     : periodType === 'W'
-                    ? formatMessage(commonMessages.unit.week)
-                    : periodType === 'M'
-                    ? formatMessage(commonMessages.unit.monthWithQuantifier)
-                    : periodType === 'Y'
-                    ? formatMessage(commonMessages.unit.year)
-                    : formatMessage(commonMessages.unknown.period),
+                      ? formatMessage(commonMessages.unit.week)
+                      : periodType === 'M'
+                        ? formatMessage(commonMessages.unit.monthWithQuantifier)
+                        : periodType === 'Y'
+                          ? formatMessage(commonMessages.unit.year)
+                          : formatMessage(commonMessages.unknown.period),
               })}
             </StyledHighlight>
           )}

@@ -23,11 +23,11 @@ const GridOption = styled.div<{ font: string; selected: boolean }>`
   position: relative;
   width: 100%;
   aspect-ratio: 1/1;
-  outline: ${props => (props.selected ? `2px solid ${props.theme['@primary-color']}` : '1px solid var(--gray)')};
+  outline: ${(props) => (props.selected ? `2px solid ${props.theme['@primary-color']}` : '1px solid var(--gray)')};
   border-radius: 4px;
   padding: 20px;
-  font-family: ${props => (props.font === 'zhuyin' ? 'BpmfGenSenRounded' : 'inherit')};
-  font-size: ${props => (props.font === 'zhuyin' ? '32px' : '16px')};
+  font-family: ${(props) => (props.font === 'zhuyin' ? 'BpmfGenSenRounded' : 'inherit')};
+  font-size: ${(props) => (props.font === 'zhuyin' ? '32px' : '16px')};
   img {
     object-fit: contain;
     aspect-ratio: 1;
@@ -42,7 +42,7 @@ const GridOptionsBlock: React.FC<{ optionList?: QuestionOption[]; questionFontTy
   return (
     (optionList && (
       <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-        {optionList?.map(option => (
+        {optionList?.map((option) => (
           <GridItem key={option.id} colSpan={1} w="100%">
             <GridOption
               dangerouslySetInnerHTML={{ __html: option.value }}

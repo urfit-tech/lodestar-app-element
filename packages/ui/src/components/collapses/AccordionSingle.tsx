@@ -6,7 +6,7 @@ import Paragraph from '../common/Paragraph'
 
 const StyledAction = styled.div<{ isActive?: boolean }>`
   font-size: 20px;
-  ${props =>
+  ${(props) =>
     props.isActive &&
     css`
       transform: rotate(90deg);
@@ -22,7 +22,7 @@ const StyledTitle = styled.h3`
 const StyledParagraph = styled(Paragraph)<{ isActive?: boolean }>`
   && {
     transition: 0.5s;
-    ${props =>
+    ${(props) =>
       props.isActive
         ? css`
             height: fit-content;
@@ -52,7 +52,7 @@ const Accordion: ElementComponent<{
   description: string
   isActive?: boolean
   onClick?: () => void
-}> = props => {
+}> = (props) => {
   const [isActive, setAsActive] = useState(false)
 
   if (props.loading || props.errors) {
@@ -62,7 +62,7 @@ const Accordion: ElementComponent<{
   return (
     <StyledAccordion className={props.className}>
       <StyledAccordionHeader
-        onClick={() => setAsActive(active => !active)}
+        onClick={() => setAsActive((active) => !active)}
         className="d-flex justify-content-between align-items-center"
       >
         <div className="flex-grow-1">

@@ -3,10 +3,7 @@ import { StringParam } from 'serialize-query-params'
 import { useQueryParam } from 'use-query-params'
 import { convertPathName } from '@lodestar/helpers'
 import { ElementComponent } from '@lodestar/types/element'
-import {
-  ProjectCollectionCategory,
-  ProjectCollectionItem,
-} from '@lodestar/types/project'
+import { ProjectCollectionCategory, ProjectCollectionItem } from '@lodestar/types/project'
 import ProjectCard from '../cards/ProjectCard'
 import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
@@ -26,7 +23,7 @@ export type ProjectCollectionProps = {
   carousel?: BaseCarouselProps
 }
 
-const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
+const ProjectCollection: ElementComponent<ProjectCollectionProps> = (props) => {
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
   const {
@@ -55,14 +52,12 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
       ? []
       : uniqBy((category: ProjectCollectionCategory) => category.id)(
           projects
-            .flatMap(d => d.categories)
-            .filter(category => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
+            .flatMap((d) => d.categories)
+            .filter((category) => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
         )
 
   const filterByActiveCategory = (d: ProjectCollectionItem) =>
-    !props.withSelector ||
-    !activeCategoryId ||
-    d.categories.map(category => category.id).includes(activeCategoryId)
+    !props.withSelector || !activeCategoryId || d.categories.map((category) => category.id).includes(activeCategoryId)
 
   return (
     <div className={props.className}>
@@ -70,7 +65,7 @@ const ProjectCollection: ElementComponent<ProjectCollectionProps> = props => {
         <CategorySelector
           categories={categories}
           activeCategoryId={activeCategoryId || null}
-          onActive={categoryId => setActive(categoryId)}
+          onActive={(categoryId) => setActive(categoryId)}
         />
       )}
       {children}

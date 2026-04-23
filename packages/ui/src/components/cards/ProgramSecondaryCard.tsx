@@ -29,7 +29,7 @@ const StyledCategories = styled.div`
   white-space: nowrap;
 `
 
-const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
+const ProgramSecondaryCard: React.FC<ProgramElementProps> = (props) => {
   const { id: appId, enabledModules } = useApp()
   const { loading: propsLoading, errors, label, labelColorType, reviewAverageScore, reviewCount } = props
   const path = `/programs/${props.id}`
@@ -73,7 +73,7 @@ const ProgramSecondaryCard: React.FC<ProgramElementProps> = props => {
               {props?.categories
                 ?.filter?.((_, i) => i < 3)
                 // FIXME display subCategory instead split '/' here
-                .map(category => category.name.split('/').pop())
+                .map((category) => category.name.split('/').pop())
                 .join('・')}
             </StyledCategories>
             {enabledModules.customer_review && Boolean(finalReviewAverageScore) && (
@@ -96,7 +96,7 @@ export function withReviews<P>(
   WrappedComponent: React.ComponentType<P & { reviews: string[] }>,
   options?: { limit: number },
 ) {
-  const ComponentWithReview: React.FC<P> = props => {
+  const ComponentWithReview: React.FC<P> = (props) => {
     return <WrappedComponent {...props} reviews={[]}></WrappedComponent>
   }
   return ComponentWithReview

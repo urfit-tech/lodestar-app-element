@@ -8,6 +8,5 @@
     { "path": "packages/data-hasura" },
     { "path": "packages/ui" },
     { "path": "apps/element-demo" },
-    { "path": "apps/playground" }
-  ]
+  ],
 }

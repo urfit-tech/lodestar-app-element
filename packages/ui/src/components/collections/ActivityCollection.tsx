@@ -25,7 +25,7 @@ export type ActivityCollectionProps = {
   carousel?: BaseCarouselProps
 }
 
-const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
+const ActivityCollection: ElementComponent<ActivityCollectionProps> = (props) => {
   const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
@@ -50,20 +50,17 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
       ? CollectionCarousel(collectionName, 'activity', EntityElement)
       : Collection(collectionName, 'activity', EntityElement)
 
-  const categories: ActivityCollectionCategory[] = isFetching || fetchError
-    ? []
-    : uniqBy(
-        (category: ActivityCollectionCategory) => category.id,
-      )(
-        activities
-          .flatMap(d => d.categories)
-          .filter(category => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
-      )
+  const categories: ActivityCollectionCategory[] =
+    isFetching || fetchError
+      ? []
+      : uniqBy((category: ActivityCollectionCategory) => category.id)(
+          activities
+            .flatMap((d) => d.categories)
+            .filter((category) => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
+        )
 
   const filterByActiveCategory = (d: ActivityCollectionItem) =>
-    !props.withSelector ||
-    !activeCategoryId ||
-    d.categories.map(category => category.id).includes(activeCategoryId)
+    !props.withSelector || !activeCategoryId || d.categories.map((category) => category.id).includes(activeCategoryId)
 
   return (
     <div className={props.className}>
@@ -71,7 +68,7 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
         <CategorySelector
           categories={categories}
           activeCategoryId={activeCategoryId || null}
-          onActive={categoryId => setActive(categoryId)}
+          onActive={(categoryId) => setActive(categoryId)}
         />
       )}
       {children}
@@ -91,10 +88,10 @@ const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => {
               coverUrl={activity.coverUrl}
               title={activity.title}
               isParticipantsVisible={activity.isParticipantVisible}
-              startedAt={moment.min(activity.sessions.map(session => moment(session.startedAt as any))).toDate()}
-              endedAt={moment.max(activity.sessions.map(session => moment(session.endedAt as any))).toDate()}
+              startedAt={moment.min(activity.sessions.map((session) => moment(session.startedAt as any))).toDate()}
+              endedAt={moment.max(activity.sessions.map((session) => moment(session.endedAt as any))).toDate()}
               participantCount={activity.totalParticipants}
-              totalSeats={sum(activity.tickets.map(ticket => ticket.limit))}
+              totalSeats={sum(activity.tickets.map((ticket) => ticket.limit))}
               categories={activity.categories}
               onClick={() => {
                 onClick?.()

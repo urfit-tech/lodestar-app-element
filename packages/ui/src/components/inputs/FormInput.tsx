@@ -7,7 +7,7 @@ import ExclamationCircleIcon from '../../images/exclamation-circle.svg?react'
 
 const StyledInput = styled(ChakraInput as any)<{ isSuccess: true }>`
   && {
-    ${props =>
+    ${(props) =>
       props.isSuccess &&
       css`
         border-color: var(--success);
@@ -18,12 +18,12 @@ const StyledInput = styled(ChakraInput as any)<{ isSuccess: true }>`
 const StyledInputRightElement = styled(InputRightElement as any)<{ status: 'error' | 'success' }>`
   && {
     font-size: 20px;
-    ${props =>
+    ${(props) =>
       props.status === 'success' &&
       css`
         color: var(--success);
       `}
-    ${props =>
+    ${(props) =>
       props.status === 'error' &&
       css`
         color: var(--error);

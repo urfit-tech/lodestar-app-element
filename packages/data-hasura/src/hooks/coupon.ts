@@ -38,7 +38,7 @@ export const useCouponCollection = (memberId: string) => {
                 description: coupon.couponCode.couponPlan.description || '',
                 scope: coupon.couponCode.couponPlan.scope,
                 productIds: coupon.couponCode.couponPlan.couponPlanProducts.map(
-                  couponPlanProduct => couponPlanProduct.productId,
+                  (couponPlanProduct) => couponPlanProduct.productId,
                 ),
               },
             },

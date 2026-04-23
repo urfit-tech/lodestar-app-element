@@ -6,10 +6,7 @@ import { getPostCollectionQuery } from '@lodestar/graphql/queries'
 import { ProductCustomSource, ProductPublishedAtSource } from '@lodestar/types/options'
 import { PostCollectionItem } from '@lodestar/types/post'
 
-export type PostCollectionSource =
-  | ProductPublishedAtSource
-  | ProductPublishedAtSource<'popular'>
-  | ProductCustomSource
+export type PostCollectionSource = ProductPublishedAtSource | ProductPublishedAtSource<'popular'> | ProductCustomSource
 
 export type UsePostCollectionResult = {
   data: PostCollectionItem[]
@@ -63,15 +60,14 @@ const composePostItem = (p: PostNode): PostCollectionItem => ({
     memberId: p.post_roles?.[0]?.member?.id || '',
     name: p.post_roles?.[0]?.member?.name || '',
   },
-  categories: p.post_categories.map(pc => ({
+  categories: p.post_categories.map((pc) => ({
     id: pc.category.id,
     name: pc.category.name,
     position: pc.category.position,
   })),
 })
 
-const composeCollectionData = (data: hasura.GET_POST_COLLECTION): PostCollectionItem[] =>
-  data.post.map(composePostItem)
+const composeCollectionData = (data: hasura.GET_POST_COLLECTION): PostCollectionItem[] => data.post.map(composePostItem)
 
 const buildVariables = (source: PostCollectionSource): hasura.GET_POST_COLLECTIONVariables => {
   if (source.from === 'custom') {
@@ -97,36 +93,31 @@ const buildVariables = (source: PostCollectionSource): hasura.GET_POST_COLLECTIO
         post_categories: source.defaultCategoryIds?.length
           ? { category_id: { _in: source.defaultCategoryIds } }
           : undefined,
-        post_tags: source.defaultTagNames?.length
-          ? { tag_name: { _in: source.defaultTagNames } }
-          : undefined,
+        post_tags: source.defaultTagNames?.length ? { tag_name: { _in: source.defaultTagNames } } : undefined,
       },
     }
   }
   return {
     limit: source.limit,
-    orderByClause: [
-      { published_at: (source.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by },
-    ],
+    orderByClause: [{ published_at: (source.asc ? 'asc_nulls_last' : 'desc_nulls_last') as hasura.order_by }],
     whereClause: {
       is_deleted: { _eq: false },
       published_at: { _lt: 'now()' },
       post_categories: source.defaultCategoryIds?.length
         ? { category_id: { _in: source.defaultCategoryIds } }
         : undefined,
-      post_tags: source.defaultTagNames?.length
-        ? { tag_name: { _in: source.defaultTagNames } }
-        : undefined,
+      post_tags: source.defaultTagNames?.length ? { tag_name: { _in: source.defaultTagNames } } : undefined,
     },
   }
 }
 
 export const usePostCollection = (source: PostCollectionSource): UsePostCollectionResult => {
   const variables = useMemo(() => buildVariables(source), [source])
-  const { data: rawData, loading, error } = useQuery<
-    hasura.GET_POST_COLLECTION,
-    hasura.GET_POST_COLLECTIONVariables
-  >(POST_COLLECTION_QUERY, { variables })
+  const {
+    data: rawData,
+    loading,
+    error,
+  } = useQuery<hasura.GET_POST_COLLECTION, hasura.GET_POST_COLLECTIONVariables>(POST_COLLECTION_QUERY, { variables })
 
   const composed = useMemo(() => {
     if (!rawData) return []
@@ -136,9 +127,7 @@ export const usePostCollection = (source: PostCollectionSource): UsePostCollecti
     if (source.from === 'custom') {
       const ordered: hasura.GET_POST_COLLECTION = {
         ...rawData,
-        post: (source.idList || [])
-          .map(id => rawData.post.find(p => p.id === id))
-          .filter(notEmpty),
+        post: (source.idList || []).map((id) => rawData.post.find((p) => p.id === id)).filter(notEmpty),
       }
       return composeCollectionData(ordered)
     }

@@ -17,7 +17,7 @@ const skeletonStyles = css<SkeletonProps>`
   background-image: linear-gradient(90deg, ${defaultBaseColor}, ${defaultHighlightColor}, ${defaultBaseColor});
   background-size: 200px 100%;
   background-repeat: no-repeat;
-  ${props => props.height && `height:${props.height};`}
+  ${(props) => props.height && `height:${props.height};`}
   border-radius: 4px;
   display: inline-block;
   line-height: 1;
@@ -35,7 +35,7 @@ type SkeletonProps = {
 
 const StyledSkeleton = styled.div<SkeletonProps>`
   ${skeletonStyles}
-  animation: ${skeletonKeyframes} ${props => props.duration || 1.2}s ease-in-out infinite
+  animation: ${skeletonKeyframes} ${(props) => props.duration || 1.2}s ease-in-out infinite
 `
 
 const Skeleton: React.FC<SkeletonProps> = ({ children, ...props }) => {

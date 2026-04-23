@@ -14,11 +14,6 @@
     "./components/event/*": "./src/components/event/*.tsx"
   },
   "dependencies": {
-    "@lodestar/types": "workspace:*",
-    "@lodestar/helpers": "workspace:*",
-    "@lodestar/contexts": "workspace:*",
-    "@lodestar/data-hasura": "workspace:*",
-    "@lodestar/hooks": "workspace:*",
     "@bobthered/tailwindcss-palette-generator": "*",
     "@chakra-ui/hooks": "1.9.1",
     "@chakra-ui/icons": "1.1.7",
@@ -33,6 +28,11 @@
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/rrule": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@lodestar/contexts": "workspace:*",
+    "@lodestar/data-hasura": "workspace:*",
+    "@lodestar/helpers": "workspace:*",
+    "@lodestar/hooks": "workspace:*",
+    "@lodestar/types": "workspace:*",
     "ajv": "^8.11.2",
     "antd": "3",
     "axios": "0.21.4",
@@ -89,9 +89,9 @@
     "@types/uuid": "8.3.1"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
     "@emotion/react": "^11.0.0",
-    "@emotion/styled": "^11.0.0"
+    "@emotion/styled": "^11.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
   }
 }

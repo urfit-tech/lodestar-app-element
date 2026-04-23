@@ -13,7 +13,7 @@ const StyledCertificateCard = styled.div<{ scale: number }>`
   width: 1200px;
   overflow: hidden;
   white-space: nowrap;
-  transform: scale(${props => props.scale});
+  transform: scale(${(props) => props.scale});
   transform-origin: top left;
 `
 const _Certificate: React.FC<{

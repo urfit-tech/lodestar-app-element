@@ -40,15 +40,15 @@ const createGraphQLErrorRetryLink = (
   delayMs = 300,
 ) => {
   const shouldRetry: ApolloGraphQLErrorRetryCallback = (retries, operation, errors) =>
-    retryCallbacks?.some(callback => callback(retries, operation, errors))
+    retryCallbacks?.some((callback) => callback(retries, operation, errors))
 
   return new ApolloLink((operation: Operation, forward: NextLink) => {
-    return new Observable<FetchResult>(observer => {
+    return new Observable<FetchResult>((observer) => {
       let retries = 0
 
       const tryRequest = () => {
         const sub = forward(operation).subscribe({
-          next: result => {
+          next: (result) => {
             if (result.errors?.length && shouldRetry(retries, operation, result.errors)) {
               if (retries < maxRetries) {
                 retries++
@@ -62,7 +62,7 @@ const createGraphQLErrorRetryLink = (
               observer.complete()
             }
           },
-          error: networkError => {
+          error: (networkError) => {
             observer.error(networkError)
           },
         })

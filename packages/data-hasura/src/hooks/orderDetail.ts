@@ -83,7 +83,7 @@ const composeOrderDetail = (data: hasura.GetOrderDetail | undefined): OrderDetai
   }
 
   const orderProducts: OrderDetailView['orderProducts'] =
-    data?.order_product.map(v => ({
+    data?.order_product.map((v) => ({
       id: v.id,
       name: v.name,
       price: v.price,
@@ -91,21 +91,21 @@ const composeOrderDetail = (data: hasura.GetOrderDetail | undefined): OrderDetai
     })) || []
 
   const orderDiscounts: OrderDetailView['orderDiscounts'] =
-    data?.order_discount.map(v => ({
+    data?.order_discount.map((v) => ({
       id: v.id,
       price: v.price,
       name: v.name,
     })) || []
 
   const orderExecutors: OrderDetailView['orderExecutors'] =
-    data?.order_executor.map(v => ({
+    data?.order_executor.map((v) => ({
       id: v.id,
       ratio: v.ratio,
       name: v.member.name,
     })) || []
 
   const paymentLogs: OrderDetailView['paymentLogs'] =
-    data?.payment_log.map(v => ({
+    data?.payment_log.map((v) => ({
       no: v.no,
       status: v.status || '',
       price: v.price,
@@ -114,8 +114,8 @@ const composeOrderDetail = (data: hasura.GetOrderDetail | undefined): OrderDetai
       options: v.options,
     })) || []
 
-  const productPrice = sum(orderProducts.map(v => v.price))
-  const discountPrice = sum(orderDiscounts.map(d => d.price))
+  const productPrice = sum(orderProducts.map((v) => v.price))
+  const discountPrice = sum(orderDiscounts.map((d) => d.price))
   const shippingFee = orderLog.shipping?.fee || 0
   const totalPrice = Math.max(productPrice - discountPrice + shippingFee)
 
@@ -130,13 +130,14 @@ const composeOrderDetail = (data: hasura.GetOrderDetail | undefined): OrderDetai
 }
 
 export const useOrderDetail = (orderLogId: string | null): UseOrderDetailResult => {
-  const { loading, error, data: rawData } = useQuery<hasura.GetOrderDetail, hasura.GetOrderDetailVariables>(
-    GET_ORDER_DETAIL_QUERY,
-    {
-      variables: { orderLogId: orderLogId || '' },
-      skip: !orderLogId,
-    },
-  )
+  const {
+    loading,
+    error,
+    data: rawData,
+  } = useQuery<hasura.GetOrderDetail, hasura.GetOrderDetailVariables>(GET_ORDER_DETAIL_QUERY, {
+    variables: { orderLogId: orderLogId || '' },
+    skip: !orderLogId,
+  })
 
   const data = useMemo<OrderDetailView>(() => composeOrderDetail(rawData), [rawData])
 
@@ -154,17 +155,18 @@ export type UseSharingCodesResult = {
 }
 
 export const useSharingCodes = (paths: string[]): UseSharingCodesResult => {
-  const { loading, error, data: rawData } = useQuery<hasura.GetSharingCode, hasura.GetSharingCodeVariables>(
-    GET_SHARING_CODE_QUERY,
-    {
-      variables: { paths },
-    },
-  )
+  const {
+    loading,
+    error,
+    data: rawData,
+  } = useQuery<hasura.GetSharingCode, hasura.GetSharingCodeVariables>(GET_SHARING_CODE_QUERY, {
+    variables: { paths },
+  })
 
   const data = useMemo(
     () => ({
-      sharingCode: rawData?.sharing_code?.map(v => v.code).join(', ') || '',
-      sharingNote: rawData?.sharing_code?.map(v => v.code).join(', ') || '',
+      sharingCode: rawData?.sharing_code?.map((v) => v.code).join(', ') || '',
+      sharingNote: rawData?.sharing_code?.map((v) => v.code).join(', ') || '',
     }),
     [rawData],
   )

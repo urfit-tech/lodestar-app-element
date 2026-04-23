@@ -41,15 +41,15 @@ const StyledButton = styled.button<ButtonProps>`
     background-color: #a0a0a0;
     cursor: not-allowed !important;
   }
-  ${props =>
+  ${(props) =>
     props.size === 'lg'
       ? 'padding: 10px 42px;'
       : props.size === 'md'
-      ? 'padding: 10px 20px;'
-      : props.size === 'sm'
-      ? 'padding: 6px 16px;'
-      : 'padding: 10px 20px;'};
-  ${props =>
+        ? 'padding: 10px 20px;'
+        : props.size === 'sm'
+          ? 'padding: 6px 16px;'
+          : 'padding: 10px 20px;'};
+  ${(props) =>
     props.block &&
     css`
       width: 100% !important;
@@ -57,7 +57,7 @@ const StyledButton = styled.button<ButtonProps>`
     `};
 `
 
-const Button: ElementComponent<ButtonProps> = props => {
+const Button: ElementComponent<ButtonProps> = (props) => {
   const { formatMessage } = useIntl()
   const { loading, errors, editing } = props
   return loading || errors ? null : props.source?.from ? (

@@ -44,7 +44,7 @@ export const OutputMixin = (customizedStyle?: string) => css`
   h5,
   h6 {
     margin-bottom: 1.5rem;
-    border-left: 4px solid ${props => props.theme['@primary-color']};
+    border-left: 4px solid ${(props) => props.theme['@primary-color']};
   }
   p {
     margin: 0;
@@ -136,7 +136,7 @@ export const OutputMixin = (customizedStyle?: string) => css`
 
 const StyledBraftEditor = styled(BraftEditor)<{ customizedStyle?: string }>`
   .bf-dropdown .dropdown-content .menu-item.active {
-    background-color: ${props => props.theme['@primary-color']};
+    background-color: ${(props) => props.theme['@primary-color']};
     color: #fff;
   }
 
@@ -151,7 +151,7 @@ const StyledBraftEditor = styled(BraftEditor)<{ customizedStyle?: string }>`
         color: #fff;
         font-size: 20px;
         padding: 4px 20px;
-        border-left: 4px solid ${props => props.theme['@primary-color']};
+        border-left: 4px solid ${(props) => props.theme['@primary-color']};
       }
       h1 {
         visibility: hidden;
@@ -175,12 +175,12 @@ const StyledBraftEditor = styled(BraftEditor)<{ customizedStyle?: string }>`
   }
 
   .public-DraftEditor-content {
-    ${props => OutputMixin(props?.customizedStyle)}
+    ${(props) => OutputMixin(props?.customizedStyle)}
   }
 `
 
 const StyledBraftContent = styled.div<{ customizedStyle?: string }>`
-  ${props => OutputMixin(props?.customizedStyle)}
+  ${(props) => OutputMixin(props?.customizedStyle)}
 `
 
 export const BraftContent: React.FC<{
@@ -196,8 +196,8 @@ export const BraftContent: React.FC<{
         className="braft-output-content"
         contentEditable={isEditable}
         spellCheck={false}
-        onBlur={e => onEdit?.(e.currentTarget.textContent)}
-        onKeyPress={e => {
+        onBlur={(e) => onEdit?.(e.currentTarget.textContent)}
+        onKeyPress={(e) => {
           if (e.key === 'Enter') {
             e.preventDefault()
             ref.current?.blur()

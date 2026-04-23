@@ -17,7 +17,7 @@ const StyledCode = styled.div<{ isDisabled?: boolean }>`
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.2px;
-  color: ${props => (props.isDisabled ? '#9b9b9b' : props.theme['@primary-color'])};
+  color: ${(props) => (props.isDisabled ? '#9b9b9b' : props.theme['@primary-color'])};
 `
 
 const CouponCard: React.FC<
@@ -56,11 +56,11 @@ const CouponCard: React.FC<
               { amount: <PriceLabel listPrice={coupon.couponCode.couponPlan.amount} /> },
             )
           : coupon.couponCode.couponPlan.type === 'percent'
-          ? formatMessage(
-              { id: 'checkout.coupon.proportion', defaultMessage: '比例 {amount}%' },
-              { amount: coupon.couponCode.couponPlan.amount },
-            )
-          : null}
+            ? formatMessage(
+                { id: 'checkout.coupon.proportion', defaultMessage: '比例 {amount}%' },
+                { amount: coupon.couponCode.couponPlan.amount },
+              )
+            : null}
       </div>
       <div>
         {coupon.couponCode.couponPlan.startedAt

@@ -13,7 +13,7 @@ import styled, { css } from 'styled-components'
 
 const StyledModalContent = styled(ModalContent as any)<{ isFullWidth?: boolean }>`
   && {
-    ${props =>
+    ${(props) =>
       props.isFullWidth &&
       css`
         margin: 0;

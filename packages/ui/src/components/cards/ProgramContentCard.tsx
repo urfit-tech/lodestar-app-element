@@ -67,7 +67,7 @@ const StyledPlayIcon = styled.img`
 const StyledContentBackground = styled.div`
   padding-top: calc(100% * 2 / 3);
   width: 100%;
-  background: ${props => props.theme['@primary-color']};
+  background: ${(props) => props.theme['@primary-color']};
   opacity: 0.1;
 `
 
@@ -99,7 +99,7 @@ const StyledProgressBar = styled(ProgressBar)`
   }
 `
 
-const ProgramContentCard: React.FC<ProgramContentElementProps> = props => {
+const ProgramContentCard: React.FC<ProgramContentElementProps> = (props) => {
   const { loading, errors } = props
   const history = useHistory()
   if (errors) {
@@ -108,7 +108,7 @@ const ProgramContentCard: React.FC<ProgramContentElementProps> = props => {
   return (
     <StyledProgramContentCard
       className={classNames(props.className, { 'cursor-pointer': Boolean(props.link) })}
-      onClick={e => (props.editing || !props.link ? e.preventDefault() : history.push(props.link))}
+      onClick={(e) => (props.editing || !props.link ? e.preventDefault() : history.push(props.link))}
     >
       <div className="d-flex overflow-hidden">
         <StyledCover className="flex-shrink-0">

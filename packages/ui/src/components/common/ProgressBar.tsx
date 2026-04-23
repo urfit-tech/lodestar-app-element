@@ -9,9 +9,9 @@ const StyledBar = styled.div`
   overflow: hidden;
 `
 const StyledProgress = styled.div<{ percent: number }>`
-  width: ${props => props.percent}%;
+  width: ${(props) => props.percent}%;
   height: 100%;
-  background-color: ${props => props.theme['@primary-color']};
+  background-color: ${(props) => props.theme['@primary-color']};
 `
 const StyledPercent = styled.span`
   color: var(--gray-darker);

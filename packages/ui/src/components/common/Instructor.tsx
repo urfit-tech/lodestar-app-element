@@ -11,8 +11,8 @@ const StyledAvatar = styled.img<{ size?: number }>`
   background: #ccc;
   display: block;
   margin: 0 auto 0.75rem;
-  width: ${props => props.size || 56}px;
-  height: ${props => props.size || 56}px;
+  width: ${(props) => props.size || 56}px;
+  height: ${(props) => props.size || 56}px;
   border-radius: 50%;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
   object-fit: cover;
@@ -56,14 +56,14 @@ const Instructor: ElementComponent<{
   description: string | null
   avatarUrl: string | null
   isShowDescription?: boolean
-}> = props => {
+}> = (props) => {
   if (props.loading || props.errors) {
     return null
   }
   const { id, name, abstract, description, avatarUrl, isShowDescription } = props
   return (
     <StyledInstructorBlock key={id}>
-      <Link to={`/creators/${id}`} onClick={props.editing ? e => e.preventDefault() : undefined}>
+      <Link to={`/creators/${id}`} onClick={props.editing ? (e) => e.preventDefault() : undefined}>
         <div className="mb-4">
           <StyledAvatar
             src={avatarUrl !== null ? avatarUrl : DefaultAvatar}

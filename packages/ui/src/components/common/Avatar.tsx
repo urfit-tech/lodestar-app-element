@@ -14,7 +14,7 @@ type AvatarImageProps = {
 }
 
 const AvatarImage = styled.div<AvatarImageProps>`
-  ${props => {
+  ${(props) => {
     if (typeof props.size === 'number') {
       return `width: ${props.size}px; height: ${props.size}px;`
     }
@@ -26,11 +26,11 @@ const AvatarImage = styled.div<AvatarImageProps>`
     }
     return 'width: 2rem; height: 2rem;'
   }}
-  background-color: ${props => props.background || '#ccc'};
-  background-image: url(${props => props.src || DefaultAvatar});
+  background-color: ${(props) => props.background || '#ccc'};
+  background-image: url(${(props) => props.src || DefaultAvatar});
   background-size: cover;
   background-position: center;
-  border-radius: ${props => (props.shape === 'square' ? '4px' : '50%')};
+  border-radius: ${(props) => (props.shape === 'square' ? '4px' : '50%')};
 `
 
 const MemberName = styled.span`
@@ -118,7 +118,7 @@ export const MultiAvatar: React.FC<
         loading?: never
       } & AvatarProps)
   )
-> = props => {
+> = (props) => {
   const { loading, memberIdList, members } = props
   const memberId = members?.[0].id || memberIdList[0]
   const { loadingMember, member: memberData } = usePublicMember(memberId, {

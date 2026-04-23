@@ -41,7 +41,7 @@ const CreditCardSelector: React.FC<CreditCardSelectorProps> = ({ memberCreditCar
 
   return (
     <Radio.Group onChange={handleCreditCardChange} value={value === null ? 'new' : value}>
-      {memberCreditCards.map(memberCreditCard => {
+      {memberCreditCards.map((memberCreditCard) => {
         return (
           <StyledRadio key={memberCreditCard.cardIdentifier} value={memberCreditCard.id}>
             <span className="ml-1">

@@ -19,14 +19,8 @@ export type MemberCollectionProps = {
   carousel?: BaseCarouselProps
 }
 
-const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
-  const {
-    members = [],
-    isFetching,
-    fetchError,
-    loading: parentLoading,
-    errors: parentErrors,
-  } = props
+const MemberCollection: ElementComponent<MemberCollectionProps> = (props) => {
+  const { members = [], isFetching, fetchError, loading: parentLoading, errors: parentErrors } = props
   if (parentLoading || parentErrors) {
     return null
   }
@@ -36,8 +30,8 @@ const MemberCollection: ElementComponent<MemberCollectionProps> = props => {
     props.variant === 'primary'
       ? MemberPrimaryCard
       : props.variant === 'secondary'
-      ? MemberSecondaryCard
-      : MemberPrimaryCard
+        ? MemberSecondaryCard
+        : MemberPrimaryCard
   const ElementCollection =
     props.collectionVariant === 'carousel'
       ? CollectionCarousel(collectionName, 'member', EntityElement)

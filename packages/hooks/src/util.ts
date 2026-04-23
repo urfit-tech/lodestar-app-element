@@ -153,7 +153,7 @@ const decodeBase64Url = (value: string) => {
     const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
     const binary = window.atob(padded)
     const encoded = Array.from(binary)
-      .map(character => `%${character.charCodeAt(0).toString(16).padStart(2, '0')}`)
+      .map((character) => `%${character.charCodeAt(0).toString(16).padStart(2, '0')}`)
       .join('')
     return decodeURIComponent(encoded)
   } catch {

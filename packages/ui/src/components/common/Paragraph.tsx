@@ -6,7 +6,7 @@ const StyledParagraph = styled.p`
   margin-bottom: 0;
 `
 export type ParagraphProps = { content: string }
-const Paragraph: ElementComponent<ParagraphProps> = props => {
+const Paragraph: ElementComponent<ParagraphProps> = (props) => {
   if (props.loading || props.errors) {
     return null
   }

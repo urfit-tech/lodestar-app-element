@@ -28,8 +28,8 @@ const composeResourceCollection = (
 ): (Resource | null)[] => {
   const resources =
     data?.resource
-      .filter(v => v.id !== null)
-      .map(v => {
+      .filter((v) => v.id !== null)
+      .map((v) => {
         const resourceUrn = v.id as string
         const [, resourceType, resourceId] = resourceUrn.split(':')
         return {
@@ -47,16 +47,16 @@ const composeResourceCollection = (
         }
       }) || []
 
-  const filteredResources = urns.map(urn => {
-    const resourceData = resources.find(v => v.urn === urn)
+  const filteredResources = urns.map((urn) => {
+    const resourceData = resources.find((v) => v.urn === urn)
     return resourceData ?? null
   })
   if (withProducts) {
-    const resourceWithProducts = filteredResources.map(resource => {
+    const resourceWithProducts = filteredResources.map((resource) => {
       return resource
         ? {
             ...resource,
-            products: resources.filter(r => r.metaId === resource.urn && r.urn !== resource.urn),
+            products: resources.filter((r) => r.metaId === resource.urn && r.urn !== resource.urn),
           }
         : null
     })
@@ -66,7 +66,7 @@ const composeResourceCollection = (
   return filteredResources
 }
 
-const validateUrn = (urn: string) => urn?.split?.(':')?.every?.(_ => _ && _ !== 'undefined')
+const validateUrn = (urn: string) => urn?.split?.(':')?.every?.((_) => _ && _ !== 'undefined')
 
 const _screenOutInvalidUrn = (urns: string[]) => urns?.filter?.(validateUrn)
 

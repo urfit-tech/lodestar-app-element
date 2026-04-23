@@ -54,7 +54,7 @@ const StyledCoverButton = styled.div`
   border-radius: 4px;
   width: 142px;
   height: 44px;
-  background: ${props => props.theme['@primary-color']};
+  background: ${(props) => props.theme['@primary-color']};
   color: white;
   line-height: 44px;
   @media (min-width: 992px) {
@@ -69,7 +69,7 @@ const Slide: ElementComponent<{
   subtitle?: string
   onClick?: () => void
   buttonText?: React.ReactElement | string
-}> = props => {
+}> = (props) => {
   if (props.loading || props.errors) {
     return null
   }

@@ -25,7 +25,7 @@ const ContactInfoInput: React.FC<{
           validateStatus={errorContactFields.includes('name') ? 'error' : ''}
           help={errorContactFields.includes('name') ? formatMessage(inputMessages.ContactInfoInput.nameHelpText) : null}
         >
-          <Input defaultValue={value.name} onChange={v => onChange({ ...value, name: v.target.value })} />
+          <Input defaultValue={value.name} onChange={(v) => onChange({ ...value, name: v.target.value })} />
         </Form.Item>
         <Form.Item
           required
@@ -35,7 +35,7 @@ const ContactInfoInput: React.FC<{
             errorContactFields.includes('phone') ? formatMessage(inputMessages.ContactInfoInput.phoneHelpText) : null
           }
         >
-          <Input defaultValue={value.phone} onChange={v => onChange({ ...value, phone: v.target.value })} />
+          <Input defaultValue={value.phone} onChange={(v) => onChange({ ...value, phone: v.target.value })} />
         </Form.Item>
         <Form.Item
           required
@@ -45,7 +45,7 @@ const ContactInfoInput: React.FC<{
             errorContactFields.includes('email') ? formatMessage(inputMessages.ContactInfoInput.emailHelpText) : null
           }
         >
-          <Input defaultValue={value.email} onChange={v => onChange({ ...value, email: v.target.value })} />
+          <Input defaultValue={value.email} onChange={(v) => onChange({ ...value, email: v.target.value })} />
         </Form.Item>
       </SimpleGrid>
     </>

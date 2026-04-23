@@ -6,10 +6,7 @@ import { useQueryParam } from 'use-query-params'
 import { convertPathName, findPrimaryPlan } from '@lodestar/helpers'
 import { Category, ProductPlan } from '@lodestar/types/data'
 import { ElementComponent } from '@lodestar/types/element'
-import {
-  ProgramPackageCollectionCategory,
-  ProgramPackageCollectionItem,
-} from '@lodestar/types/programPackage'
+import { ProgramPackageCollectionCategory, ProgramPackageCollectionItem } from '@lodestar/types/programPackage'
 import ProgramPackageCard from '../cards/ProgramPackageCard'
 import { BaseCarouselProps } from '../common/BaseCarousel'
 import CategorySelector from '../common/CategorySelector'
@@ -29,7 +26,7 @@ export type ProgramPackageCollectionProps = {
   carousel?: BaseCarouselProps
 }
 
-const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> = props => {
+const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> = (props) => {
   const history = useHistory()
   const [activeCategoryId = null, setActive] = useQueryParam('active', StringParam)
 
@@ -59,14 +56,12 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
       ? []
       : uniqBy((category: ProgramPackageCollectionCategory) => category.id)(
           programPackages
-            .flatMap(d => d.categories)
-            .filter(category => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
+            .flatMap((d) => d.categories)
+            .filter((category) => !defaultCategoryIds || !defaultCategoryIds.includes(category.id)),
         )
 
   const filterByActiveCategory = (d: ProgramPackageCollectionItem) =>
-    !props.withSelector ||
-    !activeCategoryId ||
-    d.categories.map(category => category.id).includes(activeCategoryId)
+    !props.withSelector || !activeCategoryId || d.categories.map((category) => category.id).includes(activeCategoryId)
 
   return (
     <div className={props.className}>
@@ -74,7 +69,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
         <CategorySelector
           categories={categories}
           activeCategoryId={activeCategoryId || null}
-          onActive={categoryId => setActive(categoryId)}
+          onActive={(categoryId) => setActive(categoryId)}
         />
       )}
       {children}
@@ -96,7 +91,7 @@ const ProgramPackageCollection: ElementComponent<ProgramPackageCollectionProps> 
                 title={programPackage.title}
                 link={`/program-packages/${programPackage.id}`}
                 totalPrograms={programPackage.programs.length}
-                totalDuration={sum(programPackage.programs.map(program => program.totalDuration))}
+                totalDuration={sum(programPackage.programs.map((program) => program.totalDuration))}
                 salePrice={
                   typeof primaryPlan?.salePrice === 'number' &&
                   primaryPlan?.soldAt &&

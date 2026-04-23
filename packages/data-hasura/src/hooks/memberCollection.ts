@@ -28,7 +28,7 @@ const memberFields = gql`
 const MEMBER_COLLECTION_QUERY = getMemberCollectionQuery(memberFields)
 
 const composeCollectionData = (data: hasura.GET_MEMBER_COLLECTION): MemberCollectionItem[] =>
-  data.member_public.map(m => ({
+  data.member_public.map((m) => ({
     id: m.id || '',
     name: m.name || '',
     title: m.title || null,
@@ -58,10 +58,13 @@ const buildVariables = (source: MemberCollectionSource): hasura.GET_MEMBER_COLLE
 
 export const useMemberCollection = (source: MemberCollectionSource): UseMemberCollectionResult => {
   const variables = useMemo(() => buildVariables(source), [source])
-  const { data: rawData, loading, error } = useQuery<
-    hasura.GET_MEMBER_COLLECTION,
-    hasura.GET_MEMBER_COLLECTIONVariables
-  >(MEMBER_COLLECTION_QUERY, { variables })
+  const {
+    data: rawData,
+    loading,
+    error,
+  } = useQuery<hasura.GET_MEMBER_COLLECTION, hasura.GET_MEMBER_COLLECTIONVariables>(MEMBER_COLLECTION_QUERY, {
+    variables,
+  })
 
   const composed = useMemo(() => {
     if (!rawData) return []
@@ -72,7 +75,7 @@ export const useMemberCollection = (source: MemberCollectionSource): UseMemberCo
       const ordered: hasura.GET_MEMBER_COLLECTION = {
         ...rawData,
         member_public: (source.idList || [])
-          .map(id => rawData.member_public.find(m => m.id === id))
+          .map((id) => rawData.member_public.find((m) => m.id === id))
           .filter(notEmpty),
       }
       return composeCollectionData(ordered)

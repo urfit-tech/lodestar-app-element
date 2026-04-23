@@ -1,13 +1,8 @@
 import { UserComponent } from '@craftjs/core'
 import React, { useMemo } from 'react'
-import PostCollection, {
-  PostCollectionProps,
-} from '@lodestar/ui/components/collections/PostCollection'
+import PostCollection, { PostCollectionProps } from '@lodestar/ui/components/collections/PostCollection'
 import Craftize, { PropsWithCraft } from '@lodestar/ui/components/common/Craftize'
-import {
-  PostCollectionSource,
-  usePostCollection,
-} from '@lodestar/data-hasura/hooks/postCollection'
+import { PostCollectionSource, usePostCollection } from '@lodestar/data-hasura/hooks/postCollection'
 
 export type CraftPostCollectionProps = Omit<
   PostCollectionProps,
@@ -45,6 +40,5 @@ const ConnectedPostCollection: React.FC<CraftPostCollectionProps> = ({ source, .
 // locally. Without it, TypeScript tries to name Craftize's inferred return
 // type via `../../../../packages/ui/node_modules/@craftjs/core/lib`, which is
 // non-portable across workspace boundaries (TS2742).
-export const CraftPostCollection: UserComponent<
-  PropsWithCraft<CraftPostCollectionProps>
-> = Craftize(ConnectedPostCollection)
+export const CraftPostCollection: UserComponent<PropsWithCraft<CraftPostCollectionProps>> =
+  Craftize(ConnectedPostCollection)

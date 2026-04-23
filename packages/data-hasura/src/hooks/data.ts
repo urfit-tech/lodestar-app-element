@@ -93,7 +93,7 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
   >[] =
     loading || error || !data
       ? []
-      : data.program.map(program => ({
+      : data.program.map((program) => ({
           id: program.id,
           coverUrl: program.cover_url,
           title: program.title,
@@ -103,13 +103,13 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
           listPrice: program.list_price,
           salePrice: program.sale_price,
           soldAt: program.sold_at && new Date(program.sold_at),
-          roles: program.program_roles.map(programRole => ({
+          roles: program.program_roles.map((programRole) => ({
             id: programRole.id,
             member: {
               id: programRole.member_id,
             },
           })),
-          plans: program.program_plans.map(programPlan => ({
+          plans: program.program_plans.map((programPlan) => ({
             id: programPlan.id,
             listPrice: programPlan.list_price,
             salePrice: programPlan.sale_price,
@@ -121,7 +121,7 @@ export const usePublishedProgramCollection = (options: { ids?: string[]; limit?:
           })),
           totalDuration: sum(
             program.program_content_sections.map(
-              section => section.program_contents_aggregate.aggregate?.sum?.duration || 0,
+              (section) => section.program_contents_aggregate.aggregate?.sum?.duration || 0,
             ),
           ),
         }))
@@ -174,12 +174,12 @@ export const usePublishedPodcastProgramCollection = (options?: { ids?: string[];
     | 'salePrice'
     | 'soldAt'
   >[] =
-    data?.podcast_program.map(v => ({
+    data?.podcast_program.map((v) => ({
       id: v.id,
       coverUrl: v.cover_url || null,
       title: v.title,
       totalDuration: v.duration_second,
-      roles: v.podcast_program_roles.map(ppr => ({
+      roles: v.podcast_program_roles.map((ppr) => ({
         member: {
           id: ppr.member?.id || '',
           name: ppr.member?.name || ppr.member?.username || '',
@@ -264,7 +264,7 @@ export const useInstructorCollection = (appId: string, options?: { ids?: string[
     description: string | null
     avatarUrl: string | null
   }[] =
-    data?.instructor.map(v => ({
+    data?.instructor.map((v) => ({
       id: v.id || null,
       name: v.name || null,
       abstract: v.abstract || null,
@@ -331,8 +331,8 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
 
   const activities =
     options?.ids
-      .map(id => {
-        const value = data?.activity.find(v => v.id === id)
+      .map((id) => {
+        const value = data?.activity.find((v) => v.id === id)
         return value
           ? {
               id: value.id,
@@ -347,7 +347,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
                 new Date(value.activity_sessions_aggregate.aggregate.max.ended_at),
               participantCount: value.activity_enrollments_aggregate.aggregate?.count || 0,
               totalSeats: value.activity_tickets_aggregate.aggregate?.sum?.count || 0,
-              categories: value.activity_categories.map(v => ({ id: v.category.id, name: v.category.name })),
+              categories: value.activity_categories.map((v) => ({ id: v.category.id, name: v.category.name })),
             }
           : null
       })
@@ -360,4 +360,3 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
     activities,
   }
 }
-

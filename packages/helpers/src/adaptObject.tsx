@@ -24,10 +24,7 @@ export const adaptValue =
   <TIn extends Dict, TOut extends Dict = TIn>(valuesMap: { [K in keyof TIn]?: (val: TIn[K]) => unknown }) =>
   (obj: TIn): TOut => {
     const transforms = valuesMap as { [key: string]: UnknownTransform }
-    const transformed = mapObjIndexed(
-      (fn: UnknownTransform, key: string) => fn((obj as Dict)[key]),
-      transforms,
-    )
+    const transformed = mapObjIndexed((fn: UnknownTransform, key: string) => fn((obj as Dict)[key]), transforms)
     return mergeRight(obj as Dict, transformed) as TOut
   }
 

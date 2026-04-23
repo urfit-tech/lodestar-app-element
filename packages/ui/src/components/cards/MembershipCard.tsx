@@ -14,7 +14,7 @@ const StyledMembershipCard = styled.div<{ scale: number }>`
   width: 400px;
   overflow: hidden;
   white-space: nowrap;
-  transform: scale(${props => props.scale});
+  transform: scale(${(props) => props.scale});
   transform-origin: top left;
 `
 

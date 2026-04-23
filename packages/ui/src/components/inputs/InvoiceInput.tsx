@@ -27,7 +27,7 @@ export const StyledDescription = styled.div`
   font-size: 14px;
   letter-spacing: 0.4px;
   .primary {
-    color: ${props => props.theme['@primary-color']};
+    color: ${(props) => props.theme['@primary-color']};
   }
 `
 export const StyledRemark = styled.div`
@@ -40,7 +40,7 @@ export const StyledRemark = styled.div`
 type InvoiceType = 'electronic' | 'uniform-number' | 'donation' | 'hardcopy' | 'hardcopy-uniform-number'
 type InvoiceOption = 'send-to-email' | 'use-phone-bar-code' | 'citizen-digital-certificate'
 
-export const validateInvoice: (invoice: InvoiceProps) => string[] = invoice => {
+export const validateInvoice: (invoice: InvoiceProps) => string[] = (invoice) => {
   const errorFields: string[] = []
   for (const fieldId in invoice) {
     const fieldValue =
@@ -164,7 +164,7 @@ const InvoiceInput: React.FC<{
     name: 'invoiceType',
     defaultValue: selectedType || 'donation',
     value: selectedType || 'donation',
-    onChange: e => {
+    onChange: (e) => {
       if (typeof e.valueOf() === 'string') {
         handleChange({
           invoiceType: e.valueOf() ? (e.valueOf() as InvoiceType) : null,
@@ -296,7 +296,7 @@ const InvoiceInput: React.FC<{
       {shouldSameToShippingCheckboxDisplay && (
         <div className="mb-4">
           <Checkbox
-            onChange={event => {
+            onChange={(event) => {
               if (event.target.checked) {
                 setIsSameToShipping(true)
                 syncWithShipping()
@@ -369,15 +369,15 @@ const InvoiceInput: React.FC<{
         <div className="col-12 col-lg-6">
           {enabledModules.invoice ? (
             <HStack {...group}>
-              {invoiceTypeOptions.map(value => {
+              {invoiceTypeOptions.map((value) => {
                 const radio = getRadioProps({ value })
                 return (
                   <RadioCard key={value} size="md" {...radio}>
                     {value === 'electronic'
                       ? formatMessage(checkoutMessages.label.electronicInvoice)
                       : value === 'uniform-number'
-                      ? formatMessage(checkoutMessages.label.uniformNumber)
-                      : formatMessage(checkoutMessages.label.donateInvoice)}
+                        ? formatMessage(checkoutMessages.label.uniformNumber)
+                        : formatMessage(checkoutMessages.label.donateInvoice)}
                   </RadioCard>
                 )
               })}
@@ -385,7 +385,7 @@ const InvoiceInput: React.FC<{
           ) : (
             <Select
               value={selectedType || ''}
-              onChange={e =>
+              onChange={(e) =>
                 handleChange({ invoiceType: e.target.value.length ? (e.target.value as InvoiceType) : null })
               }
             >
@@ -401,8 +401,8 @@ const InvoiceInput: React.FC<{
       {selectedType === 'donation' && (
         <div className="row">
           <div className="col-6">
-            <Select value={selectedCharity} onChange={e => handleChange({ invoiceCharity: e.target.value })}>
-              {customCharities.map(v => (
+            <Select value={selectedCharity} onChange={(e) => handleChange({ invoiceCharity: e.target.value })}>
+              {customCharities.map((v) => (
                 <option key={v.code} value={v.code}>
                   {v.code} {v.name}
                 </option>
@@ -420,7 +420,7 @@ const InvoiceInput: React.FC<{
           <div className="col-6">
             <Select
               value={selectedOption || ''}
-              onChange={e =>
+              onChange={(e) =>
                 handleChange({ invoiceOption: e.target.value.length ? (e.target.value as InvoiceOption) : null })
               }
             >

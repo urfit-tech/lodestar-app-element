@@ -4,7 +4,7 @@ import { StyledImage } from './Image'
 import Paragraph from './Paragraph'
 
 const StyledDigit = styled.div<{ isDark?: boolean }>`
-  color: ${props => (props.isDark ? 'white' : props.theme['@primary-color'])};
+  color: ${(props) => (props.isDark ? 'white' : props.theme['@primary-color'])};
   font-size: 40px;
   line-height: 0.75;
   letter-spacing: 1px;

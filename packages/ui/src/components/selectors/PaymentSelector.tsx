@@ -53,15 +53,15 @@ const PaymentSelector: React.FC<PaymentSelectorProps> = ({ value, onChange, paym
         value={
           selectedPaymentMethod &&
           paymentOptions.some(
-            paymentOption => JSON.stringify(paymentOption.payment) === JSON.stringify(selectedPaymentMethod),
+            (paymentOption) => JSON.stringify(paymentOption.payment) === JSON.stringify(selectedPaymentMethod),
           )
             ? JSON.stringify(selectedPaymentMethod)
             : undefined
         }
-        onChange={e => handleChange(JSON.parse(e.target.value))}
+        onChange={(e) => handleChange(JSON.parse(e.target.value))}
         placeholder={formatMessage(checkoutMessages.label.paymentMethodPlaceholder)}
       >
-        {paymentOptions.map(option => (
+        {paymentOptions.map((option) => (
           <option key={option.name} value={JSON.stringify(option.payment)}>
             {option.name}
           </option>

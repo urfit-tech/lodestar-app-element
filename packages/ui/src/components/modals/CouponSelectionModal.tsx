@@ -89,26 +89,22 @@ const CouponSelectionModal: React.FC<{
   }
 
   const couponList: React.ReactNode = coupons
-    .filter(coupon => !coupon.status.outdated && !coupon.status.used)
-    .map(coupon => {
+    .filter((coupon) => !coupon.status.outdated && !coupon.status.used)
+    .map((coupon) => {
       const couponPlanScope = coupon.couponCode.couponPlan.scope
       const couponPlanProductIds = coupon.couponCode.couponPlan.productIds || []
       const isInCouponScope = (productId: string) => {
         const [productType] = productId.split('_')
         return (
-          couponPlanScope === null ||
-          couponPlanScope.includes(productType) ||
-          couponPlanProductIds.includes(productId)
+          couponPlanScope === null || couponPlanScope.includes(productType) || couponPlanProductIds.includes(productId)
         )
       }
 
-      const filteredOrderProducts = orderProducts.filter(orderProduct =>
-        isInCouponScope(orderProduct.productId),
-      )
-      const filteredOrderDiscounts = orderDiscounts.filter(orderDiscount => orderDiscount.type === 'DownPrice')
+      const filteredOrderProducts = orderProducts.filter((orderProduct) => isInCouponScope(orderProduct.productId))
+      const filteredOrderDiscounts = orderDiscounts.filter((orderDiscount) => orderDiscount.type === 'DownPrice')
       const price =
-        sum(filteredOrderProducts.map(orderProduct => orderProduct.price)) -
-        sum(filteredOrderDiscounts.map(orderDiscount => orderDiscount.price))
+        sum(filteredOrderProducts.map((orderProduct) => orderProduct.price)) -
+        sum(filteredOrderDiscounts.map((orderDiscount) => orderDiscount.price))
 
       const isDisabled = filteredOrderProducts.length === 0 || coupon.couponCode.couponPlan.constraint > price
       return (
@@ -148,7 +144,7 @@ const CouponSelectionModal: React.FC<{
               style={{ borderRadius: '4px 0px 0px 4px' }}
               placeholder={formatMessage(checkoutMessages.placeholder.enterCouponCode)}
               value={code}
-              onChange={e => setCode(e.target.value)}
+              onChange={(e) => setCode(e.target.value)}
             />
           </StyledInputWrapper>
           <SubmitButton

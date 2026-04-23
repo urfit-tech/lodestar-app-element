@@ -20,36 +20,36 @@ export const StyledImage = styled.div<ImageProps>`
   position: relative;
   background-size: cover;
   background-position: center;
-  ${props =>
+  ${(props) =>
     props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : undefined};
 
   @media (max-width: ${TABLET_BREAK_POINT - 1}px) {
-    width: ${props =>
+    width: ${(props) =>
       props?.responsive?.mobile?.customStyle?.width
         ? props?.responsive?.mobile?.customStyle?.width || props?.width || '100%'
         : props?.responsive?.desktop?.customStyle?.width || props?.width || '100%'};
-    padding-top: ${props =>
+    padding-top: ${(props) =>
       props?.responsive?.mobile?.customStyle?.height
         ? props?.responsive?.mobile?.customStyle?.height || props?.height || '100%'
         : props?.responsive?.desktop?.customStyle?.height || props?.height || '100%'} !important;
   }
   @media (min-width: ${TABLET_BREAK_POINT}px) {
-    width: ${props =>
+    width: ${(props) =>
       props?.responsive?.tablet?.customStyle?.width
         ? props?.responsive?.tablet?.customStyle?.width || props?.width || '100%'
         : props?.responsive?.desktop?.customStyle?.width || props?.width || '100%'};
-    padding-top: ${props =>
+    padding-top: ${(props) =>
       props?.responsive?.tablet?.customStyle?.height
         ? props?.responsive?.tablet?.customStyle?.height || props?.height || '100%'
         : props?.responsive?.desktop?.customStyle?.height || props?.height || '100%'}!important;
   }
   @media (min-width: ${DESKTOP_BREAK_POINT}px) {
-    width: ${props => props?.responsive?.desktop?.customStyle?.width || props?.width || '100%'};
-    padding-top: ${props => props?.responsive?.desktop?.customStyle?.height || props?.height || '100%'}!important;
+    width: ${(props) => props?.responsive?.desktop?.customStyle?.width || props?.width || '100%'};
+    padding-top: ${(props) => props?.responsive?.desktop?.customStyle?.height || props?.height || '100%'}!important;
   }
 `
 
-const Image: ElementComponent<ImageProps & { customStyle?: CSSObject }> = props => {
+const Image: ElementComponent<ImageProps & { customStyle?: CSSObject }> = (props) => {
   if (props.loading || props.errors) {
     return null
   }
@@ -106,12 +106,12 @@ type CustomRatioImageProps = {
 }
 
 const CustomRatioDiv = styled.div<CustomRatioImageProps>`
-  ${props =>
+  ${(props) =>
     props.shape === 'rounded' ? 'border-radius: 4px;' : props.shape === 'circle' ? 'border-radius: 50%;' : ''};
-  opacity: ${props => props.disabled && 0.4};
+  opacity: ${(props) => props.disabled && 0.4};
 `
 
-export const CustomRatioImage: React.FC<CustomRatioImageProps & { src: string }> = props => (
+export const CustomRatioImage: React.FC<CustomRatioImageProps & { src: string }> = (props) => (
   <CustomRatioDiv {...props}>
     <img
       alt=""

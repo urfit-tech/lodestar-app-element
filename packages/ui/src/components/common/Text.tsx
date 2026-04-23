@@ -1,6 +1,6 @@
 import { ElementComponent, TextElementProps } from '@lodestar/types/element'
 
-const Text: ElementComponent<TextElementProps> = props => {
+const Text: ElementComponent<TextElementProps> = (props) => {
   const { loading, errors } = props
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>

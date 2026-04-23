@@ -34,7 +34,7 @@ const StyledDivider = styled.div`
   }
 `
 
-const Divider: React.FC = props => {
+const Divider: React.FC = (props) => {
   const { children } = props
   return <StyledDivider>{children && <span>{children}</span>}</StyledDivider>
 }

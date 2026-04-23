@@ -55,7 +55,7 @@ const StyledDescription = styled.div`
   -webkit-line-clamp: 8;
 `
 
-const MemberPrimaryCard: ElementComponent<MemberElementProps> = props => {
+const MemberPrimaryCard: ElementComponent<MemberElementProps> = (props) => {
   const history = useHistory()
   const { loading, errors, editing } = props
   return (

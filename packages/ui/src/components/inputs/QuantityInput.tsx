@@ -33,8 +33,8 @@ const QuantityInput: React.FC<{
       />
       <Input
         value={inputValue}
-        onChange={e => setInputValue(e.target.value)}
-        onBlur={e => {
+        onChange={(e) => setInputValue(e.target.value)}
+        onBlur={(e) => {
           const newValue = Number.isSafeInteger(parseInt(e.target.value)) ? parseInt(e.target.value) : value
           const result = newValue <= min ? min : newValue >= max ? max : newValue
 

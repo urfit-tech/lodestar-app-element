@@ -24,9 +24,9 @@ const StyledSection = styled.section<SectionProps>`
   position: relative;
   background-size: cover;
   background-position: center;
-  flex-direction: ${props => (props.horizontal ? 'row' : 'column')};
+  flex-direction: ${(props) => (props.horizontal ? 'row' : 'column')};
 
-  ${props =>
+  ${(props) =>
     props.darkMode
       ? css`
           color: white;
@@ -59,7 +59,7 @@ const StyledSection = styled.section<SectionProps>`
         `};
 `
 
-const Section: ElementComponent<SectionProps> = props => {
+const Section: ElementComponent<SectionProps> = (props) => {
   const history = useHistory()
   const { currentMemberId } = useAuth()
 
@@ -94,22 +94,22 @@ const Section: ElementComponent<SectionProps> = props => {
           props.display === 'hide'
             ? 'none'
             : props.display === 'appearAfterLogin' && !currentMemberId
-            ? 'none'
-            : props.display === 'disappearAfterLogin' && currentMemberId
-            ? 'none'
-            : 'flex',
+              ? 'none'
+              : props.display === 'disappearAfterLogin' && currentMemberId
+                ? 'none'
+                : 'flex',
       }}
       className={classNames(props.className, { 'cursor-pointer': props.link })}
-      onClick={e =>
+      onClick={(e) =>
         props.editing || !props.link
           ? e.preventDefault()
           : props.link.startsWith('http')
-          ? props.openTab
-            ? window.open(props.link)
-            : window.location.assign(props.link)
-          : props.openTab
-          ? window.open(window.location.origin + props.link)
-          : history.push(props.link)
+            ? props.openTab
+              ? window.open(props.link)
+              : window.location.assign(props.link)
+            : props.openTab
+              ? window.open(window.location.origin + props.link)
+              : history.push(props.link)
       }
     >
       {props.backgroundImages && getBackgroundImage() && (

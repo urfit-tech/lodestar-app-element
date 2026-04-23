@@ -7,8 +7,8 @@ import cardsMessages from './translation'
 const StyledAvatar = styled.img<{ size?: number }>`
   display: block;
   margin: 0 auto 0.75rem;
-  width: ${props => props.size || 56}px;
-  height: ${props => props.size || 56}px;
+  width: ${(props) => props.size || 56}px;
+  height: ${(props) => props.size || 56}px;
   border-radius: 50%;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
   object-fit: cover;

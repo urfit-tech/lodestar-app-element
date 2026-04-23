@@ -61,7 +61,7 @@ const StyledDuration = styled.div`
   letter-spacing: 0.58px;
 `
 
-const PodcastProgramCard: React.FC<PodcastProgramElementProps> = props => {
+const PodcastProgramCard: React.FC<PodcastProgramElementProps> = (props) => {
   const { loading, errors } = props
   if (errors) {
     return <div>{JSON.stringify(errors)}</div>
@@ -69,7 +69,7 @@ const PodcastProgramCard: React.FC<PodcastProgramElementProps> = props => {
   return (
     <Link
       to={loading ? `#!` : `/podcasts/${props.id}`}
-      onClick={!loading && props.editing ? e => e.preventDefault() : undefined}
+      onClick={!loading && props.editing ? (e) => e.preventDefault() : undefined}
     >
       <Card className={props.className}>
         <StyledCoverBlock>

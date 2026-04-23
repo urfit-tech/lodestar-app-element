@@ -87,7 +87,7 @@ export const MemberEventCalendarBlock: React.FC<{
 
   const handleEventClick = (info: EventClickArg) => {
     const [targetEvent] = (resourceEvents as Array<FetchedResourceEvent>).filter(
-      event => event.event_id === info.event.id,
+      (event) => event.event_id === info.event.id,
     )
     pipe(adaptEventToModal, tap(setModalEvent))(targetEvent)
     onEventModalOpen()
@@ -103,7 +103,7 @@ export const MemberEventCalendarBlock: React.FC<{
   }
 
   if (!resources || resources.length === 0) createResourceForMember()
-  const memberResource = filter(resource => (resource as FetchedResource).target === memberId)(resources)
+  const memberResource = filter((resource) => (resource as FetchedResource).target === memberId)(resources)
 
   console.log(108, resourceEvents)
 

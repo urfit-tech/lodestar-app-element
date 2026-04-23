@@ -45,21 +45,21 @@ const activityFields = gql`
 `
 
 const composeCollectionData = (data: hasura.GET_ACTIVITY_COLLECTION): ActivityCollectionItem[] =>
-  data.activity.map(a => ({
+  data.activity.map((a) => ({
     id: a.id,
     title: a.title,
     coverUrl: a.cover_url || null,
     isParticipantVisible: a.is_participants_visible,
     organizerId: a.organizer_id,
-    sessions: a.activity_sessions.map(as => ({
+    sessions: a.activity_sessions.map((as) => ({
       startedAt: as.started_at,
       endedAt: as.ended_at,
     })),
-    tickets: a.activity_tickets.map(at => ({
+    tickets: a.activity_tickets.map((at) => ({
       limit: at.count,
       price: at.price,
     })),
-    categories: a.activity_categories.map(ac => ({
+    categories: a.activity_categories.map((ac) => ({
       id: ac.category.id,
       name: ac.category.name,
     })),
@@ -83,9 +83,7 @@ const buildVariables = (source: ActivityCollectionSource): hasura.GET_ACTIVITY_C
       activity_categories: source.defaultCategoryIds?.length
         ? { category_id: { _in: source.defaultCategoryIds } }
         : undefined,
-      activity_tags: source.defaultTagNames?.length
-        ? { tag_name: { _in: source.defaultTagNames } }
-        : undefined,
+      activity_tags: source.defaultTagNames?.length ? { tag_name: { _in: source.defaultTagNames } } : undefined,
       published_at: { _lt: 'now()' },
       is_private: { _eq: false },
     },
@@ -96,10 +94,14 @@ const buildVariables = (source: ActivityCollectionSource): hasura.GET_ACTIVITY_C
 
 export const useActivityCollection = (source: ActivityCollectionSource): UseActivityCollectionResult => {
   const variables = useMemo(() => buildVariables(source), [source])
-  const { data: rawData, loading, error } = useQuery<
-    hasura.GET_ACTIVITY_COLLECTION,
-    hasura.GET_ACTIVITY_COLLECTIONVariables
-  >(getActivityCollectionQuery(activityFields), { variables })
+  const {
+    data: rawData,
+    loading,
+    error,
+  } = useQuery<hasura.GET_ACTIVITY_COLLECTION, hasura.GET_ACTIVITY_COLLECTIONVariables>(
+    getActivityCollectionQuery(activityFields),
+    { variables },
+  )
 
   const composed = useMemo(() => {
     if (!rawData) return []
@@ -109,9 +111,7 @@ export const useActivityCollection = (source: ActivityCollectionSource): UseActi
     if (source.from === 'custom') {
       const ordered: hasura.GET_ACTIVITY_COLLECTION = {
         ...rawData,
-        activity: (source.idList || [])
-          .map(id => rawData.activity.find(a => a.id === id))
-          .filter(notEmpty),
+        activity: (source.idList || []).map((id) => rawData.activity.find((a) => a.id === id)).filter(notEmpty),
       }
       return composeCollectionData(ordered)
     }

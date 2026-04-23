@@ -75,11 +75,11 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     },
   )
   const settings = useMemo(
-    () => Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || []),
+    () => Object.fromEntries(data?.app_by_pk?.app_settings.map((v) => [v.key, v.value]) || []),
     [data?.app_by_pk?.app_settings],
   )
   const secrets = useMemo(
-    () => Object.fromEntries(data?.app_by_pk?.app_secrets.map(v => [v.key, v.value]) || []),
+    () => Object.fromEntries(data?.app_by_pk?.app_secrets.map((v) => [v.key, v.value]) || []),
     [data?.app_by_pk?.app_secrets],
   )
   const app: AppContextProps = useMemo(
@@ -95,10 +95,10 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             title: data.app_by_pk.title || null,
             description: data.app_by_pk.description || null,
             host: data.app_by_pk.app_hosts?.[0]?.host || window.location.host,
-            hosts: data?.app_by_pk?.app_hosts.map(v => v.host) || [],
-            enabledModules: Object.fromEntries(data.app_by_pk.app_modules.map(v => [v.module_id, true]) || []),
+            hosts: data?.app_by_pk?.app_hosts.map((v) => v.host) || [],
+            enabledModules: Object.fromEntries(data.app_by_pk.app_modules.map((v) => [v.module_id, true]) || []),
             appPlanId: data?.app_by_pk.app_plan_id,
-            navs: data.app_by_pk.app_navs.map(appNav => ({
+            navs: data.app_by_pk.app_navs.map((appNav) => ({
               id: appNav.id,
               block: appNav.block as NavProps['block'],
               position: appNav.position,
@@ -109,7 +109,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
               locale: appNav.locale,
               tag: appNav.tag || null,
               parentId: appNav.parent_id || null,
-              subNavs: appNav.sub_app_navs.map(v => ({
+              subNavs: appNav.sub_app_navs.map((v) => ({
                 id: v.id,
                 block: v.block as NavProps['block'],
                 position: v.position,
@@ -126,16 +126,19 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             secrets,
             currencyId: settings['currency_id'] || 'TWD',
             currencies:
-              data?.currency.reduce((accumulator, currency) => {
-                accumulator[currency.id] = {
-                  id: currency.id,
-                  name: currency.id === 'LSC' && settings['coin.name'] ? settings['coin.name'] : currency.name,
-                  label: currency.id === 'LSC' && settings['coin.label'] ? settings['coin.label'] : currency.label,
-                  unit: currency.id === 'LSC' && settings['coin.unit'] ? settings['coin.unit'] : currency.unit,
-                  minorUnits: currency.minor_units ? currency.minor_units : 0,
-                }
-                return accumulator
-              }, {} as AppContextProps['currencies']) || {},
+              data?.currency.reduce(
+                (accumulator, currency) => {
+                  accumulator[currency.id] = {
+                    id: currency.id,
+                    name: currency.id === 'LSC' && settings['coin.name'] ? settings['coin.name'] : currency.name,
+                    label: currency.id === 'LSC' && settings['coin.label'] ? settings['coin.label'] : currency.label,
+                    unit: currency.id === 'LSC' && settings['coin.unit'] ? settings['coin.unit'] : currency.unit,
+                    minorUnits: currency.minor_units ? currency.minor_units : 0,
+                  }
+                  return accumulator
+                },
+                {} as AppContextProps['currencies'],
+              ) || {},
             options: data.app_by_pk.options,
             endedAt: data.app_by_pk.ended_at || null,
           }

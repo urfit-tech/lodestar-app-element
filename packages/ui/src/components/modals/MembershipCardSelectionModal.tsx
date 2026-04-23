@@ -44,7 +44,7 @@ const MembershipCardSelectionModal: React.FC<{
         onClose={() => setVisible(false)}
         isOpen={visible}
       >
-        {enrolledMembershipCards.map(membershipCard => (
+        {enrolledMembershipCards.map((membershipCard) => (
           <div
             key={membershipCard.card.id}
             onClick={() => {

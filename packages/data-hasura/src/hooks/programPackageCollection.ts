@@ -99,12 +99,12 @@ const composeProgramPackageItem = (pp: ProgramPackageNode): ProgramPackageCollec
   id: pp.id,
   title: pp.title,
   coverUrl: pp.cover_url ?? null,
-  categories: pp.program_package_categories.map(ppc => ({
+  categories: pp.program_package_categories.map((ppc) => ({
     id: ppc.category.id,
     name: ppc.category.name,
   })),
   plans: pp.program_package_plans.map(composePlan),
-  programs: pp.program_package_programs.map(ppp => ({
+  programs: pp.program_package_programs.map((ppp) => ({
     roles: ppp.program.program_roles.map(
       (pr): ProgramPackageCollectionProgramRole => ({
         id: pr.id,
@@ -114,19 +114,16 @@ const composeProgramPackageItem = (pp: ProgramPackageNode): ProgramPackageCollec
     ),
     totalDuration: sum(
       ppp.program.program_content_sections.flatMap(
-        pcs => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0,
+        (pcs) => pcs.program_contents_aggregate.aggregate?.sum?.duration || 0,
       ),
     ),
   })),
 })
 
-const composeCollectionData = (
-  data: hasura.GET_PROGRAM_PACKAGE_COLLECTION,
-): ProgramPackageCollectionItem[] => data.program_package.map(composeProgramPackageItem)
+const composeCollectionData = (data: hasura.GET_PROGRAM_PACKAGE_COLLECTION): ProgramPackageCollectionItem[] =>
+  data.program_package.map(composeProgramPackageItem)
 
-const buildVariables = (
-  source: ProgramPackageCollectionSource,
-): hasura.GET_PROGRAM_PACKAGE_COLLECTIONVariables => {
+const buildVariables = (source: ProgramPackageCollectionSource): hasura.GET_PROGRAM_PACKAGE_COLLECTIONVariables => {
   if (source.from === 'custom') {
     return {
       limit: undefined,
@@ -155,10 +152,14 @@ export const useProgramPackageCollection = (
   source: ProgramPackageCollectionSource,
 ): UseProgramPackageCollectionResult => {
   const variables = useMemo(() => buildVariables(source), [source])
-  const { data: rawData, loading, error } = useQuery<
-    hasura.GET_PROGRAM_PACKAGE_COLLECTION,
-    hasura.GET_PROGRAM_PACKAGE_COLLECTIONVariables
-  >(PROGRAM_PACKAGE_COLLECTION_QUERY, { variables })
+  const {
+    data: rawData,
+    loading,
+    error,
+  } = useQuery<hasura.GET_PROGRAM_PACKAGE_COLLECTION, hasura.GET_PROGRAM_PACKAGE_COLLECTIONVariables>(
+    PROGRAM_PACKAGE_COLLECTION_QUERY,
+    { variables },
+  )
 
   const composed = useMemo(() => {
     if (!rawData) return []
@@ -169,7 +170,7 @@ export const useProgramPackageCollection = (
       const ordered: hasura.GET_PROGRAM_PACKAGE_COLLECTION = {
         ...rawData,
         program_package: (source.idList || [])
-          .map(id => rawData.program_package.find(pp => pp.id === id))
+          .map((id) => rawData.program_package.find((pp) => pp.id === id))
           .filter(notEmpty),
       }
       return composeCollectionData(ordered)

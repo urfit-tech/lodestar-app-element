@@ -7,11 +7,11 @@ export type LayoutProps = {
 
 const StyledLayout = styled.div<LayoutProps>`
   display: grid;
-  grid-template-columns: ${props => props.ratios?.map(ratio => `minmax(0, ${ratio}fr)`).join(' ')};
+  grid-template-columns: ${(props) => props.ratios?.map((ratio) => `minmax(0, ${ratio}fr)`).join(' ')};
   grid-gap: 1.5rem;
 `
 
-const Layout: ElementComponent<LayoutProps> = props => {
+const Layout: ElementComponent<LayoutProps> = (props) => {
   const { children, loading, errors } = props
   return (
     (!loading && !errors && (

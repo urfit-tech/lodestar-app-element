@@ -54,8 +54,8 @@ const InvoiceCard: React.FC<{
   const statusMessage = !status
     ? formatMessage(orderMessages.InvoiceCard.invoicePending)
     : status === 'SUCCESS'
-    ? formatMessage(orderMessages.InvoiceCard.invoiceSuccess)
-    : formatMessage(orderMessages.InvoiceCard.invoiceFailed, { errorCode: status })
+      ? formatMessage(orderMessages.InvoiceCard.invoiceSuccess)
+      : formatMessage(orderMessages.InvoiceCard.invoiceFailed, { errorCode: status })
   const contentList = [
     { title: formatMessage(orderMessages.InvoiceCard.invoiceStatus), message: statusMessage, isRender: true },
     {
