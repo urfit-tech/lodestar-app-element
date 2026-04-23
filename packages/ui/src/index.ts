@@ -72,6 +72,8 @@ export * from './components/labels/TokenTypeLabel'
 
 // Modals
 export * from './components/modals/CheckoutProductModal'
+export { default as ConnectedCheckoutProductModal } from './components/modals/ConnectedCheckoutProductModal'
+export type { ConnectedCheckoutProductModalProps } from './components/modals/ConnectedCheckoutProductModal'
 export * from './components/modals/CommonModal'
 export * from './components/modals/CouponSelectionModal'
 export * from './components/modals/GroupBuyingRuleModal'

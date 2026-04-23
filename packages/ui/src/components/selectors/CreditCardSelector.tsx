@@ -1,10 +1,9 @@
-import { gql, useQuery } from '@apollo/client'
 import { Radio } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import hasura from '@lodestar/graphql/hasura'
+import { MemberCreditCard } from '@lodestar/types/checkout'
 import selectorsMessages from './translation'
 
 const StyledRadio = styled(Radio)`
@@ -21,13 +20,14 @@ export type CardHolder = {
   address?: string
   nationalId?: string
 }
-type CreditCardSelectorProps = {
-  memberId: string
+
+export type CreditCardSelectorProps = {
+  memberCreditCards: MemberCreditCard[]
   value?: string | null
   onChange?: (value: string | null) => void
 }
-const CreditCardSelector: React.FC<CreditCardSelectorProps> = ({ memberId, value, onChange }) => {
-  const { memberCreditCards } = useMemberCreditCards(memberId)
+
+const CreditCardSelector: React.FC<CreditCardSelectorProps> = ({ memberCreditCards, value, onChange }) => {
   const { formatMessage } = useIntl()
 
   const handleCreditCardChange = (e: RadioChangeEvent) => {
@@ -56,34 +56,6 @@ const CreditCardSelector: React.FC<CreditCardSelectorProps> = ({ memberId, value
       </StyledRadio>
     </Radio.Group>
   )
-}
-
-export const useMemberCreditCards = (memberId: string) => {
-  const { data } = useQuery<hasura.GET_MEMBER_CREDIT_CARDS, hasura.GET_MEMBER_CREDIT_CARDSVariables>(
-    gql`
-      query GET_MEMBER_CREDIT_CARDS($memberId: String!) {
-        member_card(where: { member_id: { _eq: $memberId } }) {
-          id
-          card_identifier
-          card_info
-          card_holder
-        }
-      }
-    `,
-    { variables: { memberId }, skip: !memberId },
-  )
-  const memberCreditCards = useMemo(
-    () =>
-      data?.member_card.map(memberCreditCard => ({
-        id: memberCreditCard.id,
-        cardInfo: memberCreditCard.card_info,
-        cardIdentifier: memberCreditCard.card_identifier,
-        cardHolder: memberCreditCard.card_holder,
-      })) || [],
-    [data],
-  )
-
-  return { memberCreditCards }
 }
 
 export default CreditCardSelector

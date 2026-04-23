@@ -1,14 +1,10 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { gql, useQuery } from '@apollo/client'
 import { Select } from '@chakra-ui/react'
 import { Form } from 'antd'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { useApp } from '@lodestar/contexts/AppContext'
-import * as hasura from '@lodestar/graphql/hasura'
 import { checkoutMessages } from '@lodestar/helpers/translation'
-import { PaymentGatewayType, PaymentMethodType, PaymentProps } from '@lodestar/types/checkout'
+import { PaymentOption, PaymentProps } from '@lodestar/types/checkout'
 import { CommonTitleMixin } from '../common'
 
 const StyledTitle = styled.h1`
@@ -23,13 +19,15 @@ const StyledDescription = styled.div`
   line-height: 1.5;
 `
 
-const PaymentSelector: React.FC<{
+export type PaymentSelectorProps = {
   value: PaymentProps | null
   onChange: (value: PaymentProps | null) => void
+  paymentOptions: PaymentOption[]
   isValidating?: boolean
-}> = ({ value, onChange, isValidating }) => {
+}
+
+const PaymentSelector: React.FC<PaymentSelectorProps> = ({ value, onChange, paymentOptions, isValidating }) => {
   const { formatMessage } = useIntl()
-  const paymentOptions = getPaymentOptions() || []
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentProps | null>(value)
 
   const handleChange = (paymentType?: PaymentProps | null) => {
@@ -71,74 +69,6 @@ const PaymentSelector: React.FC<{
       </Select>
     </Form.Item>
   )
-}
-
-const getPaymentOptions = () => {
-  const {
-    settings: { AVAILABLE_PAYMENT_GATEWAYS },
-  } = useApp()
-  const availablePaymentGateways = JSON.parse(AVAILABLE_PAYMENT_GATEWAYS)
-  const { formatMessage } = useIntl()
-  const { data, loading, error } = useQuery<hasura.getPaymentGatewayMethod>(
-    gql`
-      query getPaymentGatewayMethod($availablePaymentGateways: [String!]!) {
-        app_payment_gateway_method(
-          where: {
-            status: { _eq: "enabled" }
-            app_payment_gateway: { app_id: { _eq: "tli1956" }, gateway: { name: { _in: $availablePaymentGateways } } }
-          }
-        ) {
-          method {
-            name
-          }
-          app_payment_gateway {
-            gateway {
-              name
-            }
-          }
-        }
-      }
-    `,
-    { variables: { availablePaymentGateways } },
-  )
-
-  const paymentOptions = data?.app_payment_gateway_method.reduce<{
-    methodCount: { [key: string]: number }
-    paymentOptions: {
-      payment: {
-        gateway: string
-        method: string
-      }
-      name: string
-    }[]
-  }>(
-    ({ methodCount, paymentOptions }, currentValue) => {
-      const method = currentValue.method?.name || ''
-      const gateway = currentValue.app_payment_gateway?.gateway?.name || ''
-      const methodLabel = checkoutMessages.label[method as PaymentMethodType]
-      const gatewayLabel = checkoutMessages.label[gateway as PaymentGatewayType]
-      const name =
-        (methodLabel ? formatMessage(methodLabel) : method) +
-        (methodCount[method] || gateway === 'paypal'
-          ? ` ( ${gatewayLabel ? formatMessage(gatewayLabel) : gateway} )`
-          : '')
-      methodCount[method] = methodCount[method] ? methodCount[method] + 1 : 1
-
-      return {
-        methodCount,
-        paymentOptions: [
-          ...paymentOptions,
-          {
-            payment: { gateway, method },
-            name,
-          },
-        ],
-      }
-    },
-    { methodCount: {}, paymentOptions: [] },
-  ).paymentOptions
-
-  return paymentOptions
 }
 
 export default PaymentSelector

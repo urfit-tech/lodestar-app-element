@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 import styled, { css } from 'styled-components'
 import { ElementComponent } from '@lodestar/types/element'
 import { ProductOpenLinkSource, ProductPurchaseProductSource } from '@lodestar/types/options'
-import CheckoutProductModal from '../modals/CheckoutProductModal'
+import ConnectedCheckoutProductModal from '../modals/ConnectedCheckoutProductModal'
 import buttonsMessages from './translation'
 
 export type ButtonProps = {
@@ -61,7 +61,7 @@ const Button: ElementComponent<ButtonProps> = props => {
   const { formatMessage } = useIntl()
   const { loading, errors, editing } = props
   return loading || errors ? null : props.source?.from ? (
-    <CheckoutProductModal
+    <ConnectedCheckoutProductModal
       renderTrigger={({ onOpen, disable, isLoginAlert }) => (
         <StyledButton
           {...props}

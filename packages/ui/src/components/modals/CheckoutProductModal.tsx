@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client'
 import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import { camelCase } from 'lodash'
@@ -18,7 +17,6 @@ import GroupBuyingRuleModal from '../../components/modals/GroupBuyingRuleModal'
 import PaymentSelector from '../../components/selectors/PaymentSelector'
 import { useApp } from '@lodestar/contexts/AppContext'
 import { useAuth } from '@lodestar/contexts/AuthContext'
-import hasura from '@lodestar/graphql/hasura'
 import { notEmpty, validateContactInfo } from '@lodestar/helpers'
 import { getConversionApiData } from '@lodestar/helpers/conversionApi'
 import { checkoutMessages, commonMessages } from '@lodestar/helpers/translation'
@@ -28,7 +26,15 @@ import { useMember, useUpdateMemberMetadata } from '@lodestar/data-hasura/hooks/
 import { useResourceCollection } from '@lodestar/data-hasura/hooks/resource'
 import { useTracking } from '@lodestar/data-hasura/hooks/tracking'
 import { getResourceByProductId, useTappay } from '@lodestar/hooks/util'
-import { ContactInfo, InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '@lodestar/types/checkout'
+import {
+  ContactInfo,
+  InvoiceProps,
+  MemberCreditCard,
+  PaymentOption,
+  PaymentProps,
+  ShippingOptionIdType,
+  ShippingProps,
+} from '@lodestar/types/checkout'
 import { ConversionApiContent, ConversionApiEvent } from '@lodestar/types/conversionApi'
 import { ShippingMethodProps } from '@lodestar/types/merchandise'
 import { BREAK_POINT } from '../common/Responsive'
@@ -38,7 +44,6 @@ import CheckoutProductReferrerInput from '../inputs/CheckoutProductReferrerInput
 import ContactInfoInput from '../inputs/ContactInfoInput'
 import InvoiceInput, { validateInvoice } from '../inputs/InvoiceInput'
 import ShippingInput, { validateShipping } from '../inputs/ShippingInput'
-import { useMemberCreditCards } from '../selectors/CreditCardSelector'
 
 // Chakra v1's polymorphic prop unions combined with this file's heavy
 // dependency graph (Apollo + hasura + multi-package types) exceed TypeScript's
@@ -173,6 +178,10 @@ export type CheckoutProductModalProps = {
   renderTerms?: () => React.ReactElement
   setIsModalDisable?: (disable: boolean) => void
   setIsOrderCheckLoading?: (isOrderCheckLoading: boolean) => void
+  // Data + loading flags passed in by the Connected wrapper (or a future caller).
+  memberCreditCards?: MemberCreditCard[]
+  remainingCoins?: number
+  paymentOptions?: PaymentOption[]
 }
 
 const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
@@ -188,6 +197,9 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
   renderTerms,
   setIsModalDisable,
   setIsOrderCheckLoading,
+  memberCreditCards = [],
+  remainingCoins,
+  paymentOptions = [],
 }) => {
   const { formatMessage } = useIntl()
   const history = useHistory()
@@ -197,7 +209,6 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
   const { enabledModules, settings, id: appId, currencyId: appCurrencyId } = useApp()
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
   const { member: currentMember } = useMember(currentMemberId || '')
-  const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
   const [quantity, setQuantity] = useState(1)
   const app = useApp()
 
@@ -378,7 +389,6 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
   const isCreditCardReady = Boolean(memberCreditCards.length > 0 || tpCreditCard?.canGetPrime)
   const [isCoinMerchandise, setIsCoinMerchandise] = useState(false)
   const [isCoinsEnough, setIsCoinsEnough] = useState(true)
-  const { remainingCoins } = useMemberCoinsRemaining(currentMemberId || '')
   useEffect(() => {
     if (check.orderProducts.length === 0) {
       setIsOrderCheckLoading?.(true)
@@ -684,7 +694,12 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
 
         {totalPrice > 0 && productTarget.isSubscription === false && (
           <div className="mb-5" ref={paymentMethodRef}>
-            <PaymentSelector value={payment} onChange={v => setPayment(v)} isValidating={isValidating} />
+            <PaymentSelector
+              value={payment}
+              onChange={v => setPayment(v)}
+              paymentOptions={paymentOptions}
+              isValidating={isValidating}
+            />
           </div>
         )}
 
@@ -843,29 +858,6 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
       </CommonModal>
     </>
   )
-}
-
-const useMemberCoinsRemaining = (memberId: string) => {
-  const { loading, error, data } = useQuery<
-    hasura.GET_MEMBER_COIN_REMAINING,
-    hasura.GET_MEMBER_COIN_REMAININGVariables
-  >(
-    gql`
-      query GET_MEMBER_COIN_REMAINING($memberId: String!) {
-        coin_status(where: { member_id: { _eq: $memberId } }) {
-          remaining
-        }
-      }
-    `,
-    {
-      variables: { memberId },
-      skip: !memberId,
-    },
-  )
-  const remainingCoins = data?.coin_status.reduce((total, coin) => {
-    return (total += coin.remaining)
-  }, 0)
-  return { remainingCoins }
 }
 
 export default CheckoutProductModal

@@ -3,14 +3,14 @@ import { Button } from '@chakra-ui/react'
 const AnyButton = Button as any
 import React from 'react'
 import { useIntl } from 'react-intl'
-import CheckoutProductModal from '@lodestar/ui/components/modals/CheckoutProductModal'
+import ConnectedCheckoutProductModal from '@lodestar/ui/components/modals/ConnectedCheckoutProductModal'
 import pagesMessages from './translation'
 
 const CheckoutPage = () => {
   const { formatMessage } = useIntl()
   return (
     <div>
-      <CheckoutProductModal
+      <ConnectedCheckoutProductModal
         renderTrigger={({ onOpen, disable, isLoginAlert }) => (
           <AnyButton
             colorScheme="primary"
@@ -26,7 +26,7 @@ const CheckoutPage = () => {
         defaultProductId={`ProgramPlan_e231abd7-25fa-4007-868b-6ff1901a0cee`}
       />
 
-      <CheckoutProductModal
+      <ConnectedCheckoutProductModal
         renderTrigger={({ onOpen, disable, isLoginAlert }) => (
           <AnyButton
             colorScheme="primary"
@@ -41,7 +41,7 @@ const CheckoutPage = () => {
         )}
         defaultProductId={`ProjectPlan_ddc70edd-3140-4463-a2ae-7ecf77984b06`}
       />
-      <CheckoutProductModal
+      <ConnectedCheckoutProductModal
         renderTrigger={({ onOpen, disable, isLoginAlert }) => (
           <AnyButton
             colorScheme="primary"
@@ -56,7 +56,7 @@ const CheckoutPage = () => {
         )}
         defaultProductId={`ProgramPlan_428d84bd-116f-4c8b-bc92-6d0560923cb9`}
       />
-      <CheckoutProductModal
+      <ConnectedCheckoutProductModal
         renderTrigger={({ onOpen, disable, isLoginAlert }) => (
           <AnyButton
             colorScheme="primary"
