@@ -1,6 +1,6 @@
 import { Element } from '@craftjs/core'
 import styled from 'styled-components'
-import { CraftButton, CraftLayout, CraftSection } from '@lodestar/ui/components/common/CraftElement'
+import { CraftButton, CraftLayout, CraftSection } from '@lodestar/ui/components/common/CraftPureElements'
 
 const StyledButton = styled.button`
   background: lightgray;

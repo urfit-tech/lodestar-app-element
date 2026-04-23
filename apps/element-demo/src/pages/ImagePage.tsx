@@ -1,5 +1,5 @@
 import { Element } from '@craftjs/core'
-import { CraftImage, CraftSection } from '@lodestar/ui/components/common/CraftElement'
+import { CraftImage, CraftSection } from '@lodestar/ui/components/common/CraftPureElements'
 
 const ImagePage = () => {
   return (

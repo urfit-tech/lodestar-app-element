@@ -1,6 +1,6 @@
 // Common / Craft elements
 export * from './components/common'
-export * from './components/common/CraftElement'
+export * from './components/common/CraftPureElements'
 export * from './components/common/Craftize'
 
 // Blocks

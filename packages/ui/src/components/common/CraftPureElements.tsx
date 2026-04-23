@@ -1,3 +1,10 @@
+// Pure (non-data-driven) Craftize'd elements. Data-driven Craftize exports
+// (collection cards backed by @lodestar/data-hasura hooks) live in each
+// consumer app — see apps/element-demo/src/craft/ for the canonical set.
+// This file is intentionally kept inside @lodestar/ui because these
+// elements have no GraphQL/Apollo/data-hasura dependency and belong to
+// the pure component library surface.
+
 import Button from '../buttons/Button'
 import Card from '../cards/Card'
 import RichCard from '../cards/RichCard'
