@@ -10,7 +10,11 @@
     "no-console": "warn",
     "eqeqeq": "warn",
     "no-debugger": "error",
-    "no-floating-promises": "off"
+    "no-floating-promises": "off",
+    "no-unused-expressions": [
+      "error",
+      { "allowShortCircuit": true, "allowTernary": true, "allowTaggedTemplates": true }
+    ]
   },
   "ignorePatterns": ["node_modules", "dist", "**/dist", "public"],
   "overrides": [

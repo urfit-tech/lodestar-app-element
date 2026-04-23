@@ -44,7 +44,7 @@ const PaymentCard: React.FC<{
   return (
     <>
       {payments
-        .sort((a, b) => Number(a.no[a.no.length - 1]) - Number(b.no[b.no.length - 1]))
+        .toSorted((a, b) => Number(a.no[a.no.length - 1]) - Number(b.no[b.no.length - 1]))
         .map((payment, index) => {
           const contentList = [
             { title: formatMessage(orderMessages.PaymentCard.paymentStatus), message: payment.status, isRender: true },
@@ -83,11 +83,13 @@ const PaymentCard: React.FC<{
                     </StyledInfoTitle>
                     <StyledInfoMessage className="column">
                       {order.options?.installmentPlans?.length === 2
-                        ? order.options?.installmentPlans?.filter(plan => plan.price === payment.price)[0]?.index === 0
+                        ? order.options?.installmentPlans?.filter((plan) => plan.price === payment.price)[0]?.index ===
+                          0
                           ? formatMessage(orderMessages.PaymentCard.deposit)
                           : formatMessage(orderMessages.PaymentCard.finalPayment)
                         : `${
-                            order.options?.installmentPlans?.filter(plan => plan.price === payment.price)[0]?.index + 1
+                            order.options?.installmentPlans?.filter((plan) => plan.price === payment.price)[0]?.index +
+                            1
                           } ${formatMessage(orderMessages.PaymentCard.installmentPeriod)}`}
                     </StyledInfoMessage>
                   </div>

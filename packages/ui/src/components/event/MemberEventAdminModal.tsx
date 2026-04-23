@@ -82,8 +82,8 @@ const MemberEventAdminModal: React.FC<{
       isModalDefaultEventForEditModeAndRecurring(focusedEvent)
         ? focusedEvent.rrule?.origOptions?.[key]
         : isRrulePanelOpen
-        ? value
-        : undefined,
+          ? value
+          : undefined,
   )
   console.log(focusedEvent)
 
@@ -156,20 +156,18 @@ const MemberEventAdminModal: React.FC<{
   })
 
   const eventPayload = {
-    ...{
-      title,
-      description,
-      started_at: startTime.toDate(),
-      ended_at: endTime.toDate(),
-      source_type: sourceType,
-      source_target: sourceTarget,
-      metadata: eventMetadata,
-      published_at: publishedAt?.toDate?.(),
-    },
+    title,
+    description,
+    started_at: startTime.toDate(),
+    ended_at: endTime.toDate(),
+    source_type: sourceType,
+    source_target: sourceTarget,
+    metadata: eventMetadata,
+    published_at: publishedAt?.toDate?.(),
     ...(rrule
       ? {
           rrule: rrule.toString(),
-          until: until,
+          until,
         }
       : {}),
   }
@@ -204,22 +202,22 @@ const MemberEventAdminModal: React.FC<{
         <ModalCloseButton />
         <ModalBody>
           Title
-          <Input size="md" type="text" value={title} onChange={e => setTitle(e.target.value)} />
+          <Input size="md" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
           Description
-          <Textarea size="md" value={description} onChange={e => setDescription(e.target.value)} />
+          <Textarea size="md" value={description} onChange={(e) => setDescription(e.target.value)} />
           From
           <Input
             size="md"
             type="datetime-local"
             value={formatLocalDateTime(startTime)}
-            onChange={e => changeEventStartTime(moment(e.target.value))}
+            onChange={(e) => changeEventStartTime(moment(e.target.value))}
           />
           To
           <Input
             size="md"
             type="datetime-local"
             value={formatLocalDateTime(endTime)}
-            onChange={e => changeEventEndTime(moment(e.target.value))}
+            onChange={(e) => changeEventEndTime(moment(e.target.value))}
           />
           <Accordion
             defaultIndex={isRruleOptional ? undefined : [0]}
@@ -234,7 +232,7 @@ const MemberEventAdminModal: React.FC<{
               </AccordionButton>
               <AccordionPanel pb={4}>
                 <ButtonGroup gap="4">
-                  {['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'].map(id => {
+                  {['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'].map((id) => {
                     const weekday = RRule[id as WeekdayStr]
                     return (
                       <Button
@@ -256,7 +254,7 @@ const MemberEventAdminModal: React.FC<{
                   value={formatLocalDateTime(moment(until).utc(false))}
                   size="md"
                   type="datetime-local"
-                  onChange={e => setUntil(moment(e.target.value).utc(true).toDate())}
+                  onChange={(e) => setUntil(moment(e.target.value).utc(true).toDate())}
                 />
               </AccordionPanel>
             </AccordionItem>

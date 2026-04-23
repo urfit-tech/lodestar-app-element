@@ -135,7 +135,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         currentUserRole: (payload?.role as UserRole) || 'anonymous',
         currentMemberId: payload?.sub || null,
         authToken,
-        updateAuthToken: authToken => setAuthToken(authToken),
+        updateAuthToken: (authToken) => setAuthToken(authToken),
         isFinishedSignUpProperty: !!payload?.isFinishedSignUpProperty,
         currentMember,
         permissions:
@@ -144,7 +144,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             return accumulator
           }, {}) || {},
         refreshToken,
-        register: async data =>
+        register: async (data) =>
           Axios.post(
             `${process.env.REACT_APP_API_BASE_ROOT}/auth/register`,
             {
@@ -204,7 +204,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                         }
                       `,
                         variables: {
-                          memberProperties: memberProperties.map(v => ({
+                          memberProperties: memberProperties.map((v) => ({
                             member_id: currentMemberId,
                             property_id: v.propertyId,
                             value: v.value,
@@ -250,31 +250,27 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
         login: async ({ account, password, accountLinkToken }) => {
           const fingerPrintId = await getFingerPrintId()
           const { ip, country, countryCode } = await fetchCurrentGeolocation()
-          try {
-            const {
-              data: { code, message, result },
-            } = await Axios.post(
-              `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
-              { appId, account, password, fingerPrintId, geoLocation: { ip, country, countryCode } },
-              { withCredentials: true },
-            )
+          const {
+            data: { code, message, result },
+          } = await Axios.post(
+            `${process.env.REACT_APP_API_BASE_ROOT}/auth/general-login`,
+            { appId, account, password, fingerPrintId, geoLocation: { ip, country, countryCode } },
+            { withCredentials: true },
+          )
 
-            if (code === 'SUCCESS') {
-              setAuthToken(result.authToken)
-              if (accountLinkToken && result.authToken) {
-                window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
-              }
-            } else if (code === 'I_RESET_PASSWORD') {
-              window.location.assign(`/check-email?email=${account}&type=reset-password`)
-            } else {
-              setAuthToken(null)
-              throw getBackendServerError(code, message, result)
+          if (code === 'SUCCESS') {
+            setAuthToken(result.authToken)
+            if (accountLinkToken && result.authToken) {
+              window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
             }
-
-            return { code }
-          } catch (error) {
-            throw error
+          } else if (code === 'I_RESET_PASSWORD') {
+            window.location.assign(`/check-email?email=${account}&type=reset-password`)
+          } else {
+            setAuthToken(null)
+            throw getBackendServerError(code, message, result)
           }
+
+          return { code }
         },
         socialLogin: async ({ provider, providerToken, accountLinkToken, isForceLogin }) =>
           Axios.post(

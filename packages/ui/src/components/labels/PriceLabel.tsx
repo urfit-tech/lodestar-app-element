@@ -26,9 +26,9 @@ type PriceLabelOptions = {
 
 const FullDetailPrice = styled.div<{ isSaleAmount?: boolean }>`
   > div:first-child {
-    color: ${props => (props.isSaleAmount ? props.theme['@primary-color'] : 'var(--gray-darker)')};
-    font-size: ${props => (props.isSaleAmount ? '16px' : '28px')};
-    letter-spacing: ${props => (props.isSaleAmount ? '0.2px' : undefined)};
+    color: ${(props) => (props.isSaleAmount ? props.theme['@primary-color'] : 'var(--gray-darker)')};
+    font-size: ${(props) => (props.isSaleAmount ? '16px' : '28px')};
+    letter-spacing: ${(props) => (props.isSaleAmount ? '0.2px' : undefined)};
     font-weight: bold;
   }
   > div:nth-child(2) {
@@ -37,7 +37,7 @@ const FullDetailPrice = styled.div<{ isSaleAmount?: boolean }>`
 `
 const SalePrice = styled.div<{ customStyle?: CustomStyle }>`
   .salePrice__amount {
-    color: ${props => props.customStyle?.salePrice?.amount?.color};
+    color: ${(props) => props.customStyle?.salePrice?.amount?.color};
   }
 `
 const ListPrice = styled.div`
@@ -49,7 +49,7 @@ const ListPrice = styled.div`
 `
 
 const InlinePrice = styled.div`
-  color: ${props => props.theme['@primary-color']};
+  color: ${(props) => props.theme['@primary-color']};
 
   & > div {
     display: inline;
@@ -140,7 +140,7 @@ const PriceLabel: React.FC<
           <span>{affix?.listPricePrefix}</span>
           {typeof salePrice === 'number' ? (
             <span className="listPrice__originalPriceText">{formatMessage(commonMessages.label.originalPrice)}</span>
-          ) : !!downPrice ? (
+          ) : downPrice ? (
             <span className="listPrice__fromSecondPeriodText">
               {formatMessage(commonMessages.label.fromSecondPeriod)}
             </span>

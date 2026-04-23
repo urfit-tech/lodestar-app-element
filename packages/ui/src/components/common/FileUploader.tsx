@@ -28,7 +28,7 @@ const FileUploader: React.FC<{
         type="file"
         accept={accept}
         hidden
-        onChange={e => {
+        onChange={(e) => {
           if (!e.target.files || !e.target.files.length || !onChange) {
             return
           }
@@ -37,7 +37,7 @@ const FileUploader: React.FC<{
           const files: File[] = fileList?.slice() || []
           for (let i = 0; i < e.target.files.length; i++) {
             const file = e.target.files[i]
-            if (file && !files.some(v => v.name === file.name && v.lastModified === file.lastModified)) {
+            if (file && !files.some((v) => v.name === file.name && v.lastModified === file.lastModified)) {
               files.push(file)
             }
           }
@@ -46,7 +46,7 @@ const FileUploader: React.FC<{
           if (multiple) {
             return onChange(files)
           }
-          onChange([...files.slice(-1)])
+          onChange(files.slice(-1))
         }}
       />
     </>

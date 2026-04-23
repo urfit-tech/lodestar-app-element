@@ -34,24 +34,10 @@ jobs:
       - name: Workspace-wide typecheck
         run: pnpm -r exec tsc --noEmit
 
-      # Phase B/C decoupling guard. This step only enforces the
-      # `no-restricted-imports` overrides in .oxlintrc.json — that is, it makes
-      # sure @lodestar/{ui,contexts,hooks,helpers} never grow new imports of
-      # @apollo/client / graphql / graphql-ws / @lodestar/graphql. Other lint
-      # rules in the config are still reported but not gated on here, because
-      # the repo currently carries a pile of pre-existing warnings/errors that
-      # are orthogonal to the decoupling.
-      - name: Decoupling-guard lint (no-restricted-imports only)
-        run: |
-          set -e
-          # Run oxlint on the guarded packages. If any of the configured
-          # no-restricted-imports violations are hit, `oxlint` exits non-zero.
-          # We filter out the pre-existing noise and fail only when the
-          # decoupling rule fires.
-          output="$(pnpm -s oxlint packages/ui/src packages/contexts/src packages/hooks/src packages/helpers/src 2>&1 || true)"
-          echo "$output"
-          if echo "$output" | grep -q 'no-restricted-imports'; then
-            echo
-            echo '::error::Decoupling regression: a guarded package imported @apollo/client / graphql / graphql-ws / @lodestar/graphql. See .oxlintrc.json overrides for the policy.'
-            exit 1
-          fi
+      # Correctness-level lint gate. .oxlintrc.json escalates `correctness`
+      # category rules to errors (including the `no-restricted-imports`
+      # decoupling override for @lodestar/{ui,contexts,hooks,helpers}).
+      # Warnings are still surfaced in the output but don't fail the job —
+      # they're on the pre-existing-tech-debt track.
+      - name: Lint (correctness errors only)
+        run: pnpm lint

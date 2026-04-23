@@ -29,7 +29,7 @@ const StyledPriceTag = styled.span`
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.4px;
-  color: ${props => props.theme['@primary-color']};
+  color: ${(props) => props.theme['@primary-color']};
 `
 
 const StyledCheckBox = styled(Checkbox)`
@@ -47,9 +47,9 @@ type cvsOptionsProps = {
   storeAddress: string
 }
 
-export const validateShipping: (shipping: ShippingProps) => boolean = shipping => {
+export const validateShipping: (shipping: ShippingProps) => boolean = (shipping) => {
   if (shipping.phone && !/^\+?\(?[0-9]+\)?-?[0-9]+$/.test(shipping.phone)) return false
-  return [shipping.name, shipping.phone, shipping.address].every(value => !!value)
+  return [shipping.name, shipping.phone, shipping.address].every((value) => !!value)
 }
 
 const ShippingInput: React.FC<{
@@ -186,11 +186,11 @@ const ShippingInput: React.FC<{
 
   const currentShippingMethod = useMemo(
     () =>
-      shippingMethods?.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === value?.shippingMethod)
+      shippingMethods?.filter((shippingMethod) => shippingMethod.enabled).some((v) => v.id === value?.shippingMethod)
         ? value?.shippingMethod
-        : shippingMethods?.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === 'home-delivery')
-        ? 'home-delivery'
-        : shippingMethods?.filter(shippingMethod => shippingMethod.enabled)?.[0].id,
+        : shippingMethods?.filter((shippingMethod) => shippingMethod.enabled).some((v) => v.id === 'home-delivery')
+          ? 'home-delivery'
+          : shippingMethods?.filter((shippingMethod) => shippingMethod.enabled)?.[0].id,
     [shippingMethods],
   )
   useEffect(() => {
@@ -212,17 +212,21 @@ const ShippingInput: React.FC<{
         <Form.Item required label={formatMessage(inputMessages.ShippingInput.shippingMethod)}>
           <Radio.Group
             value={
-              shippingMethods.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === value?.shippingMethod)
+              shippingMethods
+                .filter((shippingMethod) => shippingMethod.enabled)
+                .some((v) => v.id === value?.shippingMethod)
                 ? value?.shippingMethod
-                : shippingMethods.filter(shippingMethod => shippingMethod.enabled).some(v => v.id === 'home-delivery')
-                ? 'home-delivery'
-                : shippingMethods.filter(shippingMethod => shippingMethod.enabled)?.[0].id
+                : shippingMethods
+                      .filter((shippingMethod) => shippingMethod.enabled)
+                      .some((v) => v.id === 'home-delivery')
+                  ? 'home-delivery'
+                  : shippingMethods.filter((shippingMethod) => shippingMethod.enabled)?.[0].id
             }
-            onChange={event => handleChange('shippingMethod', event.target.value)}
+            onChange={(event) => handleChange('shippingMethod', event.target.value)}
           >
             {shippingMethods
-              .filter(shippingMethod => shippingMethod.enabled)
-              .map(shippingMethod => {
+              .filter((shippingMethod) => shippingMethod.enabled)
+              .map((shippingMethod) => {
                 const formattedShippingMethod =
                   checkoutMessages.shipping[camelCase(shippingMethod.id) as keyof typeof checkoutMessages.shipping]
                 return (
@@ -266,8 +270,8 @@ const ShippingInput: React.FC<{
               defaultValue={value?.name || ''}
               value={isOutsideTaiwanIsland ? undefined : value?.name}
               disabled={isOutsideTaiwanIsland}
-              onChange={event => handleChange('name', event.target.value)}
-              onBlur={event => handleChange('name', event.target.value)}
+              onChange={(event) => handleChange('name', event.target.value)}
+              onBlur={(event) => handleChange('name', event.target.value)}
             />
           </Form.Item>
         </div>
@@ -290,14 +294,14 @@ const ShippingInput: React.FC<{
               defaultValue={value?.phone || ''}
               value={isOutsideTaiwanIsland ? undefined : value?.phone}
               disabled={isOutsideTaiwanIsland}
-              onChange={event => handleChange('phone', event.target.value)}
-              onBlur={event => handleChange('phone', event.target.value)}
+              onChange={(event) => handleChange('phone', event.target.value)}
+              onBlur={(event) => handleChange('phone', event.target.value)}
             />
           </Form.Item>
         </div>
       </div>
 
-      {!!Number(settings['checkout.taiwan_shipping_selector']) ? (
+      {Number(settings['checkout.taiwan_shipping_selector']) ? (
         <Form.Item
           required={!isOutsideTaiwanIsland}
           label={formatMessage(inputMessages.ShippingInput.receiverAddress)}
@@ -319,7 +323,7 @@ const ShippingInput: React.FC<{
                 }}
                 disabled={isOutsideTaiwanIsland}
               >
-                {cities?.map(city => {
+                {cities?.map((city) => {
                   return (
                     <Select.Option
                       key={city}
@@ -345,7 +349,7 @@ const ShippingInput: React.FC<{
                 }}
                 disabled={isOutsideTaiwanIsland}
               >
-                {districts?.[value?.city || '']?.map(district => {
+                {districts?.[value?.city || '']?.map((district) => {
                   return (
                     <Select.Option
                       key={district}
@@ -369,8 +373,8 @@ const ShippingInput: React.FC<{
                 placeholder={formatMessage(inputMessages.ShippingInput.addressText)}
                 defaultValue={value?.address || ''}
                 value={isOutsideTaiwanIsland ? undefined : value?.address}
-                onBlur={event => handleChange('address', event.target.value)}
-                onChange={event => handleChange('address', event.target.value)}
+                onBlur={(event) => handleChange('address', event.target.value)}
+                onChange={(event) => handleChange('address', event.target.value)}
                 disabled={isOutsideTaiwanIsland}
               />
             </div>
@@ -398,8 +402,8 @@ const ShippingInput: React.FC<{
             placeholder={formatMessage(inputMessages.ShippingInput.addressText)}
             defaultValue={value?.address || ''}
             value={value?.address}
-            onBlur={event => handleChange('address', event.target.value)}
-            onChange={event => handleChange('address', event.target.value)}
+            onBlur={(event) => handleChange('address', event.target.value)}
+            onChange={(event) => handleChange('address', event.target.value)}
           />
         </Form.Item>
       )}
@@ -410,7 +414,7 @@ const ShippingInput: React.FC<{
             ref={specificationRef}
             rows={5}
             defaultValue={value?.specification || ''}
-            onBlur={event => handleChange('specification', event.target.value)}
+            onBlur={(event) => handleChange('specification', event.target.value)}
           />
         </Form.Item>
       )}

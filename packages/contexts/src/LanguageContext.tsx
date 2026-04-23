@@ -9,10 +9,7 @@ import { useApp } from './AppContext'
 // module doesn't force vite/client on every consumer's tsc compilation. The
 // `as unknown as` bridge is intentional: it's a runtime-boundary assertion
 // against a bundler-provided API, not a blanket type escape.
-type LocaleGlob = (
-  pattern: string,
-  options: { eager: true },
-) => Record<string, { default: Record<string, string> }>
+type LocaleGlob = (pattern: string, options: { eager: true }) => Record<string, { default: Record<string, string> }>
 
 const localeModules = (import.meta as unknown as { glob: LocaleGlob }).glob(
   '../../ui/src/translations/locales/*.json',
@@ -22,13 +19,13 @@ const localeModules = (import.meta as unknown as { glob: LocaleGlob }).glob(
 function loadMessages(language: string): Record<string, string> {
   for (const [path, mod] of Object.entries(localeModules)) {
     if (path.endsWith(`/${language}.json`)) {
-      return mod.default ?? mod as any
+      return mod.default ?? (mod as any)
     }
   }
   return {}
 }
 
-const supportedLanguages = ['zh-tw', 'zh-cn', 'en-us', 'vi', 'acsi']
+const supportedLanguages = new Set(['zh-tw', 'zh-cn', 'en-us', 'vi', 'acsi'])
 
 type LanguageProps = {
   currentLanguage: string
@@ -53,11 +50,11 @@ export const LanguageProvider: React.FC = ({ children }) => {
     const cachedLanguage = localStorage.getItem('kolable.app.language')
     setCurrentLanguage(
       enabledModules.locale
-        ? typeof cachedLanguage === 'string' && supportedLanguages.includes(cachedLanguage)
+        ? typeof cachedLanguage === 'string' && supportedLanguages.has(cachedLanguage)
           ? cachedLanguage
-          : supportedLanguages.includes(browserLanguage)
-          ? browserLanguage
-          : 'zh-tw'
+          : supportedLanguages.has(browserLanguage)
+            ? browserLanguage
+            : 'zh-tw'
         : 'zh-tw',
     )
   }, [enabledModules, settings])
@@ -88,7 +85,7 @@ export const LanguageProvider: React.FC = ({ children }) => {
         currentLanguage,
         locale,
         setCurrentLanguage: (newLanguage: string) => {
-          if (supportedLanguages.includes(newLanguage)) {
+          if (supportedLanguages.has(newLanguage)) {
             localStorage.setItem('kolable.app.language', newLanguage)
             setCurrentLanguage(newLanguage)
           }
