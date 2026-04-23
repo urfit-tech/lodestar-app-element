@@ -273,4 +273,64 @@ const { data: sharingCodes, loading: loadingSharingCode } = useSharingCodes(path
 - The original `useMemberCreditCards` export in `CreditCardSelector.tsx` was an inline internal hook; moving it to `@lodestar/data-hasura/hooks/checkoutFlow.ts` means any external import path like `import { useMemberCreditCards } from '@lodestar/ui/components/selectors/CreditCardSelector'` needs to be redirected to the data-hasura path. Grep in the current workspace is clean; external consumers (lodestar-app / lodestar-app-admin) will need the same fix once they integrate into the monorepo.
 - `CheckoutProductModal`'s pre-existing `styled(Checkbox as any)` at `CheckoutProductModal.tsx:111` is inherited from master and was left alone; untangling it is a chakra-typing task orthogonal to B-2. No new `any` was introduced.
 
-<!-- B-1 / B-2 / B-3 append their items below as sub-tasks land -->
+## B-3 — CraftElement.tsx → CraftPureElements.tsx rename (commit `3014c0e`)
+
+Pure file rename + import path update; no runtime/behavioural change.
+
+### Mechanical checks (auto-verified)
+- [x] `pnpm -r exec tsc --noEmit` passes after `.tsbuildinfo` wipe
+- [x] No `CraftElement` file path references remain in `packages/` / `apps/`
+
+### Required checks
+None — this is source-tree organization only. The 15-route sweep in B-4 subsumes any runtime verification.
+
+---
+
+## B-4 — Phase B final sweep and closure
+
+### Success-criteria mechanical checks (all auto-verified clean after B-3 landed)
+- [x] `grep -rn "useQuery|useMutation|gql" packages/ui/src` (excluding `useQueryParam`) → empty
+- [x] `grep -rn "from '@apollo/client'" packages/ui/src` → empty
+- [x] `grep -rn "from '@lodestar/graphql" packages/ui/src` → empty
+- [x] `grep -rn "useQuery|useMutation|from '@apollo/client'" packages/contexts/src` → empty
+- [x] `grep -rn "useQuery|useMutation|from '@apollo/client'" packages/hooks/src` → empty
+- [x] `pnpm -r exec tsc --noEmit` (after `.tsbuildinfo` wipe) → empty (clean)
+- [x] `MIGRATION_PROGRESS.md` Phase B box ticked
+
+### Required 15-route parity sweep (human)
+
+Tick each item after side-by-side comparison with master (port 3001) for both view mode and editor mode. Items marked "no route" cannot be visually verified until a follow-up page is added; fold them into the Phase C or post-Phase-C work as appropriate.
+
+- [ ] `/` — home landing (no element under test; sanity the server boots)
+- [ ] `/auth` — AuthPage: view only (no collection / modal involved)
+- [ ] `/member` — `CraftMemberCollection` × 3 instances (B-1a)
+- [ ] `/programs` — `CraftProgramCollection` carousel (B-1f), OrderSelector behaviour, customStyle override
+- [ ] `/program-contents` — `CraftProgramContentCollection` recentWatched (B-1b; requires account with watch history)
+- [ ] `/program-package` — `CraftProgramPackageCollection` publishedAt (B-1c); static `ProgramPackageCard` cards above should stay untouched
+- [ ] `/project` — `CraftProjectCollection` publishedAt default (B-1d); static `ProjectCard loading` above stays untouched
+- [ ] `/activity` — `CraftActivityCollection` publishedAt (B-0)
+- [ ] `/layout` — LayoutPage pure Craftize elements (from `CraftPureElements`)
+- [ ] `/text` — TextPage
+- [ ] `/carousel` — CarouselPage
+- [ ] `/image` — ImagePage
+- [ ] `/checkout` — four `ConnectedCheckoutProductModal` instances (B-2b); verify each modal renders + completes flow (destructive on throwaway appId only)
+- [ ] `/ai-bot` — AIBotPage (AIBot is Craftize'd but non-data-driven; light smoke check)
+- [ ] `/event` — MemberEventCalendarBlock (Phase A refactor; not touched by B; light smoke check)
+
+### Routes without a demo page (follow-up TODOs)
+
+These data hooks + pure-UI components are fully Phase-B-done but cannot be visually parity-checked until someone adds a demo page + route registration:
+
+- [ ] `OrderDetailDrawer` — add `apps/element-demo/src/pages/OrderPage.tsx` with a seed `orderId`; wire via `useOrderDetail` + `useSharingCodes` per the B-2a section sketch.
+- [ ] `PostCollection` — add `apps/element-demo/src/pages/PostPage.tsx` with `publishedAt` + `custom` + `popular` variants, wire via `CraftPostCollection` (already registered in the App resolver).
+
+### Phase C next steps (source for the follow-up plan)
+
+Because Phase B removed every `@apollo/client` / `@lodestar/graphql` / `useQuery` / `useMutation` / `gql` usage from `packages/{ui,contexts,hooks}/src`, Phase C's package.json cleanup is now unblocked:
+
+- [ ] Remove from `packages/ui/package.json`: `@apollo/client`, `graphql`, `graphql-ws`, `@lodestar/graphql`, `@lodestar/data-hasura` (this last one was the Phase A temporary; verify all importers now route through `apps/element-demo/src/craft/` / `ConnectedCheckoutProductModal` / other application layers before removing)
+- [ ] Remove from `packages/contexts/package.json`: `@apollo/client`, `@lodestar/graphql`
+- [ ] Remove from `packages/hooks/package.json`: `@apollo/client`, `@lodestar/graphql`
+- [ ] Verify by grepping each package's remaining source again, then `pnpm install` + full tsc sweep.
+
+<!-- Phase C and beyond append below -->
