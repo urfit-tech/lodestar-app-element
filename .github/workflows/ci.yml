@@ -41,3 +41,6 @@ jobs:
       # they're on the pre-existing-tech-debt track.
       - name: Lint (correctness errors only)
         run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
