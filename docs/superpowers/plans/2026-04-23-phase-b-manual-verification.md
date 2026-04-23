@@ -321,8 +321,13 @@ Tick each item after side-by-side comparison with master (port 3001) for both vi
 
 These data hooks + pure-UI components are fully Phase-B-done but cannot be visually parity-checked until someone adds a demo page + route registration:
 
-- [ ] `OrderDetailDrawer` — add `apps/element-demo/src/pages/OrderPage.tsx` with a seed `orderId`; wire via `useOrderDetail` + `useSharingCodes` per the B-2a section sketch.
-- [ ] `PostCollection` — add `apps/element-demo/src/pages/PostPage.tsx` with `publishedAt` + `custom` + `popular` variants, wire via `CraftPostCollection` (already registered in the App resolver).
+- [x] `OrderDetailDrawer` — `apps/element-demo/src/pages/OrderPage.tsx` added in commit `1279912`; registered in `App.tsx` routes as `/order`. Takes an `order_log.id` via an input form and opens the drawer. Requires a real id from the test app — still needs a human pass to exercise visually.
+- [x] `PostCollection` — `apps/element-demo/src/pages/PostPage.tsx` added in commit `1279912`; registered as `/post`. Renders `publishedAt` + `popular` variants side by side.
+
+### CI / regression guard (landed in commit `cdf0a63`)
+
+- [x] `.github/workflows/ci.yml` — runs `pnpm install` → `.tsbuildinfo` wipe → `pnpm -r exec tsc --noEmit` → decoupling-guard oxlint. Fails the PR if any guarded package re-imports `@apollo/client` / `graphql` / `graphql-ws` / `@lodestar/graphql`.
+- [x] `.oxlintrc.json` override — `no-restricted-imports` over `packages/{ui,contexts,hooks,helpers}/src/**`. Verified by injecting a synthetic offending file and confirming the rule fires with the Phase-B/C-decoupling message.
 
 ### Phase C next steps (source for the follow-up plan)
 

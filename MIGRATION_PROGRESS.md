@@ -42,6 +42,9 @@
   - [x] Phase A: 建立 `@lodestar/data-hasura`，搬 9 個 hook 檔 + ApiProvider/AppProvider + apollo helper（見 `docs/superpowers/plans/2026-04-21-data-hasura-phase-a.md`；element-demo 15/15 路由仍一致）
   - [x] Phase B: `@lodestar/ui` 改 props-only（meta-plan: `docs/superpowers/plans/2026-04-23-phase-b-meta-plan.md`；sub-plans B-0 ~ B-3 均已落地。`packages/{ui,contexts,hooks}/src` 無 `@apollo/client` / `@lodestar/graphql` / `useQuery` / `useMutation` / `gql` 殘留。Craftize 連線層移至 `apps/element-demo/src/craft/`，純 UI Craftize 留在 `packages/ui/src/components/common/CraftPureElements.tsx`。視覺 parity 檢查清單見 `docs/superpowers/plans/2026-04-23-phase-b-manual-verification.md`，等一輪人工對照完成後回來打勾）
   - [x] Phase C: 清洗 package.json 依賴（`@lodestar/ui` / `@lodestar/contexts` / `@lodestar/hooks` / `@lodestar/helpers` 全數移除 `@apollo/client` / `graphql` / `graphql-ws` / `@lodestar/graphql`；workspace-wide typecheck 仍綠。`@lodestar/data-hasura` 刻意保留為 `@lodestar/ui` 的 dep，作為 UI 與 hasura 資料層的單一 chokepoint）
-- [ ] CI/CD 建置
+- [~] CI/CD 建置
+  - [x] 基礎 CI：`.github/workflows/ci.yml`（push / PR 跑 `pnpm -r exec tsc --noEmit` 與 decoupling-guard oxlint）
+  - [x] Decoupling regression guard：`.oxlintrc.json` override 禁止 `@lodestar/{ui,contexts,hooks,helpers}/src` 引入 `@apollo/client` / `graphql` / `graphql-ws` / `@lodestar/graphql`
+  - [ ] 部署 / 發版 pipeline（Phase 4 正式整合 lodestar-app、lodestar-app-admin 後再決定形狀）
 - [x] 解決 barrel export 名稱衝突（types/index.ts, ui/index.ts 中的重複 export）
 - [x] oxfmt + oxlint 完整設定
