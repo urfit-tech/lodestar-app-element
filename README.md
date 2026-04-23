@@ -1,5 +1,25 @@
 # Lodestar App Element
 
+A pnpm-workspace monorepo of the presentational pieces powering Lodestar apps. The package graph is layered so every component can be used either as a Craft.js draggable block or as a plain React component, and so the data layer is swappable without rewriting the UI.
+
+## Packages
+
+| Package | Role |
+|---|---|
+| `@lodestar/types` | Shared TypeScript view types (no runtime code) |
+| `@lodestar/helpers` | Pure utilities (formatting, error helpers, translation message dictionaries) — no GraphQL, no Apollo |
+| `@lodestar/graphql` | Hasura codegen output + query factories. Only `@lodestar/data-hasura` consumes it |
+| `@lodestar/data-hasura` | All data-fetching hooks (`useActivityCollection`, `useCheckoutFlow`, `useOrderDetail`, …) + ApolloProvider / AppProvider. The single chokepoint where Apollo lives |
+| `@lodestar/contexts` | Pure React contexts (`AuthContext`, `LanguageContext`, `AuthModalContext`, `AppThemeContext`) — no GraphQL |
+| `@lodestar/hooks` | Pure utility hooks (`util`, `checkout`) — no GraphQL |
+| `@lodestar/ui` | Presentational components + `Craftize` HOC. Accepts data via props; never calls `useQuery` |
+| `apps/element-demo` | Vite demo app that wires `@lodestar/ui` + `@lodestar/data-hasura` together for every route |
+| `apps/playground` | **Not part of the migration.** A tech-stack sandbox (React 19 + TanStack Start + Apollo v4) used for future-tech evaluation |
+
+The `@lodestar/ui` package is **props-only** (Phase B/C of the migration — see `docs/superpowers/specs/2026-04-21-ui-data-decoupling-design.md`). A lint rule in `.oxlintrc.json` enforces this by forbidding `@apollo/client` / `graphql` / `graphql-ws` / `@lodestar/graphql` imports inside `packages/{ui,contexts,hooks,helpers}/src`. CI runs it on every PR.
+
+Consumer apps (`apps/element-demo` today, `apps/web` / `apps/admin` later) do the "connected" wiring themselves: call a hook from `@lodestar/data-hasura`, feed the result into a pure UI component, and optionally wrap in `Craftize` to expose the thing as a Craft.js draggable block. See `apps/element-demo/src/craft/` for seven canonical examples.
+
 ## Getting Started
 
 ### Prerequisites
@@ -115,38 +135,68 @@ pnpm format
 pnpm format:check
 ```
 
-## Craft.js
+## Architecture
 
-> every changes will break the application
-> we have to do our best not to revise the interface
+### Three-layer composition
 
-## Element Component
+Every data-driven UI element in `apps/element-demo/src/craft/` follows the same shape:
 
-each component should be `ElementComponent` so that it can be converted to Craft Element.
-To convert to Craft element, simply use:
+```tsx
+// packages/data-hasura/src/hooks/activity.ts
+export const useActivityCollection = (source: ActivityCollectionSource) => { … }
 
-```ts
-Craftize(ElementComponent)
+// packages/ui/src/components/collections/ActivityCollection.tsx  (pure)
+export type ActivityCollectionProps = {
+  activities?: ActivityCollectionItem[]
+  isFetching?: boolean
+  fetchError?: Error
+  …other presentational props
+}
+const ActivityCollection: ElementComponent<ActivityCollectionProps> = props => { … }
+
+// apps/element-demo/src/craft/CraftActivityCollection.tsx  (consumer glue)
+const ConnectedActivityCollection = props => {
+  const resolvedSource = useMemo(() => props.source ?? DEFAULT_SOURCE, [props.source])
+  const { data, loading, error } = useActivityCollection(resolvedSource)
+  return <ActivityCollection {...props} activities={data} isFetching={loading} fetchError={error} />
+}
+export const CraftActivityCollection: UserComponent<PropsWithCraft<…>> =
+  Craftize(ConnectedActivityCollection)
 ```
 
-for an element component, you will get the following props:
+Key points:
 
-1. className: after crafting, you will get the styled className
-2. loading: you will get partial props for loading
-3. errors: you will get partial props for errors
-4. editing: craft editor state
-5. other props you set
+- `Craftize` cannot be composed with another HOC (it registers the wrapped function directly with Craft.js). Put the data-fetching function component **inside** `Craftize`, not outside.
+- Re-bind the Craft export with an explicit `UserComponent<PropsWithCraft<…>>` annotation — otherwise TypeScript tries to emit a declaration reaching into `node_modules/@craftjs/core` and fails with TS2742.
+- Memoize the resolved source so `useActivityCollection`'s `useMemo` deps stay stable when callers omit `source`.
 
-### Why do we keep loading/errors/data at once?
+### ElementComponent — what the pure UI surface expects
 
-when the state changed into loading, the data/error state should still exist.
-also, when the state changed into error, the original UI should be kept.
+```ts
+const Component: ElementComponent<Props> = props => { … }
+```
 
-## Context Collection
+An `ElementComponent<P>` is `React.FC<P & ElementBaseProps>` where `ElementBaseProps` includes:
 
-### Why do we use context?
+- `className?`, `editing?`, `children?` — standard
+- `loading?: boolean` / `errors?: Error[]` — parent-driven "I'm loading, hide me" signals
 
-1. Custom hook: not suitable for development
-2. useState: not suitable for graphql
-3. Conditional render: not suitable for flexible UI component
-   we focus on data processing instead of passing through annoying arguments
+The convention matters because `Craftize` attaches the same base props. Don't name query-state props `loading` / `error` — they'd collide with these parent-driven ones. Use something more specific (`isFetching`, `fetchError`, etc.) inside each component.
+
+### Pure Craftize catalog
+
+`packages/ui/src/components/common/CraftPureElements.tsx` exports the Craftize'd versions of the non-data-driven components (Layout, Section, Text, Title, Paragraph, Button, Image, Card, RichCard, Carousel, Collapse, Embedded, AIBot). Each consumer app spreads this plus its own `src/craft/` bag into Craft.js's `resolver` map:
+
+```tsx
+// apps/element-demo/src/App.tsx
+import * as UiCraftResolvers from '@lodestar/ui/components/common/CraftPureElements'
+import * as LocalCraftResolvers from './craft'
+const craftResolvers = { ...UiCraftResolvers, ...LocalCraftResolvers }
+<Editor resolver={craftResolvers}> … </Editor>
+```
+
+### Further reading
+
+- Migration specs + plans: `docs/superpowers/specs/`, `docs/superpowers/plans/`
+- Migration progress dashboard: [`MIGRATION_PROGRESS.md`](./MIGRATION_PROGRESS.md)
+- Manual verification checklist for the decoupling work: `docs/superpowers/plans/2026-04-23-phase-b-manual-verification.md`
