@@ -109,9 +109,6 @@ importers:
 
   packages/contexts:
     dependencies:
-      '@apollo/client':
-        specifier: ^3.7.11
-        version: 3.14.1(@types/react@17.0.0)(graphql-ws@5.12.1(graphql@16.13.1))(graphql@16.13.1)(react-dom@19.2.4(react@18.3.1))(react@18.3.1)
       '@bobthered/tailwindcss-palette-generator':
         specifier: '*'
         version: 4.0.0
@@ -124,9 +121,6 @@ importers:
       '@emotion/styled':
         specifier: ^11.0.0
         version: 11.14.1(@emotion/react@11.14.0(@types/react@17.0.0)(react@18.3.1))(@types/react@17.0.0)(react@18.3.1)
-      '@lodestar/graphql':
-        specifier: workspace:*
-        version: link:../graphql
       '@lodestar/helpers':
         specifier: workspace:*
         version: link:../helpers
@@ -139,9 +133,6 @@ importers:
       axios:
         specifier: 0.21.4
         version: 0.21.4
-      graphql:
-        specifier: ^16.6.0
-        version: 16.13.1
       jsonwebtoken:
         specifier: 8.5.1
         version: 8.5.1
@@ -301,21 +292,12 @@ importers:
 
   packages/helpers:
     dependencies:
-      '@apollo/client':
-        specifier: ^3.7.11
-        version: 3.14.1(@types/react@17.0.0)(graphql-ws@5.12.1(graphql@16.13.1))(graphql@16.13.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@lodestar/types':
         specifier: workspace:*
         version: link:../types
       axios:
         specifier: 0.21.4
         version: 0.21.4
-      graphql:
-        specifier: ^16.6.0
-        version: 16.13.1
-      graphql-ws:
-        specifier: ^5.12.1
-        version: 5.12.1(graphql@16.13.1)
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -356,9 +338,6 @@ importers:
 
   packages/hooks:
     dependencies:
-      '@apollo/client':
-        specifier: ^3.7.11
-        version: 3.14.1(@types/react@17.0.0)(graphql-ws@5.12.1(graphql@16.13.1))(graphql@16.13.1)(react-dom@19.2.4(react@18.3.1))(react@18.3.1)
       '@chakra-ui/react':
         specifier: 1.8.9
         version: 1.8.9(@emotion/react@11.14.0(@types/react@17.0.0)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@17.0.0)(react@18.3.1))(@types/react@17.0.0)(react@18.3.1))(@types/react@17.0.0)(framer-motion@12.36.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@18.3.1))(react@18.3.1))(react-dom@19.2.4(react@18.3.1))(react@18.3.1)
@@ -374,9 +353,6 @@ importers:
       '@lodestar/contexts':
         specifier: workspace:*
         version: link:../contexts
-      '@lodestar/graphql':
-        specifier: workspace:*
-        version: link:../graphql
       '@lodestar/helpers':
         specifier: workspace:*
         version: link:../helpers
@@ -392,9 +368,6 @@ importers:
       dayjs:
         specifier: ^1.11.7
         version: 1.11.20
-      graphql:
-        specifier: ^16.6.0
-        version: 16.13.1
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -471,9 +444,6 @@ importers:
 
   packages/ui:
     dependencies:
-      '@apollo/client':
-        specifier: ^3.7.11
-        version: 3.14.1(@types/react@17.0.0)(graphql-ws@5.12.1(graphql@16.13.1))(graphql@16.13.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@bobthered/tailwindcss-palette-generator':
         specifier: '*'
         version: 4.0.0
@@ -528,9 +498,6 @@ importers:
       '@lodestar/data-hasura':
         specifier: workspace:*
         version: link:../data-hasura
-      '@lodestar/graphql':
-        specifier: workspace:*
-        version: link:../graphql
       '@lodestar/helpers':
         specifier: workspace:*
         version: link:../helpers
@@ -564,12 +531,6 @@ importers:
       easymde:
         specifier: ^2.18.0
         version: 2.20.0
-      graphql:
-        specifier: ^16.6.0
-        version: 16.13.1
-      graphql-ws:
-        specifier: ^5.12.1
-        version: 5.12.1(graphql@16.13.1)
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -5050,29 +5011,6 @@ snapshots:
 
   '@ant-design/icons@2.1.1': {}
 
-  '@apollo/client@3.14.1(@types/react@17.0.0)(graphql-ws@5.12.1(graphql@16.13.1))(graphql@16.13.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.13.1)
-      '@wry/caches': 1.0.1
-      '@wry/equality': 0.5.7
-      '@wry/trie': 0.5.0
-      graphql: 16.13.1
-      graphql-tag: 2.12.6(graphql@16.13.1)
-      hoist-non-react-statics: 3.3.2
-      optimism: 0.18.1
-      prop-types: 15.8.1
-      rehackt: 0.1.0(@types/react@17.0.0)(react@18.3.1)
-      symbol-observable: 4.0.0
-      ts-invariant: 0.10.3
-      tslib: 2.8.1
-      zen-observable-ts: 1.2.5
-    optionalDependencies:
-      graphql-ws: 5.12.1(graphql@16.13.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-
   '@apollo/client@3.14.1(@types/react@17.0.0)(graphql-ws@5.12.1(graphql@16.13.1))(graphql@16.13.1)(react-dom@19.2.4(react@17.0.2))(react@17.0.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.13.1)
@@ -5093,29 +5031,6 @@ snapshots:
       graphql-ws: 5.12.1(graphql@16.13.1)
       react: 17.0.2
       react-dom: 19.2.4(react@17.0.2)
-    transitivePeerDependencies:
-      - '@types/react'
-
-  '@apollo/client@3.14.1(@types/react@17.0.0)(graphql-ws@5.12.1(graphql@16.13.1))(graphql@16.13.1)(react-dom@19.2.4(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.13.1)
-      '@wry/caches': 1.0.1
-      '@wry/equality': 0.5.7
-      '@wry/trie': 0.5.0
-      graphql: 16.13.1
-      graphql-tag: 2.12.6(graphql@16.13.1)
-      hoist-non-react-statics: 3.3.2
-      optimism: 0.18.1
-      prop-types: 15.8.1
-      rehackt: 0.1.0(@types/react@17.0.0)(react@18.3.1)
-      symbol-observable: 4.0.0
-      ts-invariant: 0.10.3
-      tslib: 2.8.1
-      zen-observable-ts: 1.2.5
-    optionalDependencies:
-      graphql-ws: 5.12.1(graphql@16.13.1)
-      react: 18.3.1
-      react-dom: 19.2.4(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
 
@@ -10724,11 +10639,6 @@ snapshots:
     optionalDependencies:
       '@types/react': 17.0.0
       react: 17.0.2
-
-  rehackt@0.1.0(@types/react@17.0.0)(react@18.3.1):
-    optionalDependencies:
-      '@types/react': 17.0.0
-      react: 18.3.1
 
   rehackt@0.1.0(@types/react@17.0.0)(react@19.2.4):
     optionalDependencies:
