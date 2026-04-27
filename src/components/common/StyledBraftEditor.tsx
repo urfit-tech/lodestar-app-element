@@ -1,4 +1,6 @@
 import BraftEditor from 'braft-editor'
+import 'braft-editor/dist/index.css'
+import 'braft-editor/dist/output.css'
 import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { isHTMLString } from '../../helpers'
