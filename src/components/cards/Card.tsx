@@ -13,7 +13,9 @@ export type CardProps = {
   onClick?: () => void
 }
 
-const CardTitle = styled.h3<CardProps>`
+const CardTitle = styled.h3.withConfig({
+  shouldForwardProp: prop => prop !== 'darkMode',
+})<CardProps>`
   font-family: NotoSansCJKtc;
   font-size: 16px;
   font-weight: bold;
@@ -24,7 +26,7 @@ const CardContent = styled.div`
   width: 100%;
   padding: 1.25rem;
 `
-const CardDescription = styled.p`
+const CardDescription = styled.div`
   ${MultiLineTruncationMixin}
   margin-bottom: 12px;
   height: 3em;
@@ -38,7 +40,11 @@ const CardMetaBlock = styled.div`
   line-height: 1.5rem;
 `
 
-const StyledCard = styled.div<CardProps>`
+const StyledCard = styled.div<{
+  $variant?: CardProps['variant']
+  $shadowed?: boolean
+  $horizontal?: boolean
+}>`
   -webkit-transform: translate3d(0, 0, 0);
   position: relative;
   display: flex;
@@ -48,24 +54,24 @@ const StyledCard = styled.div<CardProps>`
   user-select: none;
   align-items: center;
   justify-content: center;
-  flex-direction: ${props => (props.horizontal ? 'row' : 'column')};
-  border: ${props => props.variant === 'outline' && '1px solid white'};
-  filter: ${props => props.shadowed && 'drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1))'};
+  flex-direction: ${props => (props.$horizontal ? 'row' : 'column')};
+  border: ${props => props.$variant === 'outline' && '1px solid white'};
+  filter: ${props => props.$shadowed && 'drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1))'};
 `
 
-const StyledAvatarBlock = styled.div<{ direction?: 'row' | 'column' }>`
+const StyledAvatarBlock = styled.div<{ $direction?: 'row' | 'column' }>`
   margin-top: 2rem;
   display: flex;
   align-items: center;
   color: #585858;
   font-size: 14px;
-  ${props => props.direction === 'column' && 'flex-direction: column;'}
+  ${props => props.$direction === 'column' && 'flex-direction: column;'}
 `
-const AvatarImage = styled.div<{ src?: string }>`
+const AvatarImage = styled.div<{ $src?: string }>`
   width: 2.5rem;
   height: 2.5rem;
   background-color: #ccc;
-  background-image: url(${props => props.src || DefaultAvatar});
+  background-image: url(${props => props.$src || DefaultAvatar});
   background-size: cover;
   background-position: center;
   border-radius: 50%;
@@ -82,8 +88,8 @@ const CardAvatar: React.FC<{
   withAvatarImage?: boolean
   direction?: 'row' | 'column'
 }> = ({ src, name, withName, withAvatarImage, direction = 'row' }) => (
-  <StyledAvatarBlock direction={direction}>
-    {withAvatarImage && <AvatarImage src={src} />}
+  <StyledAvatarBlock $direction={direction}>
+    {withAvatarImage && <AvatarImage $src={src} />}
     {withName && (
       <MemberName className={withAvatarImage ? (direction === 'row' ? 'ml-3' : 'mt-3') : ''}>{name}</MemberName>
     )}
@@ -98,9 +104,17 @@ const Card: ElementComponent<CardProps> & {
   MetaBlock: typeof CardMetaBlock
   Avatar: typeof CardAvatar
 } = props => {
+  const { children, className, variant, darkMode, shadowed, horizontal, editing, loading, errors, ...restProps } = props
+
   return (
-    <StyledCard className={classNames('card', props.className)} {...props}>
-      {props.children}
+    <StyledCard
+      className={classNames('card', className)}
+      $variant={variant}
+      $shadowed={shadowed}
+      $horizontal={horizontal}
+      {...restProps}
+    >
+      {children}
     </StyledCard>
   )
 }

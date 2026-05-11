@@ -1,4 +1,3 @@
-import { repeat } from 'ramda'
 import { useIntl } from 'react-intl'
 import { useApp } from '../../contexts/AppContext'
 import { ResourceType, useResourceCollection } from '../../hooks/resource'
@@ -46,16 +45,17 @@ const Collection = <P extends object>(
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: `0 ${-(props.layout?.gutter || 16)}px` }}>
         <Tracking.Impression collection={name} resources={resourceCollection} ignore={'CUSTOM'} />
         {props.loading ? (
-          repeat(
+          Array.from({ length: 4 }, (_, index) => (
             <div
+              key={index}
               style={{
                 width,
                 padding,
               }}
             >
               <ElementComponent {...loadingProps} />
-            </div>,
-          )(4)
+            </div>
+          ))
         ) : props.errors ? (
           <div
             style={{

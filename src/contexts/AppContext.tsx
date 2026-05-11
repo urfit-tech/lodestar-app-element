@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
 import hasura from '../hasura'
 import { AppProps, NavProps } from '../types/app'
 import { useAuth } from './AuthContext'
@@ -38,6 +38,7 @@ export const useApp = () => useContext(AppContext)
 
 export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
   const { authToken, refreshToken } = useAuth()
+  const lastLoadedAppRef = useRef<AppContextProps | null>(null)
   const { data, loading, error, refetch } = useQuery<hasura.GET_APP, hasura.GET_APPVariables>(
     gql`
       query GET_APP($appId: String!) {
@@ -174,11 +175,25 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     [data?.app_by_pk, data?.currency, error, loading, refetch, secrets, settings],
   )
 
+  if (app.id) {
+    lastLoadedAppRef.current = app
+  }
+
+  const appContextValue =
+    !app.id && loading && lastLoadedAppRef.current?.id === appId
+      ? {
+          ...lastLoadedAppRef.current,
+          loading,
+          error,
+          refetch,
+        }
+      : app
+
   useEffect(() => {
     if (!authToken) {
       refreshToken?.()
     }
   }, [appId, authToken, refreshToken])
 
-  return <AppContext.Provider value={app}>{children}</AppContext.Provider>
+  return <AppContext.Provider value={appContextValue}>{children}</AppContext.Provider>
 }

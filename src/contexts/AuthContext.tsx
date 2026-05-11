@@ -82,7 +82,9 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
             email_optin: true,
           },
         }
-        ReactGA.set({ userId: payload.sub })
+        if (typeof (window as any).ga === 'function') {
+          ReactGA.set({ userId: payload.sub })
+        }
       } catch (error) {
         process.env.NODE_ENV === 'development' && console.error(error)
       }
