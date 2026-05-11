@@ -1,4 +1,4 @@
-import InnerHTML from 'dangerously-set-html-content'
+import { FC, HTMLAttributes, useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { ElementComponent } from '../../types/element'
@@ -10,6 +10,27 @@ const StyledDiv = styled.div<EmbeddedProps>`
   }
 `
 
+type HtmlContentProps = HTMLAttributes<HTMLDivElement> & {
+  html: string
+  allowRerender?: boolean
+}
+
+const HtmlContent: FC<HtmlContentProps> = ({ html, allowRerender, ...rest }) => {
+  const divRef = useRef<HTMLDivElement>(null)
+  const shouldRenderRef = useRef(true)
+
+  useEffect(() => {
+    if (!html || !divRef.current || !shouldRenderRef.current) return
+
+    shouldRenderRef.current = Boolean(allowRerender)
+    const slotHtml = document.createRange().createContextualFragment(html)
+    divRef.current.innerHTML = ''
+    divRef.current.appendChild(slotHtml)
+  }, [allowRerender, html])
+
+  return <div {...rest} ref={divRef} />
+}
+
 export type EmbeddedProps = { iframe: string }
 const Embedded: ElementComponent<EmbeddedProps> = props => {
   const { formatMessage } = useIntl()
@@ -19,7 +40,7 @@ const Embedded: ElementComponent<EmbeddedProps> = props => {
   // FIXME: escape special characters
   return (
     <StyledDiv {...props}>
-      {props.iframe ? <InnerHTML html={props.iframe} /> : formatMessage(commonMessages.Embedded.iframe)}
+      {props.iframe ? <HtmlContent html={props.iframe} /> : formatMessage(commonMessages.Embedded.iframe)}
     </StyledDiv>
   )
 }
