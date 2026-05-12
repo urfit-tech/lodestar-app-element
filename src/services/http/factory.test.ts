@@ -61,6 +61,25 @@ describe('HTTP client factory', () => {
     ).resolves.toEqual({ code: 'SUCCESS', result: { id: 'order_1' } })
   })
 
+  it('preserves axios default timeout unless timeoutMs is explicitly provided', async () => {
+    const defaultClient = createHttpClient({ baseURL: 'https://api.example.com' })
+    const timeoutClient = createHttpClient({ baseURL: 'https://api.example.com', timeoutMs: 30000 })
+    const seenTimeouts: unknown[] = []
+
+    await defaultClient.get('/default-timeout', {
+      adapter: createAdapter({ ok: true }, config => {
+        seenTimeouts.push(config.timeout)
+      }),
+    })
+    await timeoutClient.get('/custom-timeout', {
+      adapter: createAdapter({ ok: true }, config => {
+        seenTimeouts.push(config.timeout)
+      }),
+    })
+
+    expect(seenTimeouts).toEqual([0, 30000])
+  })
+
   it('unwraps standard backend responses with postResult', async () => {
     const client = createHttpClient({ baseURL: 'https://api.example.com' })
 

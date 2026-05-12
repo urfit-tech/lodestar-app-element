@@ -3,8 +3,6 @@ import { normalizeHttpError } from './error'
 import { unwrapApiResponse } from './response'
 import { HttpClient, HttpClientOptions, HttpRequestConfig, StandardApiResponse } from './types'
 
-const DEFAULT_TIMEOUT_MS = 15000
-
 export const createHttpClient = (options: HttpClientOptions = {}): HttpClient => {
   if (!options.baseURL) {
     throw new Error('HTTP client baseURL is required')
@@ -12,7 +10,7 @@ export const createHttpClient = (options: HttpClientOptions = {}): HttpClient =>
 
   const instance = axios.create({
     baseURL: options.baseURL,
-    timeout: options.timeoutMs ?? DEFAULT_TIMEOUT_MS,
+    timeout: options.timeoutMs,
     withCredentials: options.withCredentials,
   })
 
