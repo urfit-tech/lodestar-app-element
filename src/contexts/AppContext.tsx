@@ -22,7 +22,6 @@ const defaultAppContextProps: AppContextProps = {
   appPlanId: '',
   navs: [],
   settings: {},
-  secrets: {},
   currencyId: 'TWD',
   currencies: {},
   loading: true,
@@ -89,10 +88,6 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             key
             value
           }
-          app_secrets {
-            key
-            value
-          }
           app_hosts(order_by: { priority: asc }) {
             host
           }
@@ -109,10 +104,6 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
   const settings = useMemo(
     () => Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || []),
     [data?.app_by_pk?.app_settings],
-  )
-  const secrets = useMemo(
-    () => Object.fromEntries(data?.app_by_pk?.app_secrets.map(v => [v.key, v.value]) || []),
-    [data?.app_by_pk?.app_secrets],
   )
   const app: AppContextProps = useMemo(
     () =>
@@ -155,7 +146,6 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
               })),
             })),
             settings,
-            secrets,
             currencyId: settings['currency_id'] || 'TWD',
             currencies:
               data?.currency.reduce((accumulator, currency) => {
@@ -172,7 +162,7 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
             endedAt: data.app_by_pk.ended_at || null,
           }
         : defaultAppContextProps,
-    [data?.app_by_pk, data?.currency, error, loading, refetch, secrets, settings],
+    [data?.app_by_pk, data?.currency, error, loading, refetch, settings],
   )
 
   if (app.id) {

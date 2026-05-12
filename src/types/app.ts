@@ -174,11 +174,6 @@ export type AppProps = {
   }
   appPlanId: string
   settings: Record<string, string>
-  secrets: Record<string, string> & {
-    'payment.perpetual.default_gateway'?: undefined
-    'payment.perpetual.default_gateway_method'?: undefined
-    'payment.subscription.default_gateway'?: undefined
-  }
   currencyId: string
   currencies: { [currencyId: string]: Currency }
   navs: AppNavProps[]
