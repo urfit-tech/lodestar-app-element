@@ -1,10 +1,10 @@
-import Axios from 'axios'
 import { prop, sum } from 'ramda'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 import { useApp } from '../contexts/AppContext'
 import { useAuth } from '../contexts/AuthContext'
 import { getTrackingCookie } from '../helpers'
+import { createAppBackendClient } from '../services/http'
 import {
   CheckProps,
   InvoiceProps,
@@ -32,31 +32,27 @@ export const useCheck = ({
   const [orderChecking, setOrderChecking] = useState(false)
   const [orderPlacing, setOrderPlacing] = useState(false)
   const [checkError, setCheckError] = useState<Error | null>(null)
+  const appBackendClient = useMemo(() => createAppBackendClient({ getAuthToken: () => authToken }), [authToken])
 
   useEffect(() => {
     setOrderChecking(true)
-    Axios.post<{
-      code: string
-      message: string
-      result: {
-        orderProducts: OrderProductProps[]
-        orderDiscounts: OrderDiscountProps[]
-        shippingOption: ShippingOptionProps
-      }
-    }>(
-      `${process.env.REACT_APP_API_BASE_ROOT}/payment/checkout-order`,
-      {
+    appBackendClient
+      .post<{
+        code: string
+        message: string
+        result: {
+          orderProducts: OrderProductProps[]
+          orderDiscounts: OrderDiscountProps[]
+          shippingOption: ShippingOptionProps
+        }
+      }>('/payment/checkout-order', {
         appId,
         productIds,
         discountId,
         shipping,
         options,
-      },
-      {
-        headers: { authorization: `Bearer ${authToken}` },
-      },
-    )
-      .then(({ data: { code, message, result } }) => {
+      })
+      .then(({ code, message, result }) => {
         if (code === 'SUCCESS') {
           setCheck(result)
         } else {
@@ -67,8 +63,8 @@ export const useCheck = ({
       .finally(() => setOrderChecking(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    appBackendClient,
     appId,
-    authToken,
     discountId,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(options),
@@ -87,20 +83,19 @@ export const useCheck = ({
       setOrderPlacing(true)
       const trackingCookie = getTrackingCookie()
       const trackingOptions = { ...trackingCookie }
-      return Axios.post<{
-        code: string
-        message: string
-        result: {
-          orderId: string
-          totalAmount: number
-          paymentNo: string | null
-          payToken: string | null
-          products: { name: string; price: number }[]
-          discounts: { name: string; price: number }[]
-        }
-      }>(
-        `${process.env.REACT_APP_API_BASE_ROOT}/order/create`,
-        {
+      return appBackendClient
+        .post<{
+          code: string
+          message: string
+          result: {
+            orderId: string
+            totalAmount: number
+            paymentNo: string | null
+            payToken: string | null
+            products: { name: string; price: number }[]
+            discounts: { name: string; price: number }[]
+          }
+        }>('/order/create', {
           clientBackUrl: window.location.origin,
           paymentModel: { type: paymentType, gateway: payment?.gateway, method: payment?.method },
           productIds,
@@ -109,12 +104,8 @@ export const useCheck = ({
           invoice,
           options,
           tracking: trackingOptions,
-        },
-        {
-          headers: { authorization: `Bearer ${authToken}` },
-        },
-      )
-        .then(({ data: { code, result, message } }) => {
+        })
+        .then(({ code, result, message }) => {
           if (code === 'SUCCESS') {
             ReactGA.plugin.execute('ec', 'setAction', 'checkout', { step: 4 })
             ReactGA.ga('send', 'pageview')
@@ -125,7 +116,7 @@ export const useCheck = ({
         })
         .finally(() => setOrderPlacing(false))
     },
-    [authToken, discountId, options, productIds, shipping],
+    [appBackendClient, discountId, options, productIds, shipping],
   )
 
   const totalPrice =

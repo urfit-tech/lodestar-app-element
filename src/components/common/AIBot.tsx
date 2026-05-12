@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
-import axios from 'axios'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
+import { createAppBackendClient } from '../../services/http'
 import { ElementComponent } from '../../types/element'
 
 export type AIBotProps = {
@@ -12,6 +12,7 @@ export type AIBotProps = {
 }
 const AIBot: ElementComponent<AIBotProps> = props => {
   const { authToken } = useAuth()
+  const appBackendClient = useMemo(() => createAppBackendClient({ getAuthToken: () => authToken }), [authToken])
   const [result, setResult] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isInvalid, setIsInvalid] = useState(props.assistants?.map(assistant => false) || [])
@@ -29,7 +30,7 @@ const AIBot: ElementComponent<AIBotProps> = props => {
         messages.push({ role: 'user', content: userMessages[index] })
       }
       setIsLoading(true)
-      axios
+      appBackendClient
         .post<{
           code: string
           message: string
@@ -40,14 +41,8 @@ const AIBot: ElementComponent<AIBotProps> = props => {
             }
             finish_reason: 'stop' | 'length' | 'content_filter' | 'null'
           }
-        }>(
-          `${process.env.REACT_APP_API_BASE_ROOT}/sys/openai/chat`,
-          { messages, temperature: props.temperature },
-          {
-            headers: { authorization: `Bearer ${authToken}` },
-          },
-        )
-        .then(({ data: { code, message, result } }) => {
+        }>('/sys/openai/chat', { messages, temperature: props.temperature })
+        .then(({ code, message, result }) => {
           if (code === 'SUCCESS') {
             setResult(result.message.content)
           } else {

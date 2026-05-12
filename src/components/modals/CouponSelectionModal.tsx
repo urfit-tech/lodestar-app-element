@@ -1,7 +1,6 @@
 import { Button, Input, Spinner } from '@chakra-ui/react'
-import axios from 'axios'
 import { sum } from 'ramda'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import { useAuth } from '../../contexts/AuthContext'
@@ -9,6 +8,7 @@ import { handleError } from '../../helpers'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCouponCollection } from '../../hooks/data'
 import { useToastMessage } from '../../hooks/util'
+import { createAppBackendClient } from '../../services/http'
 import { CouponProps, OrderDiscountProps, OrderProductProps } from '../../types/checkout'
 import CouponCard from '../cards/CouponCard'
 import Divider from '../common/Divider'
@@ -31,6 +31,7 @@ const CouponSelectionModal: React.FC<{
 }> = ({ memberId, orderProducts, orderDiscounts, onSelect, renderTrigger }) => {
   const { formatMessage } = useIntl()
   const { authToken } = useAuth()
+  const appBackendClient = useMemo(() => createAppBackendClient({ getAuthToken: () => authToken }), [authToken])
   const { loading: loadingCoupons, data: coupons, fetch: refetchCoupons } = useCouponCollection(memberId || '')
 
   const [code, setCode] = useState('')
@@ -41,18 +42,12 @@ const CouponSelectionModal: React.FC<{
 
   const handleCouponInsert = () => {
     setInserting(true)
-    axios
-      .post(
-        `${process.env.REACT_APP_API_BASE_ROOT}/payment/exchange`,
-        {
-          code: code.trim(),
-          type: 'Coupon',
-        },
-        {
-          headers: { authorization: `Bearer ${authToken}` },
-        },
-      )
-      .then(({ data }) => {
+    appBackendClient
+      .post<{ code: string }>('/payment/exchange', {
+        code: code.trim(),
+        type: 'Coupon',
+      })
+      .then(data => {
         if (data.code === 'SUCCESS') {
           refetchCoupons()
           setCode('')

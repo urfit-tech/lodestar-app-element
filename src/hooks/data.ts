@@ -1,12 +1,12 @@
 import { gql, useQuery } from '@apollo/client'
-import axios from 'axios'
 import moment from 'moment'
 import { sum } from 'ramda'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { DeepPick } from 'ts-deep-pick/lib'
 import { useAuth } from '../contexts/AuthContext'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
+import { createLodestarServerClient } from '../services/http'
 import { CouponProps } from '../types/checkout'
 import { CouponFromLodestarAPI, Member, PeriodType, PodcastProgram, Program } from '../types/data'
 
@@ -370,15 +370,15 @@ export const useCouponCollection = (memberId: string) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<any>()
   const [data, setData] = useState<CouponProps[]>([])
+  const lodestarServerClient = useMemo(() => createLodestarServerClient({ getAuthToken: () => authToken }), [authToken])
 
   const fetch = useCallback(async () => {
     if (authToken) {
       const route = '/coupons'
       try {
         setLoading(true)
-        const { data } = await axios.get(`${process.env.REACT_APP_LODESTAR_SERVER_ENDPOINT}${route}`, {
+        const data = await lodestarServerClient.get<CouponFromLodestarAPI[]>(route, {
           params: { memberId, includeDeleted: false },
-          headers: { authorization: `Bearer ${authToken}` },
         })
         setData(
           data.map((coupon: CouponFromLodestarAPI) => ({
@@ -412,7 +412,7 @@ export const useCouponCollection = (memberId: string) => {
         setLoading(false)
       }
     }
-  }, [authToken, memberId])
+  }, [authToken, lodestarServerClient, memberId])
 
   useEffect(() => {
     fetch()

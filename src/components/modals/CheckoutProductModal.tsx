@@ -1,6 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
 import { Box, Button, Checkbox, Divider, OrderedList, SkeletonText, useDisclosure, useToast } from '@chakra-ui/react'
-import axios from 'axios'
 import { camelCase } from 'lodash'
 import { now } from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
@@ -29,6 +28,7 @@ import { useMember, useUpdateMemberMetadata } from '../../hooks/member'
 import { useResourceCollection } from '../../hooks/resource'
 import { useTracking } from '../../hooks/tracking'
 import { getResourceByProductId, useTappay } from '../../hooks/util'
+import { createAppBackendClient } from '../../services/http'
 import { ContactInfo, InvoiceProps, PaymentProps, ShippingOptionIdType, ShippingProps } from '../../types/checkout'
 import { ConversionApiContent, ConversionApiEvent } from '../../types/conversionApi'
 import { ShippingMethodProps } from '../../types/merchandise'
@@ -180,6 +180,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
   const [checkoutProductId] = useQueryParam('checkoutProductId', StringParam)
   const { enabledModules, settings, id: appId, currencyId: appCurrencyId } = useApp()
   const { currentMemberId, isAuthenticating, authToken } = useAuth()
+  const appBackendClient = useMemo(() => createAppBackendClient({ getAuthToken: () => authToken }), [authToken])
   const { member: currentMember } = useMember(currentMemberId || '')
   const { memberCreditCards } = useMemberCreditCards(currentMemberId || '')
   const [quantity, setQuantity] = useState(1)
@@ -513,22 +514,25 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
         clientBackUrl.searchParams.append('checkoutProductId', productId)
 
         TPDirect.card.getPrime(({ status, card: { prime } }: { status: number; card: { prime: string } }) => {
-          axios({
-            method: 'POST',
-            url: `${process.env.REACT_APP_API_BASE_ROOT}/payment/credit-cards`,
-            withCredentials: true,
-            data: {
-              prime,
-              cardHolder: {
-                name: currentMember.name,
-                email: currentMember.email,
-                phoneNumber: currentMember.phone || '0987654321',
+          appBackendClient
+            .request<{
+              code: string
+              result: any
+            }>({
+              method: 'POST',
+              url: '/payment/credit-cards',
+              withCredentials: true,
+              data: {
+                prime,
+                cardHolder: {
+                  name: currentMember.name,
+                  email: currentMember.email,
+                  phoneNumber: currentMember.phone || '0987654321',
+                },
+                clientBackUrl,
               },
-              clientBackUrl,
-            },
-            headers: { authorization: `Bearer ${authToken}` },
-          })
-            .then(({ data: { code, result } }) => {
+            })
+            .then(({ code, result }) => {
               if (code === 'SUCCESS') {
                 resolve(result.memberCreditCardId)
               } else if (code === 'REDIRECT') {

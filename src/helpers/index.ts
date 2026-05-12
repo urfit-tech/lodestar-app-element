@@ -4,6 +4,7 @@ import moment from 'moment'
 import queryString from 'query-string'
 import { css, FlattenSimpleInterpolation } from 'styled-components'
 import { BREAK_POINT } from '../components/common/Responsive'
+import { createAppBackendClient } from '../services/http'
 import { ContactInfo } from '../types/checkout'
 import { ProductPlan } from '../types/data'
 import {
@@ -36,21 +37,18 @@ export const durationFormatter = (value?: number | null) => {
 }
 
 export const uploadFile = async (key: string, file: Blob, authToken: string | null, config?: AxiosRequestConfig) =>
-  await axios
-    .post(
-      `${process.env.REACT_APP_API_BASE_ROOT}/sys/sign-url`,
-      {
+  await createAppBackendClient({ getAuthToken: () => authToken })
+    .requestResult<string>({
+      method: 'POST',
+      url: '/sys/sign-url',
+      data: {
         operation: 'putObject',
         params: {
           Key: key,
           ContentType: file.type,
         },
       },
-      {
-        headers: { authorization: `Bearer ${authToken}` },
-      },
-    )
-    .then(res => res.data.result)
+    })
     .then(url => {
       const { query } = queryString.parseUrl(url)
       return axios.put<{ status: number; data: string }>(url, file, {
