@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
-import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import hasura from '../hasura'
+import { fetchAppBootstrap } from '../services/bootstrap'
 import { AppProps, NavProps } from '../types/app'
 import { useAuth } from './AuthContext'
 
@@ -37,7 +38,39 @@ export const useApp = () => useContext(AppContext)
 
 export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
   const { authToken, refreshToken } = useAuth()
+  const bootstrapRequestIdRef = useRef(0)
   const lastLoadedAppRef = useRef<AppContextProps | null>(null)
+  const [bootstrapApp, setBootstrapApp] = useState<AppContextProps | null>(null)
+  const [bootstrapLoading, setBootstrapLoading] = useState(true)
+  const [bootstrapError, setBootstrapError] = useState<Error | undefined>()
+  const loadBootstrapApp = useCallback(() => {
+    const requestId = bootstrapRequestIdRef.current + 1
+    bootstrapRequestIdRef.current = requestId
+
+    setBootstrapApp(current => (current?.id === appId ? current : null))
+    setBootstrapLoading(true)
+    setBootstrapError(undefined)
+
+    return fetchAppBootstrap(appId)
+      .then(app => {
+        if (bootstrapRequestIdRef.current !== requestId) {
+          return
+        }
+        setBootstrapApp({ ...app, loading: false })
+      })
+      .catch(error => {
+        if (bootstrapRequestIdRef.current !== requestId) {
+          return
+        }
+        setBootstrapError(error instanceof Error ? error : new Error(String(error)))
+      })
+      .finally(() => {
+        if (bootstrapRequestIdRef.current === requestId) {
+          setBootstrapLoading(false)
+        }
+      })
+  }, [appId])
+
   const { data, loading, error, refetch } = useQuery<hasura.GET_APP, hasura.GET_APPVariables>(
     gql`
       query GET_APP($appId: String!) {
@@ -99,13 +132,14 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     {
       variables: { appId },
       context: { important: true },
+      skip: !authToken,
     },
   )
   const settings = useMemo(
     () => Object.fromEntries(data?.app_by_pk?.app_settings.map(v => [v.key, v.value]) || []),
     [data?.app_by_pk?.app_settings],
   )
-  const app: AppContextProps = useMemo(
+  const hasuraApp: AppContextProps = useMemo(
     () =>
       data?.app_by_pk
         ? {
@@ -165,19 +199,41 @@ export const AppProvider: React.FC<{ appId: string }> = ({ appId, children }) =>
     [data?.app_by_pk, data?.currency, error, loading, refetch, settings],
   )
 
-  if (app.id) {
+  const refetchApp = authToken ? refetch : () => void loadBootstrapApp()
+  const app = hasuraApp.id ? hasuraApp : bootstrapApp
+
+  if (app?.id) {
     lastLoadedAppRef.current = app
   }
 
   const appContextValue =
-    !app.id && loading && lastLoadedAppRef.current?.id === appId
+    !app?.id && lastLoadedAppRef.current?.id === appId
       ? {
           ...lastLoadedAppRef.current,
-          loading,
-          error,
-          refetch,
+          loading: false,
+          error: error || bootstrapError,
+          refetch: refetchApp,
         }
-      : app
+      : app?.id
+      ? {
+          ...app,
+          loading: false,
+          error: error || bootstrapError,
+          refetch: refetchApp,
+        }
+      : {
+          ...defaultAppContextProps,
+          loading: bootstrapLoading || Boolean(authToken && loading),
+          error: error || bootstrapError,
+          refetch: refetchApp,
+        }
+
+  useEffect(() => {
+    loadBootstrapApp()
+    return () => {
+      bootstrapRequestIdRef.current += 1
+    }
+  }, [loadBootstrapApp])
 
   useEffect(() => {
     if (!authToken) {
