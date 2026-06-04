@@ -75,20 +75,16 @@ const PaymentSelector: React.FC<{
 
 const getPaymentOptions = () => {
   const { settings } = useApp()
-  const availablePaymentGateways = JSON.parse(settings['AVAILABLE_PAYMENT_GATEWAYS'] || '[]')
+  // 未設定 AVAILABLE_PAYMENT_GATEWAYS 時 fallback 為空陣列,代表「不限制」→ 顯示該 app 全部啟用的 gateway
+  const availablePaymentGateways: string[] = JSON.parse(settings['AVAILABLE_PAYMENT_GATEWAYS'] || '[]')
   const maskedGateways: string[] = settings['payment.payment_gateway_mask']
     ? JSON.parse(settings['payment.payment_gateway_mask'])
     : []
   const { formatMessage } = useIntl()
   const { data, loading, error } = useQuery<hasura.getPaymentGatewayMethod>(
     gql`
-      query getPaymentGatewayMethod($availablePaymentGateways: [String!]!) {
-        app_payment_gateway_method(
-          where: {
-            status: { _eq: "enabled" }
-            app_payment_gateway: { gateway: { name: { _in: $availablePaymentGateways } } }
-          }
-        ) {
+      query getPaymentGatewayMethod {
+        app_payment_gateway_method(where: { status: { _eq: "enabled" } }) {
           method {
             name
           }
@@ -100,7 +96,6 @@ const getPaymentOptions = () => {
         }
       }
     `,
-    { variables: { availablePaymentGateways } },
   )
 
   const paymentOptions = data?.app_payment_gateway_method.reduce<{
@@ -139,7 +134,12 @@ const getPaymentOptions = () => {
     { methodCount: {}, paymentOptions: [] },
   ).paymentOptions
 
-  return paymentOptions?.filter(option => !maskedGateways.includes(option.payment.gateway))
+  return paymentOptions
+    ?.filter(
+      // 白名單:有設定才套用,沒設定(空陣列)則顯示全部
+      option => availablePaymentGateways.length === 0 || availablePaymentGateways.includes(option.payment.gateway),
+    )
+    .filter(option => !maskedGateways.includes(option.payment.gateway))
 }
 
 export default PaymentSelector
