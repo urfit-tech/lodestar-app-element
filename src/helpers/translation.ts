@@ -326,6 +326,7 @@ export const checkoutMessages = {
     tappay: { id: 'checkout.label.tappay', defaultMessage: 'tappay' },
     paypal: { id: 'checkout.label.paypal', defaultMessage: 'PayPal - 限非台灣地區' },
     ecpay: { id: 'checkout.label.ecpay', defaultMessage: '綠界' },
+    payuni: { id: 'checkout.label.payuni', defaultMessage: '統一金流' },
     parenting: { id: 'checkout.label.parenting', defaultMessage: '親子天下' },
     commonhealth: { id: 'checkout.label.commonhealth', defaultMessage: '康健' },
     cw_commonhealth: { id: 'checkout.label.cw_commonhealth', defaultMessage: '康健' },

@@ -92,6 +92,7 @@ export type PaymentGatewayType =
   | 'spgateway2'
   | 'physical'
   | 'ecpay'
+  | 'payuni'
 
 export type ShippingProps = {
   name?: string
