@@ -103,6 +103,18 @@ const createHttpLink = (endpoint: string | undefined, options: { authToken: stri
         },
   })
 
+// single-domain policy: a path-only REACT_APP_GRAPHQL_WS_ENDPOINT (e.g.
+// /gql-ws/v1/graphql) is resolved against the current host at runtime, so one
+// build serves every tenant domain; absolute ws(s):// values pass through
+// unchanged. WebSocket URLs must be absolute, hence the explicit derivation.
+const resolveWsEndpoint = (endpoint: string): string => {
+  if (endpoint.startsWith('/') && typeof window !== 'undefined') {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    return `${protocol}//${window.location.host}${endpoint}`
+  }
+  return endpoint
+}
+
 const createSplitLink = (appId: string, authToken: string | null) =>
   split(
     ({ query }) => {
@@ -111,7 +123,7 @@ const createSplitLink = (appId: string, authToken: string | null) =>
     },
     new GraphQLWsLink(
       createClient({
-        url: String(process.env.REACT_APP_GRAPHQL_WS_ENDPOINT),
+        url: () => resolveWsEndpoint(String(process.env.REACT_APP_GRAPHQL_WS_ENDPOINT)),
         connectionParams: {
           headers: authToken
             ? {
