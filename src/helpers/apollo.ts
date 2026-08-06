@@ -159,11 +159,42 @@ const createSplitLink = (appId: string, authToken: string | null) =>
     ),
   )
 
+// single-domain policy: URLs stored in the DB (logos, covers, craft/rich-text
+// content) point at the static host; rewrite them to the backend's same-origin
+// /files route at the display layer so browsers never contact that host.
+// Global in-string replace, because rich-text/craft values embed URLs inside
+// HTML. The DB keeps canonical absolute URLs — this mapping is read-side only.
+const STATIC_HOST_PATTERN = /https:\/\/static(-dev)?\.kolable\.com\//g
+
+export const toSameOriginUrl = (value: string): string => value.replace(STATIC_HOST_PATTERN, '/files/')
+
+const deepMapStrings = (node: any): any => {
+  if (typeof node === 'string') {
+    return toSameOriginUrl(node)
+  }
+  if (Array.isArray(node)) {
+    return node.map(deepMapStrings)
+  }
+  if (node && typeof node === 'object') {
+    const mapped: { [key: string]: any } = {}
+    for (const key of Object.keys(node)) {
+      mapped[key] = deepMapStrings(node[key])
+    }
+    return mapped
+  }
+  return node
+}
+
+const sameOriginUrlLink = new ApolloLink((operation, forward) =>
+  forward(operation).map(result => (result.data ? { ...result, data: deepMapStrings(result.data) } : result)),
+)
+
 export const createApolloClient = (options: ApolloClientOptions, errorCallbacks?: ApolloErrorCallbacks) => {
   const apolloClient = new ApolloClient({
     link: from([
       createGraphQLErrorRetryLink(options.graphQLRetryCallbacks || []),
       onErrorLink(errorCallbacks),
+      sameOriginUrlLink,
       createSplitLink(options.appId, options.authToken),
     ]),
     cache: new InMemoryCache(),
