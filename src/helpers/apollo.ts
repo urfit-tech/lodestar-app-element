@@ -103,6 +103,18 @@ const createHttpLink = (endpoint: string | undefined, options: { authToken: stri
         },
   })
 
+// single-domain policy: a path-only REACT_APP_GRAPHQL_WS_ENDPOINT (e.g.
+// /gql-ws/v1/graphql) is resolved against the current host at runtime, so one
+// build serves every tenant domain; absolute ws(s):// values pass through
+// unchanged. WebSocket URLs must be absolute, hence the explicit derivation.
+const resolveWsEndpoint = (endpoint: string): string => {
+  if (endpoint.startsWith('/') && typeof window !== 'undefined') {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    return `${protocol}//${window.location.host}${endpoint}`
+  }
+  return endpoint
+}
+
 const createSplitLink = (appId: string, authToken: string | null) =>
   split(
     ({ query }) => {
@@ -111,7 +123,7 @@ const createSplitLink = (appId: string, authToken: string | null) =>
     },
     new GraphQLWsLink(
       createClient({
-        url: String(process.env.REACT_APP_GRAPHQL_WS_ENDPOINT),
+        url: () => resolveWsEndpoint(String(process.env.REACT_APP_GRAPHQL_WS_ENDPOINT)),
         connectionParams: {
           headers: authToken
             ? {
@@ -147,11 +159,42 @@ const createSplitLink = (appId: string, authToken: string | null) =>
     ),
   )
 
+// single-domain policy: URLs stored in the DB (logos, covers, craft/rich-text
+// content) point at the static host; rewrite them to the backend's same-origin
+// /files route at the display layer so browsers never contact that host.
+// Global in-string replace, because rich-text/craft values embed URLs inside
+// HTML. The DB keeps canonical absolute URLs — this mapping is read-side only.
+const STATIC_HOST_PATTERN = /https:\/\/static(-dev)?\.kolable\.com\//g
+
+export const toSameOriginUrl = (value: string): string => value.replace(STATIC_HOST_PATTERN, '/files/')
+
+const deepMapStrings = (node: any): any => {
+  if (typeof node === 'string') {
+    return toSameOriginUrl(node)
+  }
+  if (Array.isArray(node)) {
+    return node.map(deepMapStrings)
+  }
+  if (node && typeof node === 'object') {
+    const mapped: { [key: string]: any } = {}
+    for (const key of Object.keys(node)) {
+      mapped[key] = deepMapStrings(node[key])
+    }
+    return mapped
+  }
+  return node
+}
+
+const sameOriginUrlLink = new ApolloLink((operation, forward) =>
+  forward(operation).map(result => (result.data ? { ...result, data: deepMapStrings(result.data) } : result)),
+)
+
 export const createApolloClient = (options: ApolloClientOptions, errorCallbacks?: ApolloErrorCallbacks) => {
   const apolloClient = new ApolloClient({
     link: from([
       createGraphQLErrorRetryLink(options.graphQLRetryCallbacks || []),
       onErrorLink(errorCallbacks),
+      sameOriginUrlLink,
       createSplitLink(options.appId, options.authToken),
     ]),
     cache: new InMemoryCache(),
