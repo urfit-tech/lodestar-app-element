@@ -164,9 +164,20 @@ const createSplitLink = (appId: string, authToken: string | null) =>
 // /files route at the display layer so browsers never contact that host.
 // Global in-string replace, because rich-text/craft values embed URLs inside
 // HTML. The DB keeps canonical absolute URLs — this mapping is read-side only.
-const STATIC_HOST_PATTERN = /https:\/\/static(-dev)?\.kolable\.com\//g
+// Only URLs on THIS app's own bucket may be rewritten: /files serves objects
+// out of the bucket the backend is configured with, so pointing a different
+// host's URL at it yields a 404. Staging is the case that proves it — its DB
+// rows carry production-bucket URLs whose objects the staging bucket lacks.
+const STATIC_HOST_PATTERN = (() => {
+  const bucketHost = (process.env.REACT_APP_S3_BUCKET || '').split('/')[0]
+  if (!bucketHost) {
+    return null
+  }
+  return new RegExp(`https?://${bucketHost.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`, 'g')
+})()
 
-export const toSameOriginUrl = (value: string): string => value.replace(STATIC_HOST_PATTERN, '/files/')
+export const toSameOriginUrl = (value: string): string =>
+  STATIC_HOST_PATTERN ? value.replace(STATIC_HOST_PATTERN, '/files/') : value
 
 const deepMapStrings = (node: any): any => {
   if (typeof node === 'string') {
