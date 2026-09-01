@@ -169,6 +169,13 @@ const createSplitLink = (appId: string, authToken: string | null) =>
 // host's URL at it yields a 404. Staging is the case that proves it — its DB
 // rows carry production-bucket URLs whose objects the staging bucket lacks.
 const STATIC_HOST_PATTERN = (() => {
+  // two-way switch: the mapping only runs when the app opts in via
+  // REACT_APP_SAME_ORIGIN_URL_MAPPING=1; otherwise stored URLs pass through
+  // untouched (original-path mode), which keeps this build identical to the
+  // pre-single-domain behaviour.
+  if (process.env.REACT_APP_SAME_ORIGIN_URL_MAPPING !== '1') {
+    return null
+  }
   const bucketHost = (process.env.REACT_APP_S3_BUCKET || '').split('/')[0]
   if (!bucketHost) {
     return null
