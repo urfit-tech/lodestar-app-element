@@ -20,7 +20,7 @@ import { useApp } from '../../contexts/AppContext'
 import { useAuth } from '../../contexts/AuthContext'
 import hasura from '../../hasura'
 import { notEmpty, validateContactInfo } from '../../helpers'
-import { getConversionApiData } from '../../helpers/conversionApi'
+import { getConversionApiData, isConversionApiEnabled } from '../../helpers/conversionApi'
 import { checkoutMessages, commonMessages } from '../../helpers/translation'
 import { useCheck } from '../../hooks/checkout'
 import { useMemberValidation, useSimpleProduct } from '../../hooks/common'
@@ -476,11 +476,7 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
       })
     }
 
-    if (
-      settings['tracking.fb_conversion_api.pixel_id'] &&
-      settings['tracking.fb_conversion_api.access_token'] &&
-      enabledModules.fb_conversion_api
-    ) {
+    if (isConversionApiEnabled(settings, enabledModules)) {
       const contents: ConversionApiContent[] = [{ id: productTarget.title || productId, quantity: 1 }]
       const event: ConversionApiEvent = {
         sourceUrl: window.location.href,
