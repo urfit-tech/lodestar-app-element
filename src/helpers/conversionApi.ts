@@ -9,13 +9,24 @@ import {
 } from '../types/conversionApi'
 import { MemberProps } from '../types/member'
 
-/* TODO:
-* conversionApi: 
-* send request to backend and let backend send events to meta
-* this will be deprecated when we can add cart product and payment info via backend api instead of using Hasura mutation.
-----------------------------------------------------------------
-* conversionApiData: convert data structure
-*/
+/**
+ * Facebook Conversions API (server-side events).
+ *
+ * The browser never holds tracking.fb_conversion_api.access_token: that key is blocked for every browser
+ * role, and the backend reads it with the admin connection when POST /api/v1/tracking is called.
+ * The frontend switch is the boolean app setting tracking.fb_conversion_api.enabled ('1') plus the
+ * fb_conversion_api module; both are public settings.
+ *
+ * conversionApi: send the event content to the backend, which sends it to Meta.
+ * conversionApiData: convert data structure (also stored into cart / order options for the server-side Purchase).
+ */
+export const FB_CONVERSION_API_ENABLED_SETTING = 'tracking.fb_conversion_api.enabled'
+
+export const isConversionApiEnabled = (
+  settings: Record<string, string>,
+  enabledModules: { fb_conversion_api?: boolean },
+): boolean => settings[FB_CONVERSION_API_ENABLED_SETTING] === '1' && Boolean(enabledModules.fb_conversion_api)
+
 export const getConversionApiData: (
   member: MemberProps | null,
   data: {
