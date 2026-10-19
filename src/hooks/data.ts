@@ -305,10 +305,8 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
               name
             }
           }
-          activity_enrollments_aggregate {
-            aggregate {
-              count
-            }
+          activity_enrollment_count {
+            enrollment_count
           }
           activity_sessions_aggregate {
             aggregate {
@@ -349,7 +347,7 @@ export const usePublishedActivityCollection = (options?: { ids: string[] }) => {
               endedAt:
                 value.activity_sessions_aggregate.aggregate?.max?.ended_at &&
                 new Date(value.activity_sessions_aggregate.aggregate.max.ended_at),
-              participantCount: value.activity_enrollments_aggregate.aggregate?.count || 0,
+              participantCount: value.activity_enrollment_count?.enrollment_count || 0,
               totalSeats: value.activity_tickets_aggregate.aggregate?.sum?.count || 0,
               categories: value.activity_categories.map(v => ({ id: v.category.id, name: v.category.name })),
             }
