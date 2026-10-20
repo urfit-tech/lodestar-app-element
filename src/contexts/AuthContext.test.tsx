@@ -76,3 +76,66 @@ it.each(['E_PROVIDER_TOKEN', 'E_PROVIDER', 'E_APP_MISMATCH', 'E_SOCIAL_LOGIN', '
     })
   },
 )
+
+it('a legacy 200 refresh refusal cannot resurrect the bootstrap token on remount', async () => {
+  ;(window as any).AUTH_TOKEN = 'old-token'
+  mockPost.mockResolvedValue({ code: 'E_AUTH_TOKEN', result: null })
+  const root = document.createElement('div')
+  const mount = () =>
+    ReactDOM.render(
+      <AuthProvider appId="app">
+        <Consumer />
+      </AuthProvider>,
+      root,
+    )
+  act(() => {
+    mount()
+  })
+  await act(async () => {
+    await auth.refreshToken?.()
+  })
+  expect(root.textContent).toBe('anonymous')
+  expect((window as any).AUTH_TOKEN).toBeNull()
+  act(() => {
+    ReactDOM.unmountComponentAtNode(root)
+  })
+  act(() => {
+    mount()
+  })
+  expect(root.textContent).toBe('anonymous')
+  act(() => {
+    ReactDOM.unmountComponentAtNode(root)
+  })
+})
+
+it.each(['register', 'login', 'socialLogin', 'forceLogin'])(
+  'preserves the full legacy 200 rate-limit body through %s',
+  async (method: string) => {
+    ;(window as any).AUTH_TOKEN = 'old-token'
+    const body = { code: 'E_TOO_MANY_ATTEMPTS', message: 'limited', result: null, retryAfter: 3599 }
+    mockPost.mockResolvedValue(body)
+    const root = document.createElement('div')
+    act(() => {
+      ReactDOM.render(
+        <AuthProvider appId="app">
+          <Consumer />
+        </AuthProvider>,
+        root,
+      )
+    })
+    let failure: unknown
+    await act(async () => {
+      try {
+        await (auth as any)[method]({ account: 'test@example.com', password: 'password', provider: 'google' })
+      } catch (error) {
+        failure = error
+      }
+    })
+    expect(readAuthResponse(failure)).toMatchObject({ code: body.code, retryAfter: 3599 })
+    expect(root.textContent).toBe('anonymous')
+    expect((window as any).AUTH_TOKEN).toBeNull()
+    act(() => {
+      ReactDOM.unmountComponentAtNode(root)
+    })
+  },
+)

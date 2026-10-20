@@ -1,5 +1,6 @@
 import { expect, it } from '@jest/globals'
 import { createIntl, createIntlCache } from 'react-intl'
+import { normalizeHttpError } from '../services/http/error'
 import { formatAuthError, readAuthResponse } from './authResponse'
 
 const intl = createIntl({ locale: 'zh-TW', defaultLocale: 'zh-TW', messages: {} }, createIntlCache())
@@ -39,4 +40,22 @@ it('handles legacy Error(code), unknown codes, malformed input and transport err
   ]) {
     expect(formatAuthError(error, format)).toBe('操作失敗，請稍後再試')
   }
+})
+
+it('preserves Retry-After headers through the HTTP client ApiError wrapper', () => {
+  const response = { status: 429, data: { code: 'E_TOO_MANY_ATTEMPTS' }, headers: { 'retry-after': '3599' } }
+  expect(readAuthResponse({ response }).retryAfter).toBe(3599)
+  expect(readAuthResponse({ status: 429, details: response.data, cause: { response } }).retryAfter).toBe(3599)
+})
+
+it('retains the real HTTP client normalized response and header metadata', () => {
+  const error = normalizeHttpError({
+    isAxiosError: true,
+    response: {
+      status: 429,
+      data: { code: 'E_TOO_MANY_ATTEMPTS', message: 'limited' },
+      headers: { 'retry-after': '3599' },
+    },
+  })
+  expect(readAuthResponse(error)).toEqual({ code: 'E_TOO_MANY_ATTEMPTS', message: 'limited', retryAfter: 3599 })
 })

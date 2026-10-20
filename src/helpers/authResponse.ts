@@ -7,7 +7,7 @@ const record = (value: unknown): Record<string, any> =>
 /** Shared contract: Axios rejection, normalized ApiError, legacy Error(code), or a 2xx response body. */
 export const readAuthResponse = (error: unknown) => {
   const value = record(error)
-  const response = record(value.response)
+  const response = record(value.response || record(value.cause).response)
   const data = record(response.data || value.details || value)
   const status = response.status || value.status
   const code =
@@ -18,7 +18,8 @@ export const readAuthResponse = (error: unknown) => {
       : typeof value.message === 'string' && value.message.startsWith('E_')
       ? value.message
       : undefined
-  const rawRetry = data.retryAfter ?? record(data.result).retryAfter ?? record(response.headers)['retry-after']
+  const rawRetry =
+    data.retryAfter ?? value.retryAfter ?? record(data.result).retryAfter ?? record(response.headers)['retry-after']
   const seconds = Number(rawRetry)
   return {
     code: code || (status === 429 ? 'E_TOO_MANY_ATTEMPTS' : undefined),
