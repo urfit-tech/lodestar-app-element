@@ -4,6 +4,8 @@ import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 import { getBackendServerError } from '../helpers'
+import { readAuthResponse } from '../helpers/authResponse'
+import { BackendServerError } from '../helpers/error'
 import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hooks/util'
 import { createAppBackendClient } from '../services/http'
 import { Permission } from '../types/app'
@@ -66,7 +68,11 @@ export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) => {
   const [isAuthenticating, setIsAuthenticating] = useState(defaultAuthContext.isAuthenticating)
-  const [authToken, setAuthToken] = useState<string | null>((window as any).AUTH_TOKEN || null)
+  const [authToken, setAuthTokenState] = useState<string | null>((window as any).AUTH_TOKEN || null)
+  const setAuthToken = useCallback((token: string | null) => {
+    ;(window as any).AUTH_TOKEN = token
+    setAuthTokenState(token)
+  }, [])
   const payload = useMemo(() => (authToken ? parsePayload(authToken) : null), [authToken])
   const appBackendClient = useMemo(() => createAppBackendClient(), [])
 
@@ -95,26 +101,31 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
 
   const refreshToken = useCallback(async () => {
     setIsAuthenticating(true)
-    const fingerPrintId = await getFingerPrintId()
-    const { ip, country, countryCode } = await fetchCurrentGeolocation()
-    const { code, result } = await appBackendClient.post<{
-      code: string
-      result: { authToken: string }
-    }>(
-      '/auth/refresh-token',
-      { appId, fingerPrintId, geoLocation: { ip, country, countryCode } },
-      { withCredentials: true },
-    )
-    if (code === 'SUCCESS') {
-      setAuthToken(result.authToken)
-    } else if (code === 'E_NO_DEVICE') {
+    try {
+      const fingerPrintId = await getFingerPrintId()
+      const { ip, country, countryCode } = await fetchCurrentGeolocation()
+      const { code, result } = await appBackendClient.post<{
+        code: string
+        result: { authToken: string }
+      }>(
+        '/auth/refresh-token',
+        { appId, fingerPrintId, geoLocation: { ip, country, countryCode } },
+        { withCredentials: true },
+      )
+      if (code === 'SUCCESS') {
+        setAuthToken(result.authToken)
+      } else if (code === 'E_NO_DEVICE') {
+        setAuthToken(null)
+        alert('您已被登出，目前有其他裝置登入這組帳號')
+      } else {
+        setAuthToken(null)
+      }
+    } catch {
       setAuthToken(null)
-      alert('您已被登出，目前有其他裝置登入這組帳號')
-    } else {
-      setAuthToken(null)
+    } finally {
+      setIsAuthenticating(false)
     }
-    setIsAuthenticating(false)
-  }, [appBackendClient, appId])
+  }, [appBackendClient, appId, setAuthToken])
 
   const currentMember = payload && {
     id: payload.sub,
@@ -151,6 +162,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
           appBackendClient
             .post<{
               code: string
+              retryAfter?: number
               message: string
               result: { authToken: string }
             }>(
@@ -164,7 +176,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               },
               { withCredentials: true },
             )
-            .then(({ code, message, result }) => {
+            .then(({ code, message, result, retryAfter }) => {
               if (code === 'SUCCESS') {
                 if (!data.withoutLogin) {
                   setAuthToken(result.authToken)
@@ -253,15 +265,16 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 } catch {}
               } else {
                 setAuthToken(null)
-                throw new Error(code)
+                throw Object.assign(new Error(code), { code, retryAfter })
               }
             }),
         login: async ({ account, password, accountLinkToken }) => {
           const fingerPrintId = await getFingerPrintId()
           const { ip, country, countryCode } = await fetchCurrentGeolocation()
           try {
-            const { code, message, result } = await appBackendClient.post<{
+            const { code, message, result, retryAfter } = await appBackendClient.post<{
               code: string
+              retryAfter?: number
               message: string
               result: any
             }>(
@@ -276,21 +289,36 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
               }
             } else if (code === 'I_RESET_PASSWORD') {
-              window.location.assign(`/check-email?email=${account}&type=reset-password`)
+              window.location.assign(
+                `/check-email?email=${encodeURIComponent(account)}&type=reset-password&retryAfter=${
+                  readAuthResponse({ retryAfter }).retryAfter || 60
+                }&requestedAt=${Date.now()}`,
+              )
             } else {
               setAuthToken(null)
-              throw getBackendServerError(code, message, result)
+              throw Object.assign(getBackendServerError(code, message, result), { code, retryAfter })
             }
 
             return { code }
           } catch (error) {
-            throw error
+            setAuthToken(null)
+            const response = readAuthResponse(error)
+            if (error instanceof BackendServerError) throw error
+            throw Object.assign(
+              getBackendServerError(
+                response.code || 'E_AUTH_GENERIC',
+                response.message || '',
+                (error as any)?.details?.result || (error as any)?.response?.data?.result || '',
+              ),
+              response,
+            )
           }
         },
         socialLogin: async ({ provider, providerToken, accountLinkToken, isForceLogin }) =>
           appBackendClient
             .post<{
               code: string
+              retryAfter?: number
               message: string
               result: any
             }>(
@@ -303,7 +331,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               },
               { withCredentials: true },
             )
-            .then(async ({ code, message, result }) => {
+            .then(async ({ code, message, result, retryAfter }) => {
               if (code === 'SUCCESS') {
                 setAuthToken(result.authToken)
                 const decodedToken = parsePayload(result.authToken)
@@ -315,13 +343,27 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 }
               } else {
                 setAuthToken(null)
-                throw getBackendServerError(code, message, result)
+                throw Object.assign(getBackendServerError(code, message, result), { code, retryAfter })
               }
+            })
+            .catch(error => {
+              setAuthToken(null)
+              const response = readAuthResponse(error)
+              if (error instanceof BackendServerError) throw error
+              throw Object.assign(
+                getBackendServerError(
+                  response.code || 'E_AUTH_GENERIC',
+                  response.message || '',
+                  (error as any)?.details?.result || (error as any)?.response?.data?.result || '',
+                ),
+                response,
+              )
             }),
         switchMember: async ({ memberId }) => {
           return appBackendClient
             .post<{
               code: string
+              retryAfter?: number
               message?: string
               result: { authToken: string }
             }>(
@@ -331,11 +373,11 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               },
               { withCredentials: true, headers: { Authorization: 'Bearer ' + authToken } },
             )
-            .then(({ code, message, result }) => {
+            .then(({ code, message, result, retryAfter }) => {
               if (code === 'SUCCESS') {
                 setAuthToken(result.authToken)
               } else {
-                throw new Error(code)
+                throw Object.assign(new Error(code), { code, retryAfter })
               }
             })
         },
@@ -347,6 +389,7 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
           appBackendClient
             .post<{
               code: string
+              retryAfter?: number
               message?: string
               result?: unknown
             }>(
@@ -357,15 +400,16 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               },
               { withCredentials: true },
             )
-            .then(({ code, message, result }) => {
+            .then(({ code, message, result, retryAfter }) => {
               if (code !== 'SUCCESS') {
-                throw new Error(code)
+                throw Object.assign(new Error(code), { code, retryAfter })
               }
             }),
         verifySmsCode: async ({ phoneNumber, code }) =>
           appBackendClient
             .post<{
               code: string
+              retryAfter?: number
               message?: string
               result?: { codeValid?: boolean }
             }>(
@@ -377,32 +421,47 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               },
               { withCredentials: true },
             )
-            .then(({ code, message, result }) => {
+            .then(({ code, message, result, retryAfter }) => {
               if (code !== 'SUCCESS' || !result?.codeValid) {
-                throw new Error(code)
+                throw Object.assign(new Error(code), { code, retryAfter })
               }
             }),
         forceLogin: async ({ account, password, accountLinkToken }) => {
           return appBackendClient
             .post<{
               code: string
+              retryAfter?: number
               result: { authToken: string }
             }>('/auth/force-login', { appId, account, password }, { withCredentials: true })
-            .then(({ code, result }) => {
+            .then(({ code, result, retryAfter }) => {
               if (code === 'SUCCESS') {
                 setAuthToken(result.authToken)
                 if (accountLinkToken && result.authToken) {
                   window.location.assign(`/line-binding?accountLinkToken=${accountLinkToken}`)
                 }
               } else if (code === 'I_RESET_PASSWORD') {
-                window.location.assign(`/check-email?email=${account}&type=reset-password`)
+                window.location.assign(
+                  `/check-email?email=${encodeURIComponent(account)}&type=reset-password&retryAfter=${
+                    readAuthResponse({ retryAfter }).retryAfter || 60
+                  }&requestedAt=${Date.now()}`,
+                )
               } else {
                 setAuthToken(null)
-                throw new Error(code)
+                throw Object.assign(new Error(code), { code, retryAfter })
               }
             })
             .catch(error => {
-              throw error
+              setAuthToken(null)
+              const response = readAuthResponse(error)
+              if (error instanceof BackendServerError) throw error
+              throw Object.assign(
+                getBackendServerError(
+                  response.code || 'E_AUTH_GENERIC',
+                  response.message || '',
+                  (error as any)?.details?.result || (error as any)?.response?.data?.result || '',
+                ),
+                response,
+              )
             })
         },
       }}
