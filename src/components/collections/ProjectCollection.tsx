@@ -1,7 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 import { sum, uniqBy } from 'ramda'
 import { StringParam } from 'serialize-query-params'
-import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getProjectCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
@@ -15,7 +14,7 @@ import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
 import CollectionCarousel from './CollectionCarousel'
 
-type ProjectData = DeepPick<
+type ProjectData = Pick<
   Project,
   | 'id'
   | 'title'

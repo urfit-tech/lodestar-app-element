@@ -3,7 +3,6 @@ import moment from 'moment'
 import { sum, uniqBy } from 'ramda'
 import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
-import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getActivityCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
@@ -17,21 +16,13 @@ import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
 import CollectionCarousel from './CollectionCarousel'
 
-// @ts-ignore
-type ActivityData = DeepPick<
+type ActivityData = Pick<
   Activity,
-  | 'id'
-  | 'coverUrl'
-  | 'title'
-  | 'organizerId'
-  | 'isParticipantVisible'
-  | 'totalParticipants'
-  | 'sessions.[].startedAt'
-  | 'sessions.[].endedAt'
-  | 'tickets.[].limit'
-  | 'tickets.[].price'
-  | 'categories'
->
+  'id' | 'coverUrl' | 'title' | 'organizerId' | 'isParticipantVisible' | 'totalParticipants' | 'categories'
+> & {
+  sessions: Pick<Activity['sessions'][number], 'startedAt' | 'endedAt'>[]
+  tickets: Pick<Activity['tickets'][number], 'limit' | 'price'>[]
+}
 type ActivityContextCollection = ContextCollection<ActivityData>
 
 export type ActivityCollectionProps = {

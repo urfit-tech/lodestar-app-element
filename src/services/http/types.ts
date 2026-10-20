@@ -4,6 +4,7 @@ export type GetAuthToken = () => string | null | undefined
 
 export type StandardApiResponse<T> = {
   code: string
+  retryAfter?: number
   message?: string | null
   result: T
 }

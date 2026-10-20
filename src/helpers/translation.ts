@@ -508,6 +508,42 @@ export const checkoutMessages = {
 }
 
 export const codeMessages = defineMessages({
+  E_AUTH_GENERIC: {
+    id: 'code.E_AUTH_GENERIC',
+    defaultMessage: '操作失敗，請稍後再試',
+  },
+  E_RETRY_AFTER: {
+    id: 'code.E_RETRY_AFTER',
+    defaultMessage: '請 {seconds} 秒後再試',
+  },
+  E_FORBIDDEN: {
+    id: 'code.E_FORBIDDEN',
+    defaultMessage: '您沒有權限執行此操作',
+  },
+  E_DEVICE_CHALLENGE: {
+    id: 'code.E_DEVICE_CHALLENGE',
+    defaultMessage: '裝置驗證已失效，請重新登入',
+  },
+  E_CROSS_SITE: {
+    id: 'code.E_CROSS_SITE',
+    defaultMessage: '此來源無法進行認證，請回到原站台重試',
+  },
+  E_TOO_MANY_ATTEMPTS: {
+    id: 'code.E_TOO_MANY_ATTEMPTS',
+    defaultMessage: '嘗試次數過多，請稍後再試',
+  },
+  E_REDIRECT_URI: {
+    id: 'code.E_REDIRECT_URI',
+    defaultMessage: '登入返回網址不符，請重新登入',
+  },
+  E_APP_MISMATCH: {
+    id: 'code.E_APP_MISMATCH',
+    defaultMessage: '登入站台不符，請回到原站台重試',
+  },
+  E_SOCIAL_LOGIN: {
+    id: 'code.E_SOCIAL_LOGIN',
+    defaultMessage: '社群登入無法完成，請改用原本的登入方式',
+  },
   SUCCESS: {
     id: 'code.SUCCESS',
     defaultMessage: '成功',
@@ -562,11 +598,11 @@ export const codeMessages = defineMessages({
   },
   E_PROVIDER: {
     id: 'code.E_PROVIDER',
-    defaultMessage: 'E_PROVIDER',
+    defaultMessage: '此社群登入方式未啟用',
   },
   E_PROVIDER_TOKEN: {
     id: 'code.E_PROVIDER_TOKEN',
-    defaultMessage: 'E_PROVIDER_TOKEN',
+    defaultMessage: '社群登入憑證已失效，請重新登入',
   },
   E_UPDATE_PASSWORD: {
     id: 'code.E_UPDATE_PASSWORD',
