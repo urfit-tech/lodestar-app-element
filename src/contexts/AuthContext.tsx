@@ -4,6 +4,8 @@ import parsePhoneNumber from 'libphonenumber-js'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 import { getBackendServerError } from '../helpers'
+import { readAuthResponse } from '../helpers/authResponse'
+import { BackendServerError } from '../helpers/error'
 import { fetchCurrentGeolocation, getFingerPrintId, parsePayload } from '../hooks/util'
 import { createAppBackendClient } from '../services/http'
 import { Permission } from '../types/app'
@@ -95,25 +97,31 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
 
   const refreshToken = useCallback(async () => {
     setIsAuthenticating(true)
-    const fingerPrintId = await getFingerPrintId()
-    const { ip, country, countryCode } = await fetchCurrentGeolocation()
-    const { code, result } = await appBackendClient.post<{
-      code: string
-      result: { authToken: string }
-    }>(
-      '/auth/refresh-token',
-      { appId, fingerPrintId, geoLocation: { ip, country, countryCode } },
-      { withCredentials: true },
-    )
-    if (code === 'SUCCESS') {
-      setAuthToken(result.authToken)
-    } else if (code === 'E_NO_DEVICE') {
+    try {
+      const fingerPrintId = await getFingerPrintId()
+      const { ip, country, countryCode } = await fetchCurrentGeolocation()
+      const { code, result } = await appBackendClient.post<{
+        code: string
+        result: { authToken: string }
+      }>(
+        '/auth/refresh-token',
+        { appId, fingerPrintId, geoLocation: { ip, country, countryCode } },
+        { withCredentials: true },
+      )
+      if (code === 'SUCCESS') {
+        setAuthToken(result.authToken)
+      } else if (code === 'E_NO_DEVICE') {
+        setAuthToken(null)
+        alert('您已被登出，目前有其他裝置登入這組帳號')
+      } else {
+        setAuthToken(null)
+      }
+    } catch {
       setAuthToken(null)
-      alert('您已被登出，目前有其他裝置登入這組帳號')
-    } else {
-      setAuthToken(null)
+      ;(window as any).AUTH_TOKEN = null
+    } finally {
+      setIsAuthenticating(false)
     }
-    setIsAuthenticating(false)
   }, [appBackendClient, appId])
 
   const currentMember = payload && {
@@ -279,12 +287,22 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               window.location.assign(`/check-email?email=${account}&type=reset-password`)
             } else {
               setAuthToken(null)
-              throw getBackendServerError(code, message, result)
+              throw Object.assign(getBackendServerError(code, message, result), { code })
             }
 
             return { code }
           } catch (error) {
-            throw error
+            setAuthToken(null)
+            const response = readAuthResponse(error)
+            if (error instanceof BackendServerError) throw error
+            throw Object.assign(
+              getBackendServerError(
+                response.code || 'E_AUTH_GENERIC',
+                response.message || '',
+                (error as any)?.details?.result || (error as any)?.response?.data?.result || '',
+              ),
+              response,
+            )
           }
         },
         socialLogin: async ({ provider, providerToken, accountLinkToken, isForceLogin }) =>
@@ -315,8 +333,21 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
                 }
               } else {
                 setAuthToken(null)
-                throw getBackendServerError(code, message, result)
+                throw Object.assign(getBackendServerError(code, message, result), { code })
               }
+            })
+            .catch(error => {
+              setAuthToken(null)
+              const response = readAuthResponse(error)
+              if (error instanceof BackendServerError) throw error
+              throw Object.assign(
+                getBackendServerError(
+                  response.code || 'E_AUTH_GENERIC',
+                  response.message || '',
+                  (error as any)?.details?.result || (error as any)?.response?.data?.result || '',
+                ),
+                response,
+              )
             }),
         switchMember: async ({ memberId }) => {
           return appBackendClient
@@ -402,7 +433,16 @@ export const AuthProvider: React.FC<{ appId: string }> = ({ appId, children }) =
               }
             })
             .catch(error => {
-              throw error
+              const response = readAuthResponse(error)
+              if (error instanceof BackendServerError) throw error
+              throw Object.assign(
+                getBackendServerError(
+                  response.code || 'E_AUTH_GENERIC',
+                  response.message || '',
+                  (error as any)?.details?.result || (error as any)?.response?.data?.result || '',
+                ),
+                response,
+              )
             })
         },
       }}
