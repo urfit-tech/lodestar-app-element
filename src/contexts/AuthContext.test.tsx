@@ -5,7 +5,7 @@ import { act } from 'react-dom/test-utils'
 import { readAuthResponse } from '../helpers/authResponse'
 import { AuthProvider, useAuth } from './AuthContext'
 
-const mockPost = jest.fn()
+const mockPost = jest.fn<Promise<unknown>, any[]>()
 jest.mock('../services/http', () => ({
   createAppBackendClient: () => ({ post: (...args: any[]) => mockPost(...args) }),
 }))
