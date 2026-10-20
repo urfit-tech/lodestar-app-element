@@ -49,8 +49,9 @@ export type CouponProps = {
       amount: number
       title: string
       description: string | null
-      count: number
-      remaining: number
+      // The member coupon API omits inventory totals.
+      count?: number
+      remaining?: number
       scope: string[] | null
       productIds?: string[]
     }
