@@ -50,6 +50,10 @@ const StyledSlider = styled(Slider)<ElementProps<BaseCarouselProps>>`
   }
 `
 
+// Prerender only snapshots slides that are already rendered, so give it every slide up front;
+// browsers keep loading slides on demand.
+const isPrerender = typeof navigator !== 'undefined' && /Prerender/.test(navigator.userAgent)
+
 const Carousel: ElementComponent<BaseCarouselProps> = props => {
   const sliderRef = useRef<Slider>(null)
   useEffect(() => {
@@ -84,7 +88,7 @@ const Carousel: ElementComponent<BaseCarouselProps> = props => {
     swipeToSlide: Boolean(props.swipeToSlide),
     swipe: props.swipe === undefined ? true : Boolean(props.swipe),
     vertical: Boolean(props.vertical),
-    lazyLoad: 'ondemand',
+    lazyLoad: isPrerender ? undefined : 'ondemand',
   }
   return (
     <StyledSlider
