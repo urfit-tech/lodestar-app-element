@@ -150895,10 +150895,10 @@ export type projectFields = {
   project_sales?: { __typename?: 'project_sales'; total_sales?: any | null } | null
   project_plans: Array<{
     __typename?: 'project_plan'
-    project_plan_enrollments_aggregate: {
-      __typename?: 'project_plan_enrollment_aggregate'
-      aggregate?: { __typename?: 'project_plan_enrollment_aggregate_fields'; count: number } | null
-    }
+    project_plan_enrollment_count?: {
+      __typename?: 'project_plan_enrollment_count'
+      enrollment_count?: number | null
+    } | null
   }>
   project_categories: Array<{
     __typename?: 'project_category'
@@ -151157,10 +151157,10 @@ export type GET_PROJECT_COLLECTION = {
     project_sales?: { __typename?: 'project_sales'; total_sales?: any | null } | null
     project_plans: Array<{
       __typename?: 'project_plan'
-      project_plan_enrollments_aggregate: {
-        __typename?: 'project_plan_enrollment_aggregate'
-        aggregate?: { __typename?: 'project_plan_enrollment_aggregate_fields'; count: number } | null
-      }
+      project_plan_enrollment_count?: {
+        __typename?: 'project_plan_enrollment_count'
+        enrollment_count?: number | null
+      } | null
     }>
     project_categories: Array<{
       __typename?: 'project_category'
@@ -151810,10 +151810,7 @@ export type GET_PUBLISHED_ACTIVITY_COLLECTION = {
       __typename?: 'activity_category'
       category: { __typename?: 'category'; id: string; name: string }
     }>
-    activity_enrollments_aggregate: {
-      __typename?: 'activity_enrollment_aggregate'
-      aggregate?: { __typename?: 'activity_enrollment_aggregate_fields'; count: number } | null
-    }
+    activity_enrollment_count?: { __typename?: 'activity_enrollment_count'; enrollment_count?: number | null } | null
     activity_sessions_aggregate: {
       __typename?: 'activity_session_aggregate'
       aggregate?: {
