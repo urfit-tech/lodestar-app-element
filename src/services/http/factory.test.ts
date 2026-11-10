@@ -1,10 +1,10 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { ApiError } from './error'
 import { createHttpClient } from './factory'
 
 const createAdapter =
-  <T>(data: T, onConfig?: (config: AxiosRequestConfig) => void) =>
-  async (config: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
+  <T>(data: T, onConfig?: (config: InternalAxiosRequestConfig) => void) =>
+  async (config: InternalAxiosRequestConfig): Promise<AxiosResponse<T>> => {
     onConfig?.(config)
 
     return {

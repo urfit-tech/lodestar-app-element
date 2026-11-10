@@ -2,7 +2,6 @@ import { gql, useQuery } from '@apollo/client'
 import { pipe, prop, sortBy, uniqBy } from 'ramda'
 import { useHistory } from 'react-router'
 import { StringParam } from 'serialize-query-params'
-import { DeepPick } from 'ts-deep-pick/lib'
 import { useQueryParam } from 'use-query-params'
 import { getPostCollectionQuery } from '../../graphql/queries'
 import * as hasura from '../../hasura'
@@ -17,8 +16,7 @@ import CategorySelector from '../common/CategorySelector'
 import Collection, { CollectionLayout, ContextCollection } from './Collection'
 import CollectionCarousel from './CollectionCarousel'
 
-// @ts-ignore
-type PostData = DeepPick<
+type PostData = Pick<
   Post,
   'id' | 'codeName' | 'title' | 'coverUrl' | 'videoUrl' | 'publishedAt' | 'views' | 'pinnedAt' | 'author' | 'categories'
 >

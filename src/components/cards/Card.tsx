@@ -14,7 +14,7 @@ export type CardProps = {
 }
 
 const CardTitle = styled.h3.withConfig({
-  shouldForwardProp: prop => prop !== 'darkMode',
+  shouldForwardProp: (prop: string | number) => prop !== 'darkMode',
 })<CardProps>`
   font-family: NotoSansCJKtc;
   font-size: 16px;

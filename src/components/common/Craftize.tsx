@@ -13,7 +13,7 @@ import { clone, mergeDeepRight } from 'ramda'
 import { useMediaQuery } from 'react-responsive'
 import { stringify as stringifyStyle } from 'react-style-editor'
 import styled, { css, CSSObject } from 'styled-components'
-import { ElementBaseProps, ElementComponent, ElementProps } from '../../types/element'
+import { ElementBaseProps, ElementComponent } from '../../types/element'
 import { DESKTOP_BREAK_POINT, TABLET_BREAK_POINT } from './Responsive'
 
 const CraftRefBlock = styled.div<{
@@ -61,9 +61,15 @@ export type PropsWithCraft<P> = ElementBaseProps<P> & {
 }
 export type CraftTemplate = { rootNodeId: NodeId; serializedNodes: SerializedNodes }
 const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
+  type CraftElementProps = PropsWithCraft<P> & {
+    editing?: boolean
+    backgroundImages?: { mobile: string; tablet: string; desktop: string }
+  }
+  // styled-components loses the generic state union through its Omit-based props.
+  // The wrapper only adds styles and forwards all props; Craft nodes supply P.
   const StyledCraftElement = styled(WrappedComponent)(
-    (props: PropsWithCraft<P>) => props.customStyle,
-  ) as ElementComponent<P>
+    (props: CraftElementProps) => props.customStyle,
+  ) as unknown as React.ComponentType<CraftElementProps>
   const Component: UserComponent<PropsWithCraft<P>> = props => {
     const node = useNode(node => node)
     const editor = useEditor(state => ({
@@ -97,7 +103,7 @@ const Craftize = <P extends object>(WrappedComponent: ElementComponent<P>) => {
         {editor.editing && node.events.hovered && <CraftController />}
         <style>{stringifyStyle(node.data.custom?.style || [])}</style>
         <StyledCraftElement
-          {...(responsiveProps as ElementProps<P>)}
+          {...responsiveProps}
           customStyle={{
             ...customStyleFormat(props.customStyle),
             [`@media (max-width: ${TABLET_BREAK_POINT - 1}px)`]: customStyleFormat(
@@ -253,7 +259,8 @@ const customStyleFormat = (customStyle?: CSSObject): CSSObject => {
     ...rest,
     width: customStyle.width?.toString().includes('%') ? '100%' : customStyle.width,
     backgroundImage:
-      customStyle.backgroundImage || (backgroundImageUrl ? `url(${String(backgroundImageUrl).replace(/['"]/g, '')})` : undefined),
+      customStyle.backgroundImage ||
+      (backgroundImageUrl ? `url(${String(backgroundImageUrl).replace(/['"]/g, '')})` : undefined),
   }
 }
 
