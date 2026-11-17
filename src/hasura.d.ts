@@ -151517,16 +151517,6 @@ export type GET_ENROLLED_CARD = {
   } | null
 }
 
-export type SEARCH_MEMBERVariables = Exact<{
-  email: Scalars['String']
-  appId: Scalars['String']
-}>
-
-export type SEARCH_MEMBER = {
-  __typename?: 'query_root'
-  member_public: Array<{ __typename?: 'member_public'; id?: string | null }>
-}
-
 export type GET_SIMPLE_PRODUCTVariables = Exact<{
   targetId: Scalars['uuid']
   startedAt?: InputMaybe<Scalars['timestamptz']>
@@ -151670,16 +151660,6 @@ export type GET_SIMPLE_PRODUCT = {
     sale_price?: any | null
     sale_amount?: number | null
   } | null
-}
-
-export type SEARCH_MEMBERSVariables = Exact<{
-  emails: Array<Scalars['String']> | Scalars['String']
-  appId: Scalars['String']
-}>
-
-export type SEARCH_MEMBERS = {
-  __typename?: 'query_root'
-  member_public: Array<{ __typename?: 'member_public'; id?: string | null; email?: string | null }>
 }
 
 export type GET_PUBLISHED_PROGRAM_COLLECTIONVariables = Exact<{
