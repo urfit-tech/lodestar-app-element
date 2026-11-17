@@ -1,6 +1,7 @@
-import { gql, useApolloClient, useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
+import axios from 'axios'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { useApp } from '../contexts/AppContext'
 import { useAuth } from '../contexts/AuthContext'
 import hasura from '../hasura'
 import { notEmpty } from '../helpers'
@@ -8,21 +9,59 @@ import { commonMessages } from '../helpers/translation'
 import { PeriodType } from '../types/data'
 import { Target } from '../types/product'
 
+// 以 email 找會員改走後端 API（限本租戶、精確比對、每人有查詢次數上限），不再直接查 member_public.email
+const MEMBER_EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/
+const MEMBER_LOOKUP_DEBOUNCE_MS = 400
+const MEMBER_LOOKUP_MAX_EMAILS = 20
+
+const lookupMembersByEmail = async (authToken: string, emails: string[]) => {
+  const { data } = await axios.post<{ code: string; result?: { members?: { id: string; email: string }[] } | null }>(
+    `${process.env.REACT_APP_API_BASE_ROOT}/member/lookup-by-email`,
+    { emails },
+    { headers: { Authorization: `Bearer ${authToken}` } },
+  )
+  if (data?.code !== 'SUCCESS') {
+    throw new Error(data?.code || 'E_MEMBER_LOOKUP')
+  }
+  return data.result?.members || []
+}
+
 export const useMemberValidation = (email: string) => {
-  const { currentMemberId } = useAuth()
-  const { id: appId } = useApp()
-  const { loading, error, data, refetch } = useQuery(
-    gql`
-      query SEARCH_MEMBER($email: String!, $appId: String!) {
-        member_public(where: { email: { _eq: $email }, app_id: { _eq: $appId } }) {
-          id
-        }
+  const { currentMemberId, authToken } = useAuth()
+  const [lookup, setLookup] = useState<{ email: string; memberId: string | null; error?: Error }>()
+  const requestSeqRef = useRef(0)
+  // 空值、格式不符或未登入都不呼叫 API，直接視為查無此會員
+  const shouldLookup = !!email && MEMBER_EMAIL_REGEX.test(email) && !!authToken
+
+  const fetchMemberId = useCallback(
+    async (targetEmail: string) => {
+      if (!authToken) return
+      const seq = ++requestSeqRef.current
+      try {
+        const members = await lookupMembersByEmail(authToken, [targetEmail])
+        if (seq === requestSeqRef.current) setLookup({ email: targetEmail, memberId: members[0]?.id || null })
+      } catch (error) {
+        if (seq === requestSeqRef.current) setLookup({ email: targetEmail, memberId: null, error: error as Error })
       }
-    `,
-    { variables: { email, appId } },
+    },
+    [authToken],
   )
 
-  const memberId: string | null = data?.member_public[0]?.id || null
+  useEffect(() => {
+    if (!shouldLookup) return
+    const timer = setTimeout(() => fetchMemberId(email), MEMBER_LOOKUP_DEBOUNCE_MS)
+    return () => {
+      clearTimeout(timer)
+      // email 改變或元件卸載後，忽略還沒回來的舊結果
+      requestSeqRef.current++
+    }
+  }, [email, shouldLookup, fetchMemberId])
+
+  const isResolved = shouldLookup && lookup?.email === email
+  const loading = shouldLookup && !isResolved
+  const error = isResolved ? lookup?.error : undefined
+  const memberId: string | null = isResolved ? lookup?.memberId || null : null
+  const refetch = () => (shouldLookup ? fetchMemberId(email) : Promise.resolve())
 
   const validateStatus: 'success' | 'error' | 'validating' | undefined = !email
     ? undefined
@@ -372,35 +411,27 @@ export const GET_SIMPLE_PRODUCT = gql`
 `
 
 export const useSearchMembers = () => {
-  const apolloClient = useApolloClient()
-  const { id: appId } = useApp()
+  const { authToken } = useAuth()
+  // 同一個表單內查過的 email 不重查（null 表示查無此會員），避免每次輸入都把所有 email 重送一次
+  const memberIdByEmailRef = useRef(new Map<string, string | null>())
   const searchMembers = async (emails: string[]) => {
     try {
-      const { data } = await apolloClient.query<hasura.SEARCH_MEMBERS, hasura.SEARCH_MEMBERSVariables>({
-        query: gql`
-          query SEARCH_MEMBERS($emails: [String!]!, $appId: String!) {
-            member_public(where: { email: { _in: $emails }, app_id: { _eq: $appId } }) {
-              id
-              email
-            }
-          }
-        `,
-        variables: {
-          emails: emails.filter(notEmpty),
-          appId,
-        },
-        fetchPolicy: 'no-cache',
-      })
+      const targetEmails = emails
+        .filter(notEmpty)
+        .filter((email, index, array) => MEMBER_EMAIL_REGEX.test(email) && array.indexOf(email) === index)
+      if (!authToken) return []
 
-      const members =
-        data?.member_public
-          .filter(v => v.id && v.email)
-          .map(v => ({
-            id: v.id || '',
-            email: v.email || '',
-          })) || []
+      const memberIdByEmail = memberIdByEmailRef.current
+      const uncachedEmails = targetEmails.filter(email => !memberIdByEmail.has(email))
+      for (let i = 0; i < uncachedEmails.length; i += MEMBER_LOOKUP_MAX_EMAILS) {
+        const chunk = uncachedEmails.slice(i, i + MEMBER_LOOKUP_MAX_EMAILS)
+        const members = await lookupMembersByEmail(authToken, chunk)
+        chunk.forEach(email => memberIdByEmail.set(email, members.find(member => member.email === email)?.id || null))
+      }
 
-      return members
+      return targetEmails
+        .map(email => ({ id: memberIdByEmail.get(email) || '', email }))
+        .filter(member => member.id && member.email)
     } catch {
       return []
     }
