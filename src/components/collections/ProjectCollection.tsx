@@ -258,7 +258,7 @@ const composeCollectionData = (data: hasura.GET_PROJECT_COLLECTION): ProjectData
     isParticipantsVisible: p.is_participants_visible,
     isCountdownTimerVisible: p.is_countdown_timer_visible,
     totalSales: p.project_sales?.total_sales || 0,
-    enrollmentCount: sum(p.project_plans.map(pp => pp.project_plan_enrollments_aggregate.aggregate?.count || 0)),
+    enrollmentCount: sum(p.project_plans.map(pp => pp.project_plan_enrollment_count?.enrollment_count || 0)),
     categories: p.project_categories.map(pc => pc.category),
     creatorId: p.creator_id || null,
     authorId: p.author[0]?.member?.id,
@@ -289,10 +289,8 @@ const projectFields = gql`
       total_sales
     }
     project_plans {
-      project_plan_enrollments_aggregate {
-        aggregate {
-          count
-        }
+      project_plan_enrollment_count {
+        enrollment_count
       }
     }
     project_categories {
