@@ -541,14 +541,28 @@ const CheckoutProductModal: React.FC<CheckoutProductModalProps> = ({
       })
     }
 
-    const { orderId, paymentNo, payToken } = await placeOrder(
+    const placedOrder = await placeOrder(
       productTarget.isSubscription ? 'subscription' : 'perpetual',
       {
         ...invoice,
         referrerEmail: referrerEmail || undefined,
       },
       payment,
-    )
+    ).catch(error => {
+      console.error(error)
+      toast({
+        title: formatMessage(checkoutMessages.message.createOrderError),
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+        position: 'top',
+      })
+      return null
+    })
+    if (!placedOrder) {
+      return
+    }
+    const { orderId, paymentNo, payToken } = placedOrder
 
     await updateMemberMetadata({
       variables: {
