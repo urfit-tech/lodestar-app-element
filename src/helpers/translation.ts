@@ -415,6 +415,10 @@ export const checkoutMessages = {
       id: 'checkout.message.notEnoughCoins',
       defaultMessage: '代幣不足',
     },
+    createOrderError: {
+      id: 'checkout.message.createOrderError',
+      defaultMessage: '訂單建立失敗，請稍後再試；若仍無法結帳，請聯繫客服',
+    },
   }),
   shipping: defineMessages({
     sevenEleven: { id: 'checkout.label.sevenEleven', defaultMessage: '7-11超商取貨' },

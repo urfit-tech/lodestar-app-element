@@ -102,6 +102,7 @@
   "checkout.label.webatm": "WebATM",
   "checkout.message.addressText": "Please enter the address",
   "checkout.message.citizenCode": "Length of 16 characters, consisting of 2 uppercase letters followed by 14 digits",
+  "checkout.message.createOrderError": "Failed to create the order. Please try again later, or contact customer service if checkout still fails.",
   "checkout.message.email": "Please provide your email",
   "checkout.message.errorEmail": "Invalid email format",
   "checkout.message.errorName": "Please enter your name",
